@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="color_doujinshi">#f26f5f</color>
+    <color name="color_manga">#fcb417</color>
+    <color name="color_artist_cg">#dde500</color>
+    <color name="color_game_cg">#05bf0b</color>
+    <color name="color_western">#14e723</color>
+    <color name="color_non_h">#08d7e2</color>
+    <color name="color_image_set">#5f5fff</color>
+    <color name="color_cosplay">#9755f5</color>
+    <color name="color_asian_porn">#fe93ff</color>
+    <color name="color_misc">#9e9e9e</color>
+    <color name="color_unknow">#000000</color>
+
+</resources>

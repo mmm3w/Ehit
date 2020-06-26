@@ -1,0 +1,99 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: "config.gradle"
+buildscript {
+    ext.kotlin_version = '1.3.72'
+    ext.gradle_version = '4.0.0'
+    ext.hilt_plugin_version = '2.28-alpha'
+
+    repositories {
+        jcenter()
+        google()
+
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$gradle_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_plugin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven { url "https://jsoup.org" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
+ext {
+    kotlin_version = "1.3.72"
+    core_ktx_version = "1.3.0"
+
+    junit_version = "4.13"
+    junit_ext_version = "1.1.1"
+    espresso_version = "3.2.0"
+    runner_version = "1.0.2"
+
+    appcompat_version = "1.1.0"
+    recyclerview_version = "1.1.0"
+    constraintlayout_version = "1.1.3"
+    google_material_version = "1.3.0-alpha01"
+
+    okhttp_version = "4.7.2"
+    jsoup_version = "1.13.1"
+
+    lifecycle_version = "2.2.0"
+    nav_version = "2.3.0-rc01"
+    paging_version = "3.0.0-alpha02"
+    coroutines_version = "1.3.7"
+    hilt_version = "2.28-alpha"
+    hilt_ext_version = "1.0.0-alpha01"
+
+    dep = [
+            //core
+            kotlinStdlibJdk8      : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+            coreKtx               : "androidx.core:core-ktx:$core_ktx_version",
+
+            //test
+            junit                 : "junit:junit:$junit_version",
+            junitExt              : "androidx.test.ext:junit:$junit_ext_version",
+            espresso              : "androidx.test.espresso:espresso-core:$espresso_version",
+            runner                : "com.android.support.test:runner:$runner_version",
+
+            appcompat             : "androidx.appcompat:appcompat:$appcompat_version",
+            recyclerview          : "androidx.recyclerview:recyclerview:$recyclerview_version",
+            constraintlayout      : "androidx.constraintlayout:constraintlayout:$constraintlayout_version",
+            googleMaterial        : "com.google.android.material:material:$google_material_version",
+
+
+            jsoup                 : "org.jsoup:jsoup:$jsoup_version",
+            okhttp                : "com.squareup.okhttp3:okhttp:$okhttp_version",
+
+            coroutinesCore        : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version",
+            coroutinesAndroid     : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version",
+
+            //jetpack
+            viewModel             : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version",
+            navFragmentKtx        : "androidx.navigation:navigation-fragment-ktx:$nav_version",
+            navUiKtx              : "androidx.navigation:navigation-ui-ktx:$nav_version",
+            paging                : "androidx.paging:paging-runtime:$paging_version",
+            hiltAndroid           : "com.google.dagger:hilt-android:$hilt_version",
+            hiltAndroidCompiler   : "com.google.dagger:hilt-android-compiler:$hilt_version",
+            hiltLifecycleViewmodel: "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_ext_version",
+            hiltCompiler          : "androidx.hilt:hilt-compiler:$hilt_ext_version"
+    ]
+
+    android = [
+            compileSdkVersion: 29,
+            minSdkVersion    : 21,
+            targetSdkVersion : 29,
+            buildToolsVersion: "29.0.3"
+    ]
+}

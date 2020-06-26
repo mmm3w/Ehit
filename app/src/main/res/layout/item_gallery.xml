@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_margin="@dimen/dp_4"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@color/grayscale_f5"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/galleryThumb"
+            android:layout_width="@dimen/dp_80"
+            android:background="#00f"
+            android:layout_height="120dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/galleryTitle"
+            android:layout_width="@dimen/dp_zero"
+            android:maxLines="2"
+            android:textSize="@dimen/sp_16"
+            android:ellipsize="end"
+            android:textColor="@color/grayscale_20"
+            android:layout_margin="@dimen/dp_8"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/galleryThumb"
+            app:layout_constraintTop_toTopOf="@id/galleryThumb" />
+
+        <TextView
+            android:id="@+id/galleryUploader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintStart_toStartOf="@id/galleryTitle"
+            app:layout_constraintTop_toBottomOf="@id/galleryTitle" />
+
+        <com.mitsuki.ehit.mvvm.ui.widget.CategoryView
+            android:id="@+id/galleryCategory"
+            android:textSize="@dimen/sp_12"
+            android:lines="1"
+            android:layout_margin="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/galleryThumb" />
+
+        <com.mitsuki.armory.widget.RatingView
+            android:id="@+id/galleryRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            app:layout_constraintBottom_toTopOf="@id/galleryCategory"
+            app:layout_constraintStart_toStartOf="@id/galleryCategory" />
+
+        <TextView
+            android:id="@+id/galleryTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:lines="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/galleryLang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/galleryTime"
+            app:layout_constraintEnd_toEndOf="@id/galleryTime" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+

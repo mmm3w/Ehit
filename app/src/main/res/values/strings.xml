@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Ehit</string>
+
+
+    <string name="hint_account">account</string>
+    <string name="hint_password">password</string>
+    <string name="text_skip">Skip</string>
+    <string name="text_login">Login</string>
+
+
+</resources>

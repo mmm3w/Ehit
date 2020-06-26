@@ -1,0 +1,85 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+
+    defaultConfig {
+        applicationId "com.mitsuki.ehit"
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode 1000
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation dep.junit
+    androidTestImplementation dep.junitExt
+    androidTestImplementation dep.espresso
+
+    //----------------------------------------------------------------------------------------------
+    implementation (project(':simplemvvm')) {
+        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
+    }
+    implementation project(':armory')
+
+    //----------------------------------------------------------------------------------------------
+    implementation dep.kotlinStdlibJdk8
+    implementation dep.coreKtx
+
+    implementation dep.appcompat
+    implementation dep.constraintlayout
+    implementation dep.googleMaterial
+
+    implementation dep.jsoup
+    implementation dep.okhttp
+
+    //viewmodel
+    implementation dep.viewModel
+
+    //navigation
+    implementation dep.navFragmentKtx
+    implementation dep.navUiKtx
+
+    //paging3
+    implementation dep.paging
+
+    //协程
+    implementation dep.coroutinesCore
+    implementation dep.coroutinesAndroid
+
+    //hilt
+    implementation dep.hiltAndroid
+    kapt dep.hiltAndroidCompiler
+    implementation dep.hiltLifecycleViewmodel
+    kapt dep.hiltCompiler
+}
+
+repositories {
+    mavenCentral()
+}
