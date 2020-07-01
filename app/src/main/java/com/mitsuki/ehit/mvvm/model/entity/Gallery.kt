@@ -2,8 +2,11 @@ package com.mitsuki.ehit.mvvm.model.entity
 
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.mvvm.model.ehparser.*
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import java.lang.Exception
 
+@Suppress("ArrayInDataClass")
 data class Gallery(
     val gid: Long,
     val token: String,
@@ -41,15 +44,30 @@ data class Gallery(
                 oldConcert == newConcert
         }
 
+        fun parseList(content:String): ArrayList<Gallery> {
+            val doc = Jsoup.parse(content)
+            val list = ArrayList<Gallery>()
+            doc.getElementsByClass("itg").first()?.getElementsByTag("tr")?.let {
+                for (element in it) {
+                    if (element.getElementsByTag("th").size > 0)
+                        continue
+                    try {
+                        list.add(Gallery.parse(element))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            return list
+        }
 
         fun parse(element: Element): Gallery {
-
             val glnameEle = element.byClassFirst("glname", "Not found glname")
 
             val title = glnameEle.byClassFirst("glink", "Not found title").text()
 
             val url = glnameEle.byTagFirst("a", "Not found url tag").attr("href")
-            val tiData = url.splitTI()
+            val tiData = url.splitIdToken()
 
             val category = element.byClassFirst("cn", "Not found category").text()
 

@@ -1,8 +1,11 @@
 package com.mitsuki.ehit.mvvm.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.view
@@ -13,6 +16,9 @@ import com.mitsuki.ehit.mvvm.ui.widget.CategoryView
 import java.util.*
 
 class GalleryAdapter : PagingDataAdapter<Gallery, RecyclerView.ViewHolder>(Gallery.DIFF_CALLBACK) {
+
+    private val itemEventObservable: MutableLiveData<Gallery> = MutableLiveData()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         with(
             LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false)
@@ -32,6 +38,13 @@ class GalleryAdapter : PagingDataAdapter<Gallery, RecyclerView.ViewHolder>(Galle
                 this?.text = it.category.toUpperCase(Locale.getDefault())
             }
             holder.view<TextView>(R.id.galleryTime)?.text = it.time
+            holder.itemView.setOnClickListener { _ ->
+                itemEventObservable.postValue(it)
+            }
         }
+    }
+
+    fun observeItemEvent(): LiveData<Gallery> {
+        return itemEventObservable
     }
 }

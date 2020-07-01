@@ -2,19 +2,19 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_margin="@dimen/dp_4"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/grayscale_f5"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/grayscale_f5">
 
         <ImageView
             android:id="@+id/galleryThumb"
             android:layout_width="@dimen/dp_80"
-            android:background="#00f"
             android:layout_height="120dp"
+            android:background="#00f"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -22,12 +22,12 @@
         <TextView
             android:id="@+id/galleryTitle"
             android:layout_width="@dimen/dp_zero"
-            android:maxLines="2"
-            android:textSize="@dimen/sp_16"
-            android:ellipsize="end"
-            android:textColor="@color/grayscale_20"
-            android:layout_margin="@dimen/dp_8"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/grayscale_20"
+            android:textSize="@dimen/sp_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/galleryThumb"
             app:layout_constraintTop_toTopOf="@id/galleryThumb" />
@@ -43,16 +43,16 @@
 
         <com.mitsuki.ehit.mvvm.ui.widget.CategoryView
             android:id="@+id/galleryCategory"
-            android:textSize="@dimen/sp_12"
-            android:lines="1"
-            android:layout_margin="@dimen/dp_8"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:lines="1"
             android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
             android:paddingTop="2dp"
+            android:paddingEnd="@dimen/dp_8"
             android:paddingBottom="2dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/galleryThumb" />
 

@@ -41,7 +41,7 @@ object Language {
     fun getLangSimple(lang: String): String {
         if (TextUtils.isEmpty(lang)) return ""
         for (i in LANGUAGE_SET.indices) {
-            if (LANGUAGE_SET[i].equals(lang, ignoreCase = true)) {
+            if (LANGUAGE_SET[i].contains(lang, ignoreCase = true)) {
                 return LANGUAGE_S_SET[i]
             }
         }

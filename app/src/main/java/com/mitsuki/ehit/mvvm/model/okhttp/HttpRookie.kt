@@ -13,8 +13,4 @@ object HttpRookie{
             .build()
     }
 
-
-
-
-
 }

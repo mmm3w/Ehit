@@ -61,6 +61,8 @@ dependencies {
 
     //viewmodel
     implementation dep.viewModel
+    //LiveData
+    implementation dep.liveData
 
     //navigation
     implementation dep.navFragmentKtx
