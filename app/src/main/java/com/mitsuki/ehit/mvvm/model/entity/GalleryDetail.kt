@@ -2,6 +2,7 @@ package com.mitsuki.ehit.mvvm.model.entity
 
 import com.mitsuki.ehit.mvvm.model.ehparser.*
 import org.jsoup.Jsoup
+import java.lang.Exception
 
 @Suppress("ArrayInDataClass")
 data class GalleryDetail(
@@ -29,7 +30,8 @@ data class GalleryDetail(
     val favoriteName: String? = null,
     val tagSet: Array<TagSet>,
     val commentSet: CommentSet,
-    val previewPages: Int
+    val previewPages: Int,
+    val images: ArrayList<ImageSource>
 ) {
     val categoryColor: Int = Category.getColor(category)
     val pages = pagesStr.matchNumber("1").toInt()
@@ -106,10 +108,16 @@ data class GalleryDetail(
             val favoriteName =
                 if (!gdfNode.text().contains("Add to Favorites")) gdfNode.text() else null
 
-            val tagSetArray =
-                document.getElementById("taglist")?.child(0)?.child(0)?.children()?.let {
-                    Array(it.size) { number -> TagSet.parse(it[number]) }
+            val tagSetArray: Array<TagSet> =
+                document.getElementById("taglist")?.let { tagList ->
+                    if (tagList.childrenSize() < 1) {
+                        emptyArray()
+                    } else {
+                        tagList.child(0)?.child(0)?.children()
+                            ?.let { Array(it.size) { number -> TagSet.parse(it[number]) } }
+                    }
                 } ?: emptyArray()
+
 
             val commentSet = CommentSet.parse(document.byId("cdiv"))
 
@@ -118,6 +126,7 @@ data class GalleryDetail(
                     get(size - 2).text().toInt()
                 }
 
+            val images = ImageSource.parse(content)
 
             return GalleryDetail(
                 gid,
@@ -144,7 +153,8 @@ data class GalleryDetail(
                 favoriteName,
                 tagSetArray,
                 commentSet,
-                previewPages
+                previewPages,
+                images
             )
         }
 

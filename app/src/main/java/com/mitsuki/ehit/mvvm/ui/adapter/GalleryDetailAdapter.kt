@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,9 @@ import java.util.*
 class GalleryDetailAdapter :
     PagingDataAdapter<GalleryDetailItem, RecyclerView.ViewHolder>(GalleryDetailWrap.DIFF_CALLBACK) {
 
+    private val itemEventObservable: MutableLiveData<String> = MutableLiveData()
+
+    private val partAdapter = PartAdapter(itemEventObservable)
 
     val mSpanSizeLookup =
         object : GridLayoutManager.SpanSizeLookup() {
@@ -32,27 +36,27 @@ class GalleryDetailAdapter :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             GALLERY_DETAIL_HEADER ->
-                (holder as DetailHeaderViewHolder).run {
+                (holder as DetailHeaderViewHolder).apply {
                     binds(this, position, getItem(position) as DetailHeader)
                 }
             GALLERY_DETAIL_PART ->
-                (holder as DetailPartViewHolder).run {
-                    binds(this, position, getItem(position) as DetailPart)
+                (holder as DetailPartViewHolder).apply {
+                    binds(getItem(position) as DetailPart,partAdapter)
                 }
             GALLERY_DETAIL_OPERATING ->
-                (holder as DetailOperatingViewHolder).run {
+                (holder as DetailOperatingViewHolder).apply {
                     binds(this, position, getItem(position) as DetailOperating)
                 }
             GALLERY_DETAIL_TAG ->
-                (holder as DetailTagViewHolder).run {
+                (holder as DetailTagViewHolder).apply {
                     binds(this, position, getItem(position) as DetailTag)
                 }
             GALLERY_DETAIL_COMMENT ->
-                (holder as DetailCommentViewHolder).run {
+                (holder as DetailCommentViewHolder).apply {
                     binds(this, position, getItem(position) as DetailComment)
                 }
             GALLERY_DETAIL_PREVIEW ->
-                (holder as DetailPreviewViewHolder).run {
+                (holder as DetailPreviewViewHolder).apply {
                     binds(this, position, getItem(position) as DetailPreview)
                 }
         }

@@ -19,7 +19,8 @@ class MainViewModel @ViewModelInject constructor(model: MainModel) :
     suspend fun galleryList() = model.galleryList(pagingConfig).asLiveData()
 
     suspend fun galleryDetail() = mCurrentGallery?.run {
-        model.galleryDetail(1409189, "59c1bb0d20").asLiveData()
+//        model.galleryDetail(1409189, "59c1bb0d20").asLiveData()
+        model.galleryDetail(gid, token).asLiveData()
     }
 
 }

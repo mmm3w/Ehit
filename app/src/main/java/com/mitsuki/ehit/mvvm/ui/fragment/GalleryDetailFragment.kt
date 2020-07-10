@@ -21,13 +21,6 @@ class GalleryDetailFragment : BaseFragment<MainViewModel>() {
     override val mViewModel: MainViewModel by activityViewModels()
     private val mAdapter = GalleryDetailAdapter()
 
-    private val mSpanSizeLookup =
-        object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return if (position < 5) 3 else 1
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {

@@ -9,4 +9,28 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="TagTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_tag_title</item>
+        <item name="android:paddingStart">@dimen/dp_12</item>
+        <item name="android:paddingEnd">@dimen/dp_12</item>
+        <item name="android:paddingTop">@dimen/dp_4</item>
+        <item name="android:layout_margin">@dimen/dp_4</item>
+        <item name="android:paddingBottom">@dimen/dp_4</item>
+        <item name="android:textColor">@color/blue_054166</item>
+    </style>
+
+    <style name="TagItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_tag_item</item>
+        <item name="android:paddingStart">@dimen/dp_12</item>
+        <item name="android:paddingEnd">@dimen/dp_12</item>
+        <item name="android:paddingTop">@dimen/dp_4</item>
+        <item name="android:layout_margin">@dimen/dp_4</item>
+        <item name="android:paddingBottom">@dimen/dp_4</item>
+        <item name="android:textColor">@color/blue_5F6368</item>
+    </style>
+
 </resources>

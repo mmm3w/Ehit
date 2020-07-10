@@ -14,29 +14,25 @@ data class DetailHeader(
 }
 
 data class DetailPart(
-    val lang: String,
-    val page: Int,
-    val size: String,
-    val favCount: Int,
-    val posted: String
+    val rating: Float,
+    val ratingCount: Int,
+    val page: Int
 ) : GalleryDetailItem()
 
 data class DetailOperating(
-    val rating: Float,
-    val summary: String
+    val s: String = ""
 ) : GalleryDetailItem()
 
 data class DetailTag(val tagSet: TagSet) : GalleryDetailItem()
 
 data class DetailComment(
-    val user: String,
-    val posted: String,
-    val content: String
+    val comments: ArrayList<Comment>,
+    val isAll: Boolean
 ) : GalleryDetailItem()
 
 data class DetailPreview(
     val page: Int,
-    val url: String
+    val source: ImageSource
 ) : GalleryDetailItem()
 
 class GalleryDetailWrap {
@@ -63,7 +59,8 @@ class GalleryDetailWrap {
             list.add(detail.obtainPart())
             list.add(detail.obtainOperating())
             list.addAll(detail.obtainTags())
-            list.addAll(detail.obtainComments())
+            list.add(detail.obtainComments())
+            list.addAll(detail.obtainPreview())
 
             return list
         }
@@ -77,11 +74,11 @@ fun GalleryDetail.obtainHeader(): DetailHeader {
 }
 
 fun GalleryDetail.obtainPart(): DetailPart {
-    return DetailPart(language, pages, size, favoriteCount, posted)
+    return DetailPart(rating, ratingCount, pages)
 }
 
 fun GalleryDetail.obtainOperating(): DetailOperating {
-    return DetailOperating(rating, "")
+    return DetailOperating()
 }
 
 fun GalleryDetail.obtainTags(): ArrayList<DetailTag> {
@@ -90,8 +87,17 @@ fun GalleryDetail.obtainTags(): ArrayList<DetailTag> {
     }
 }
 
-fun GalleryDetail.obtainComments(): ArrayList<DetailComment> {
-    return ArrayList<DetailComment>().also {
-        for (item in commentSet.comments) it.add(DetailComment(item.user, item.time, item.text))
+fun GalleryDetail.obtainComments(): DetailComment {
+    return DetailComment(ArrayList<Comment>().also {
+        for ((count, item) in commentSet.comments.withIndex()) {
+            it.add(item)
+            if (count + 1 > 1) break
+        }
+    }, commentSet.comments.size <= 2)
+}
+
+fun GalleryDetail.obtainPreview(): ArrayList<DetailPreview> {
+    return ArrayList<DetailPreview>().also {
+        for ((count, item) in images.withIndex()) it.add(DetailPreview(count + 1, item))
     }
 }

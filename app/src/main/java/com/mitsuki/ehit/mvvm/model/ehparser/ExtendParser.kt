@@ -7,6 +7,7 @@ package com.mitsuki.ehit.mvvm.model.ehparser
 
 import android.text.TextUtils
 import org.jsoup.nodes.Element
+import java.lang.Exception
 
 /**************************************************************************************************/
 fun Element.byClassFirst(className: String, msg: String = ""): Element {
@@ -34,7 +35,11 @@ fun String.htmlEscape(): String {
 
 fun String.matchNumber(default: String = "0"): String {
     return Matcher.NUMBER.matcher(this).let {
-        if (it.find()) it.group(1) else default
+        try {
+            if (it.find()) it.group(1) else default
+        }catch (e:Exception){
+            default
+        }
     }
 }
 
