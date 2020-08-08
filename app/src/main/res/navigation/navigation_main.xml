@@ -2,18 +2,57 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/galleryListFragment">
+    app:startDestination="@id/gallery_list_fragment">
 
     <fragment
-        android:id="@+id/galleryListFragment"
+        android:id="@+id/gallery_list_fragment"
         android:name="com.mitsuki.ehit.mvvm.ui.fragment.GalleryListFragment"
-        android:label="GalleryListFragment" >
+        android:label="@string/label_gallery_list_fragment">
         <action
-            android:id="@+id/action_galleryListFragment_to_galleryDetailFragment"
-            app:destination="@id/galleryDetailFragment" />
+            android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"
+            app:destination="@id/gallery_detail_fragment" />
+        <action
+            android:id="@+id/action_gallery_list_fragment_to_security_fragment"
+            app:destination="@id/security_fragment" />
+        <action
+            android:id="@+id/action_gallery_list_fragment_to_disclaimer_fragment"
+            app:destination="@id/disclaimer_fragment" />
     </fragment>
+
+
     <fragment
-        android:id="@+id/galleryDetailFragment"
+        android:id="@+id/gallery_detail_fragment"
         android:name="com.mitsuki.ehit.mvvm.ui.fragment.GalleryDetailFragment"
-        android:label="GalleryDetailFragment" />
+        android:label="@string/label_gallery_detail_fragment">
+        <action
+            android:id="@+id/action_gallery_detail_fragment_to_gallery_list_fragment"
+            app:destination="@id/gallery_list_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/security_fragment"
+        android:name="com.mitsuki.ehit.mvvm.ui.fragment.SecurityFragment"
+        android:label="@string/label_security_fragment" />
+
+    <fragment
+        android:id="@+id/disclaimer_fragment"
+        android:name="com.mitsuki.ehit.mvvm.ui.fragment.DisclaimerFragment"
+        android:label="@string/label_disclaimer_fragment">
+        <action
+            android:id="@+id/action_disclaimer_fragment_to_login_fragment"
+            app:destination="@id/login_fragment"
+            app:popUpTo="@id/gallery_list_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.mitsuki.ehit.mvvm.ui.fragment.LoginFragment"
+        android:label="@string/label_login_fragment">
+        <action
+            android:id="@+id/action_login_fragment_to_gallery_list_fragment"
+            app:destination="@id/gallery_list_fragment"
+            app:popUpTo="@id/gallery_list_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
 </navigation>

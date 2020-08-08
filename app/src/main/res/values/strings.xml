@@ -2,6 +2,13 @@
     <string name="app_name">Ehit</string>
 
 
+    <string name="label_gallery_list_fragment" translatable="false">GalleryListFragment</string>
+    <string name="label_gallery_detail_fragment" translatable="false">GalleryDetailFragment</string>
+    <string name="label_login_fragment" translatable="false">LoginFragment</string>
+    <string name="label_security_fragment" translatable="false">SecurityFragment</string>
+    <string name="label_disclaimer_fragment" translatable="false">DisclaimerFragment</string>
+
+
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>
     <string name="text_skip">Skip</string>

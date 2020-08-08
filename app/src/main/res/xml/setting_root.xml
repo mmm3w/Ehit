@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:summary="EH站点相关设置"
+        app:title="EH设置"
+        app:fragment="com.mitsuki.ehit.mvvm.ui.fragment.SettingEhFragment"/>
+
+    <Preference
+        app:summary=""
+        app:title="阅读设置" />
+
+    <Preference
+        app:summary=""
+        app:title="关于" />
+
+</PreferenceScreen>

@@ -2,35 +2,30 @@ package com.mitsuki.ehit.mvvm.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import androidx.paging.PagedList
-import androidx.paging.PagingData
+import androidx.paging.PagingConfig
 import androidx.recyclerview.widget.LinearLayoutManager
-
-import com.mitsuki.armory.TransparentDivider
-import com.mitsuki.armory.dp2px
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.mvvm.model.entity.Gallery
 import com.mitsuki.ehit.mvvm.ui.adapter.GalleryAdapter
 import com.mitsuki.ehit.mvvm.viewmodel.MainViewModel
 import com.mitsuki.mvvm.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class GalleryListFragment : BaseFragment<MainViewModel>() {
+class GalleryListFragment : BaseFragment<MainViewModel>(R.layout.fragment_gallery_list) {
 
     override val mViewModel: MainViewModel by activityViewModels()
-    private val mAdapter: GalleryAdapter = GalleryAdapter()
-    private val divider = TransparentDivider(dp2px(2f))
+    private val mAdapter: GalleryAdapter by lazy { GalleryAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,25 +35,31 @@ class GalleryListFragment : BaseFragment<MainViewModel>() {
         mAdapter.observeItemEvent().observe(this@GalleryListFragment, Observer { gallery ->
             mViewModel.mCurrentGallery = gallery
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-                .navigate(R.id.action_galleryListFragment_to_galleryDetailFragment)
+                .navigate(R.id.action_gallery_list_fragment_to_gallery_detail_fragment)
         })
 
-        lifecycleScope.launch {
-            mViewModel.galleryList().observe(this@GalleryListFragment, Observer {
-                mAdapter.submitData(lifecycle, it)
-            })
+        mViewModel.galleryList().observe(this@GalleryListFragment, Observer {
+            mAdapter.submitData(lifecycle, it)
+        })
+
+
+
+
+        //这里要做区分
+
+        //包含应用锁定，导航向锁定界面
+        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(R.id.action_gallery_list_fragment_to_security_fragment)
+
+        //首次安装，导航向引导
+        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(R.id.action_gallery_list_fragment_to_disclaimer_fragment)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        gallery_list?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = mAdapter
         }
-    }
-
-    override fun initView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_gallery_list, container, false)
-    }
-
-    override fun initData(savedInstanceState: Bundle?) {
-        galleryList.adapter = mAdapter
-        galleryList.layoutManager = LinearLayoutManager(activity)
-        galleryList.addItemDecoration(divider)
     }
 }

@@ -31,7 +31,7 @@ class GalleryAdapter : PagingDataAdapter<Gallery, RecyclerView.ViewHolder>(Galle
         getItem(position)?.let {
             holder.view<TextView>(R.id.galleryTitle)?.text = it.title
             holder.view<TextView>(R.id.galleryUploader)?.text = it.uploader
-            holder.view<RatingView>(R.id.galleryRating)?.rating = it.rating ?: -1f
+            holder.view<RatingView>(R.id.galleryRating)?.rating = it.rating
             holder.view<TextView>(R.id.galleryLang)?.text = it.languageSimple
             with(holder.view<CategoryView>(R.id.galleryCategory)) {
                 this?.setCategoryColor(it.categoryColor)

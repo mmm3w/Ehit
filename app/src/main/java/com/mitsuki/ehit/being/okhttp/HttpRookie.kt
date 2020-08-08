@@ -1,9 +1,13 @@
-package com.mitsuki.ehit.mvvm.model.okhttp
+package com.mitsuki.ehit.being.okhttp
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
-object HttpRookie{
+object HttpRookie {
     val client by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
         OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -12,5 +16,8 @@ object HttpRookie{
             .dns(MyDns())
             .build()
     }
+}
 
+suspend fun Request.execute(): Response? = withContext(Dispatchers.IO) {
+    HttpRookie.client.newCall(this@execute).execute()
 }

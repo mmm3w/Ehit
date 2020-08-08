@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:summary=""
+        app:title="退出登录" />
+
+    <Preference
+        app:summary="用于请求相关数据"
+        app:title="身份Cookie" />
+
+    <ListPreference
+        app:key="domain"
+        app:summary=""
+        app:title="站点选择" />
+
+</PreferenceScreen>

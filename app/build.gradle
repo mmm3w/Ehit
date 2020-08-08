@@ -55,6 +55,8 @@ dependencies {
     implementation dep.appcompat
     implementation dep.constraintlayout
     implementation dep.googleMaterial
+    implementation dep.swiperefreshlayout
+    implementation dep.preference
 
     implementation dep.jsoup
     implementation dep.okhttp

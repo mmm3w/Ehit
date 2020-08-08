@@ -16,29 +16,19 @@ import com.mitsuki.mvvm.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_gallery_detail.*
 import kotlinx.coroutines.launch
 
-class GalleryDetailFragment : BaseFragment<MainViewModel>() {
+class GalleryDetailFragment : BaseFragment<MainViewModel>(R.layout.fragment_gallery_detail) {
 
     override val mViewModel: MainViewModel by activityViewModels()
-    private val mAdapter = GalleryDetailAdapter()
+    private val mAdapter by lazy { GalleryDetailAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            mViewModel.galleryDetail()?.observe(this@GalleryDetailFragment, Observer {
-                mAdapter.submitData(lifecycle, it)
-            })
-        }
+        mViewModel.galleryDetail()?.observe(this@GalleryDetailFragment, Observer {
+            mAdapter.submitData(lifecycle, it)
+        })
     }
 
-    override fun initView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_gallery_detail, container, false)
-    }
-
-    override fun initData(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         galleryDetailList.adapter = mAdapter
         galleryDetailList.layoutManager =
             GridLayoutManager(activity, 3).apply { spanSizeLookup = mAdapter.mSpanSizeLookup }

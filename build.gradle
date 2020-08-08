@@ -44,12 +44,14 @@ ext {
     recyclerview_version = "1.1.0"
     constraintlayout_version = "1.1.3"
     google_material_version = "1.3.0-alpha01"
+    swiperefreshlayout_version = "1.1.0"
+    preference_version = "1.1.0"
 
     okhttp_version = "4.7.2"
     jsoup_version = "1.13.1"
 
     lifecycle_version = "2.2.0"
-    nav_version = "2.3.0-rc01"
+    nav_version = "2.3.0"
     paging_version = "3.0.0-alpha02"
     coroutines_version = "1.3.7"
     hilt_version = "2.28-alpha"
@@ -70,7 +72,8 @@ ext {
             recyclerview          : "androidx.recyclerview:recyclerview:$recyclerview_version",
             constraintlayout      : "androidx.constraintlayout:constraintlayout:$constraintlayout_version",
             googleMaterial        : "com.google.android.material:material:$google_material_version",
-
+            swiperefreshlayout    : "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version",
+            preference            : "androidx.preference:preference:$preference_version",
 
             jsoup                 : "org.jsoup:jsoup:$jsoup_version",
             okhttp                : "com.squareup.okhttp3:okhttp:$okhttp_version",

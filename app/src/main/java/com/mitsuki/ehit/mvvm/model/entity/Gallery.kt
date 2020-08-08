@@ -2,6 +2,8 @@ package com.mitsuki.ehit.mvvm.model.entity
 
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.mvvm.model.ehparser.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.lang.Exception
@@ -40,27 +42,46 @@ data class Gallery(
             override fun areContentsTheSame(
                 oldConcert: Gallery,
                 newConcert: Gallery
-            ): Boolean =
-                oldConcert == newConcert
+            ): Boolean {
+//                return oldConcert.token == newConcert.token
+//                        && oldConcert.category == newConcert.category
+//                        && oldConcert.time == newConcert.time
+//                        && oldConcert.title == newConcert.title
+//                        && oldConcert.uploader == newConcert.uploader
+//                        && oldConcert.thumb == newConcert.thumb
+//                        && oldConcert.tag.size == newConcert.tag.size
+//                        && oldConcert.rating == newConcert.rating
+//                        && oldConcert.language == newConcert.language
+                return oldConcert == newConcert
+            }
         }
 
-        fun parseList(content:String): ArrayList<Gallery> {
-            val doc = Jsoup.parse(content)
-            val list = ArrayList<Gallery>()
-            doc.getElementsByClass("itg").first()?.getElementsByTag("tr")?.let {
-                for (element in it) {
-                    if (element.getElementsByTag("th").size > 0)
-                        continue
-                    try {
-                        list.add(Gallery.parse(element))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+        //提供协程方法
+        suspend fun parseListCoroutines(content: String?): ArrayList<Gallery> {
+            return withContext(Dispatchers.Default) { parseList(content) }
+        }
+
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun parseList(content: String?): ArrayList<Gallery> {
+            return content?.run {
+                ArrayList<Gallery>().apply {
+                    val doc = Jsoup.parse(content)
+                    doc.getElementsByClass("itg").first()?.getElementsByTag("tr")?.let {
+                        for (element in it) {
+                            if (element.getElementsByTag("th").size > 0)
+                                continue
+                            try {
+                                add(parse(element))
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
                     }
                 }
-            }
-            return list
+            } ?: ArrayList()
         }
 
+        @Suppress("MemberVisibilityCanBePrivate")
         fun parse(element: Element): Gallery {
             val glnameEle = element.byClassFirst("glname", "Not found glname")
 

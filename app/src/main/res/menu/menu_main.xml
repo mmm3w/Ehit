@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="主页" />
+        <item
+            android:id="@+id/nav_subscription"
+            android:title="订阅" />
+        <item
+            android:id="@+id/nav_opular"
+            android:title="热门" />
+
+    </group>
+
+    <item
+        android:id="@+id/nav_collection"
+        android:title="收藏" />
+    <item
+        android:id="@+id/nav_history"
+        android:title="历史" />
+    <item
+        android:id="@+id/nav_download"
+        android:title="下载" />
+    <item
+        android:id="@+id/nav_setting"
+        android:title="设置" />
+</menu>

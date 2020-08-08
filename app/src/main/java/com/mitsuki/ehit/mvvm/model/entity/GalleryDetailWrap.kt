@@ -1,6 +1,8 @@
 package com.mitsuki.ehit.mvvm.model.entity
 
 import androidx.recyclerview.widget.DiffUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 sealed class GalleryDetailItem
 
@@ -52,20 +54,23 @@ class GalleryDetailWrap {
                 oldConcert == newConcert
         }
 
-        fun parse(detail: GalleryDetail): ArrayList<GalleryDetailItem> {
-            val list = ArrayList<GalleryDetailItem>()
+        suspend fun parseCoroutines(detail: GalleryDetail?): ArrayList<GalleryDetailItem> {
+            return withContext(Dispatchers.Default) { parse(detail) }
+        }
 
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun parse(detail: GalleryDetail?): ArrayList<GalleryDetailItem> {
+            if (detail == null) return ArrayList()
+
+            val list = ArrayList<GalleryDetailItem>()
             list.add(detail.obtainHeader())
             list.add(detail.obtainPart())
             list.add(detail.obtainOperating())
             list.addAll(detail.obtainTags())
             list.add(detail.obtainComments())
             list.addAll(detail.obtainPreview())
-
             return list
         }
-
-
     }
 }
 

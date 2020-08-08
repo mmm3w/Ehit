@@ -1,6 +1,8 @@
 package com.mitsuki.ehit.mvvm.model.entity
 
 import com.mitsuki.ehit.mvvm.model.ehparser.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import java.lang.Exception
 
@@ -44,7 +46,14 @@ data class GalleryDetail(
     val isFavorited = favoriteName != null
 
     companion object {
-        fun parse(content: String): GalleryDetail {
+        suspend fun parseCoroutines(content: String?): GalleryDetail? {
+            return withContext(Dispatchers.Default) { parse(content) }
+        }
+
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun parse(content: String?): GalleryDetail? {
+            if (content.isNullOrEmpty()) return null
+
             val detail = content.parseDetail()
             val gid = detail[0].toLong()
             val token = detail[1]
@@ -157,7 +166,6 @@ data class GalleryDetail(
                 images
             )
         }
-
 
     }
 

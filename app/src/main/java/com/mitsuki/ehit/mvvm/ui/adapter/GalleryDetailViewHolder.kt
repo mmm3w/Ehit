@@ -38,6 +38,7 @@ class DetailHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             text = item.category.toUpperCase(Locale.getDefault())
         }
 
+
         //上传者点击事件监听
     }
 }

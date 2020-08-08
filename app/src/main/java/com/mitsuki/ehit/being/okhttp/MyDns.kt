@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.mvvm.model.okhttp
+package com.mitsuki.ehit.being.okhttp
 
 import okhttp3.Dns
 import java.net.InetAddress
