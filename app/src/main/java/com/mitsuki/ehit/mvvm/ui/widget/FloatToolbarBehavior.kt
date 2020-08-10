@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.mvvm.ui.widget
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -28,7 +29,11 @@ class FloatToolbarBehavior : CoordinatorLayout.Behavior<View> {
     private var floatViewHeight = -1f
     private var offsetLimit = -1f
 
-    var canTargetScrollUp: (() -> Boolean)? = null  //某View能否被下拉的回调
+//    var canTargetScrollUp: (() -> Boolean)? = null  //某View能否被下拉的回调
+
+    private var floatViewOffset = 0f
+    private var scrollViewOffset = 0f
+    private var attachedTag = false
 
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
@@ -43,6 +48,7 @@ class FloatToolbarBehavior : CoordinatorLayout.Behavior<View> {
         child: View,
         dependency: View
     ): Boolean {
+
         //这部必须在这里，保证操作之前滚动列表位置加载正确
         //因为该方法在绑定的时候必定会回调一次
         if (floatViewHeight < 0) {
@@ -50,9 +56,17 @@ class FloatToolbarBehavior : CoordinatorLayout.Behavior<View> {
             //减去view底部被系统填充的底部padding
             // (虽然也会减去自己设置的padding，所以这个view尽量不要设置纵向的padding)
             if (ViewCompat.getFitsSystemWindows(child)) floatViewHeight -= child.paddingBottom
-            dependency.translationY = floatViewHeight
+            floatViewOffset = 0f
+            scrollViewOffset = floatViewHeight
             return true
         }
+
+        if (attachedTag) {
+            dependency.translationY = scrollViewOffset
+            child.translationY = floatViewOffset
+            attachedTag = false
+        }
+
         return false
     }
 
@@ -88,37 +102,48 @@ class FloatToolbarBehavior : CoordinatorLayout.Behavior<View> {
         }
 
         if (dy > 0) {
-            if (child.translationY > -offsetLimit) {
-                child.translationY = (child.translationY - dy).coerceIn(-offsetLimit, 0F)
+            if (floatViewOffset > -offsetLimit) {
+                floatViewOffset = (floatViewOffset - dy).coerceIn(-offsetLimit, 0F)
+                child.translationY = floatViewOffset
             }
-            if (target.translationY > floatViewHeight - offsetLimit) {
-                target.translationY =
-                    (target.translationY - dy).coerceIn(
+            if (scrollViewOffset > floatViewHeight - offsetLimit) {
+                scrollViewOffset =
+                    (scrollViewOffset - dy).coerceIn(
                         floatViewHeight - offsetLimit,
                         floatViewHeight
                     )
+                target.translationY = scrollViewOffset
                 consumed[1] = dy
             }
         }
 
         if (dy < 0) {
             //向下滑动
-            if (child.translationY < 0) {
-                child.translationY = (child.translationY - dy).coerceIn(-floatViewHeight, 0F)
+            if (floatViewOffset < 0) {
+                floatViewOffset = (floatViewOffset - dy).coerceIn(-floatViewHeight, 0F)
+                child.translationY = floatViewOffset
             }
 
-            if (!canTargetScrollUp(target) && target.translationY < floatViewHeight) {
-                target.translationY =
-                    (target.translationY - dy).coerceIn(
+            if (!canTargetScrollUp(target) && scrollViewOffset < floatViewHeight) {
+                scrollViewOffset =
+                    (scrollViewOffset - dy).coerceIn(
                         floatViewHeight - offsetLimit,
                         floatViewHeight
                     )
+                target.translationY = scrollViewOffset
                 consumed[1] = dy
             }
         }
     }
 
+    override fun onAttachedToLayoutParams(params: CoordinatorLayout.LayoutParams) {
+        //fragment重建View的时候会重新设置behavior
+        //进行tag标记
+        attachedTag = true
+    }
+
     private fun canTargetScrollUp(target: View): Boolean {
-        return canTargetScrollUp?.run { invoke() } ?: target.canScrollVertically(-1)
+//        return canTargetScrollUp?.run { invoke() } ?: target.canScrollVertically(-1)
+        return target.canScrollVertically(-1)
     }
 }

@@ -47,7 +47,7 @@ data class GalleryDetail(
 
     companion object {
         suspend fun parseCoroutines(content: String?): GalleryDetail? {
-            return withContext(Dispatchers.Default) { parse(content) }
+            return withContext(Dispatchers.IO) { parse(content) }
         }
 
         @Suppress("MemberVisibilityCanBePrivate")

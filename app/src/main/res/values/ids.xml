@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="gallery_list_inner_recyclerview" type="id"/>
+    <item name="gallery_list_inner_refresh_view" type="id"/>
+
+</resources>

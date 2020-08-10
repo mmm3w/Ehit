@@ -58,7 +58,7 @@ data class Gallery(
 
         //提供协程方法
         suspend fun parseListCoroutines(content: String?): ArrayList<Gallery> {
-            return withContext(Dispatchers.Default) { parseList(content) }
+            return withContext(Dispatchers.IO) { parseList(content) }
         }
 
         @Suppress("MemberVisibilityCanBePrivate")

@@ -3,6 +3,7 @@ package com.mitsuki.ehit.mvvm.ui.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.mvvm.ui.adapter.GalleryAdapter
+import com.mitsuki.ehit.mvvm.ui.widget.FloatToolbarBehavior
 import com.mitsuki.ehit.mvvm.viewmodel.MainViewModel
 import com.mitsuki.mvvm.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +29,8 @@ class GalleryListFragment : BaseFragment<MainViewModel>(R.layout.fragment_galler
     override val mViewModel: MainViewModel by activityViewModels()
     private val mAdapter: GalleryAdapter by lazy { GalleryAdapter() }
 
+//    private val mBehavior: FloatToolbarBehavior by lazy { FloatToolbarBehavior() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //在使用navigation的时候
@@ -41,25 +45,41 @@ class GalleryListFragment : BaseFragment<MainViewModel>(R.layout.fragment_galler
         mViewModel.galleryList().observe(this@GalleryListFragment, Observer {
             mAdapter.submitData(lifecycle, it)
         })
-
-
-
-
-        //这里要做区分
-
-        //包含应用锁定，导航向锁定界面
-        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-            .navigate(R.id.action_gallery_list_fragment_to_security_fragment)
-
-        //首次安装，导航向引导
-        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-            .navigate(R.id.action_gallery_list_fragment_to_disclaimer_fragment)
+//
+//        //包含应用锁定，导航向锁定界面
+//        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//            .navigate(R.id.action_gallery_list_fragment_to_security_fragment)
+//
+//        //首次安装，导航向引导
+//        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//            .navigate(R.id.action_gallery_list_fragment_to_disclaimer_fragment)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        gallery_list?.apply {
+//            layoutManager = LinearLayoutManager(activity)
+//            adapter = mAdapter
+//        }
+//
+//        //防止页面重建的时候控件位置异常
+//        float_bar?.layoutParams?.apply {
+//            if (this is CoordinatorLayout.LayoutParams && behavior != mBehavior) {
+//                behavior = mBehavior
+//            }
+//        }
+
         gallery_list?.apply {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = mAdapter
+            //配置recycleView
+            recyclerView {
+                layoutManager = LinearLayoutManager(activity)
+                adapter = mAdapter
+            }
+
+
+        }
+
+        test_btn?.setOnClickListener {
+            gallery_list.isRefreshing = !gallery_list.isRefreshing
         }
     }
 }

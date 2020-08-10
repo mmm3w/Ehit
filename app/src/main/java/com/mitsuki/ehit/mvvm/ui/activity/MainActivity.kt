@@ -27,7 +27,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
     override fun initData(savedInstanceState: Bundle?) {
         //TODO:need to adapt api 21&22 and move code to another class
         window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
         main_navigation.setupWithNavController(navController)
 
@@ -37,8 +37,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
             }
             true
         }
-        // main_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED) 在打开应用锁，或者首次安装的时候，需要对侧滑菜单进行控制
-
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()

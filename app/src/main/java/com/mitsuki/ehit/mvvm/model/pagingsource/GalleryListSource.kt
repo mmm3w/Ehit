@@ -17,11 +17,12 @@ class GalleryListSource constructor(private val requestProvider: RequestProvider
             // 需要注意的是，如果是第一页，prevKey就传null，如果是最后一页那么nextKey也传null
             // 其他情况prevKey就是page-1，nextKey就是page+1
             val res = requestProvider.galleryListRequest(page).execute()    //IO线程请求
-            val list = Gallery.parseListCoroutines(res?.body?.string())     //工作线程转换
+            val list = Gallery.parseListCoroutines(res?.body?.string())    //工作线程转换
             LoadResult.Page(
                 data = list,
                 prevKey = null,
-                nextKey = if (list.size > 0) page + 1 else null
+//                nextKey = if (list.size > 0) page + 1 else null
+                nextKey = null
             )
         } catch (e: Exception) {
             // 捕获异常，返回一个Error

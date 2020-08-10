@@ -16,7 +16,7 @@ object CommonModule {
     @Provides
     @Singleton
     fun pagingConfig(): PagingConfig {
-        return PagingConfig(pageSize = 25)
+        return PagingConfig(pageSize = 25, initialLoadSize = 50, prefetchDistance = 1)
     }
 
     //request

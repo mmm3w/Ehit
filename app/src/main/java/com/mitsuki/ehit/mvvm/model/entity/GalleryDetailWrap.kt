@@ -55,7 +55,7 @@ class GalleryDetailWrap {
         }
 
         suspend fun parseCoroutines(detail: GalleryDetail?): ArrayList<GalleryDetailItem> {
-            return withContext(Dispatchers.Default) { parse(detail) }
+            return withContext(Dispatchers.IO) { parse(detail) }
         }
 
         @Suppress("MemberVisibilityCanBePrivate")
