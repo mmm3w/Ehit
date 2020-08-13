@@ -43,9 +43,6 @@ dependencies {
     androidTestImplementation dep.espresso
 
     //----------------------------------------------------------------------------------------------
-    implementation (project(':simplemvvm')) {
-        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
-    }
     implementation project(':armory')
 
     //----------------------------------------------------------------------------------------------
@@ -82,6 +79,10 @@ dependencies {
     kapt dep.hiltAndroidCompiler
     implementation dep.hiltLifecycleViewmodel
     kapt dep.hiltCompiler
+}
+
+androidExtensions {
+    experimental = true
 }
 
 repositories {

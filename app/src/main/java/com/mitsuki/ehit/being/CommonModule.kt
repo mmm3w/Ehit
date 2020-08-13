@@ -12,13 +12,6 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 object CommonModule {
 
-    //统一分页配置
-    @Provides
-    @Singleton
-    fun pagingConfig(): PagingConfig {
-        return PagingConfig(pageSize = 25, initialLoadSize = 50, prefetchDistance = 1)
-    }
-
     //request
     @Provides
     @Singleton

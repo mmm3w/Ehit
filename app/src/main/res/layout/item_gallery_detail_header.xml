@@ -40,7 +40,7 @@
             android:textColor="@color/blue_5F6368"
             android:textSize="@dimen/sp_16" />
 
-        <com.mitsuki.ehit.mvvm.ui.widget.CategoryView
+        <com.mitsuki.ehit.core.ui.widget.CategoryView
             android:id="@+id/galleryDetailCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

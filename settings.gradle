@@ -1,7 +1,5 @@
 rootProject.name='Ehit'
 include ':armory'
 include ':app'
-include ':simplemvvm'
 
-project(':simplemvvm').projectDir = new File("/../SimpleArchitecture/simplemvvm")
 project(':armory').projectDir = new File("/../Armory/armory")
