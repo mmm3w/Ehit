@@ -21,7 +21,6 @@ class GalleryListSource constructor(private val requestProvider: RequestProvider
             // 其他情况prevKey就是page-1，nextKey就是page+1
 
             withContext(Dispatchers.Default){
-                Log.e("Asdf","trigger load")
                 val res = requestProvider.galleryListRequest(page).execute()
                 val list = Gallery.parseListCoroutines(res?.body?.string())
                 LoadResult.Page(

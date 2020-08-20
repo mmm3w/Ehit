@@ -79,6 +79,9 @@ dependencies {
     kapt dep.hiltAndroidCompiler
     implementation dep.hiltLifecycleViewmodel
     kapt dep.hiltCompiler
+
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation 'com.afollestad.material-dialogs:input:3.3.0'
 }
 
 androidExtensions {

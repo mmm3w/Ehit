@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package com.mitsuki.ehit.core.ui.adapter
 
 import android.view.LayoutInflater

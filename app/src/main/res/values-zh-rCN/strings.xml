@@ -8,4 +8,7 @@
     <string name="text_skip">跳过登录</string>
     <string name="text_login">登录</string>
 
+    <string name="text_confirm">确定</string>
+    <string name="title_page_go_to">跳页</string>
+
 </resources>
