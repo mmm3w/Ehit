@@ -28,15 +28,15 @@ class GalleryAdapter : PagingDataAdapter<Gallery, RecyclerView.ViewHolder>(Galle
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.view<TextView>(R.id.galleryTitle)?.text = it.title
-            holder.view<TextView>(R.id.galleryUploader)?.text = it.uploader
-            holder.view<RatingView>(R.id.galleryRating)?.rating = it.rating
-            holder.view<TextView>(R.id.galleryLang)?.text = it.languageSimple
-            with(holder.view<CategoryView>(R.id.galleryCategory)) {
+            holder.view<TextView>(R.id.gallery_title)?.text = it.title
+            holder.view<TextView>(R.id.gallery_uploader)?.text = it.uploader
+            holder.view<RatingView>(R.id.ggallery_rating)?.rating = it.rating
+            holder.view<TextView>(R.id.gallery_lang)?.text = it.languageSimple
+            with(holder.view<CategoryView>(R.id.gallery_category)) {
                 this?.setCategoryColor(it.categoryColor)
                 this?.text = it.category.toUpperCase(Locale.getDefault())
             }
-            holder.view<TextView>(R.id.galleryTime)?.text = it.time
+            holder.view<TextView>(R.id.gallery_time)?.text = it.time
             holder.itemView.setOnClickListener { _ -> currentItem.postValue(it) }
         }
     }

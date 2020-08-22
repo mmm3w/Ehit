@@ -28,7 +28,7 @@ class RefreshPlugin(context: Context) {
 
 
     companion object {
-        private const val DEFAULT_CIRCLE_TARGET = 128
+        private const val DEFAULT_CIRCLE_TARGET = 64
         private const val MAX_ALPHA = 255
         private const val STARTING_PROGRESS_ALPHA = (.3f * MAX_ALPHA).toInt()
         private const val MAX_PROGRESS_ANGLE = .8f
@@ -221,7 +221,10 @@ class RefreshPlugin(context: Context) {
             }
         }.apply {
             duration = SCALE_DURATION.toLong()
-            mRefreshView.setAnimationListener(mAnimationEnd)
+            mRefreshView.setAnimationListener {
+                mProgress.alpha = MAX_ALPHA
+                mProgress.start()
+            }
             mRefreshView.clearAnimation()
             mRefreshView.startAnimation(this)
         }

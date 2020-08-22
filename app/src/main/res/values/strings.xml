@@ -13,6 +13,7 @@
     <string name="hint_password">password</string>
     <string name="text_skip">Skip</string>
     <string name="text_login">Login</string>
+    <string name="text_retry">Retry</string>
     
     <string name="text_confirm">Confirm</string>
     <string name="title_page_go_to">Go to</string>

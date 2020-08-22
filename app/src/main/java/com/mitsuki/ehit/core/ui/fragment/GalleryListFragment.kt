@@ -15,6 +15,8 @@ import com.afollestad.materialdialogs.input.input
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.core.crutch.RefreshOrRetry
+import com.mitsuki.ehit.core.ui.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.core.ui.adapter.GalleryAdapter
 import com.mitsuki.ehit.core.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +29,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
     private val mViewModel: MainViewModel by activityViewModels()
     private val mAdapter: GalleryAdapter by lazy { GalleryAdapter() }
+//    private val mTrigger: RefreshOrRetry by lazy { RefreshOrRetry() }
 
+    @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //在使用navigation的时候
@@ -41,31 +45,22 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         lifecycleScope.launch {
             mAdapter.loadStateFlow.collectLatest {
-
-                if (it.refresh !is LoadState.Loading) gallery_list?.isRefreshing = false
-
-                gallery_list?.setLoading(
-                    it.append is LoadState.Loading,
-                    it.append is LoadState.Error
-                )
-
                 when (it.refresh) {
                     is LoadState.Error -> toast("刷新失败")
                 }
 
                 when (it.append) {
-                    is LoadState.Error -> toast("加载失败")
+                    is LoadState.Error -> toast("底部加载失败")
                 }
 
-                @Suppress("ControlFlowWithEmptyBody")
                 when (it.prepend) {
-
+                    is LoadState.Error -> toast("顶部加载失败")
                 }
+
+                gallery_list?.isRefreshing = it.refresh is LoadState.Loading
+                gallery_list?.endOfPrepend = it.prepend.endOfPaginationReached
             }
         }
-
-
-
 
         mViewModel.galleryList.observe(this, Observer { mAdapter.submitData(lifecycle, it) })
 
@@ -79,14 +74,27 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             //配置recycleView
             recyclerView {
                 layoutManager = LinearLayoutManager(activity)
-                adapter = mAdapter
+                adapter = mAdapter.withLoadStateHeaderAndFooter(
+                    header = DefaultLoadStateAdapter(mAdapter),
+                    footer = DefaultLoadStateAdapter(mAdapter)
+                )
             }
 
             setListener(
                 refreshListener = { mAdapter.refresh() },
-                loadListener = { mAdapter.retry() },
-                pageJumpListener = { showPageJumpDialog() }
+                extendControl = {
+                    if (it) gallery_motion_layout?.transitionToStart()
+                    else gallery_motion_layout?.transitionToEnd()
+                }
             )
+        }
+
+        gallery_go_top?.setOnClickListener {
+            gallery_list?.recyclerView()?.smoothScrollToPosition(0)
+        }
+
+        gallery_page_jump?.setOnClickListener {
+            showPageJumpDialog()
         }
     }
 
@@ -106,7 +114,11 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
     private fun showPageJumpDialog() {
         MaterialDialog(requireContext()).show {
-            input(inputType = InputType.TYPE_CLASS_NUMBER)
+            input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
+                //配置页码，刷新数据
+                mViewModel.galleryListPage(text.toString().toIntOrNull() ?: 0)
+                mAdapter.refresh()
+            }
             title(R.string.title_page_go_to)
             positiveButton(R.string.text_confirm)
         }
