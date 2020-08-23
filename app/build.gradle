@@ -5,13 +5,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+    compileSdkVersion build_versions.compile_sdk
+    buildToolsVersion build_versions.build_tools
 
     defaultConfig {
         applicationId "com.mitsuki.ehit"
-        minSdkVersion rootProject.ext.android["minSdkVersion"]
-        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
         versionCode 1000
         versionName "1.0.00"
 
@@ -37,51 +37,46 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    testImplementation dep.junit
-    androidTestImplementation dep.junitExt
-    androidTestImplementation dep.espresso
-
-    //----------------------------------------------------------------------------------------------
     implementation project(':armory')
 
     //----------------------------------------------------------------------------------------------
-    implementation dep.kotlinStdlibJdk8
-    implementation dep.coreKtx
-
-    implementation dep.appcompat
-    implementation dep.constraintlayout
-    implementation dep.googleMaterial
-    implementation dep.swiperefreshlayout
-    implementation dep.preference
-
-    implementation dep.jsoup
-    implementation dep.okhttp
-
-    //viewmodel
-    implementation dep.viewModel
-    //LiveData
-    implementation dep.liveData
-
-    //navigation
-    implementation dep.navFragmentKtx
-    implementation dep.navUiKtx
-
-    //paging3
-    implementation dep.paging
-
+    implementation deps.kotlin.stdlib
+    implementation deps.core_ktx
     //协程
-    implementation dep.coroutinesCore
-    implementation dep.coroutinesAndroid
+    implementation deps.coroutines.core
+    implementation deps.coroutines.android
 
+    testImplementation deps.junit
+    androidTestImplementation deps.atsl.ext_junit
+    androidTestImplementation deps.espresso.core
+    //----------------------------------------------------------------------------------------------
+    implementation deps.appcompat
+    implementation deps.constraintlayout
+    implementation deps.material
+    implementation deps.swiperefreshlayout
+    implementation deps.preference
+
+    //----------------------------------------------------------------------------------------------
+    //paging3
+    implementation deps.paging
     //hilt
-    implementation dep.hiltAndroid
-    kapt dep.hiltAndroidCompiler
-    implementation dep.hiltLifecycleViewmodel
-    kapt dep.hiltCompiler
+    implementation deps.hilt.android
+    kapt deps.hilt.android_compiler
+    implementation deps.hilt.lifecycle_viewmodel
+    kapt deps.hilt.compiler
+    //viewmodel
+    implementation deps.lifecycle.viewmodel_ktx
+    //LiveData
+    implementation deps.lifecycle.livedata_ktx
+    //navigation
+    implementation deps.navigation.fragment
+    implementation deps.navigation.ui
+    //----------------------------------------------------------------------------------------------
+    implementation deps.material_dialogs.core
+    implementation deps.material_dialogs.input
+    implementation deps.jsoup
+    implementation deps.okhttp
 
-    implementation 'com.afollestad.material-dialogs:core:3.3.0'
-    implementation 'com.afollestad.material-dialogs:input:3.3.0'
 }
 
 androidExtensions {
