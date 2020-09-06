@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.view.NestedScrollingParent3
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mitsuki.armory.extend.*
 import com.mitsuki.ehit.R
 import kotlin.math.abs
@@ -20,8 +19,6 @@ class GalleryListLayout @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent3 {
 
     private var mRecyclerView: RecyclerView //数据列表
-
-    private val mNextPageScrollSize: Int
     private val marginSize: Int
 
     //基础配置参数
@@ -30,11 +27,11 @@ class GalleryListLayout @JvmOverloads constructor(
     private val mNavigationBarHeight: Int //底栏高度
     private val mFabSlop: Int
 
-    private val mIgnoredStatusBar = false //是否ignore state bar
+    private val mIgnoredStatusBar = true //是否ignore state bar
     private val mTopOffset: Int //state bar偏移
 
     private val mRefreshPlugin: RefreshPlugin
-    private val mTopBarPlugin: TopBarPlugin
+    private val mFloatBarPlugin: FloatBarPlugin
 
     private var mExtendControl: ((toHide: Boolean) -> Unit)? = null
     private var mExtendTag = false
@@ -46,7 +43,6 @@ class GalleryListLayout @JvmOverloads constructor(
     init {
         resources.displayMetrics.density.apply {
             mCircleDiameter = (CIRCLE_DIAMETER * this).roundToInt()
-            mNextPageScrollSize = dp2px(48f)
             marginSize = dp2px(36f)
         }
         mStatusBarHeight = statusBarHeight(context)
@@ -65,8 +61,8 @@ class GalleryListLayout @JvmOverloads constructor(
         mRefreshPlugin = RefreshPlugin(context).apply { addView(view()) }
 
         //创建top bar
-        mTopBarPlugin =
-            TopBarPlugin(context, R.layout.viewgroup_top_bar, this).apply { addView(view()) }
+        mFloatBarPlugin =
+            FloatBarPlugin(context, R.layout.part_top_search_bar, this).apply { addView(view()) }
 
         mRefreshPlugin.additional = {
             if (!endOfPrepend)
@@ -78,7 +74,7 @@ class GalleryListLayout @JvmOverloads constructor(
                     !mRecyclerView.canScrollVertically(-1)
         }
 
-        mRecyclerView.addOnScrollListener(mTopBarPlugin)
+        mRecyclerView.addOnScrollListener(mFloatBarPlugin)
         mRecyclerView.addOnScrollListenerBy(
             onScrolled = { _, _, dy: Int ->
                 if (dy >= mFabSlop) {
@@ -98,23 +94,23 @@ class GalleryListLayout @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        mTopBarPlugin.view().measure(
+        mFloatBarPlugin.view().measure(
             widthMeasureSpec,
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
         )
 
         mRecyclerView.setPadding(
             0,
-            mTopBarPlugin.view().measuredHeight + mTopBarPlugin.view().marginVertical() +
+            mFloatBarPlugin.view().measuredHeight + mFloatBarPlugin.view().marginVertical() +
                     mStatusBarHeight - mTopOffset,
             0,
             mNavigationBarHeight
         )
 
         mRecyclerView.measure(
-            MeasureSpec.makeMeasureSpec(this@GalleryListLayout.measuredWidth, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(
-                this@GalleryListLayout.measuredHeight - mTopOffset,
+                MeasureSpec.getSize(heightMeasureSpec) - mTopOffset,
                 MeasureSpec.EXACTLY
             )
         )
@@ -132,16 +128,16 @@ class GalleryListLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        mTopBarPlugin.view {
+        mFloatBarPlugin.view {
             layout(0, mStatusBarHeight, measuredWidth, mStatusBarHeight + measuredHeight)
         }
 
         mRefreshPlugin.view {
             layout(
                 this@GalleryListLayout.measuredWidth / 2 - measuredWidth / 2,
-                mTopOffset + mTopBarPlugin.view().measuredHeight,
+                mTopOffset + mFloatBarPlugin.view().measuredHeight,
                 this@GalleryListLayout.measuredWidth / 2 + measuredWidth / 2,
-                measuredHeight + mTopOffset + mTopBarPlugin.view().measuredHeight
+                measuredHeight + mTopOffset + mFloatBarPlugin.view().measuredHeight
             )
         }
 
@@ -195,7 +191,7 @@ class GalleryListLayout @JvmOverloads constructor(
     fun recyclerView(action: (RecyclerView.() -> Unit)? = null) =
         action?.run { mRecyclerView.apply(this) } ?: mRecyclerView
 
-    fun topBar(action: View.() -> Unit) = mTopBarPlugin.view(action)
+    fun topBar(action: View.() -> Unit) = mFloatBarPlugin.view(action)
 
     fun setListener(
         refreshListener: (() -> Unit)? = null,

@@ -6,7 +6,8 @@ import androidx.paging.PagingData
 import com.mitsuki.ehit.being.okhttp.RequestProvider
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.entity.Gallery
-import com.mitsuki.ehit.core.model.entity.GalleryDetailItem
+import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
+import com.mitsuki.ehit.core.model.entity.ImageSource
 import com.mitsuki.ehit.core.model.pagingsource.GalleryDetailSource
 import com.mitsuki.ehit.core.model.pagingsource.GalleryListSource
 import kotlinx.coroutines.flow.Flow
@@ -17,19 +18,26 @@ class RemoteRepositoryImpl @Inject constructor(
 ) : Repository {
 
     private val mListPagingConfig =
-        PagingConfig(pageSize = 25, initialLoadSize = 25)
+        PagingConfig(pageSize = 25)
+
+    private val mDetailPagingConfig =
+        PagingConfig(pageSize = 40)
 
     override fun galleryList(pageIn: PageIn): Flow<PagingData<Gallery>> {
         return Pager(mListPagingConfig, initialKey = 0) {
-            GalleryListSource(
-                pageIn,
-                requestProvider
-            )
+            GalleryListSource(pageIn, requestProvider)
         }.flow
     }
 
-    override fun galleryDetail(gid: Long, token: String): Flow<PagingData<GalleryDetailItem>> {
-        return Pager(mListPagingConfig) { GalleryDetailSource(gid, token, requestProvider) }.flow
+    override fun galleryDetail(
+        gid: Long,
+        token: String,
+        pageIn: PageIn,
+        detailSource: GalleryDetailWrap
+    ): Flow<PagingData<ImageSource>> {
+        return Pager(mDetailPagingConfig) {
+            GalleryDetailSource(gid, token, pageIn, detailSource, requestProvider)
+        }.flow
     }
 
 

@@ -8,15 +8,19 @@
     <string name="label_security_fragment" translatable="false">SecurityFragment</string>
     <string name="label_disclaimer_fragment" translatable="false">DisclaimerFragment</string>
 
+    <string name="transition_name_gallery_thumb" translatable="false">galleryThumb</string>
+
 
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>
     <string name="text_skip">Skip</string>
     <string name="text_login">Login</string>
     <string name="text_retry">Retry</string>
-    
+
     <string name="text_confirm">Confirm</string>
     <string name="title_page_go_to">Go to</string>
 
+    <string name="text_download">Download</string>
+    <string name="text_read">Read</string>
 
 </resources>

@@ -23,7 +23,7 @@ class GalleryListSource constructor(private val pageIn: PageIn, private val requ
 
             withContext(Dispatchers.Default) {
                 val res = requestProvider.galleryListRequest(page).execute()
-                val list = Gallery.parseListCoroutines(res?.body?.string())
+                val list = Gallery.parseList(res?.body?.string())
                 LoadResult.Page(
                     data = list,
                     prevKey = if (page <= 0) null else page - 1,

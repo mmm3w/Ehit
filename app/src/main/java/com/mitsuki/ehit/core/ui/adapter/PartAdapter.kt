@@ -11,17 +11,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.extend.dp2px
-import com.mitsuki.armory.view
+import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.core.model.entity.DetailPart
+import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
 
-class PartAdapter(val itemEventObservable: MutableLiveData<String>) :
+class PartAdapter(var data:GalleryDetailWrap.DetailPart? = null) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    var part = DetailPart(0f, 0, 0)
 
     val divider = object : RecyclerView.ItemDecoration() {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -70,19 +67,19 @@ class PartAdapter(val itemEventObservable: MutableLiveData<String>) :
             0 -> {
                 holder.view<LinearLayout>(R.id.operatingExtend)?.apply {
                     addView(TextView(context).apply {
-                        text = String.format("%.1f", part.rating)
+                        text = String.format("%.1f", data?.rating ?: 0f)
                         textSize = 18f
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                         setPadding(0, 0, dp2px(4f), 0)
                     })
                     addView(ImageView(context).apply { setImageResource(R.drawable.ic_baseline_star_20) })
                 }
-                holder.view<TextView>(R.id.operatingText)?.text = "${part.ratingCount}条评价"
+                holder.view<TextView>(R.id.operatingText)?.text = "${data?.ratingCount ?: 0}条评价"
             }
             1 -> {
                 holder.view<LinearLayout>(R.id.operatingExtend)?.apply {
                     addView(TextView(context).apply {
-                        text = part.page.toString()
+                        text = (data?.page ?: 0).toString()
                         textSize = 18f
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     })

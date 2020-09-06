@@ -1,0 +1,229 @@
+package com.mitsuki.ehit.core.ui.widget
+
+import android.content.Context
+import android.util.AttributeSet
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.core.view.*
+import androidx.recyclerview.widget.RecyclerView
+import com.mitsuki.armory.extend.*
+import com.mitsuki.ehit.R
+
+@Suppress("JoinDeclarationAndAssignment", "ConstantConditionIf")
+class GalleryDetailLayout @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent2 {
+
+    private val mTitleBar =
+        LayoutInflater.from(context).inflate(R.layout.part_top_title_bar, this, false)
+
+    private val mInfoView: RecyclerView = RecyclerView(context).apply {
+        id = R.id.gallery_detail_inner_info
+        overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        clipToPadding = false
+    }
+
+    private val mPreviewView: RecyclerView = RecyclerView(context).apply {
+        id = R.id.gallery_detail_inner_preview
+        overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        clipToPadding = false
+    }
+
+    private val mStatusBarHeight: Int //状态栏的高度
+    private val mNavigationBarHeight: Int //底栏高度
+
+    private val mIgnoredStatusBar = true //是否ignore state bar
+    private val mTopOffset: Int //state bar偏移
+
+    private var mMoveRange = 0f
+    private var mCurrentOffset = 0f
+
+    private var mExtraScrolled = 0f
+    private var mTitleOffsetRange = 0
+
+    private var mTopToPreview = 0f
+
+    init {
+        mStatusBarHeight = statusBarHeight(context)
+        mNavigationBarHeight = navigationBarHeight(context)
+        mTopOffset = if (mIgnoredStatusBar) mStatusBarHeight else 0
+
+        addView(mInfoView)
+        addView(mPreviewView)
+        addView(mTitleBar)
+
+        mInfoView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                mExtraScrolled -= dy
+                moveTitle()
+            }
+        })
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+
+        mTitleBar.measure(
+            widthMeasureSpec,
+            MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
+        )
+
+        mTitleOffsetRange = mTitleBar.measuredHeight + mStatusBarHeight - mTopOffset
+
+        mInfoView.setPadding(0, mTitleBar.measuredHeight, 0, 0)
+        mInfoView.measure(
+            widthMeasureSpec,
+            MeasureSpec.makeMeasureSpec(
+                MeasureSpec.getSize(heightMeasureSpec) - mTopOffset, MeasureSpec.AT_MOST
+            )
+        )
+
+        mTopToPreview = mInfoView.measuredHeight.toFloat()
+
+        mPreviewView.setPadding(0, 0, 0, mNavigationBarHeight)
+        mPreviewView.measure(
+            widthMeasureSpec,
+            MeasureSpec.makeMeasureSpec(
+                MeasureSpec.getSize(heightMeasureSpec) - mTopOffset, MeasureSpec.AT_MOST
+            )
+        )
+
+        mMoveRange = (mPreviewView.measuredHeight + mInfoView.measuredHeight -
+                MeasureSpec.getSize(heightMeasureSpec) + mTopOffset).toFloat()
+//        mCurrentOffset = 0f
+
+        setMeasuredDimension(
+            MeasureSpec.getSize(widthMeasureSpec),
+            MeasureSpec.getSize(heightMeasureSpec)
+        )
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        mTitleBar.apply {
+            layout(0, mStatusBarHeight, measuredWidth, measuredHeight + mStatusBarHeight)
+        }
+
+        mInfoView.apply {
+            layout(0, mTopOffset, measuredWidth, mTopOffset + measuredHeight)
+        }
+
+        mPreviewView.apply {
+            layout(
+                0, mTopOffset + mInfoView.measuredHeight,
+                measuredWidth, mTopOffset + measuredHeight + mInfoView.measuredHeight
+            )
+        }
+
+        mInfoView.translationY = mCurrentOffset
+        mPreviewView.translationY = mCurrentOffset
+        moveTitle()
+    }
+
+
+    /** nested scroll *****************************************************************************/
+    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        return axes and ViewCompat.SCROLL_AXIS_VERTICAL != 0 && mMoveRange > 0
+    }
+
+    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
+        mInfoView.stopScroll()
+        mPreviewView.stopScroll()
+    }
+
+    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+        if (dy > 0) {
+            if (!mInfoView.canScrollVertically(1)) {
+                if (mCurrentOffset - dy < -mMoveRange) {
+                    consumed[1] = (mMoveRange + mCurrentOffset).toInt()
+                    if (type == ViewCompat.TYPE_NON_TOUCH) {
+                        //fling传递
+                        if (mPreviewView.canScrollVertically(1) && target != mPreviewView) {
+                            mPreviewView.scrollBy(0, (dy - mMoveRange - mCurrentOffset).toInt())
+                        }
+                    }
+                    mCurrentOffset = -mMoveRange
+                } else {
+                    consumed[1] = dy
+                    mCurrentOffset -= dy
+                }
+                mInfoView.translationY = mCurrentOffset
+                mPreviewView.translationY = mCurrentOffset
+            }
+        }
+
+        if (dy < 0) {
+            if (!mPreviewView.canScrollVertically(-1)) {
+                if (mCurrentOffset - dy > 0) {
+                    consumed[1] = (mCurrentOffset).toInt()
+                    if (mInfoView.canScrollVertically(-1)) {
+                        if (type == ViewCompat.TYPE_NON_TOUCH && target != mInfoView) {
+                            mInfoView.scrollBy(0, (dy - mCurrentOffset).toInt())
+                        }
+                    }
+                    mCurrentOffset = 0f
+
+                } else {
+                    consumed[1] = dy
+                    mCurrentOffset -= dy
+                }
+                mInfoView.translationY = mCurrentOffset
+                mPreviewView.translationY = mCurrentOffset
+            }
+        }
+
+
+        moveTitle()
+    }
+
+    override fun onNestedScroll(
+        target: View, dxConsumed: Int, dyConsumed: Int,
+        dxUnconsumed: Int, dyUnconsumed: Int, type: Int
+    ) {
+
+    }
+
+    override fun onStopNestedScroll(target: View, type: Int) {
+
+    }
+
+    /**********************************************************************************************/
+    private fun moveTitle() {
+        val extend = (mTitleOffsetRange * 2 - mTopToPreview - mCurrentOffset)
+            .coerceIn(0f, mTitleOffsetRange.toFloat())
+        if (extend > 0) {
+            mTitleBar.findViewById<FrameLayout>(R.id.top_title_preview)?.isInvisible = false
+            mTitleBar.findViewById<FrameLayout>(R.id.top_title_default)?.isInvisible = true
+            mTitleBar.elevation = dp2px(4f).toFloat()
+        } else {
+            mTitleBar.findViewById<FrameLayout>(R.id.top_title_preview)?.isInvisible = true
+            mTitleBar.findViewById<FrameLayout>(R.id.top_title_default)?.isInvisible = false
+            mTitleBar.elevation = 0f
+        }
+
+        mTitleBar.translationY =
+            (mExtraScrolled + mCurrentOffset).coerceIn((-mTitleOffsetRange).toFloat(), 0f) + extend
+    }
+
+    /**********************************************************************************************/
+    fun infoList(action: (RecyclerView.() -> Unit)? = null): RecyclerView {
+        return action?.run { mInfoView.apply(this) } ?: mInfoView
+    }
+
+    fun previewList(action: (RecyclerView.() -> Unit)? = null): RecyclerView {
+        return action?.run { mPreviewView.apply(this) } ?: mPreviewView
+    }
+
+    fun setListener(pageJumpListener: (() -> Unit)? = null) {
+        pageJumpListener?.apply {
+            mTitleBar.findViewById<ImageView>(R.id.top_title_page_jump)?.setOnClickListener {
+                this()
+            }
+        }
+    }
+}

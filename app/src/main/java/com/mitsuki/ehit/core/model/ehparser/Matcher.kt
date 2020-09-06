@@ -24,4 +24,18 @@ object Matcher {
     val NORMAL_PREVIEW: Pattern =
         Pattern.compile("<div class=\"gdtm\"[^<>]*><div[^<>]*width:(\\d+)[^<>]*height:(\\d+)[^<>]*\\((.+?)\\)[^<>]*-(\\d+)px[^<>]*><a[^<>]*href=\"(.+?)\"[^<>]*><img alt=\"([\\d,]+)\"")
 
+
+    val PAGER_INDEX: Pattern =
+        Pattern.compile("<td class=\"ptds\"><a.*?>(\\d+)</a></td>") //当前页码
+    val PAGER_TOTAL_SIZE =
+        Pattern.compile("<tr><td.*?>Length:</td><td.*?>(\\d+) pages</td></tr>") //总数
+
+    //分页的基本信息
+    //group1:prevKey
+    //group3:index
+    //group6:nextKey
+    val PAGER_INFO: Pattern =
+        Pattern.compile("(\\d+)?(</a>)?</td><td class=\"ptds\"><a.*?>(\\d+)</a></td>(<td.*?>)?(<a.*?>)?(\\d+)?")
+
+
 }

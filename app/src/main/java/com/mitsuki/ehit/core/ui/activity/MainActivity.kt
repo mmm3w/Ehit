@@ -9,14 +9,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
-import com.mitsuki.ehit.core.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
-
-    private val mViewModel: MainViewModel by viewModels()
 
     //may be crash, not sure
     private val navController: NavController by lazy { findNavController(R.id.main_nav_fragment) }
@@ -36,6 +33,7 @@ class MainActivity : BaseActivity() {
             }
             true
         }
+
     }
 
 

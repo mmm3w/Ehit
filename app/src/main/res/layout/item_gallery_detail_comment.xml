@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/galleryDetailComments"
+    android:id="@+id/gallery_detail_comments"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_24"
-    android:layout_marginEnd="@dimen/dp_24"
-    android:gravity="center_horizontal"
+    android:layout_marginBottom="@dimen/dp_16"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/galleryDetailMore"
+        android:id="@+id/gallery_detail_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:padding="@dimen/dp_12"
         android:text="更多评论"
         android:textColor="@color/blue_5F6368" />

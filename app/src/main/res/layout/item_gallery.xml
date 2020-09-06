@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/gallery_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_8"
@@ -14,10 +15,10 @@
         android:background="@color/grayscale_f5">
 
         <ImageView
-            android:id="@+id/galleryThumb"
+            android:id="@+id/gallery_thumb"
             android:layout_width="@dimen/dp_80"
             android:layout_height="120dp"
-            android:background="#00f"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,8 +33,8 @@
             android:textColor="@color/grayscale_20"
             android:textSize="@dimen/sp_16"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/galleryThumb"
-            app:layout_constraintTop_toTopOf="@id/galleryThumb" />
+            app:layout_constraintStart_toEndOf="@id/gallery_thumb"
+            app:layout_constraintTop_toTopOf="@id/gallery_thumb" />
 
         <TextView
             android:id="@+id/gallery_uploader"
@@ -57,7 +58,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/galleryThumb" />
+            app:layout_constraintStart_toEndOf="@id/gallery_thumb" />
 
         <com.mitsuki.armory.widget.RatingView
             android:id="@+id/ggallery_rating"

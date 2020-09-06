@@ -50,11 +50,13 @@ dependencies {
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.espresso.core
     //----------------------------------------------------------------------------------------------
+    implementation deps.fragment
     implementation deps.appcompat
     implementation deps.constraintlayout
     implementation deps.material
     implementation deps.swiperefreshlayout
     implementation deps.preference
+    implementation deps.recyclerview
 
     //----------------------------------------------------------------------------------------------
     //paging3
@@ -74,8 +76,10 @@ dependencies {
     //----------------------------------------------------------------------------------------------
     implementation deps.material_dialogs.core
     implementation deps.material_dialogs.input
+    implementation deps.material_dialogs.lifecycle
     implementation deps.jsoup
     implementation deps.okhttp
+    implementation deps.coil
 
 }
 

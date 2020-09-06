@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
-@Suppress("ArrayInDataClass")
 data class GalleryDetail(
     val gid: Long,
     val token: String,
@@ -32,7 +31,7 @@ data class GalleryDetail(
     val tagSet: Array<TagSet>,
     val commentSet: CommentSet,
     val previewPages: Int,
-    val images: ArrayList<ImageSource>
+    val images: PageInfo<ImageSource>
 ) {
     val categoryColor: Int = Category.getColor(category)
     val pages = pagesStr.matchNumber("1").toInt()
@@ -45,10 +44,6 @@ data class GalleryDetail(
     val isFavorited = favoriteName != null
 
     companion object {
-        suspend fun parseCoroutines(content: String?): GalleryDetail? {
-            return withContext(Dispatchers.IO) { parse(content) }
-        }
-
         @Suppress("MemberVisibilityCanBePrivate")
         fun parse(content: String?): GalleryDetail? {
             if (content.isNullOrEmpty()) return null
@@ -168,6 +163,79 @@ data class GalleryDetail(
 
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GalleryDetail
+
+        if (gid != other.gid) return false
+        if (token != other.token) return false
+        if (apiUID != other.apiUID) return false
+        if (apiKey != other.apiKey) return false
+        if (torrentUrl != other.torrentUrl) return false
+        if (torrentCount != other.torrentCount) return false
+        if (archiveUrl != other.archiveUrl) return false
+        if (detailThumb != other.detailThumb) return false
+        if (title != other.title) return false
+        if (titleJP != other.titleJP) return false
+        if (category != other.category) return false
+        if (uploader != other.uploader) return false
+        if (posted != other.posted) return false
+        if (parent != other.parent) return false
+        if (visible != other.visible) return false
+        if (language != other.language) return false
+        if (size != other.size) return false
+        if (pagesStr != other.pagesStr) return false
+        if (favorite != other.favorite) return false
+        if (ratingCount != other.ratingCount) return false
+        if (rating != other.rating) return false
+        if (favoriteName != other.favoriteName) return false
+        if (!tagSet.contentEquals(other.tagSet)) return false
+        if (commentSet != other.commentSet) return false
+        if (previewPages != other.previewPages) return false
+        if (images != other.images) return false
+        if (categoryColor != other.categoryColor) return false
+        if (pages != other.pages) return false
+        if (favoriteCount != other.favoriteCount) return false
+        if (isFavorited != other.isFavorited) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = gid.hashCode()
+        result = 31 * result + token.hashCode()
+        result = 31 * result + apiUID.hashCode()
+        result = 31 * result + apiKey.hashCode()
+        result = 31 * result + torrentUrl.hashCode()
+        result = 31 * result + torrentCount
+        result = 31 * result + archiveUrl.hashCode()
+        result = 31 * result + detailThumb.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + titleJP.hashCode()
+        result = 31 * result + category.hashCode()
+        result = 31 * result + uploader.hashCode()
+        result = 31 * result + posted.hashCode()
+        result = 31 * result + parent.hashCode()
+        result = 31 * result + visible.hashCode()
+        result = 31 * result + language.hashCode()
+        result = 31 * result + size.hashCode()
+        result = 31 * result + pagesStr.hashCode()
+        result = 31 * result + favorite.hashCode()
+        result = 31 * result + ratingCount
+        result = 31 * result + rating.hashCode()
+        result = 31 * result + (favoriteName?.hashCode() ?: 0)
+        result = 31 * result + tagSet.contentHashCode()
+        result = 31 * result + commentSet.hashCode()
+        result = 31 * result + previewPages
+        result = 31 * result + images.hashCode()
+        result = 31 * result + categoryColor
+        result = 31 * result + pages
+        result = 31 * result + favoriteCount
+        result = 31 * result + isFavorited.hashCode()
+        return result
+    }
 }
 
 

@@ -6,20 +6,27 @@
 package com.mitsuki.ehit.core.model.ehparser
 
 import android.text.TextUtils
+import com.mitsuki.ehit.being.exception.ParseException
 import org.jsoup.nodes.Element
 import java.lang.Exception
 
 /**************************************************************************************************/
 fun Element.byClassFirst(className: String, msg: String = ""): Element {
-    return getElementsByClass(className)?.first() ?: throw ParseException(msg)
+    return getElementsByClass(className)?.first() ?: throw ParseException(
+        msg
+    )
 }
 
 fun Element.byId(id: String, msg: String = ""): Element {
-    return getElementById(id) ?: throw ParseException(msg)
+    return getElementById(id) ?: throw ParseException(
+        msg
+    )
 }
 
 fun Element.byTagFirst(tag: String, msg: String = ""): Element {
-    return getElementsByTag(tag)?.first() ?: throw ParseException(msg)
+    return getElementsByTag(tag)?.first() ?: throw ParseException(
+        msg
+    )
 }
 
 /**************************************************************************************************/
@@ -45,7 +52,9 @@ fun String.matchNumber(default: String = "0"): String {
 
 /**************************************************************************************************/
 fun String.splitIdToken(): Array<String> {
-    if (TextUtils.isEmpty(this)) throw ParseException("url is null")
+    if (TextUtils.isEmpty(this)) throw ParseException(
+        "url is null"
+    )
     Matcher.ID_TOKEN.matcher(this).let {
         if (it.find()) {
             return arrayOf(it.group(1), it.group(2))

@@ -1,108 +1,86 @@
 package com.mitsuki.ehit.core.model.entity
 
-import androidx.recyclerview.widget.DiffUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-
-sealed class GalleryDetailItem
-
-data class DetailHeader(
-    val thumbUrl: String,
-    val title: String,
-    val uploader: String,
-    val category: String
-) : GalleryDetailItem() {
-    val categoryColor: Int = com.mitsuki.ehit.core.model.ehparser.Category.getColor(category)
-}
-
-data class DetailPart(
-    val rating: Float,
-    val ratingCount: Int,
-    val page: Int
-) : GalleryDetailItem()
-
-data class DetailOperating(
-    val s: String = ""
-) : GalleryDetailItem()
-
-data class DetailTag(val tagSet: TagSet) : GalleryDetailItem()
-
-data class DetailComment(
-    val comments: ArrayList<Comment>,
-    val isAll: Boolean
-) : GalleryDetailItem()
-
-data class DetailPreview(
-    val page: Int,
-    val source: ImageSource
-) : GalleryDetailItem()
-
 class GalleryDetailWrap {
+    lateinit var headInfo: DetailHeader
+    var partInfo: DetailPart? = null
+    var tags: Array<TagSet> = DefaultTags
+    var comment: Array<Comment> = DefaultComment
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<GalleryDetailItem>() {
-            override fun areItemsTheSame(
-                oldConcert: GalleryDetailItem,
-                newConcert: GalleryDetailItem
-            ): Boolean =
-                oldConcert == newConcert
+        val DefaultTags: Array<TagSet> = arrayOf()
+        val DefaultComment = arrayOf(Comment(-1, "", "", "暂无评论"))
 
-            override fun areContentsTheSame(
-                oldConcert: GalleryDetailItem,
-                newConcert: GalleryDetailItem
-            ): Boolean =
-                oldConcert == newConcert
+        const val MAX_COMMENT = 5
+    }
+
+    data class DetailHeader(
+        val thumb: String,
+        val thumbTransitionName: String,
+        val title: String,
+        val uploader: String,
+        val category: String
+    ) {
+        val categoryColor: Int = com.mitsuki.ehit.core.model.ehparser.Category.getColor(category)
+    }
+
+    data class DetailPart(
+        val rating: Float,
+        val ratingCount: Int,
+        val page: Int
+    )
+
+    data class DetailComment(
+        val comments: Array<Comment>,
+        val isAll: Boolean
+    ) {
+        companion object {
         }
 
-        suspend fun parseCoroutines(detail: GalleryDetail?): ArrayList<GalleryDetailItem> {
-            return withContext(Dispatchers.IO) { parse(detail) }
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as DetailComment
+
+            if (!comments.contentEquals(other.comments)) return false
+            if (isAll != other.isAll) return false
+
+            return true
         }
 
-        @Suppress("MemberVisibilityCanBePrivate")
-        fun parse(detail: GalleryDetail?): ArrayList<GalleryDetailItem> {
-            if (detail == null) return ArrayList()
-
-            val list = ArrayList<GalleryDetailItem>()
-            list.add(detail.obtainHeader())
-            list.add(detail.obtainPart())
-            list.add(detail.obtainOperating())
-            list.addAll(detail.obtainTags())
-            list.add(detail.obtainComments())
-            list.addAll(detail.obtainPreview())
-            return list
+        override fun hashCode(): Int {
+            var result = comments.contentHashCode()
+            result = 31 * result + isAll.hashCode()
+            return result
         }
     }
 }
 
-fun GalleryDetail.obtainHeader(): DetailHeader {
-    return DetailHeader(detailThumb, title, uploader, category)
+fun Gallery.obtainHeader(): GalleryDetailWrap.DetailHeader {
+
+    return GalleryDetailWrap.DetailHeader(thumb, thumbTransitionName, title, uploader, category)
 }
 
-fun GalleryDetail.obtainPart(): DetailPart {
-    return DetailPart(rating, ratingCount, pages)
+fun GalleryDetail.obtainOperating(): GalleryDetailWrap.DetailPart {
+    return GalleryDetailWrap.DetailPart(rating, ratingCount, pages)
 }
 
-fun GalleryDetail.obtainOperating(): DetailOperating {
-    return DetailOperating()
-}
 
-fun GalleryDetail.obtainTags(): ArrayList<DetailTag> {
-    return ArrayList<DetailTag>().also {
-        for (item in tagSet) it.add(DetailTag(item))
-    }
-}
+fun GalleryDetail.obtainComments(): Array<Comment> {
 
-fun GalleryDetail.obtainComments(): DetailComment {
-    return DetailComment(ArrayList<Comment>().also {
-        for ((count, item) in commentSet.comments.withIndex()) {
-            it.add(item)
-            if (count + 1 > 1) break
+    val count = GalleryDetailWrap.MAX_COMMENT.coerceAtMost(commentSet.comments.size)
+
+    return Array(count + 1) { index ->
+        if (index >= count) {
+            Comment(
+                -1, "", "", when (commentSet.comments.size) {
+                    0 -> "暂无评论"
+                    in 1..count -> "已显示全部评论"
+                    else -> "更多评论"
+                }
+            )
+        } else {
+            commentSet.comments[index]
         }
-    }, commentSet.comments.size <= 2)
-}
-
-fun GalleryDetail.obtainPreview(): ArrayList<DetailPreview> {
-    return ArrayList<DetailPreview>().also {
-        for ((count, item) in images.withIndex()) it.add(DetailPreview(count + 1, item))
     }
 }

@@ -9,7 +9,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.view
+import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
 
 class DefaultLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) :

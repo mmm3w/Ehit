@@ -2,48 +2,59 @@ package com.mitsuki.ehit.core.ui.fragment
 
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.View
-import androidx.fragment.app.activityViewModels
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.core.crutch.RefreshOrRetry
+import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.ui.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.core.ui.adapter.GalleryAdapter
-import com.mitsuki.ehit.core.viewmodel.MainViewModel
+import com.mitsuki.ehit.core.ui.widget.CategoryView
+import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
-    private val mViewModel: MainViewModel by activityViewModels()
+    private val mViewModel: GalleryListViewModel
+            by createViewModelLazy(GalleryListViewModel::class, { viewModelStore })
+
     private val mAdapter: GalleryAdapter by lazy { GalleryAdapter() }
-//    private val mTrigger: RefreshOrRetry by lazy { RefreshOrRetry() }
+
+    private val mConcatAdapter by lazy {
+        mAdapter.withLoadStateHeaderAndFooter(
+            header = DefaultLoadStateAdapter(mAdapter),
+            footer = DefaultLoadStateAdapter(mAdapter)
+        )
+    }
 
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //在使用navigation的时候
-        //框架为了减少内存占用会销毁View但不会销毁fragment实例
-        //view相关以外的初始化工作应该放在此处
-//        mAdapter.currentItem.observe(this@GalleryListFragment, Observer { gallery ->
-//            mViewModel.mCurrentGallery = gallery
-//            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-//                .navigate(R.id.action_gallery_list_fragment_to_gallery_detail_fragment)
-//        })
+        exitTransition = TransitionInflater.from(requireContext())
+            .inflateTransition(R.transition.list_exit_transition)
+//
+        mAdapter.currentItem.observe(this, Observer(this::toDetail))
 
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
                 when (it.refresh) {
                     is LoadState.Error -> toast("刷新失败")
@@ -58,7 +69,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                 }
 
                 gallery_list?.isRefreshing = it.refresh is LoadState.Loading
-                gallery_list?.endOfPrepend = it.prepend.endOfPaginationReached
+                gallery_list?.endOfPrepend =
+                    if (it.refresh is LoadState.Error) true
+                    else it.prepend.endOfPaginationReached
             }
         }
 
@@ -70,14 +83,16 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
+        (view.parent as? ViewGroup)?.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
+
         gallery_list?.apply {
             //配置recycleView
             recyclerView {
                 layoutManager = LinearLayoutManager(activity)
-                adapter = mAdapter.withLoadStateHeaderAndFooter(
-                    header = DefaultLoadStateAdapter(mAdapter),
-                    footer = DefaultLoadStateAdapter(mAdapter)
-                )
+                adapter = mConcatAdapter
             }
 
             setListener(
@@ -112,6 +127,22 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             .navigate(R.id.action_gallery_list_fragment_to_disclaimer_fragment)
     }
 
+    private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {
+        with(galleryClick) {
+            val extras = FragmentNavigatorExtras(
+                target.findViewById<ImageView>(R.id.gallery_thumb) to data.thumbTransitionName
+            )
+
+            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+                .navigate(
+                    R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
+                    bundleOf(DataKey.GALLERY_INFO to data),
+                    null,
+                    extras
+                )
+        }
+    }
+
     private fun showPageJumpDialog() {
         MaterialDialog(requireContext()).show {
             input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
@@ -121,6 +152,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             }
             title(R.string.title_page_go_to)
             positiveButton(R.string.text_confirm)
+            lifecycleOwner(this@GalleryListFragment)
         }
     }
 }

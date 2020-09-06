@@ -7,6 +7,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.Transformation
 import androidx.core.os.HandlerCompat.postDelayed
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.mitsuki.armory.extend.isAnimationRunning
 import com.mitsuki.ehit.R
 
 class RefreshPlugin(context: Context) {
@@ -263,10 +264,5 @@ class RefreshPlugin(context: Context) {
     /** assist ************************************************************************************/
     private fun damp(source: Float): Float {
         return (-2f / (source + 1f) + 2f) * 0.8f
-    }
-
-    private fun Animation?.isAnimationRunning(): Boolean {
-        if (this == null) return false
-        return hasStarted() && !hasEnded()
     }
 }

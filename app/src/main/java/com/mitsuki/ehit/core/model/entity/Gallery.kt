@@ -1,15 +1,17 @@
 package com.mitsuki.ehit.core.model.entity
 
-import android.util.Log
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
+import com.mitsuki.ehit.being.exception.ParseException
 import com.mitsuki.ehit.core.model.ehparser.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.lang.Exception
 
 @Suppress("ArrayInDataClass")
+@Parcelize
 data class Gallery(
     val gid: Long,
     val token: String,
@@ -20,7 +22,7 @@ data class Gallery(
     val thumb: String,
     val tag: Array<String>,
     val rating: Float
-) {
+) : Parcelable {
     val categoryColor: Int = Category.getColor(category)
     val language: String
     val languageSimple: String
@@ -31,6 +33,9 @@ data class Gallery(
             languageSimple = Language.getLangSimple(language)
         }
     }
+
+    @IgnoredOnParcel
+    val thumbTransitionName = "thumb:$gid"
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Gallery>() {
@@ -55,14 +60,8 @@ data class Gallery(
             }
         }
 
-        //提供协程方法
-        suspend fun parseListCoroutines(content: String?): ArrayList<Gallery> {
-            return withContext(Dispatchers.IO) { parseList(content) }
-        }
-
         @Suppress("MemberVisibilityCanBePrivate")
         fun parseList(content: String?): ArrayList<Gallery> {
-
             return content?.run {
                 ArrayList<Gallery>().apply {
                     val doc = Jsoup.parse(content)
@@ -97,14 +96,21 @@ data class Gallery(
             val uploader = element.byClassFirst("glhide", "Not found uploader")
                 .byTagFirst("a", "Not found uploader").text()
 
-            val thumb = element.byClassFirst("glthumb", "Not found thumb")
-                .byTagFirst("img", "Not found thumb").attr("src")
+            val thumbNode = element.byClassFirst("glthumb", "Not found thumb")
+                .byTagFirst("img", "Not found thumb")
+
+            val thumb = thumbNode.attr("data-src").let {
+                if (it.startsWith("https")) it
+                else thumbNode.attr("src")
+            }
 
             val tagElement = element.getElementsByClass("glname")?.first()
                 ?.getElementsByClass("gt")
 
             val tagArray = Array(tagElement?.size ?: 0) { i: Int ->
-                tagElement?.get(i)?.attr("title") ?: throw ParseException("parse tag error")
+                tagElement?.get(i)?.attr("title") ?: throw ParseException(
+                    "parse tag error"
+                )
             }
 
             val rating = element.byClassFirst("ir", "Not found rating").attr("style").parseRating()
@@ -115,4 +121,6 @@ data class Gallery(
             )
         }
     }
+
+
 }

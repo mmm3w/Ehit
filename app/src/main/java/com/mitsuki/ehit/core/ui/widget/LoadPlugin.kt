@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.core.ui.widget
 
 import android.content.Context
-import android.view.View
 import android.widget.ImageView
 import com.mitsuki.armory.drawable.TricolorBarDrawable
 import com.mitsuki.armory.extend.dp2px

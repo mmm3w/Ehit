@@ -17,10 +17,10 @@ class RequestProvider {
     }
 
     //画廊详情
-    fun galleryDetailRequest(gid: Long, token: String): Request {
+    fun galleryDetailRequest(gid: Long, token: String, index: Int = 0): Request {
         return Request.Builder()
             .get()
-            .url(Url.galleryDetail(gid, token))
+            .url(Url.galleryDetail(gid, token, index))
             .fakeHeader()
             .build()
     }

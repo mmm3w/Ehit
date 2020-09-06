@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.extend.statusBarHeight
+import com.mitsuki.ehit.R
 
-class TopBarPlugin(context: Context, @LayoutRes val layoutRes: Int, root: ViewGroup? = null) :
+class FloatBarPlugin(context: Context, @LayoutRes val layoutRes: Int, root: ViewGroup? = null) :
     RecyclerView.OnScrollListener() {
 
     private var mOffsetLimit: Float = -1f
@@ -26,7 +27,7 @@ class TopBarPlugin(context: Context, @LayoutRes val layoutRes: Int, root: ViewGr
 
     private fun move(dy: Int) {
         if (mOffsetLimit < 0) {
-            mOffsetLimit = mView.measuredHeight.toFloat() + mStatusBarHeight
+            mOffsetLimit = mView.measuredHeight.toFloat()
         }
 
         if (mOffsetLimit == 0f) return

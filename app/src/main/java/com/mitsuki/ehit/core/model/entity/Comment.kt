@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.core.model.entity
 
+import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.core.model.ehparser.byClassFirst
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
@@ -8,6 +9,24 @@ import org.jsoup.select.NodeVisitor
 
 class Comment(val id: Int, val time: String, val user: String, val text: String) {
     companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Comment>() {
+            override fun areItemsTheSame(
+                oldConcert: Comment,
+                newConcert: Comment
+            ): Boolean =
+                oldConcert.id == newConcert.id
+
+            override fun areContentsTheSame(
+                oldConcert: Comment,
+                newConcert: Comment
+            ): Boolean {
+                return oldConcert.time == newConcert.time &&
+                        oldConcert.user == newConcert.user &&
+                        oldConcert.text == newConcert.text
+            }
+        }
+
+
         fun parse(element: Element): Comment {
             val id =
                 element.previousElementSibling().attr("name").substring(1).toInt()

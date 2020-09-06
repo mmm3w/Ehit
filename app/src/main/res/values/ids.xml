@@ -3,6 +3,10 @@
     <item name="gallery_list_inner_recyclerview" type="id" />
     <item name="gallery_list_inner_refresh_view" type="id" />
     <item name="gallery_list_inner_load_view" type="id" />
+    <item name="gallery_list_inner_top_view" type="id" />
+
+    <item name="gallery_detail_inner_info" type="id"/>
+    <item name="gallery_detail_inner_preview" type="id"/>
 
     <item name="gallery_go_top" type="id" />
     <item name="gallery_page_jump" type="id" />

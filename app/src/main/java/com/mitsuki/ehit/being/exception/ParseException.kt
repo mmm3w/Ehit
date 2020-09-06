@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.core.model.ehparser
+package com.mitsuki.ehit.being.exception
 
 class ParseException : Exception {
 
