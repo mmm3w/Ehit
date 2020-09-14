@@ -2,14 +2,11 @@ package com.mitsuki.ehit.core.model.entity
 
 class GalleryDetailWrap {
     lateinit var headInfo: DetailHeader
-    var partInfo: DetailPart? = null
-    var tags: Array<TagSet> = DefaultTags
-    var comment: Array<Comment> = DefaultComment
+    lateinit var partInfo: DetailPart
+    lateinit var tags: Array<TagSet>
+    lateinit var comment: Array<Comment>
 
     companion object {
-        val DefaultTags: Array<TagSet> = arrayOf()
-        val DefaultComment = arrayOf(Comment(-1, "", "", "暂无评论"))
-
         const val MAX_COMMENT = 5
     }
 

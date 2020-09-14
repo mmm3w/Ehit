@@ -96,7 +96,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
 
         mMoveRange = (mPreviewView.measuredHeight + mInfoView.measuredHeight -
                 MeasureSpec.getSize(heightMeasureSpec) + mTopOffset).toFloat()
-//        mCurrentOffset = 0f
 
         setMeasuredDimension(
             MeasureSpec.getSize(widthMeasureSpec),
@@ -119,10 +118,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
                 measuredWidth, mTopOffset + measuredHeight + mInfoView.measuredHeight
             )
         }
-
-        mInfoView.translationY = mCurrentOffset
-        mPreviewView.translationY = mCurrentOffset
-        moveTitle()
     }
 
 
@@ -154,11 +149,12 @@ class GalleryDetailLayout @JvmOverloads constructor(
                 }
                 mInfoView.translationY = mCurrentOffset
                 mPreviewView.translationY = mCurrentOffset
+                moveTitle()
             }
         }
 
         if (dy < 0) {
-            if (!mPreviewView.canScrollVertically(-1)) {
+            if (!mPreviewView.canScrollVertically(-1) && endOfPrepend) {
                 if (mCurrentOffset - dy > 0) {
                     consumed[1] = (mCurrentOffset).toInt()
                     if (mInfoView.canScrollVertically(-1)) {
@@ -167,18 +163,17 @@ class GalleryDetailLayout @JvmOverloads constructor(
                         }
                     }
                     mCurrentOffset = 0f
-
                 } else {
                     consumed[1] = dy
                     mCurrentOffset -= dy
                 }
                 mInfoView.translationY = mCurrentOffset
                 mPreviewView.translationY = mCurrentOffset
+                moveTitle()
             }
         }
 
 
-        moveTitle()
     }
 
     override fun onNestedScroll(
@@ -194,23 +189,25 @@ class GalleryDetailLayout @JvmOverloads constructor(
 
     /**********************************************************************************************/
     private fun moveTitle() {
-        val extend = (mTitleOffsetRange * 2 - mTopToPreview - mCurrentOffset)
-            .coerceIn(0f, mTitleOffsetRange.toFloat())
-        if (extend > 0) {
-            mTitleBar.findViewById<FrameLayout>(R.id.top_title_preview)?.isInvisible = false
-            mTitleBar.findViewById<FrameLayout>(R.id.top_title_default)?.isInvisible = true
-            mTitleBar.elevation = dp2px(4f).toFloat()
+
+        if (mCurrentOffset + mTopToPreview == 0f) {
+            //显示按钮
         } else {
-            mTitleBar.findViewById<FrameLayout>(R.id.top_title_preview)?.isInvisible = true
-            mTitleBar.findViewById<FrameLayout>(R.id.top_title_default)?.isInvisible = false
-            mTitleBar.elevation = 0f
+            //隐藏按钮
         }
 
         mTitleBar.translationY =
-            (mExtraScrolled + mCurrentOffset).coerceIn((-mTitleOffsetRange).toFloat(), 0f) + extend
+            (mExtraScrolled + mCurrentOffset).coerceIn((-mTitleOffsetRange).toFloat(), 0f)
+    }
+
+    private fun autoAlign() {
+
     }
 
     /**********************************************************************************************/
+
+    var endOfPrepend: Boolean = true
+
     fun infoList(action: (RecyclerView.() -> Unit)? = null): RecyclerView {
         return action?.run { mInfoView.apply(this) } ?: mInfoView
     }
@@ -222,6 +219,8 @@ class GalleryDetailLayout @JvmOverloads constructor(
     fun setListener(pageJumpListener: (() -> Unit)? = null) {
         pageJumpListener?.apply {
             mTitleBar.findViewById<ImageView>(R.id.top_title_page_jump)?.setOnClickListener {
+                //通过动画对其title和preview
+                autoAlign()
                 this()
             }
         }

@@ -44,9 +44,10 @@ data class ImageSource(
         }
 
 
-        fun parse(body: String): PageInfo<ImageSource> {
+        fun parse(content: String?): PageInfo<ImageSource> {
+            if (content.isNullOrEmpty()) throw ParseException("未请求到数据")
             val list = ArrayList<ImageSource>()
-            Matcher.NORMAL_PREVIEW.matcher(body).also {
+            Matcher.NORMAL_PREVIEW.matcher(content).also {
                 while (it.find()) {
                     if (it.group(6).spToInt() < 1)
                         continue
@@ -60,7 +61,7 @@ data class ImageSource(
                 }
             }
 
-            val totalSize = Matcher.PAGER_TOTAL_SIZE.matcher(body).run {
+            val totalSize = Matcher.PAGER_TOTAL_SIZE.matcher(content).run {
                 if (find()) {
                     group(1).toIntOrNull() ?: throw ParseException()
                 } else throw ParseException()
@@ -70,7 +71,7 @@ data class ImageSource(
             var nextKey: Int? = null
             var index: Int = -1
 
-            Matcher.PAGER_INFO.matcher(body).also {
+            Matcher.PAGER_INFO.matcher(content).also {
                 if (it.find()) {
                     prevKey = (it.group(1) ?: "").toIntOrNull()
                     nextKey = (it.group(6) ?: "").toIntOrNull()

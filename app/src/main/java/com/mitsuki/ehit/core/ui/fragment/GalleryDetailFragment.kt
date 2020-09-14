@@ -44,7 +44,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
 
     private val mHeader: GalleryDetailHeadAdapter by lazy {
-        GalleryDetailHeadAdapter(mViewModel.detailWrap.headInfo)
+        GalleryDetailHeadAdapter(mViewModel.detailWrap)
     }
     private val mInitialLoadState: InitialLoadStateAdapter by lazy {
         InitialLoadStateAdapter(mPreviewAdapter)
@@ -53,13 +53,13 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         GalleryDetailOperatingAdapter(mViewModel.detailWrap)
     }
     private val mTag: GalleryDetailTagAdapter by lazy {
-        GalleryDetailTagAdapter(mViewModel.detailWrap.tags)
+        GalleryDetailTagAdapter(mViewModel.detailWrap)
     }
-    private val comment: GalleryDetailCommentAdapter by lazy {
-        GalleryDetailCommentAdapter(mViewModel.detailWrap.comment)
+    private val mComment: GalleryDetailCommentAdapter by lazy {
+        GalleryDetailCommentAdapter(mViewModel.detailWrap)
     }
     private val mConcatAdapter: ConcatAdapter by lazy {
-        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, comment)
+        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment)
     }
 
 
@@ -72,19 +72,14 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
         lifecycleScope.launchWhenCreated {
             mPreviewAdapter.loadStateFlow.collectLatest { loadStates ->
-                mHeader.setState(
-                    mViewModel.detailWrap.headInfo, loadStates.refresh,
-                    loadStates.prepend.endOfPaginationReached
-                )
                 mInitialLoadState.loadState = loadStates.refresh
-                mOperating.endOfPrepend = loadStates.prepend.endOfPaginationReached
-                mTag.setData(mViewModel.detailWrap.tags, loadStates.prepend.endOfPaginationReached)
-                comment.setData(
-                    mViewModel.detailWrap.comment, loadStates.prepend.endOfPaginationReached
-                )
+                mOperating.loadState = loadStates.refresh
+                mTag.loadState = loadStates.refresh
+                mComment.loadState = loadStates.refresh
+
+                gallery_detail?.endOfPrepend = loadStates.prepend.endOfPaginationReached
             }
         }
-
 
         mViewModel.galleryDetail.observe(this@GalleryDetailFragment, androidx.lifecycle.Observer {
             mPreviewAdapter.submitData(lifecycle, it)

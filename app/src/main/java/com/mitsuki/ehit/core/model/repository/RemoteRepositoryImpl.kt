@@ -35,7 +35,7 @@ class RemoteRepositoryImpl @Inject constructor(
         pageIn: PageIn,
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>> {
-        return Pager(mDetailPagingConfig) {
+        return Pager(mDetailPagingConfig, initialKey = 0) {
             GalleryDetailSource(gid, token, pageIn, detailSource, requestProvider)
         }.flow
     }

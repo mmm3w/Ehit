@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <application
         android:name="com.mitsuki.ehit.base.EhApplication"
         android:allowBackup="true"
@@ -14,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <activity android:name=".core.ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".core.ui.activity.GalleryActivity" />
+        <activity android:name=".core.ui.activity.GalleryInfoActivity" />
+        <activity android:name=".core.ui.activity.GalleryCommentActivity" />
         <activity android:name=".core.ui.activity.SettingActivity" />
     </application>
 

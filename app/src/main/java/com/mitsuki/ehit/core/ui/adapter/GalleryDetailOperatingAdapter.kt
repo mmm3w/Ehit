@@ -3,29 +3,36 @@ package com.mitsuki.ehit.core.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.core.crutch.InitialGate
 import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.core.ui.layoutmanager.DetailOperatingLayoutManager
 
 //详情adapter 02
-class GalleryDetailOperatingAdapter(val data: GalleryDetailWrap) :
+class GalleryDetailOperatingAdapter(private val mData: GalleryDetailWrap) :
     RecyclerView.Adapter<GalleryDetailOperatingAdapter.DetailOperatingViewHolder>() {
 
-    private val mOperatingAdapter by lazy { PartAdapter(data.partInfo) }
+    private val mOperatingAdapter by lazy { PartAdapter() }
 
-    var endOfPrepend: Boolean = true
-        set(endOfPrepend) {
-            if (field != endOfPrepend) {
-                if (field && !endOfPrepend) {
-                    notifyItemRemoved(0)
-                } else if (endOfPrepend && !field) {
-                    notifyItemInserted(0)
-                } else if (field && endOfPrepend) {
-                    notifyItemChanged(0)
+    private val mGate = InitialGate()
+
+    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
+        set(loadState) {
+            if (mGate.ignore()) return
+
+            if (field != loadState) {
+                when (loadState) {
+                    is LoadState.Loading -> mGate.prep(true)
+                    is LoadState.Error -> mGate.prep(false)
+                    is LoadState.NotLoading -> mGate.trigger()
                 }
-                field = endOfPrepend
+
+                if (mGate.ignore()) notifyItemInserted(0)
+
+                field = loadState
             }
         }
 
@@ -34,11 +41,11 @@ class GalleryDetailOperatingAdapter(val data: GalleryDetailWrap) :
         return DetailOperatingViewHolder(parent, mOperatingAdapter)
     }
 
-    override fun getItemCount(): Int = if (endOfPrepend) 1 else 0
+    override fun getItemCount(): Int = if (mGate.ignore()) 1 else 0
 
     override fun onBindViewHolder(holder: DetailOperatingViewHolder, position: Int) {
-        mOperatingAdapter.data = data.partInfo
-        mOperatingAdapter.notifyItemRangeChanged(0, 1)
+        mOperatingAdapter.data = mData.partInfo
+        mOperatingAdapter.notifyItemChanged(0)
     }
 
     class DetailOperatingViewHolder(parent: ViewGroup, partAdapter: PartAdapter) :
@@ -54,4 +61,6 @@ class GalleryDetailOperatingAdapter(val data: GalleryDetailWrap) :
             addItemDecoration(partAdapter.divider)
         }
     }
+
+
 }

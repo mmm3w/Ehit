@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.core.model.entity
 
+import com.mitsuki.ehit.being.exception.ParseException
 import com.mitsuki.ehit.core.model.ehparser.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -45,8 +46,8 @@ data class GalleryDetail(
 
     companion object {
         @Suppress("MemberVisibilityCanBePrivate")
-        fun parse(content: String?): GalleryDetail? {
-            if (content.isNullOrEmpty()) return null
+        fun parse(content: String?): GalleryDetail {
+            if (content.isNullOrEmpty()) throw ParseException("未请求到数据")
 
             val detail = content.parseDetail()
             val gid = detail[0].toLong()
