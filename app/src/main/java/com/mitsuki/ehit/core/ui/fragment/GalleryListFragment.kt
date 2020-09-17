@@ -19,6 +19,9 @@ import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.transition.platform.MaterialElevationScale
+import com.google.android.material.transition.platform.MaterialFade
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
@@ -49,9 +52,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        exitTransition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.list_exit_transition)
-//
+        exitTransition = MaterialElevationScale(false).apply { duration = 300 }
+        reenterTransition  = MaterialElevationScale(true).apply { duration = 300 }
+
         mAdapter.currentItem.observe(this, Observer(this::toDetail))
 
         lifecycleScope.launchWhenCreated {

@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.core.ui.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -15,6 +16,11 @@ import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialFade
+import com.google.android.material.transition.platform.MaterialFadeThrough
+import com.google.android.material.transition.platform.MaterialSharedAxis
+import com.mitsuki.armory.extend.themeColor
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
@@ -65,8 +71,11 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(requireContext())
-            .inflateTransition(R.transition.shared_element_transition_thumb)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.main_nav_fragment
+            duration = 300
+            scrimColor = Color.TRANSPARENT
+        }
 
         mViewModel.initData(arguments)
 
@@ -88,9 +97,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
-        (view.parent as? ViewGroup)?.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+        (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
         top_title_back?.setOnClickListener {
             requireActivity().onBackPressed()
