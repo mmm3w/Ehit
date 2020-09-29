@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
@@ -52,10 +53,8 @@ class GalleryAdapter :
                 text = it.category.toUpperCase(Locale.getDefault())
             }
             holder.view<TextView>(R.id.gallery_time)?.text = it.time
-            holder.view<ImageView>(R.id.gallery_thumb)?.apply {
-                transitionName = it.thumbTransitionName
-                load(it.thumb) { crossfade(300) }
-            }
+//            holder.view<ImageView>(R.id.gallery_thumb)?.load(it.thumb) { crossfade(300) }
+            holder.view<CardView>(R.id.gallery_card)?.transitionName = it.itemTransitionName
         }
     }
 

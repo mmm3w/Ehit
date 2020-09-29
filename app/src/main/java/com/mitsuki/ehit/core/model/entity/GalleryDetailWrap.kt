@@ -12,7 +12,6 @@ class GalleryDetailWrap {
 
     data class DetailHeader(
         val thumb: String,
-        val thumbTransitionName: String,
         val title: String,
         val uploader: String,
         val category: String
@@ -55,7 +54,7 @@ class GalleryDetailWrap {
 
 fun Gallery.obtainHeader(): GalleryDetailWrap.DetailHeader {
 
-    return GalleryDetailWrap.DetailHeader(thumb, thumbTransitionName, title, uploader, category)
+    return GalleryDetailWrap.DetailHeader(thumb, title, uploader, category)
 }
 
 fun GalleryDetail.obtainOperating(): GalleryDetailWrap.DetailPart {

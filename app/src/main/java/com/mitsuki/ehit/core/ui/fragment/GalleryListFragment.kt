@@ -2,10 +2,14 @@ package com.mitsuki.ehit.core.ui.fragment
 
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.app.SharedElementCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
@@ -15,20 +19,18 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.transition.platform.MaterialElevationScale
 import com.google.android.material.transition.platform.MaterialFade
-import com.google.android.material.transition.platform.MaterialFadeThrough
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.ui.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.core.ui.adapter.GalleryAdapter
-import com.mitsuki.ehit.core.ui.widget.CategoryView
 import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
@@ -52,8 +54,18 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        exitTransition = MaterialElevationScale(false).apply { duration = 300 }
-        reenterTransition  = MaterialElevationScale(true).apply { duration = 300 }
+        exitTransition = MaterialFade().apply {
+            duration = resources.getInteger(R.integer.fragment_transition_motion_duration).toLong()
+            secondaryAnimatorProvider = null
+        }
+        returnTransition = MaterialFade().apply {
+            duration = resources.getInteger(R.integer.fragment_transition_motion_duration).toLong()
+            secondaryAnimatorProvider = null
+        }
+        reenterTransition = MaterialFade().apply {
+            duration = resources.getInteger(R.integer.fragment_transition_motion_duration).toLong()
+            secondaryAnimatorProvider = null
+        }
 
         mAdapter.currentItem.observe(this, Observer(this::toDetail))
 
@@ -82,20 +94,35 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         securityCheck()
         installCheck()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
-        (view.parent as? ViewGroup)?.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+        (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
         gallery_list?.apply {
             //配置recycleView
             recyclerView {
                 layoutManager = LinearLayoutManager(activity)
                 adapter = mConcatAdapter
+            }
+
+            topBar {
+                setOnClickListener {
+
+                    val extras = FragmentNavigatorExtras(
+                        it.findViewById<MaterialCardView>(R.id.top_search_layout)
+                                to getString(R.string.transition_name_gallery_list_toolbar)
+                    )
+
+                    Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+                        .navigate(
+                            R.id.action_gallery_list_fragment_to_search_fragment,
+                            null,
+                            null,
+                            extras
+                        )
+                }
             }
 
             setListener(
@@ -133,7 +160,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {
         with(galleryClick) {
             val extras = FragmentNavigatorExtras(
-                target.findViewById<ImageView>(R.id.gallery_thumb) to data.thumbTransitionName
+                target.findViewById<MaterialCardView>(R.id.gallery_card) to data.itemTransitionName
             )
 
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)

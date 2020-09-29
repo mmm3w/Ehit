@@ -1,14 +1,15 @@
 <resources>
     <string name="app_name">Ehit</string>
 
-
     <string name="label_gallery_list_fragment" translatable="false">GalleryListFragment</string>
     <string name="label_gallery_detail_fragment" translatable="false">GalleryDetailFragment</string>
     <string name="label_login_fragment" translatable="false">LoginFragment</string>
     <string name="label_security_fragment" translatable="false">SecurityFragment</string>
     <string name="label_disclaimer_fragment" translatable="false">DisclaimerFragment</string>
+    <string name="label_search_fragment" translatable="false">SearchFragment</string>
 
-    <string name="transition_name_gallery_thumb" translatable="false">galleryThumb</string>
+    <string name="transition_name_gallery_list_toolbar" translatable="false">GalleryListToolbar</string>
+
 
 
     <string name="hint_account">account</string>
@@ -22,5 +23,6 @@
 
     <string name="text_download">Download</string>
     <string name="text_read">Read</string>
+    <string name="text_search">Search</string>
 
 </resources>

@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_gallery_list_fragment_to_disclaimer_fragment"
             app:destination="@id/disclaimer_fragment" />
+        <action
+            android:id="@+id/action_gallery_list_fragment_to_search_fragment"
+            app:destination="@id/search_fragment" />
     </fragment>
 
 
@@ -53,6 +56,15 @@
             app:destination="@id/gallery_list_fragment"
             app:popUpTo="@id/gallery_list_fragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.mitsuki.ehit.core.ui.fragment.SearchFragment"
+        android:label="@string/label_search_fragment">
+        <action
+            android:id="@+id/action_search_fragment_to_gallery_list_fragment"
+            app:destination="@id/gallery_list_fragment" />
     </fragment>
 
 </navigation>

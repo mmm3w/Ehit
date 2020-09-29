@@ -23,12 +23,7 @@ class GalleryListLayout @JvmOverloads constructor(
 
     //基础配置参数
     private val mCircleDiameter: Int //刷新View的大小
-    private val mStatusBarHeight: Int //状态栏的高度
-    private val mNavigationBarHeight: Int //底栏高度
     private val mFabSlop: Int
-
-    private val mIgnoredStatusBar = true //是否ignore state bar
-    private val mTopOffset: Int //state bar偏移
 
     private val mRefreshPlugin: RefreshPlugin
     private val mFloatBarPlugin: FloatBarPlugin
@@ -45,9 +40,6 @@ class GalleryListLayout @JvmOverloads constructor(
             mCircleDiameter = (CIRCLE_DIAMETER * this).roundToInt()
             marginSize = dp2px(36f)
         }
-        mStatusBarHeight = statusBarHeight(context)
-        mNavigationBarHeight = navigationBarHeight(context)
-        mTopOffset = if (mIgnoredStatusBar) mStatusBarHeight else 0
         mFabSlop = ViewConfiguration.get(context).scaledTouchSlop
         //创建 RecyclerView
         mRecyclerView = RecyclerView(context).apply {
@@ -100,19 +92,13 @@ class GalleryListLayout @JvmOverloads constructor(
         )
 
         mRecyclerView.setPadding(
-            0,
-            mFloatBarPlugin.view().measuredHeight + mFloatBarPlugin.view().marginVertical() +
-                    mStatusBarHeight - mTopOffset,
-            0,
-            mNavigationBarHeight
+            0, mFloatBarPlugin.view().measuredHeight + mFloatBarPlugin.view().marginVertical(),
+            0, 0
         )
 
         mRecyclerView.measure(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(
-                MeasureSpec.getSize(heightMeasureSpec) - mTopOffset,
-                MeasureSpec.EXACTLY
-            )
+            MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.EXACTLY)
         )
         mRefreshPlugin.view {
             measure(
@@ -128,20 +114,18 @@ class GalleryListLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        mFloatBarPlugin.view {
-            layout(0, mStatusBarHeight, measuredWidth, mStatusBarHeight + measuredHeight)
-        }
+        mFloatBarPlugin.view { layout(0, 0, measuredWidth, measuredHeight) }
 
         mRefreshPlugin.view {
             layout(
                 this@GalleryListLayout.measuredWidth / 2 - measuredWidth / 2,
-                mTopOffset + mFloatBarPlugin.view().measuredHeight,
+                mFloatBarPlugin.view().measuredHeight,
                 this@GalleryListLayout.measuredWidth / 2 + measuredWidth / 2,
-                measuredHeight + mTopOffset + mFloatBarPlugin.view().measuredHeight
+                measuredHeight + mFloatBarPlugin.view().measuredHeight
             )
         }
 
-        mRecyclerView.apply { layout(0, mTopOffset, measuredWidth, measuredHeight + mTopOffset) }
+        mRecyclerView.apply { layout(0, 0, measuredWidth, measuredHeight) }
 
     }
 

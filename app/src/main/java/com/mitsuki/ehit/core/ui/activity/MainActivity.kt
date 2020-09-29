@@ -1,9 +1,13 @@
 package com.mitsuki.ehit.core.ui.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.core.app.SharedElementCallback
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -22,8 +26,8 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        window.decorView.systemUiVisibility = statusBarColorStyle()
+
 
         main_navigation.setupWithNavController(navController)
 
@@ -33,10 +37,16 @@ class MainActivity : BaseActivity() {
             }
             true
         }
-
     }
-
 
     override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()
 
+    private fun statusBarColorStyle(): Int {
+        var tag = 0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) tag =
+            tag or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) tag =
+            tag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        return tag
+    }
 }

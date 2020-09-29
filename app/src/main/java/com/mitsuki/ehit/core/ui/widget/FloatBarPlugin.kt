@@ -14,7 +14,7 @@ class FloatBarPlugin(context: Context, @LayoutRes val layoutRes: Int, root: View
     RecyclerView.OnScrollListener() {
 
     private var mOffsetLimit: Float = -1f
-    private val mStatusBarHeight: Int = statusBarHeight(context)
+    private val mStatusBarHeight: Int = context.statusBarHeight()
     private val mView: View = LayoutInflater.from(context).inflate(layoutRes, root, false)
 
     /**********************************************************************************************/

@@ -3,7 +3,6 @@ package com.mitsuki.ehit.core.ui.fragment
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
@@ -12,26 +11,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import com.google.android.material.transition.platform.MaterialFade
-import com.google.android.material.transition.platform.MaterialFadeThrough
-import com.google.android.material.transition.platform.MaterialSharedAxis
-import com.mitsuki.armory.extend.themeColor
-import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_detail.*
-import kotlinx.android.synthetic.main.item_gallery_detail_header.*
 import kotlinx.android.synthetic.main.part_top_title_bar.*
 import kotlinx.coroutines.flow.collectLatest
-import java.util.*
 
 @AndroidEntryPoint
 class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
@@ -73,8 +64,9 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.main_nav_fragment
-            duration = 300
-            scrimColor = Color.TRANSPARENT
+            duration = resources.getInteger(R.integer.fragment_transition_motion_duration).toLong()
+//            TODO:颜色值替换
+            setAllContainerColors(0xffffffff.toInt())
         }
 
         mViewModel.initData(arguments)
@@ -93,15 +85,16 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         mViewModel.galleryDetail.observe(this@GalleryDetailFragment, androidx.lifecycle.Observer {
             mPreviewAdapter.submitData(lifecycle, it)
         })
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        top_title_back?.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
+        gallery_detail_card?.transitionName = mViewModel.itemTransitionName
+        top_title_back?.setOnClickListener { requireActivity().onBackPressed() }
 
         gallery_detail?.apply {
             infoList {
@@ -115,9 +108,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
 
             setListener(
-                pageJumpListener = {
-                    showPageJumpDialog()
-                }
+                pageJumpListener = { showPageJumpDialog() }
             )
         }
     }

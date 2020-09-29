@@ -35,7 +35,7 @@ data class Gallery(
     }
 
     @IgnoredOnParcel
-    val thumbTransitionName = "thumb:$gid"
+    val itemTransitionName = "gallery:$gid$token"
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Gallery>() {

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gallery_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_8"
+    android:layout_marginStart="@dimen/dp_16"
     android:layout_marginTop="@dimen/dp_4"
-    android:layout_marginEnd="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_4">
+    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/grayscale_f5">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/gallery_thumb"
@@ -85,5 +85,5 @@
             app:layout_constraintEnd_toEndOf="@id/gallery_time" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
 

@@ -1,5 +1,7 @@
 package com.mitsuki.ehit.core.ui.adapter
 
+import android.graphics.drawable.BitmapDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -35,10 +37,7 @@ class GalleryDetailHeadAdapter(private var mData: GalleryDetailWrap) :
 
         fun bind(data: GalleryDetailWrap.DetailHeader) {
             with(data) {
-                mThumb?.apply {
-                    transitionName = thumbTransitionName
-                    load(data.thumb)
-                }
+                mThumb?.load(data.thumb)
                 mTitle?.text = title
                 mUploader?.text = uploader
                 mCategory?.text = category

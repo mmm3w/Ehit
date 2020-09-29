@@ -36,12 +36,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
         clipToPadding = false
     }
 
-    private val mStatusBarHeight: Int //状态栏的高度
-    private val mNavigationBarHeight: Int //底栏高度
-
-    private val mIgnoredStatusBar = true //是否ignore state bar
-    private val mTopOffset: Int //state bar偏移
-
     private var mMoveRange = 0f
     private var mCurrentOffset = 0f
 
@@ -51,10 +45,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
     private var mTopToPreview = 0f
 
     init {
-        mStatusBarHeight = statusBarHeight(context)
-        mNavigationBarHeight = navigationBarHeight(context)
-        mTopOffset = if (mIgnoredStatusBar) mStatusBarHeight else 0
-
         addView(mInfoView)
         addView(mPreviewView)
         addView(mTitleBar)
@@ -74,28 +64,23 @@ class GalleryDetailLayout @JvmOverloads constructor(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
         )
 
-        mTitleOffsetRange = mTitleBar.measuredHeight + mStatusBarHeight - mTopOffset
+        mTitleOffsetRange = mTitleBar.measuredHeight
 
         mInfoView.setPadding(0, mTitleBar.measuredHeight, 0, 0)
         mInfoView.measure(
             widthMeasureSpec,
-            MeasureSpec.makeMeasureSpec(
-                MeasureSpec.getSize(heightMeasureSpec) - mTopOffset, MeasureSpec.AT_MOST
-            )
+            MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
         )
 
         mTopToPreview = mInfoView.measuredHeight.toFloat()
 
-        mPreviewView.setPadding(0, 0, 0, mNavigationBarHeight)
         mPreviewView.measure(
             widthMeasureSpec,
-            MeasureSpec.makeMeasureSpec(
-                MeasureSpec.getSize(heightMeasureSpec) - mTopOffset, MeasureSpec.AT_MOST
-            )
+            MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
         )
 
         mMoveRange = (mPreviewView.measuredHeight + mInfoView.measuredHeight -
-                MeasureSpec.getSize(heightMeasureSpec) + mTopOffset).toFloat()
+                MeasureSpec.getSize(heightMeasureSpec)).toFloat()
 
         setMeasuredDimension(
             MeasureSpec.getSize(widthMeasureSpec),
@@ -104,18 +89,14 @@ class GalleryDetailLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        mTitleBar.apply {
-            layout(0, mStatusBarHeight, measuredWidth, measuredHeight + mStatusBarHeight)
-        }
+        mTitleBar.apply { layout(0, 0, measuredWidth, measuredHeight) }
 
-        mInfoView.apply {
-            layout(0, mTopOffset, measuredWidth, mTopOffset + measuredHeight)
-        }
+        mInfoView.apply { layout(0, 0, measuredWidth, measuredHeight) }
 
         mPreviewView.apply {
             layout(
-                0, mTopOffset + mInfoView.measuredHeight,
-                measuredWidth, mTopOffset + measuredHeight + mInfoView.measuredHeight
+                0, mInfoView.measuredHeight,
+                measuredWidth, measuredHeight + mInfoView.measuredHeight
             )
         }
     }

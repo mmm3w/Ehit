@@ -32,6 +32,9 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
         detailWrap.headInfo = mBaseInfo.obtainHeader()
     }
 
+    val itemTransitionName: String
+        get() = mBaseInfo.itemTransitionName
+
     val galleryDetail: LiveData<PagingData<ImageSource>>
         get() = repository.galleryDetail(mBaseInfo.gid, mBaseInfo.token, mDetailPageIn, detailWrap)
             .cachedIn(viewModelScope)

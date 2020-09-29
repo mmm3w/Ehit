@@ -14,4 +14,6 @@
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>
+    <string name="text_search">搜索</string>
+
 </resources>
