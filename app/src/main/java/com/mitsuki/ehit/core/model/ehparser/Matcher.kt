@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.core.model.ehparser
 
+import com.mitsuki.ehit.being.okhttp.Url
 import java.util.regex.Pattern
 
 object Matcher {
@@ -27,7 +28,7 @@ object Matcher {
 
     val PAGER_INDEX: Pattern =
         Pattern.compile("<td class=\"ptds\"><a.*?>(\\d+)</a></td>") //当前页码
-    val PAGER_TOTAL_SIZE =
+    val PAGER_TOTAL_SIZE: Pattern =
         Pattern.compile("<tr><td.*?>Length:</td><td.*?>(\\d+) pages</td></tr>") //总数
 
     //分页的基本信息
@@ -37,5 +38,14 @@ object Matcher {
     val PAGER_INFO: Pattern =
         Pattern.compile("(\\d+)?(</a>)?</td><td class=\"ptds\"><a.*?>(\\d+)</a></td>(<td.*?>)?(<a.*?>)?(\\d+)?")
 
+    val PREVIEW_IMG_URL: Pattern =
+        Pattern.compile("<img[^>]*src=\"([^\"]+)\" style")
+    val PREVIEW_RELOAD_KEY: Pattern =
+        Pattern.compile("onclick=\"return nl\\('([^\\)]+)'\\)")
+    val PREVIEW_DOWNLOAD_URL: Pattern =
+        Pattern.compile("<a href=\"([^\"]+)fullimg.php([^\"]+)\">")
+
+    val PREVIEW_PAGE_TO_TOKEN: Pattern =
+        Pattern.compile("${Url.host()}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
 
 }

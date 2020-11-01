@@ -40,7 +40,7 @@ versions.material_dialogs = '3.3.0'
 versions.jsoup = '1.13.1'
 versions.okhttp = '4.7.2'
 versions.arouter = "1.5.0"
-versions.coil = "0.13.0"
+versions.coil = "1.0.0-rc3"
 /**************************************************************************************************/
 //gradle
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
@@ -123,7 +123,7 @@ deps.coil = "io.coil-kt:coil:$versions.coil"
 
 /**************************************************************************************************/
 
-def addRepos(RepositoryHandler handler) {
+static def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://jsoup.org' }

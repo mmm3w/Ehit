@@ -30,7 +30,6 @@
         android:id="@+id/comment_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/blue_5F6368" />
 </LinearLayout>

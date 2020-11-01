@@ -12,7 +12,6 @@ class RequestProvider {
         return Request.Builder()
             .get()
             .url(Url.galleryList(page))
-            .fakeHeader()
             .build()
     }
 
@@ -21,7 +20,15 @@ class RequestProvider {
         return Request.Builder()
             .get()
             .url(Url.galleryDetail(gid, token, index))
-            .fakeHeader()
+            .build()
+    }
+
+    //单图预览
+    fun galleryPreviewRequest(gid: Long, token: String, index: Int = 0, nl: String? = null)
+            : Request {
+        return Request.Builder()
+            .get()
+            .url(Url.galleryPreviewDetail(gid, token, index, nl))
             .build()
     }
 }

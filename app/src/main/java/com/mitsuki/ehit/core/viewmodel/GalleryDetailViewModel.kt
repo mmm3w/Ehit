@@ -21,22 +21,22 @@ import com.mitsuki.ehit.core.model.repository.Repository
 class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
-    private lateinit var mBaseInfo: Gallery
+    lateinit var baseInfo: Gallery
     private val mDetailPageIn = PageIn()
     val detailWrap = GalleryDetailWrap()
 
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw DetailInitException()
-        mBaseInfo =
+        baseInfo =
             bundle.getParcelable(DataKey.GALLERY_INFO) ?: throw DetailInitException()
-        detailWrap.headInfo = mBaseInfo.obtainHeader()
+        detailWrap.headInfo = baseInfo.obtainHeader()
     }
 
     val itemTransitionName: String
-        get() = mBaseInfo.itemTransitionName
+        get() = baseInfo.itemTransitionName
 
     val galleryDetail: LiveData<PagingData<ImageSource>>
-        get() = repository.galleryDetail(mBaseInfo.gid, mBaseInfo.token, mDetailPageIn, detailWrap)
+        get() = repository.galleryDetail(baseInfo.gid, baseInfo.token, mDetailPageIn, detailWrap)
             .cachedIn(viewModelScope)
             .asLiveData()
 

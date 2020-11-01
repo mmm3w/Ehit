@@ -1,8 +1,7 @@
 package com.mitsuki.ehit.being.okhttp
 
-inline fun urlBuilder(base: String, action: UrlParams.() -> Unit) = UrlParams(
-    base
-).apply(action)
+inline fun urlBuilder(base: String, action: UrlParams.() -> Unit) =
+    UrlParams(base).apply(action)
 
 class UrlParams(url: String) {
     private val base: StringBuilder = StringBuilder(url)
@@ -19,7 +18,8 @@ class UrlParams(url: String) {
     fun build(): String = base.toString()
 
     companion object {
-        const val PAGE = "page"
+        const val LIST_PAGE = "page"
+        const val NEW_LOAD = "nl"
     }
 }
 

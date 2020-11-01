@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="fragment_transition_motion_duration">3500</integer>
+    <integer name="fragment_transition_motion_duration">350</integer>
+    <integer name="image_load_cross_fade">200</integer>
 
 </resources>

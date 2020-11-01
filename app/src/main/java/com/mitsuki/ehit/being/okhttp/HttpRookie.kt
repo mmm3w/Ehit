@@ -1,6 +1,9 @@
 package com.mitsuki.ehit.being.okhttp
 
 import android.util.Log
+import coil.util.CoilUtils
+import com.mitsuki.ehit.being.CoilProvider
+import com.mitsuki.ehit.being.imageloadprogress.ProgressProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -14,7 +17,9 @@ object HttpRookie {
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
+            //TODO：这里的dns解析存在问题，日后需要解决
             .dns(MyDns())
+            .addInterceptor(FakeHeader())
             .build()
     }
 }

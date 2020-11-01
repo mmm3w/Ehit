@@ -19,6 +19,19 @@ android {
     }
 
     buildTypes {
+        //temp
+        def properties = new Properties()
+        def inputStream = project.rootProject.file('local.properties').newDataInputStream()
+        properties.load(inputStream)
+
+        debug {
+            buildConfigField "String", "ipb_member_id", properties.getProperty('ipb_member_id')
+            buildConfigField "String", "ipb_pass_hash", properties.getProperty('ipb_pass_hash')
+            buildConfigField "String", "igneous", properties.getProperty('igneous')
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

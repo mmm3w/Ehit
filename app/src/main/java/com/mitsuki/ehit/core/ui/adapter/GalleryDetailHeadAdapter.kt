@@ -1,15 +1,13 @@
 package com.mitsuki.ehit.core.ui.adapter
 
-import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.being.load
 import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.core.ui.widget.CategoryView
 
@@ -37,7 +35,7 @@ class GalleryDetailHeadAdapter(private var mData: GalleryDetailWrap) :
 
         fun bind(data: GalleryDetailWrap.DetailHeader) {
             with(data) {
-                mThumb?.load(data.thumb)
+                mThumb?.load(url = data.thumb) { allowHardware(false) }
                 mTitle?.text = title
                 mUploader?.text = uploader
                 mCategory?.text = category

@@ -1,12 +1,15 @@
 package com.mitsuki.ehit.core.ui.fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +20,9 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.core.model.entity.ImageSource
+import com.mitsuki.ehit.core.ui.activity.GalleryActivity
 import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,7 +92,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             mPreviewAdapter.submitData(lifecycle, it)
         })
 
-
+        mPreviewAdapter.currentItem.observe(this, Observer(this::onPreviewClick))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -124,6 +130,15 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             positiveButton(R.string.text_confirm)
             lifecycleOwner(this@GalleryDetailFragment)
         }
+    }
+
+    private fun onPreviewClick(item: ImageSource) {
+        startActivity(Intent(requireActivity(), GalleryActivity::class.java).apply {
+            putExtra(DataKey.GALLERY_INDEX, item.index)
+            putExtra(DataKey.GALLERY_PAGE, mViewModel.detailWrap.partInfo.page)
+            putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
+            putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
+        })
     }
 
 }
