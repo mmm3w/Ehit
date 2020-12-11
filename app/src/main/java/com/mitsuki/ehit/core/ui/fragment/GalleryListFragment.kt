@@ -100,6 +100,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
+        //TODO：目前下拉刷新还存在问题等待排查，并且考虑是否增加一个初始加载错误页面
         gallery_list?.apply {
             //配置recycleView
             recyclerView {
@@ -108,20 +109,21 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             }
 
             topBar {
+                //TODO：topBar 展开效果不是非常好，搜索功能暂且稍后
                 setOnClickListener {
-
-                    val extras = FragmentNavigatorExtras(
-                        it.findViewById<MaterialCardView>(R.id.top_search_layout)
-                                to getString(R.string.transition_name_gallery_list_toolbar)
-                    )
-
-                    Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-                        .navigate(
-                            R.id.action_gallery_list_fragment_to_search_fragment,
-                            null,
-                            null,
-                            extras
-                        )
+                    //暂时禁用
+//                    val extras = FragmentNavigatorExtras(
+//                        it.findViewById<MaterialCardView>(R.id.top_search_layout)
+//                                to getString(R.string.transition_name_gallery_list_toolbar)
+//                    )
+//
+//                    Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//                        .navigate(
+//                            R.id.action_gallery_list_fragment_to_search_fragment,
+//                            null,
+//                            null,
+//                            extras
+//                        )
                 }
             }
 
@@ -159,17 +161,17 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
     private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {
         with(galleryClick) {
-            val extras = FragmentNavigatorExtras(
-                target.findViewById<MaterialCardView>(R.id.gallery_card) to data.itemTransitionName
-            )
-
-            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-                .navigate(
-                    R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
-                    bundleOf(DataKey.GALLERY_INFO to data),
-                    null,
-                    extras
-                )
+//            val extras = FragmentNavigatorExtras(
+//                target.findViewById<MaterialCardView>(R.id.gallery_card) to data.itemTransitionName
+//            )
+//
+//            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//                .navigate(
+//                    R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
+//                    bundleOf(DataKey.GALLERY_INFO to data),
+//                    null,
+//                    extras
+//                )
         }
     }
 

@@ -1,11 +1,15 @@
 package com.mitsuki.ehit.core.ui.adapter
 
+import android.graphics.Outline
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +27,12 @@ class GalleryAdapter :
 
     val currentItem: MutableLiveData<GalleryClick> = MutableLiveData()
 
+    private val mGalleryThumbViewOutlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            outline.setRoundRect(0, 0, view.width, view.height, 8F)
+        }
+    }
+
     private val mItemClick = { view: View ->
         val holder = view.tag as ViewHolder
         getItem(holder.bindingAdapterPosition).diffuse {
@@ -34,35 +44,48 @@ class GalleryAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent).apply {
+        return ViewHolder(parent, mGalleryThumbViewOutlineProvider).apply {
             itemView.tag = this
             itemView.setOnClickListener(mItemClick)
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        getItem(position)?.let {
-            holder.view<TextView>(R.id.gallery_title)?.text = it.title
-            holder.view<TextView>(R.id.gallery_uploader)?.text = it.uploader
-            holder.view<RatingView>(R.id.ggallery_rating)?.rating = it.rating
-            holder.view<TextView>(R.id.gallery_lang)?.text = it.languageSimple
-            holder.view<CategoryView>(R.id.gallery_category)?.apply {
-                setCategoryColor(it.categoryColor)
-                text = it.category.toUpperCase(Locale.getDefault())
-            }
-            holder.view<TextView>(R.id.gallery_time)?.text = it.time
-            holder.view<ImageView>(R.id.gallery_thumb)?.load(url = it.thumb) {
-                crossfade(300)
-                allowHardware(false)
-            }
-            holder.view<CardView>(R.id.gallery_card)?.transitionName = it.itemTransitionName
-        }
+        getItem(position)?.let { holder.bind(it) }
     }
 
-    class ViewHolder(parent: ViewGroup) :
+    class ViewHolder(parent: ViewGroup, provider: ViewOutlineProvider) :
         RecyclerView.ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false)
         ) {
+
+        private val mGalleryThumb = view<ImageView>(R.id.gallery_thumb)?.apply {
+            outlineProvider = provider
+            clipToOutline = true
+        }
+
+        private val mGalleryTitle = view<TextView>(R.id.gallery_title)
+        private val mGalleryUploader = view<TextView>(R.id.gallery_uploader)
+        private val mGalleryLanguage = view<TextView>(R.id.gallery_lang)
+        private val mGalleryCategory = view<CategoryView>(R.id.gallery_category)
+        private val mGalleryTime = view<TextView>(R.id.gallery_time)
+        private val mGalleryRating = view<RatingView>(R.id.ggallery_rating)
+        private val mGalleryLayout = view<ConstraintLayout>(R.id.gallery_layout)
+
+        fun bind(data: Gallery) {
+            mGalleryThumb?.load(url = data.thumb) { crossfade(300) }
+            mGalleryTitle?.text = data.title
+            mGalleryUploader?.text = data.uploader
+            mGalleryLanguage?.text = data.languageSimple
+            mGalleryCategory?.apply {
+                setCategoryColor(data.categoryColor)
+                text = data.category.toUpperCase(Locale.getDefault())
+            }
+            mGalleryTime?.text = data.time
+            mGalleryRating?.rating = data.rating
+            mGalleryLayout?.transitionName = data.itemTransitionName
+        }
+
     }
 
     private fun Gallery?.diffuse(action: Gallery.() -> Unit) {

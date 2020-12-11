@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="@dimen/dp_16">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -13,6 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
-        android:text="高级选项" />
+        android:text="扩展选项" />
 
 </LinearLayout>

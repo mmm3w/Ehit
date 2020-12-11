@@ -1,35 +1,48 @@
 package com.mitsuki.ehit.core.ui.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.scaleMatrix
 import androidx.core.view.doOnPreDraw
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import com.google.android.material.transition.platform.MaterialFade
-import com.mitsuki.armory.extend.paddingStatusBarHeight
-import com.mitsuki.armory.extend.themeColor
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.core.ui.adapter.SearchCategoryAdapter
-import com.mitsuki.ehit.core.ui.adapter.SearchExpandMore
-import com.mitsuki.ehit.core.ui.adapter.SearchHistoryAdapter
-import com.mitsuki.ehit.core.ui.adapter.SearchSwitch
+import com.mitsuki.ehit.core.ui.adapter.*
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class SearchFragment : BaseFragment(R.layout.fragment_search) {
 
-
     private val mSwitch by lazy { SearchSwitch() }
     private val mHistoryAdapter by lazy { SearchHistoryAdapter() }
+    private val mShortcutAdapter by lazy { SearchShortcutAdapter() }
     private val mCategoryAdapter by lazy { SearchCategoryAdapter() }
+    private val mAdvancedAdapter by lazy { SearchAdvancedAdapter() }
     private val mExtendMore by lazy { SearchExpandMore() }
+
     private val mAdapter by lazy {
-        ConcatAdapter(mSwitch, mHistoryAdapter, mCategoryAdapter, mExtendMore)
+        ConcatAdapter(
+            mCategoryAdapter,
+            mAdvancedAdapter,
+            mExtendMore,
+            mSwitch,
+            mHistoryAdapter,
+            mShortcutAdapter
+        )
+    }
+
+    private val mSpanSize = object : GridLayoutManager.SpanSizeLookup() {
+        override fun getSpanSize(position: Int): Int {
+            Log.e("asdf","$position : ${mAdapter.getItemViewType(position)}")
+            return if (mAdapter.getItemViewType(position) == 4 && mCategoryAdapter.isEnable) {
+                1
+            } else {
+                2
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,10 +60,27 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
         search_list?.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = GridLayoutManager(requireContext(), 2).apply {
+                spanSizeLookup = mSpanSize
+            }
             adapter = mAdapter
+
         }
 
         search_back?.setOnClickListener { requireActivity().onBackPressed() }
+
+        mSwitch.switchEvent.observe(viewLifecycleOwner, Observer(this::onSwitch))
+        mExtendMore.expendEvent.observe(
+            viewLifecycleOwner,
+            Observer { mAdvancedAdapter.isVisible = it })
+    }
+
+
+    private fun onSwitch(isAdvancedMode: Boolean) {
+        mHistoryAdapter.isEnable = !isAdvancedMode
+        mShortcutAdapter.isEnable = !isAdvancedMode
+        mCategoryAdapter.isEnable = isAdvancedMode
+        mExtendMore.isEnable = isAdvancedMode
+        mAdvancedAdapter.isEnable = isAdvancedMode
     }
 }

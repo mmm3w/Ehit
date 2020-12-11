@@ -28,7 +28,6 @@ class MainActivity : BaseActivity() {
 
         window.decorView.systemUiVisibility = statusBarColorStyle()
 
-
         main_navigation.setupWithNavController(navController)
 
         main_navigation.setNavigationItemSelectedListener {

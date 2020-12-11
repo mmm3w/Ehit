@@ -9,6 +9,7 @@ class EhApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        //TODO：注意缓存的配置
         CoilProvider.init(this)
     }
 }

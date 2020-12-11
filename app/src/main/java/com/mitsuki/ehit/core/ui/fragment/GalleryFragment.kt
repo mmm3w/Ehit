@@ -41,6 +41,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
         mViewModel.data.observe(viewLifecycleOwner, Observer(this::onLoadImage))
         mViewModel.state.observe(viewLifecycleOwner, Observer(this::onViewState))
+        //TODO：图片加载进度跳存在bug，整个界面还需要优化
         ProgressProvider.event(mViewModel.tag())
             .observe(viewLifecycleOwner, Observer(this@GalleryFragment::onLoadProgress))
 
