@@ -7,9 +7,11 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.core.view.NestedScrollingParent3
 import androidx.core.view.ViewCompat
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.extend.*
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.core.crutch.InitialGate
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -26,6 +28,8 @@ class GalleryListLayout @JvmOverloads constructor(
     private val mFabSlop: Int
 
     private val mRefreshPlugin: RefreshPlugin
+    private val mRefreshGate = InitialGate()
+
     private val mFloatBarPlugin: FloatBarPlugin
 
     private var mExtendControl: ((toHide: Boolean) -> Unit)? = null
@@ -185,13 +189,25 @@ class GalleryListLayout @JvmOverloads constructor(
         this.mExtendControl = extendControl
     }
 
-    //用变量的getter和setter替代get和set方法
-    var isRefreshing: Boolean
-        set(value) {
-            mRefreshPlugin.isRefreshing = value
-        }
-        get() = mRefreshPlugin.isRefreshing
-
     var endOfPrepend = false
+
+    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
+        set(loadState) {
+            if (field != loadState) {
+                when (loadState) {
+                    is LoadState.Loading -> mRefreshGate.prep(true)
+                    is LoadState.Error -> mRefreshGate.prep(false)
+                    is LoadState.NotLoading -> {
+                        mRefreshGate.trigger()
+                        if (mRefreshGate.ignore()) {
+                            mRefreshPlugin.isEnable = true
+                        }
+                    }
+                }
+
+                field = loadState
+            }
+        }
+
 
 }

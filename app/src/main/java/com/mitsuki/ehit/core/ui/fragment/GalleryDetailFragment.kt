@@ -1,12 +1,10 @@
 package com.mitsuki.ehit.core.ui.fragment
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
@@ -49,8 +47,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private val mHeader: GalleryDetailHeadAdapter by lazy {
         GalleryDetailHeadAdapter(mViewModel.detailWrap)
     }
-    private val mInitialLoadState: InitialLoadStateAdapter by lazy {
-        InitialLoadStateAdapter(mPreviewAdapter)
+    private val mInitialLoadState: GalleryDetailInitialLoadStateAdapter by lazy {
+        GalleryDetailInitialLoadStateAdapter(mPreviewAdapter)
     }
     private val mOperating: GalleryDetailOperatingAdapter by lazy {
         GalleryDetailOperatingAdapter(mViewModel.detailWrap)

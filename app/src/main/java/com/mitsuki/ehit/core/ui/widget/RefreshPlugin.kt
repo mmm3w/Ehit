@@ -13,7 +13,7 @@ import com.mitsuki.ehit.R
 class RefreshPlugin(context: Context) {
 
     private var mRefreshing = false //刷新状态
-    private var mEnableRefresh = true //刷新是否可用
+    private var mEnableRefresh = false //刷新是否可用
 
     private var mRefreshThreshold: Float //触发刷新的阈值，以及下拉阻力增强的阈值
     private var mCurrentRefreshDragY = 0f //刷新用下拉距离
@@ -140,6 +140,14 @@ class RefreshPlugin(context: Context) {
             mCurrentRefreshDragY = 0f
         }
     }
+
+    var isEnable: Boolean
+        set(value) {
+            if (value != mEnableRefresh) {
+                mEnableRefresh = value
+            }
+        }
+        get() = mEnableRefresh
 
 
     /**********************************************************************************************/

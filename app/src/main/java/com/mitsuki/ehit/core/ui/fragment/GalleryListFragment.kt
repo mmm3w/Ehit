@@ -2,35 +2,27 @@ package com.mitsuki.ehit.core.ui.fragment
 
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.app.SharedElementCallback
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.transition.platform.MaterialElevationScale
 import com.google.android.material.transition.platform.MaterialFade
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.ui.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.core.ui.adapter.GalleryAdapter
+import com.mitsuki.ehit.core.ui.adapter.GalleryDetailInitialLoadStateAdapter
+import com.mitsuki.ehit.core.ui.adapter.GalleryListInitialLoadStateAdapter
 import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
@@ -43,12 +35,21 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             by createViewModelLazy(GalleryListViewModel::class, { viewModelStore })
 
     private val mAdapter: GalleryAdapter by lazy { GalleryAdapter() }
+    private val mInitAdapter: GalleryListInitialLoadStateAdapter by lazy {
+        GalleryListInitialLoadStateAdapter(
+            mAdapter
+        )
+    }
 
     private val mConcatAdapter by lazy {
-        mAdapter.withLoadStateHeaderAndFooter(
-            header = DefaultLoadStateAdapter(mAdapter),
-            footer = DefaultLoadStateAdapter(mAdapter)
-        )
+        val header = DefaultLoadStateAdapter(mAdapter)
+        val footer = DefaultLoadStateAdapter(mAdapter)
+
+        mAdapter.addLoadStateListener { loadStates ->
+            header.loadState = loadStates.prepend
+            footer.loadState = loadStates.append
+        }
+        ConcatAdapter(header, mInitAdapter, mAdapter, footer)
     }
 
     @Suppress("ControlFlowWithEmptyBody")
@@ -71,6 +72,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
+                mInitAdapter.loadState = it.refresh
+                gallery_list?.loadState = it.refresh
+                gallery_list?.endOfPrepend =
+                    if (it.refresh is LoadState.Error) true
+                    else it.prepend.endOfPaginationReached
+
                 when (it.refresh) {
                     is LoadState.Error -> toast("刷新失败")
                 }
@@ -82,11 +89,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                 when (it.prepend) {
                     is LoadState.Error -> toast("顶部加载失败")
                 }
-
-                gallery_list?.isRefreshing = it.refresh is LoadState.Loading
-                gallery_list?.endOfPrepend =
-                    if (it.refresh is LoadState.Error) true
-                    else it.prepend.endOfPaginationReached
             }
         }
 

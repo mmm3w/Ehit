@@ -69,7 +69,7 @@ class GalleryAdapter :
         private val mGalleryLanguage = view<TextView>(R.id.gallery_lang)
         private val mGalleryCategory = view<CategoryView>(R.id.gallery_category)
         private val mGalleryTime = view<TextView>(R.id.gallery_time)
-        private val mGalleryRating = view<RatingView>(R.id.ggallery_rating)
+        private val mGalleryRating = view<RatingView>(R.id.gallery_rating)
         private val mGalleryLayout = view<ConstraintLayout>(R.id.gallery_layout)
 
         fun bind(data: Gallery) {
