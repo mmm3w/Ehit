@@ -19,4 +19,27 @@
 
     <color name="blue_054166">#054166</color>
 
+
+    <color name="black_00">#FF000000</color>
+    <color name="black_05">#F2000000</color>
+    <color name="black_10">#E5000000</color>
+    <color name="black_15">#D8000000</color>
+    <color name="black_20">#CC000000</color>
+    <color name="black_25">#BF000000</color>
+    <color name="black_30">#B2000000</color>
+    <color name="black_35">#A5000000</color>
+    <color name="black_40">#99000000</color>
+    <color name="black_45">#8C000000</color>
+    <color name="black_50">#7F000000</color>
+    <color name="black_55">#72000000</color>
+    <color name="black_60">#66000000</color>
+    <color name="black_65">#59000000</color>
+    <color name="black_70">#4C000000</color>
+    <color name="black_75">#3F000000</color>
+    <color name="black_80">#33000000</color>
+    <color name="black_85">#21000000</color>
+    <color name="black_90">#19000000</color>
+    <color name="black_95">#0C000000</color>
+
+
 </resources>

@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.app.SharedElementCallback
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.mitsuki.ehit.R
@@ -36,6 +37,9 @@ class MainActivity : BaseActivity() {
             }
             true
         }
+
+        securityCheck()
+        installCheck()
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()
@@ -47,5 +51,19 @@ class MainActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) tag =
             tag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         return tag
+    }
+
+    @Suppress("ConstantConditionIf")
+    private fun securityCheck() {
+        //包含应用锁定，导航向锁定界面
+        if (false) Navigation.findNavController(this, R.id.main_nav_fragment)
+            .navigate(R.id.action_gallery_list_fragment_to_security_fragment)
+    }
+
+    @Suppress("ConstantConditionIf")
+    private fun installCheck() {
+        //首次安装，导航向引导
+        if (true) Navigation.findNavController(this, R.id.main_nav_fragment)
+            .navigate(R.id.action_gallery_list_fragment_to_disclaimer_fragment)
     }
 }

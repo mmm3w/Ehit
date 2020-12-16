@@ -12,17 +12,36 @@
 
 
 
+    <string name="hint_ipb_member_id" translatable="false">ipb_member_id</string>
+    <string name="hint_ipb_pass_hash" translatable="false">ipb_pass_hash</string>
+    <string name="hint_igneous" translatable="false">igneous</string>
+
+    <string name="text_exhentai" translatable="false">exhentai.org</string>
+    <string name="text_e_hentai" translatable="false">e-hentai.org</string>
+
+
+
+    <string name="text_test">Test content</string>
+
+
+
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>
+
     <string name="text_skip">Skip</string>
     <string name="text_login">Login</string>
     <string name="text_retry">Retry</string>
+    <string name="text_login_by_account">Login by account</string>
+    <string name="text_login_by_cookie">Login by cookie</string>
 
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
     <string name="text_confirm">Confirm</string>
     <string name="title_page_go_to">Go to</string>
 
     <string name="text_download">Download</string>
     <string name="text_read">Read</string>
     <string name="text_search">Search</string>
+
 
 </resources>

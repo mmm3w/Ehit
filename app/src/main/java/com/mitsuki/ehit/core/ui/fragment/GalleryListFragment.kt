@@ -94,8 +94,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         mViewModel.galleryList.observe(this, Observer { mAdapter.submitData(lifecycle, it) })
 
-        securityCheck()
-        installCheck()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -147,19 +146,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         }
     }
 
-    @Suppress("ConstantConditionIf")
-    private fun securityCheck() {
-        //包含应用锁定，导航向锁定界面
-        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-            .navigate(R.id.action_gallery_list_fragment_to_security_fragment)
-    }
 
-    @Suppress("ConstantConditionIf")
-    private fun installCheck() {
-        //首次安装，导航向引导
-        if (false) Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-            .navigate(R.id.action_gallery_list_fragment_to_disclaimer_fragment)
-    }
 
     private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {
         with(galleryClick) {
