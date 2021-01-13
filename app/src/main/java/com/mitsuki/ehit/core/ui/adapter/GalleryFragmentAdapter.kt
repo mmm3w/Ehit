@@ -32,7 +32,6 @@ class GalleryFragmentAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return GalleryFragment().apply {
-            Log.e("asdf", "fragment create $position")
             val realIndex = if (isReverse) mSize - position -1 else position
             arguments =
                 bundleOf(

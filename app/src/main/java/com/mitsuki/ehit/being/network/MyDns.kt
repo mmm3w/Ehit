@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.being.okhttp
+package com.mitsuki.ehit.being.network
 
 import okhttp3.Dns
 import java.net.InetAddress

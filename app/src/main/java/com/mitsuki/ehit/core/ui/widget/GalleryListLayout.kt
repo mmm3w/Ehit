@@ -21,14 +21,14 @@ class GalleryListLayout @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent3 {
 
     private var mRecyclerView: RecyclerView //数据列表
-    private val marginSize: Int
+//    private val marginSize: Int
 
     //基础配置参数
-    private val mCircleDiameter: Int //刷新View的大小
+//    private val mCircleDiameter: Int //刷新View的大小
     private val mFabSlop: Int
-
-    private val mRefreshPlugin: RefreshPlugin
-    private val mRefreshGate = InitialGate()
+//
+//    private val mRefreshPlugin: RefreshPlugin
+//    private val mRefreshGate = InitialGate()
 
     private val mFloatBarPlugin: FloatBarPlugin
 
@@ -40,10 +40,10 @@ class GalleryListLayout @JvmOverloads constructor(
     }
 
     init {
-        resources.displayMetrics.density.apply {
-            mCircleDiameter = (CIRCLE_DIAMETER * this).roundToInt()
-            marginSize = dp2px(36f)
-        }
+//        resources.displayMetrics.density.apply {
+//            mCircleDiameter = (CIRCLE_DIAMETER * this).roundToInt()
+//            marginSize = dp2px(36f)
+//        }
         mFabSlop = ViewConfiguration.get(context).scaledTouchSlop
         //创建 RecyclerView
         mRecyclerView = RecyclerView(context).apply {
@@ -54,21 +54,21 @@ class GalleryListLayout @JvmOverloads constructor(
         addView(mRecyclerView)
 
         //刷新View
-        mRefreshPlugin = RefreshPlugin(context).apply { addView(view()) }
+//        mRefreshPlugin = RefreshPlugin(context).apply { addView(view()) }
 
         //创建top bar
         mFloatBarPlugin =
             FloatBarPlugin(context, R.layout.part_top_search_bar, this).apply { addView(view()) }
 
-        mRefreshPlugin.additional = {
-            if (!endOfPrepend)
-                false
-            else
-                if (it > 0)
-                    true
-                else
-                    !mRecyclerView.canScrollVertically(-1)
-        }
+//        mRefreshPlugin.additional = {
+//            if (!endOfPrepend)
+//                false
+//            else
+//                if (it > 0)
+//                    true
+//                else
+//                    !mRecyclerView.canScrollVertically(-1)
+//        }
 
         mRecyclerView.addOnScrollListener(mFloatBarPlugin)
         mRecyclerView.addOnScrollListenerBy(
@@ -104,12 +104,12 @@ class GalleryListLayout @JvmOverloads constructor(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.EXACTLY)
         )
-        mRefreshPlugin.view {
-            measure(
-                MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY)
-            )
-        }
+//        mRefreshPlugin.view {
+//            measure(
+//                MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY),
+//                MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY)
+//            )
+//        }
 
         setMeasuredDimension(
             MeasureSpec.getSize(widthMeasureSpec),
@@ -120,14 +120,14 @@ class GalleryListLayout @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         mFloatBarPlugin.view { layout(0, 0, measuredWidth, measuredHeight) }
 
-        mRefreshPlugin.view {
-            layout(
-                this@GalleryListLayout.measuredWidth / 2 - measuredWidth / 2,
-                mFloatBarPlugin.view().measuredHeight,
-                this@GalleryListLayout.measuredWidth / 2 + measuredWidth / 2,
-                measuredHeight + mFloatBarPlugin.view().measuredHeight
-            )
-        }
+//        mRefreshPlugin.view {
+//            layout(
+//                this@GalleryListLayout.measuredWidth / 2 - measuredWidth / 2,
+//                mFloatBarPlugin.view().measuredHeight,
+//                this@GalleryListLayout.measuredWidth / 2 + measuredWidth / 2,
+//                measuredHeight + mFloatBarPlugin.view().measuredHeight
+//            )
+//        }
 
         mRecyclerView.apply { layout(0, 0, measuredWidth, measuredHeight) }
 
@@ -140,20 +140,20 @@ class GalleryListLayout @JvmOverloads constructor(
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
-        if (type == ViewCompat.TYPE_TOUCH) {
-            mRefreshPlugin.startDrag()
-        }
+//        if (type == ViewCompat.TYPE_TOUCH) {
+//            mRefreshPlugin.startDrag()
+//        }
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
 
-        if (type != ViewCompat.TYPE_TOUCH) return
-
-        var temp = 0
-        mRefreshPlugin.drag(dy).apply {
-            if (abs(this) > temp) temp = this
-        }
-        consumed[1] = temp
+//        if (type != ViewCompat.TYPE_TOUCH) return
+//
+//        var temp = 0
+//        mRefreshPlugin.drag(dy).apply {
+//            if (abs(this) > temp) temp = this
+//        }
+//        consumed[1] = temp
 
     }
 
@@ -170,9 +170,9 @@ class GalleryListLayout @JvmOverloads constructor(
     }
 
     override fun onStopNestedScroll(target: View, type: Int) {
-        if (type == ViewCompat.TYPE_TOUCH) {
-            mRefreshPlugin.finishDrag()
-        }
+//        if (type == ViewCompat.TYPE_TOUCH) {
+//            mRefreshPlugin.finishDrag()
+//        }
     }
 
     /**********************************************************************************************/
@@ -182,32 +182,32 @@ class GalleryListLayout @JvmOverloads constructor(
     fun topBar(action: View.() -> Unit) = mFloatBarPlugin.view(action)
 
     fun setListener(
-        refreshListener: (() -> Unit)? = null,
+//        refreshListener: (() -> Unit)? = null,
         extendControl: ((toHide: Boolean) -> Unit)? = null
     ) {
-        refreshListener?.apply { mRefreshPlugin.refreshListener = this }
+//        refreshListener?.apply { mRefreshPlugin.refreshListener = this }
         this.mExtendControl = extendControl
     }
 
-    var endOfPrepend = false
-
-    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
-        set(loadState) {
-            if (field != loadState) {
-                when (loadState) {
-                    is LoadState.Loading -> mRefreshGate.prep(true)
-                    is LoadState.Error -> mRefreshGate.prep(false)
-                    is LoadState.NotLoading -> {
-                        mRefreshGate.trigger()
-                        if (mRefreshGate.ignore()) {
-                            mRefreshPlugin.isEnable = true
-                        }
-                    }
-                }
-
-                field = loadState
-            }
-        }
+//    var endOfPrepend = false
+//
+//    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
+//        set(loadState) {
+//            if (field != loadState) {
+//                when (loadState) {
+//                    is LoadState.Loading -> mRefreshGate.prep(true)
+//                    is LoadState.Error -> mRefreshGate.prep(false)
+//                    is LoadState.NotLoading -> {
+//                        mRefreshGate.trigger()
+//                        if (mRefreshGate.ignore()) {
+//                            mRefreshPlugin.isEnable = true
+//                        }
+//                    }
+//                }
+//
+//                field = loadState
+//            }
+//        }
 
 
 }

@@ -51,6 +51,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':armory')
+    implementation project(':adapter')
+    implementation project(':httprookie')
+    implementation project(':imagegesture')
 
     //----------------------------------------------------------------------------------------------
     implementation deps.kotlin.stdlib
@@ -92,7 +95,10 @@ dependencies {
     implementation deps.material_dialogs.lifecycle
     implementation deps.jsoup
     implementation deps.okhttp
+    implementation deps.okhttplogger
     implementation deps.coil
+
+//    implementation 'com.github.MitsukiNIBAN:Armory:0.1.0'
 
 }
 

@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.core.model.ehparser
 
-import com.mitsuki.ehit.being.okhttp.Url
+import com.mitsuki.ehit.being.network.Url
 import java.util.regex.Pattern
 
 object Matcher {
@@ -30,6 +30,9 @@ object Matcher {
         Pattern.compile("<td class=\"ptds\"><a.*?>(\\d+)</a></td>") //当前页码
     val PAGER_TOTAL_SIZE: Pattern =
         Pattern.compile("<tr><td.*?>Length:</td><td.*?>(\\d+) pages</td></tr>") //总数
+
+    val LOGIN_INFO: Pattern =
+        Pattern.compile("<p>You are now logged in as: (.+?)<")
 
     //分页的基本信息
     //group1:prevKey

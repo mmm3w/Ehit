@@ -1,7 +1,7 @@
 package com.mitsuki.ehit.core.model.repository
 
 import androidx.paging.PagingData
-import com.mitsuki.ehit.being.okhttp.RequestResult
+import com.mitsuki.ehit.being.network.RequestResult
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.entity.Gallery
 import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
@@ -22,4 +22,6 @@ interface Repository {
     suspend fun galleryPreview(gid: Long, token: String, index: Int): RequestResult<GalleryPreview>
 
     suspend fun galleryDetailWithPToken(gid: Long, token: String, index: Int): RequestResult<String>
+
+    suspend fun login(account: String, password: String): RequestResult<String>
 }

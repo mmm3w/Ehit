@@ -7,22 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.ehit.being.MemoryCache
-import com.mitsuki.ehit.being.exception.DataInitException
 import com.mitsuki.ehit.being.exception.DetailInitException
 import com.mitsuki.ehit.being.extend.postNext
 import com.mitsuki.ehit.being.imageloadprogress.addFeature
-import com.mitsuki.ehit.being.okhttp.RequestResult
+import com.mitsuki.ehit.being.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.core.model.entity.Gallery
-import com.mitsuki.ehit.core.model.entity.GalleryPreview
-import com.mitsuki.ehit.core.model.entity.obtainHeader
 import com.mitsuki.ehit.core.model.repository.RemoteRepository
 import com.mitsuki.ehit.core.model.repository.Repository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Exception
-import kotlin.coroutines.CoroutineContext
 
 class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {

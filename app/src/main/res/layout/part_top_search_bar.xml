@@ -13,7 +13,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:transitionName="@string/transition_name_gallery_list_toolbar"
-        app:cardCornerRadius="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="@dimen/dp_4">
 
         <LinearLayout

@@ -36,7 +36,6 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
 
     private val mSpanSize = object : GridLayoutManager.SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
-            Log.e("asdf","$position : ${mAdapter.getItemViewType(position)}")
             return if (mAdapter.getItemViewType(position) == 4 && mCategoryAdapter.isEnable) {
                 1
             } else {

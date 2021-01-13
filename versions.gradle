@@ -38,9 +38,12 @@ versions.navigation = "2.3.0"
 
 versions.material_dialogs = '3.3.0'
 versions.jsoup = '1.13.1'
-versions.okhttp = '4.7.2'
+versions.okhttp = '4.9.0'
 versions.arouter = "1.5.0"
 versions.coil = "1.0.0-rc3"
+versions.rxjava3 = "3.0.8"
+versions.rxandroid = "3.0.0"
+
 /**************************************************************************************************/
 //gradle
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
@@ -116,8 +119,16 @@ material_dialogs.input = "com.afollestad.material-dialogs:input:$versions.materi
 material_dialogs.lifecycle = "com.afollestad.material-dialogs:lifecycle:$versions.material_dialogs"
 deps.material_dialogs = material_dialogs
 
+//reactivex
+def reactivex = [:]
+reactivex.rxjava3 = "io.reactivex.rxjava3:rxjava:$versions.rxjava3"
+reactivex.rxandroid = "io.reactivex.rxjava3:rxandroid:$versions.rxandroid"
+deps.reactivex = reactivex
+
 deps.jsoup = "org.jsoup:jsoup:$versions.jsoup"
 deps.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+deps.okhttplogger = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+
 deps.arouter = "com.alibaba:arouter-api:$versions.arouter"
 deps.coil = "io.coil-kt:coil:$versions.coil"
 
@@ -126,6 +137,7 @@ deps.coil = "io.coil-kt:coil:$versions.coil"
 static def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
+    handler.maven { url 'https://jitpack.io' }
     handler.maven { url 'https://jsoup.org' }
 }
 

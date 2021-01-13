@@ -9,11 +9,11 @@ import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import coil.size.OriginalSize
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.being.extend.getInteger
-import com.mitsuki.ehit.being.load
 import com.mitsuki.ehit.core.model.entity.ImageSource
 import com.mitsuki.ehit.core.ui.widget.PreviewTransformation
 

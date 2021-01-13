@@ -13,11 +13,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.mitsuki.armory.extend.view
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.being.CoilProvider
-import com.mitsuki.ehit.being.load
 import com.mitsuki.ehit.core.model.entity.Gallery
 import com.mitsuki.ehit.core.ui.widget.CategoryView
 import java.util.*
@@ -73,7 +72,7 @@ class GalleryAdapter :
         private val mGalleryLayout = view<ConstraintLayout>(R.id.gallery_layout)
 
         fun bind(data: Gallery) {
-            mGalleryThumb?.load(url = data.thumb) { crossfade(300) }
+            mGalleryThumb?.load(data.thumb) { crossfade(300) }
             mGalleryTitle?.text = data.title
             mGalleryUploader?.text = data.uploader
             mGalleryLanguage?.text = data.languageSimple

@@ -1,5 +1,15 @@
 rootProject.name='Ehit'
-include ':armory'
 include ':app'
 
+include ':armory'
 project(':armory').projectDir = new File("/../Armory/armory")
+
+include ':httprookie'
+project(':httprookie').projectDir = new File("/../Armory/httprookie")
+
+include ':imagegesture'
+project(':imagegesture').projectDir = new File("/../Armory/imagegesture")
+
+
+include ':adapter'
+project(':adapter').projectDir = new File("/../Armory/adapter")

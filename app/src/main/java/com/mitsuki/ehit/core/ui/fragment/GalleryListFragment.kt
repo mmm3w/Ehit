@@ -2,6 +2,7 @@ package com.mitsuki.ehit.core.ui.fragment
 
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
@@ -19,10 +20,7 @@ import com.google.android.material.transition.platform.MaterialFade
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.core.ui.adapter.DefaultLoadStateAdapter
-import com.mitsuki.ehit.core.ui.adapter.GalleryAdapter
-import com.mitsuki.ehit.core.ui.adapter.GalleryDetailInitialLoadStateAdapter
-import com.mitsuki.ehit.core.ui.adapter.GalleryListInitialLoadStateAdapter
+import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
@@ -34,12 +32,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     private val mViewModel: GalleryListViewModel
             by createViewModelLazy(GalleryListViewModel::class, { viewModelStore })
 
-    private val mAdapter: GalleryAdapter by lazy { GalleryAdapter() }
-    private val mInitAdapter: GalleryListInitialLoadStateAdapter by lazy {
-        GalleryListInitialLoadStateAdapter(
-            mAdapter
-        )
-    }
+    private val mAdapter by lazy { GalleryAdapter() }
+    private val mLoadAdapter by lazy { GalleryListLoadStateAdapter(mAdapter) }
 
     private val mConcatAdapter by lazy {
         val header = DefaultLoadStateAdapter(mAdapter)
@@ -49,7 +43,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             header.loadState = loadStates.prepend
             footer.loadState = loadStates.append
         }
-        ConcatAdapter(header, mInitAdapter, mAdapter, footer)
+        ConcatAdapter(header, mLoadAdapter, mAdapter, footer)
     }
 
     @Suppress("ControlFlowWithEmptyBody")
@@ -72,25 +66,11 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
-                mInitAdapter.loadState = it.refresh
-                gallery_list?.loadState = it.refresh
-                gallery_list?.endOfPrepend =
-                    if (it.refresh is LoadState.Error) true
-                    else it.prepend.endOfPaginationReached
-
-                when (it.refresh) {
-                    is LoadState.Error -> toast("刷新失败")
-                }
-
-                when (it.append) {
-                    is LoadState.Error -> toast("底部加载失败")
-                }
-
-                when (it.prepend) {
-                    is LoadState.Error -> toast("顶部加载失败")
-                }
+//                Log.e("Asdf","$it")
+                mLoadAdapter.loadState = it.refresh
             }
         }
+        Log.e("GalleryListFragment","onCreate")
 
         mViewModel.galleryList.observe(this, Observer { mAdapter.submitData(lifecycle, it) })
 
@@ -98,6 +78,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.e("GalleryListFragment","onViewCreated")
+
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
@@ -129,7 +111,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             }
 
             setListener(
-                refreshListener = { mAdapter.refresh() },
                 extendControl = {
                     if (it) gallery_motion_layout?.transitionToStart()
                     else gallery_motion_layout?.transitionToEnd()
@@ -146,6 +127,22 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.e("GalleryListFragment","onDestroyView")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.e("GalleryListFragment","onPause")
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("GalleryListFragment","onDestroy")
+
+    }
 
 
     private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {

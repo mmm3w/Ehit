@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import coil.load
 import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.size.OriginalSize
@@ -16,7 +17,6 @@ import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.being.extend.getInteger
 import com.mitsuki.ehit.being.imageloadprogress.Progress
 import com.mitsuki.ehit.being.imageloadprogress.ProgressProvider
-import com.mitsuki.ehit.being.load
 import com.mitsuki.ehit.core.ui.widget.OriginalTransformation
 import com.mitsuki.ehit.core.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,7 +54,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onLoadImage(url: String) {
-        gallery_image.load(url = url) {
+        gallery_image.load(url) {
             crossfade(getInteger(R.integer.image_load_cross_fade))
             size(OriginalSize)
             transformations(OriginalTransformation())

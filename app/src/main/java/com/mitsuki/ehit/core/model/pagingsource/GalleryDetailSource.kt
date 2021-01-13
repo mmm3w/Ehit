@@ -1,11 +1,13 @@
 package com.mitsuki.ehit.core.model.pagingsource
 
-import android.util.Log
 import androidx.paging.PagingSource
+import com.mitsuki.armory.httprookie.HttpRookie
+import com.mitsuki.armory.httprookie.request.urlParams
+import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.being.MemoryCache
-import com.mitsuki.ehit.being.okhttp.RequestProvider
-import com.mitsuki.ehit.being.okhttp.execute
+import com.mitsuki.ehit.being.network.Url
 import com.mitsuki.ehit.core.crutch.PageIn
+import com.mitsuki.ehit.core.model.convert.GalleryDetailConvert
 import com.mitsuki.ehit.core.model.entity.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,9 +16,10 @@ class GalleryDetailSource(
     private val mGid: Long,
     private val mToken: String,
     private val mPageIn: PageIn,
-    private val mDetailSource: GalleryDetailWrap,
-    private val mRequestProvider: RequestProvider
+    private val mDetailSource: GalleryDetailWrap
 ) : PagingSource<Int, ImageSource>() {
+
+    private val mConvert by lazy { GalleryDetailConvert() }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageSource> {
@@ -30,26 +33,37 @@ class GalleryDetailSource(
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.Default) {
                 var data = MemoryCache.getGalleryDetail(mGid, page)?.apply {
-                    if (tempKey == 0){
+                    if (tempKey == 0) {
                         mDetailSource.partInfo = obtainOperating()
                         mDetailSource.comment = obtainComments()
                         mDetailSource.tags = tagSet
                     }
                 }
                 if (data == null) {
-                    val res = mRequestProvider.galleryDetailRequest(mGid, mToken, page).execute()
+                    val remoteData: Response<GalleryDetail> =
+                        HttpRookie
+                            .get<GalleryDetail>(Url.galleryDetail(mGid, mToken)) {
+                                convert = mConvert
+                                urlParams(Url.PAGE_DETAIL to page.toString())
+                            }
+                            .execute()
 
-                    data = GalleryDetail.parse(res?.body?.string()).apply {
-                        mDetailSource.partInfo = obtainOperating()
-                        mDetailSource.comment = obtainComments()
-                        mDetailSource.tags = tagSet
+                    when (remoteData) {
+                        is Response.Success<GalleryDetail> -> {
+                            data = remoteData.requireBody().apply {
+                                mDetailSource.partInfo = obtainOperating()
+                                mDetailSource.comment = obtainComments()
+                                mDetailSource.tags = tagSet
 
-                        if (images.data.isNotEmpty()) {
-                            MemoryCache.detailPageSize =
-                                if (tempKey == 0) images.data.size else images.data[0].index / images.index
+                                if (images.data.isNotEmpty()) {
+                                    MemoryCache.detailPageSize =
+                                        if (tempKey == 0) images.data.size else images.data[0].index / images.index
+                                }
+                                MemoryCache.cacheImageToken(mGid, images.data)
+                                MemoryCache.cacheGalleryDetail(mGid, page, this)
+                            }
                         }
-                        MemoryCache.cacheImageToken(mGid, images.data)
-                        MemoryCache.cacheGalleryDetail(mGid, page, this)
+                        is Response.Fail<*> -> throw remoteData.throwable
                     }
                 }
 
