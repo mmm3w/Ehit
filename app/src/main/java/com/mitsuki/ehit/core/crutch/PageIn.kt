@@ -1,20 +1,12 @@
 package com.mitsuki.ehit.core.crutch
 
+import java.lang.RuntimeException
+
 class PageIn {
-    private var mTarget: Int = 0
-
-    private var mFlag = false
-
-    fun jump(target: Int) {
-        mFlag = true
-        mTarget = target
-    }
-
-    fun replace(initPage: Int): Int {
-        if (mFlag) {
-            mFlag = false
-            return mTarget
+    //0为起始第一页
+    var targetPage: Int = 0
+        set(value) {
+            if (value < 1) throw  RuntimeException("Value error")
+            field = value - 1
         }
-        return initPage
-    }
 }

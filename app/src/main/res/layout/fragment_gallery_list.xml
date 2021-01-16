@@ -19,13 +19,23 @@
         android:id="@+id/gallery_go_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/description_go_top"
         android:src="@drawable/ic_baseline_publish_24"
+        app:fabSize="mini" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/gallery_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/description_refresh"
+        android:src="@drawable/ic_round_refresh_24"
         app:fabSize="mini" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gallery_page_jump"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/description_page_jump"
         android:src="@drawable/ic_round_low_priority_24"
         app:fabSize="mini" />
 

@@ -23,8 +23,7 @@ class GalleryDetailSource(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageSource> {
-        val tempKey = params.key ?: 0
-        val page = mPageIn.replace(tempKey)
+        val page = params.key ?: 0
 
         return try {
             // 如果成功加载，那么返回一个LoadResult.Page,如果失败就返回一个Error
@@ -33,7 +32,7 @@ class GalleryDetailSource(
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.Default) {
                 var data = MemoryCache.getGalleryDetail(mGid, page)?.apply {
-                    if (tempKey == 0) {
+                    if (page == 0) {
                         mDetailSource.partInfo = obtainOperating()
                         mDetailSource.comment = obtainComments()
                         mDetailSource.tags = tagSet
@@ -57,7 +56,7 @@ class GalleryDetailSource(
 
                                 if (images.data.isNotEmpty()) {
                                     MemoryCache.detailPageSize =
-                                        if (tempKey == 0) images.data.size else images.data[0].index / images.index
+                                        if (page == 0) images.data.size else images.data[0].index / images.index
                                 }
                                 MemoryCache.cacheImageToken(mGid, images.data)
                                 MemoryCache.cacheGalleryDetail(mGid, page, this)

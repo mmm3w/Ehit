@@ -11,6 +11,9 @@
 
     <string name="transition_name_gallery_list_toolbar" translatable="false">GalleryListToolbar</string>
 
+    <string name="description_page_jump">Page jump support</string>
+    <string name="description_go_top">Back to top support</string>
+    <string name="description_refresh">refresh_support</string>
 
 
     <string name="hint_ipb_member_id" translatable="false">ipb_member_id</string>

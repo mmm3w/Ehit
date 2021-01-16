@@ -32,7 +32,7 @@ versions.preference = "1.1.1"
 
 versions.hilt = '2.28-alpha'
 versions.hilt_ext = '1.0.0-alpha01'
-versions.paging = '3.0.0-alpha05'
+versions.paging = '3.0.0-alpha11'
 versions.lifecycle = "2.2.0"
 versions.navigation = "2.3.0"
 

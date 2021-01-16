@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.core.model.pagingsource
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
@@ -18,7 +19,7 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gallery> {
-        val page = pageIn.replace(params.key ?: 0)
+        val page = params.key ?: 0
         return try {
             // 如果成功加载，那么返回一个LoadResult.Page,如果失败就返回一个Error
             // Page里传进列表数据，以及上一页和下一页的页数,具体的是否最后一页或者其他逻辑就自行判断
@@ -48,5 +49,11 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
             // 捕获异常，返回一个Error
             LoadResult.Error(e)
         }
+    }
+
+    override val jumpingSupported: Boolean = true
+
+    override fun getRefreshKey(state: PagingState<Int, Gallery>): Int? {
+        return pageIn.targetPage
     }
 }

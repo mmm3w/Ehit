@@ -22,8 +22,11 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
             .cachedIn(viewModelScope)
             .asLiveData()
 
+
+
+
     fun galleryListPage(page: Int) {
-        mListPageIn.jump(page)
+        mListPageIn.targetPage = page
     }
 
 }

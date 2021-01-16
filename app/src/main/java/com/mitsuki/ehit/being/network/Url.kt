@@ -18,7 +18,7 @@ object Url {
     const val SUBMIT = "submit"
 
     private val host: String
-        get() = "$HENTAI_EX/"
+        get() = "$HENTAI_E/"
 
     fun host(): String {
         return host

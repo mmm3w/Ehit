@@ -24,7 +24,7 @@ class EhApplication : Application() {
         HttpRookie.configOkHttp = {
             cache(CoilUtils.createDefaultCache(this@EhApplication))
             dns(MyDns())
-            cookieJar(CookieJarImpl(ShareData))
+//            cookieJar(CookieJarImpl(ShareData))
             addInterceptor(FakeHeader())
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
 //            addInterceptor(ProgressProvider.imageLoadInterceptor)

@@ -17,8 +17,15 @@ class FloatBarPlugin(context: Context, @LayoutRes val layoutRes: Int, root: View
     private val mStatusBarHeight: Int = context.statusBarHeight()
     private val mView: View = LayoutInflater.from(context).inflate(layoutRes, root, false)
 
+
     /**********************************************************************************************/
     fun view(action: (View.() -> Unit)? = null) = action?.run { mView.apply(action) } ?: mView
+
+    var offset: Float
+        set(value) {
+            mView.translationY = value
+        }
+        get() = mView.translationY
 
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

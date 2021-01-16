@@ -17,6 +17,7 @@ import com.mitsuki.ehit.core.model.entity.ImageSource
 import com.mitsuki.ehit.core.model.entity.obtainHeader
 import com.mitsuki.ehit.core.model.repository.RemoteRepository
 import com.mitsuki.ehit.core.model.repository.Repository
+import kotlinx.coroutines.flow.map
 
 class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
@@ -41,7 +42,7 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
             .asLiveData()
 
     fun galleryDetailPage(page: Int) {
-        mDetailPageIn.jump(page)
+        mDetailPageIn.targetPage = page
     }
 
 }

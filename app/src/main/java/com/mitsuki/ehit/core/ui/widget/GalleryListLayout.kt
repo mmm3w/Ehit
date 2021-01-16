@@ -1,19 +1,19 @@
 package com.mitsuki.ehit.core.ui.widget
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.core.view.NestedScrollingParent3
 import androidx.core.view.ViewCompat
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.extend.*
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.mitsuki.armory.extend.addOnScrollListenerBy
+import com.mitsuki.armory.extend.marginVertical
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.core.crutch.InitialGate
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 @Suppress("JoinDeclarationAndAssignment", "ConstantConditionIf")
 class GalleryListLayout @JvmOverloads constructor(
@@ -87,6 +87,46 @@ class GalleryListLayout @JvmOverloads constructor(
                     }
                 }
             })
+    }
+
+    @Suppress("unused", "PropertyName")
+    class SavedState : BaseSavedState {
+        val topBarOffset: Float
+
+        constructor(superState: Parcelable?, offset: Float) : super(superState) {
+            this.topBarOffset = offset
+        }
+
+        constructor(source: Parcel?) : super(source) {
+            topBarOffset = source?.readFloat() ?: 0f
+        }
+
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.writeFloat(topBarOffset)
+        }
+
+        val CREATOR: Parcelable.Creator<SavedState> =
+            object : Parcelable.Creator<SavedState> {
+                override fun createFromParcel(source: Parcel?): SavedState {
+                    return SavedState(source)
+                }
+
+                override fun newArray(size: Int): Array<SavedState?> {
+                    return arrayOfNulls(size)
+                }
+            }
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        val superState = super.onSaveInstanceState()
+        return SavedState(superState, mFloatBarPlugin.offset)
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        val savedState = state as? SavedState
+        super.onRestoreInstanceState(savedState?.superState)
+        mFloatBarPlugin.offset = savedState?.topBarOffset ?: 0f
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

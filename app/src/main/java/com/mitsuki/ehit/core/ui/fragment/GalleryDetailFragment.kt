@@ -66,13 +66,6 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.main_nav_fragment
-            duration = resources.getInteger(R.integer.fragment_transition_motion_duration).toLong()
-//            TODO:颜色值替换
-            setAllContainerColors(0xffffffff.toInt())
-        }
-
         mViewModel.initData(arguments)
 
         lifecycleScope.launchWhenCreated {

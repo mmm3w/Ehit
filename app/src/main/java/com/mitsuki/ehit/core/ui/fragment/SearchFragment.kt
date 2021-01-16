@@ -44,16 +44,6 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.main_nav_fragment
-            duration = resources.getInteger(R.integer.fragment_transition_motion_duration).toLong()
-            //TODO:颜色值替换
-            setAllContainerColors(0xffffffff.toInt())
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
