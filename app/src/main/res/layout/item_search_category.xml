@@ -9,8 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="@dimen/dp_4"
+        android:paddingVertical="@dimen/dp_8"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
+
+    <View
+        android:id="@+id/search_category_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_40"
+        android:visibility="gone" />
+
 </FrameLayout>

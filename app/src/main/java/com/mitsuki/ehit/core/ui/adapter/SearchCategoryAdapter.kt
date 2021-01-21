@@ -1,7 +1,10 @@
 package com.mitsuki.ehit.core.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
@@ -15,31 +18,57 @@ class SearchCategoryAdapter : RecyclerView.Adapter<SearchCategoryAdapter.ViewHol
         set(value) {
             if (value != field) {
                 if (value && !field) {
-                    notifyItemRangeInserted(0, Category.CATEGORY_SET.size - 1)
+                    notifyItemRangeInserted(0, Category.DATA.size - 1)
                 } else if (!value && field) {
-                    notifyItemRangeRemoved(0, Category.CATEGORY_SET.size - 1)
+                    notifyItemRangeRemoved(0, Category.DATA.size - 1)
                 }
                 field = value
             }
         }
 
+    val checkState = BooleanArray(Category.DATA.size) { true }
+
+    private val mItemClick = { view: View ->
+        val holder = view.tag as ViewHolder
+        checkState[holder.bindingAdapterPosition] = !checkState[holder.bindingAdapterPosition]
+        notifyItemChanged(holder.bindingAdapterPosition)
+    }
+
+    private val mItemLongClick = { view: View ->
+        val currentIndex = (view.tag as ViewHolder).bindingAdapterPosition
+        for (index in checkState.indices) {
+            if (index != currentIndex) {
+                checkState[index] = !checkState[currentIndex]
+            }
+        }
+        notifyDataSetChanged()
+        true
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent)
+        return ViewHolder(parent).apply {
+            itemView.tag = this
+            itemView.setOnClickListener(mItemClick)
+            itemView.setOnLongClickListener(mItemLongClick)
+        }
     }
 
     override fun getItemCount(): Int {
-        return if (isEnable) Category.CATEGORY_SET.size - 1 else 0
+        return if (isEnable) Category.DATA.size - 1 else 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view<CategoryView>(R.id.search_category_content)?.apply {
-            val str = Category.CATEGORY_SET[position]
-            setCategoryColor(Category.getColor(str))
-            text = str
+            setCategoryColor(Category.color(position))
+            text = Category.text(position)
         }
+
+        holder.view<View>(R.id.search_category_mask)?.isVisible = !checkState[position]
     }
 
     class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_search_category, parent, false)
     )
+
+
 }

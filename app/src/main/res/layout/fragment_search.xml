@@ -21,17 +21,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <EditText
             android:id="@+id/search_input"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginBottom="2dp"
-            android:gravity="center"
-            android:scaleX="1"
-            android:scaleY="1"
-            android:text="@string/text_search"
+            android:background="@null"
+            android:gravity="start"
+            android:hint="@string/hint_search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:lines="1"
+            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="@id/search_back"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/search_back"
             app:layout_constraintTop_toTopOf="@id/search_back" />
 

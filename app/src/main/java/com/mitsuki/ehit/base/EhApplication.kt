@@ -5,8 +5,7 @@ import coil.util.CoilUtils
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.ehit.being.CoilProvider
 import com.mitsuki.ehit.being.ShareData
-import com.mitsuki.ehit.being.imageloadprogress.ProgressProvider
-import com.mitsuki.ehit.being.network.CookieJarImpl
+import com.mitsuki.ehit.being.db.RoomData
 import com.mitsuki.ehit.being.network.FakeHeader
 import com.mitsuki.ehit.being.network.MyDns
 import dagger.hilt.android.HiltAndroidApp
@@ -31,5 +30,7 @@ class EhApplication : Application() {
         }
 
         CoilProvider.init(this)
+
+        RoomData.init(this)
     }
 }

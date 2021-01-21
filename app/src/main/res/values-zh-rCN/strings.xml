@@ -11,6 +11,8 @@
 
     <string name="hint_account">账号</string>
     <string name="hint_password">密码</string>
+    <string name="hint_search">搜索</string>
+
     <string name="text_skip">跳过</string>
     <string name="text_login">登录</string>
     <string name="text_retry">重试</string>

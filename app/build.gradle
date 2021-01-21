@@ -16,6 +16,7 @@ android {
         versionName "1.0.00"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -89,6 +90,11 @@ dependencies {
     //navigation
     implementation deps.navigation.fragment
     implementation deps.navigation.ui
+    //room
+    implementation deps.room.runtime
+    kapt deps.room.compiler
+    implementation deps.room.ktx
+
     //----------------------------------------------------------------------------------------------
     implementation deps.material_dialogs.core
     implementation deps.material_dialogs.input
