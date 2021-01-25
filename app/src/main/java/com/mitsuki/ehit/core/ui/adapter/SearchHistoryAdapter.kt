@@ -2,9 +2,12 @@ package com.mitsuki.ehit.core.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.calculateDiff
 import com.mitsuki.armory.extend.view
@@ -29,8 +32,21 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
 
     private val mData: MutableList<SearchHistory> = arrayListOf()
 
+    private val currentItem: MutableLiveData<String> = MutableLiveData()
+
+    private val mItemClick = { view: View ->
+        val holder = view.tag as ViewHolder
+        currentItem.postValue(mData[holder.bindingAdapterPosition].text)
+    }
+
+    val itemClickEvent: LiveData<String>
+        get() = currentItem
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent)
+        return ViewHolder(parent).apply {
+            itemView.tag = this
+            itemView.setOnClickListener(mItemClick)
+        }
     }
 
     override fun getItemCount(): Int {

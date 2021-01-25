@@ -19,8 +19,7 @@ data class QuickSearch(
                 oldItem: QuickSearch,
                 newItem: QuickSearch
             ): Boolean {
-                return oldItem.text == newItem.text &&
-                        oldItem.createdAt == newItem.createdAt
+                return oldItem.text == newItem.text
             }
 
         }

@@ -19,8 +19,7 @@ data class SearchHistory(
                 oldItem: SearchHistory,
                 newItem: SearchHistory
             ): Boolean {
-                return oldItem.text == newItem.text &&
-                        oldItem.createdAt == newItem.createdAt
+                return oldItem.text == newItem.text
             }
 
         }

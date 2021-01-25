@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.platform.MaterialContainerTransform
@@ -18,8 +19,10 @@ import com.mitsuki.armory.extend.hideSoftInput
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.being.db.RoomData
+import com.mitsuki.ehit.core.model.entity.SearchKey
 import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
+import com.mitsuki.ehit.core.viewmodel.MainViewModel
 import com.mitsuki.ehit.core.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -31,6 +34,9 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
 
     private val mViewModel: SearchViewModel
             by createViewModelLazy(SearchViewModel::class, { viewModelStore })
+
+    private val mMainViewModel: MainViewModel
+            by createViewModelLazy(MainViewModel::class, { requireActivity().viewModelStore })
 
     private val mSwitch by lazy { SearchSwitch() }
     private val mHistoryAdapter by lazy { SearchHistoryAdapter() }
@@ -52,10 +58,19 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
 
     private val mSpanSize = object : GridLayoutManager.SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
+            if (mCategoryAdapter.isEnable) {
+                return if (position < mCategoryAdapter.itemCount) 1 else 2
+            }
             return 2
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mViewModel.initData(arguments)
+        mHistoryAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
+        mShortcutAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
@@ -68,14 +83,13 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
             adapter = mAdapter
         }
 
-        search_back?.setOnClickListener { requireActivity().onBackPressed() }
+        search_back?.setOnClickListener { back() }
         search_input?.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     //这个时候应该要返回首页
-                    onSearchEvent(v.text.toString())
-                    hideSoftInput()
                     v.clearFocus()
+                    onSearchEvent(v.text.toString())
                     true
                 }
                 else -> false
@@ -83,9 +97,19 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         }
 
         mSwitch.switchEvent.observe(viewLifecycleOwner, Observer(this::onSwitch))
+
         mExtendMore.expendEvent.observe(
             viewLifecycleOwner,
             Observer { mAdvancedAdapter.isVisible = it })
+
+        mMainViewModel.searchKey(mViewModel.code).observe(
+            viewLifecycleOwner,
+            Observer {
+                search_input?.apply {
+                    setText(it.showContent)
+                    setSelection(it.showContent.length)
+                }
+            })
 
 
         lifecycle.coroutineScope.launch {
@@ -94,11 +118,12 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         }
     }
 
+
     private fun onSearchEvent(text: String) {
         lifecycle.coroutineScope.launch { mViewModel.saveSearch(text) }
-        //将结果返回到上个界面
+        mMainViewModel.postSearchKey(mViewModel.code, obtainSearchKey(text))
+        back()
     }
-
 
     private fun onSwitch(isAdvancedMode: Boolean) {
         mHistoryAdapter.isEnable = !isAdvancedMode
@@ -106,5 +131,14 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         mCategoryAdapter.isEnable = isAdvancedMode
         mExtendMore.isEnable = isAdvancedMode
         mAdvancedAdapter.isEnable = isAdvancedMode
+    }
+
+    private fun obtainSearchKey(text: String): SearchKey {
+        return SearchKey(text)
+    }
+
+    private fun back() {
+        hideSoftInput()
+        requireActivity().onBackPressed()
     }
 }

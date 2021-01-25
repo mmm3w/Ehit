@@ -22,11 +22,13 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
             .cachedIn(viewModelScope)
             .asLiveData()
 
-
-
-
     fun galleryListPage(page: Int) {
         mListPageIn.targetPage = page
+    }
+
+
+    override fun onCleared() {
+
     }
 
 }
