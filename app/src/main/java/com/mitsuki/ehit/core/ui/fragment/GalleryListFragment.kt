@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
@@ -79,6 +80,10 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             gallery_list?.topBar {
                 findViewById<TextView>(R.id.top_search_text).text = it.showContent
             }
+
+            mViewModel.galleryListPage(0)
+            mViewModel.galleryListCondition(it)
+            mAdapter.refresh()
         })
 
         //TODO：目前下拉刷新还存在问题等待排查，并且考虑是否增加一个初始加载错误页面
@@ -139,7 +144,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     private fun showPageJumpDialog() {
         MaterialDialog(requireContext()).show {
             input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
-                //清除原数据，配置页码，刷新数据
                 mViewModel.galleryListPage(text.toString().toIntOrNull() ?: 0)
                 mAdapter.refresh()
             }

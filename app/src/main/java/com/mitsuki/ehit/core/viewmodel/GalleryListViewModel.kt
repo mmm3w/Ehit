@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.entity.Gallery
+import com.mitsuki.ehit.core.model.entity.SearchKey
 import com.mitsuki.ehit.core.model.repository.RemoteRepository
 import com.mitsuki.ehit.core.model.repository.Repository
 
@@ -23,12 +24,10 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
             .asLiveData()
 
     fun galleryListPage(page: Int) {
-        mListPageIn.targetPage = page
+        mListPageIn.targetPage = page.coerceAtMost(0)
     }
 
-
-    override fun onCleared() {
-
+    fun galleryListCondition(searchKey: SearchKey){
+        mListPageIn.searchKey = searchKey
     }
-
 }

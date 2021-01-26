@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.core.crutch
 
+import com.mitsuki.ehit.core.model.entity.SearchKey
 import java.lang.RuntimeException
 
 class PageIn {
@@ -9,4 +10,6 @@ class PageIn {
             if (value < 1) throw  RuntimeException("Value error")
             field = value - 1
         }
+
+    var searchKey: SearchKey? = null
 }

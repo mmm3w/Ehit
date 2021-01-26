@@ -4,19 +4,6 @@ object Url {
     const val HENTAI_E = "https://e-hentai.org"
     const val HENTAI_EX = "https://exhentai.org"
 
-    const val PAGE_LIST = "page"
-    const val NEW_LOAD = "nl"
-    const val PAGE_DETAIL = "p"
-
-    const val USER_NAME = "UserName"
-    const val PASS_WORD = "PassWord"
-    const val COOKIE_DATE = "CookieDate"
-    const val B = "b"
-    const val BT = "bt"
-    const val REFERER = "referer"
-    const val PRIVACY = "Privacy"
-    const val SUBMIT = "submit"
-
     private val host: String
         get() = "$HENTAI_E/"
 

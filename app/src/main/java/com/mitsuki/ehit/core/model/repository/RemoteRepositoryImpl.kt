@@ -13,6 +13,7 @@ import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.being.MemoryCache
 import com.mitsuki.ehit.being.network.RequestResult
 import com.mitsuki.ehit.being.network.Url
+import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.convert.GalleryPreviewConvert
 import com.mitsuki.ehit.core.model.convert.ImageSourceConvert
@@ -97,7 +98,7 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
             val remoteData = HttpRookie
                 .get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
                     convert = ImageSourceConvert()
-                    if (index != 0) urlParams(Url.PAGE_DETAIL to index.toString())
+                    if (index != 0) urlParams(RequestKey.PAGE_DETAIL to index.toString())
                 }
                 .execute()
 
@@ -124,14 +125,14 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
             val loginData = HttpRookie
                 .post<String>(Url.login()) {
                     convert = LoginConvert()
-                    params(Url.REFERER to "https://forums.e-hentai.org/index.php?")
-                    params(Url.B to "")
-                    params(Url.BT to "")
+                    params(RequestKey.REFERER to "https://forums.e-hentai.org/index.php?")
+                    params(RequestKey.B to "")
+                    params(RequestKey.BT to "")
 
-                    params(Url.USER_NAME to account)
-                    params(Url.PASS_WORD to password)
-                    params(Url.COOKIE_DATE to "1")
-                    //params(Url.PRIVACY to "1")
+                    params(RequestKey.USER_NAME to account)
+                    params(RequestKey.PASS_WORD to password)
+                    params(RequestKey.COOKIE_DATE to "1")
+                    //params(RequestKey.PRIVACY to "1")
 
                     header("Origin" to "https://forums.e-hentai.org")
                     header("Referer" to "https://forums.e-hentai.org/index.php?act=Login&CODE=00")

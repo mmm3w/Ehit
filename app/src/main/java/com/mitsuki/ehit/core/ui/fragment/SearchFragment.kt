@@ -103,13 +103,8 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
             Observer { mAdvancedAdapter.isVisible = it })
 
         mMainViewModel.searchKey(mViewModel.code).observe(
-            viewLifecycleOwner,
-            Observer {
-                search_input?.apply {
-                    setText(it.showContent)
-                    setSelection(it.showContent.length)
-                }
-            })
+            viewLifecycleOwner, Observer(this::onSearchUpdate)
+        )
 
 
         lifecycle.coroutineScope.launch {
@@ -133,8 +128,17 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         mAdvancedAdapter.isEnable = isAdvancedMode
     }
 
+    private fun onSearchUpdate(key: SearchKey) {
+        search_input?.apply {
+            setText(key.showContent)
+            setSelection(key.showContent.length)
+        }
+
+        mCategoryAdapter.submitData(key.category)
+    }
+
     private fun obtainSearchKey(text: String): SearchKey {
-        return SearchKey(text)
+        return SearchKey(text, mCategoryAdapter.categoryCode())
     }
 
     private fun back() {

@@ -6,6 +6,7 @@ import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.being.network.Url
+import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.convert.GalleryListConvert
 import com.mitsuki.ehit.core.model.entity.Gallery
@@ -30,7 +31,8 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
                     HttpRookie
                         .get<ArrayList<Gallery>>(Url.galleryList()) {
                             convert = mConvert
-                            if (page != 0) urlParams(Url.PAGE_LIST to page.toString())
+                            if (page != 0) urlParams(RequestKey.PAGE_LIST to page.toString())
+                            pageIn.searchKey?.addParams(this)
                         }
                         .execute()
                 when (data) {
@@ -53,7 +55,5 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
 
     override val jumpingSupported: Boolean = true
 
-    override fun getRefreshKey(state: PagingState<Int, Gallery>): Int? {
-        return pageIn.targetPage
-    }
+    override fun getRefreshKey(state: PagingState<Int, Gallery>): Int = pageIn.targetPage
 }

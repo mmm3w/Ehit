@@ -6,6 +6,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.being.MemoryCache
 import com.mitsuki.ehit.being.network.Url
+import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.convert.GalleryDetailConvert
 import com.mitsuki.ehit.core.model.entity.*
@@ -43,7 +44,7 @@ class GalleryDetailSource(
                         HttpRookie
                             .get<GalleryDetail>(Url.galleryDetail(mGid, mToken)) {
                                 convert = mConvert
-                                urlParams(Url.PAGE_DETAIL to page.toString())
+                                urlParams(RequestKey.PAGE_DETAIL to page.toString())
                             }
                             .execute()
 

@@ -13,7 +13,6 @@ import com.mitsuki.ehit.core.ui.widget.CategoryView
 
 class SearchCategoryAdapter : RecyclerView.Adapter<SearchCategoryAdapter.ViewHolder>() {
 
-
     var isEnable: Boolean = false
         set(value) {
             if (value != field) {
@@ -26,7 +25,7 @@ class SearchCategoryAdapter : RecyclerView.Adapter<SearchCategoryAdapter.ViewHol
             }
         }
 
-    val checkState = BooleanArray(Category.DATA.size) { true }
+    private val checkState = BooleanArray(Category.DATA.size) { true }
 
     private val mItemClick = { view: View ->
         val holder = view.tag as ViewHolder
@@ -66,9 +65,25 @@ class SearchCategoryAdapter : RecyclerView.Adapter<SearchCategoryAdapter.ViewHol
         holder.view<View>(R.id.search_category_mask)?.isVisible = !checkState[position]
     }
 
+    fun categoryCode(): Int {
+        var code = 0
+        for ((index, value) in checkState.withIndex()) {
+            if (value) code = code or Category.DATA[index].code
+        }
+        return code
+    }
+
+    fun submitData(code: Int) {
+        for (index in checkState.indices) {
+            checkState[index] = (code and Category.DATA[index].code) == Category.DATA[index].code
+        }
+
+        if (isEnable) {
+            notifyDataSetChanged()
+        }
+    }
+
     class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_search_category, parent, false)
     )
-
-
 }
