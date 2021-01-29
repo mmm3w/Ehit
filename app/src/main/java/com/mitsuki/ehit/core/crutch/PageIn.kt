@@ -5,7 +5,7 @@ import java.lang.RuntimeException
 
 class PageIn {
     //0为起始第一页
-    var targetPage: Int = 0
+    var targetPage: Int = 1
         set(value) {
             if (value < 1) throw  RuntimeException("Value error")
             field = value - 1

@@ -27,7 +27,10 @@ import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
 import com.mitsuki.ehit.core.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_list.*
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
@@ -81,7 +84,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                 findViewById<TextView>(R.id.top_search_text).text = it.showContent
             }
 
-            mViewModel.galleryListPage(0)
+            mViewModel.galleryListPage(1)
             mViewModel.galleryListCondition(it)
             mAdapter.refresh()
         })
@@ -144,7 +147,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     private fun showPageJumpDialog() {
         MaterialDialog(requireContext()).show {
             input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
-                mViewModel.galleryListPage(text.toString().toIntOrNull() ?: 0)
+                mViewModel.galleryListPage(text.toString().toIntOrNull() ?: 1)
                 mAdapter.refresh()
             }
 

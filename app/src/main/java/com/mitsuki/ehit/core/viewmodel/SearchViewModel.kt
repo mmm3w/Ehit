@@ -32,7 +32,8 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
         withContext(Dispatchers.IO) { RoomData.searchDao.queryQuick() }
 
     suspend fun saveSearch(text: String) = withContext(Dispatchers.IO) {
-        RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
+        if (text.isNotEmpty())
+            RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
     }
 
 

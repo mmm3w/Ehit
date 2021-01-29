@@ -24,7 +24,7 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
             .asLiveData()
 
     fun galleryListPage(page: Int) {
-        mListPageIn.targetPage = page.coerceAtMost(0)
+        mListPageIn.targetPage = page.coerceAtMost(1)
     }
 
     fun galleryListCondition(searchKey: SearchKey){

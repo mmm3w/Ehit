@@ -6,7 +6,6 @@ import com.mitsuki.ehit.being.Key
 import com.mitsuki.ehit.const.RequestKey
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class SearchKey(
     @Key(RequestKey.SEARCH_KEY_WORD) var key: String = "",
     @Key(RequestKey.SEARCH_KEY_CATEGORY) var category: Int = 0
