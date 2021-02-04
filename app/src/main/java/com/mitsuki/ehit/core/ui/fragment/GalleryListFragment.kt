@@ -77,19 +77,22 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        mMainViewModel.searchKey(hashCode()).observe(viewLifecycleOwner, Observer {
-            //顶部显示相关搜索文字
-            //并重新请求数据
+        mMainViewModel.removeSearchKey(hashCode())?.apply {
             gallery_list?.topBar {
-                findViewById<TextView>(R.id.top_search_text).text = it.showContent
+                findViewById<TextView>(R.id.top_search_text).text = showContent
             }
 
             mViewModel.galleryListPage(1)
-            mViewModel.galleryListCondition(it)
+            mViewModel.galleryListCondition(this)
             mAdapter.refresh()
-        })
+        } ?: {
+            mViewModel.searchKey?.apply {
+                gallery_list?.topBar {
+                    findViewById<TextView>(R.id.top_search_text).text = showContent
+                }
+            }
+        }()
 
-        //TODO：目前下拉刷新还存在问题等待排查，并且考虑是否增加一个初始加载错误页面
         gallery_list?.apply {
             //配置recycleView
             recyclerView {
@@ -98,12 +101,14 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             }
 
             topBar {
-                //TODO：topBar 展开效果不是非常好，搜索功能暂且稍后
                 setOnClickListener {
                     Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                         .navigate(
                             R.id.action_gallery_list_fragment_to_search_fragment,
-                            bundleOf(DataKey.GALLERY_FRAGMENT_CODE to this@GalleryListFragment.hashCode()),
+                            bundleOf(
+                                DataKey.GALLERY_FRAGMENT_CODE to this@GalleryListFragment.hashCode(),
+                                DataKey.GALLERY_SEARCH_KEY to mViewModel.searchKey
+                            ),
                             null,
                             null
                         )

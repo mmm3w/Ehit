@@ -18,6 +18,9 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
 
     private val mListPageIn = PageIn()
 
+    val searchKey: SearchKey?
+        get() = mListPageIn.searchKey
+
     val galleryList: LiveData<PagingData<Gallery>> =
         repository.galleryList(mListPageIn)
             .cachedIn(viewModelScope)
@@ -27,7 +30,7 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
         mListPageIn.targetPage = page.coerceAtMost(1)
     }
 
-    fun galleryListCondition(searchKey: SearchKey){
+    fun galleryListCondition(searchKey: SearchKey) {
         mListPageIn.searchKey = searchKey
     }
 }

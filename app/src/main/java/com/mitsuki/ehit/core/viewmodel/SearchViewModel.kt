@@ -7,6 +7,7 @@ import com.mitsuki.ehit.being.db.RoomData
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.model.entity.QuickSearch
 import com.mitsuki.ehit.core.model.entity.SearchHistory
+import com.mitsuki.ehit.core.model.entity.SearchKey
 import com.mitsuki.ehit.core.model.repository.RemoteRepository
 import com.mitsuki.ehit.core.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
@@ -19,10 +20,12 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
     @Suppress("PrivatePropertyName")
     private val HISTORY_COUNT = 3
     var code: Int = -1
+    var tempKey:SearchKey? = null
 
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw RuntimeException("no data")
         code = bundle.getInt(DataKey.GALLERY_FRAGMENT_CODE)
+        tempKey = bundle.getParcelable(DataKey.GALLERY_SEARCH_KEY)
     }
 
     suspend fun searchHistory(): Flow<List<SearchHistory>> =

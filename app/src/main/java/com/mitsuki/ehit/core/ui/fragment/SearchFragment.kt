@@ -83,6 +83,9 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
             adapter = mAdapter
         }
 
+        search_start?.setOnClickListener {
+            search_input?.text?.toString()?.apply { onSearchEvent(this) }
+        }
         search_back?.setOnClickListener { back() }
         search_input?.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
@@ -99,13 +102,9 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         mSwitch.switchEvent.observe(viewLifecycleOwner, Observer(this::onSwitch))
 
         mExtendMore.expendEvent.observe(
-            viewLifecycleOwner,
-            Observer { mAdvancedAdapter.isVisible = it })
+            viewLifecycleOwner, { mAdvancedAdapter.isVisible = it })
 
-        mMainViewModel.searchKey(mViewModel.code).observe(
-            viewLifecycleOwner, Observer(this::onSearchUpdate)
-        )
-
+        mViewModel.tempKey?.apply { onSearchUpdate(this) }
 
         lifecycle.coroutineScope.launch {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }

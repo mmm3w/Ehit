@@ -6,7 +6,7 @@
     <string name="description_page_jump">跳页支持</string>
     <string name="description_go_top">返回顶部支持</string>
     <string name="description_refresh">刷新支持</string>
-
+    <string name="description_search">搜索支持</string>
 
 
     <string name="hint_account">账号</string>
