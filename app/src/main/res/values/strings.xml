@@ -24,10 +24,14 @@
     <string name="text_exhentai" translatable="false">exhentai.org</string>
     <string name="text_e_hentai" translatable="false">e-hentai.org</string>
 
+    <string name="text_1" translatable="false">1</string>
+    <string name="text_2" translatable="false">2</string>
+    <string name="text_3" translatable="false">3</string>
+    <string name="text_4" translatable="false">4</string>
+    <string name="text_5" translatable="false">5</string>
 
 
     <string name="text_test">Test content</string>
-
 
 
     <string name="hint_account">account</string>
@@ -40,6 +44,12 @@
     <string name="text_login_by_account">Login by account</string>
     <string name="text_login_by_cookie">Login by cookie</string>
 
+    <string name="text_star_1">1 star</string>
+    <string name="text_star_2">2 stars</string>
+    <string name="text_star_3">3 stars</string>
+    <string name="text_star_4">4 stars</string>
+    <string name="text_star_5">5 stars</string>
+
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
     <string name="text_confirm">Confirm</string>
@@ -48,6 +58,24 @@
     <string name="text_download">Download</string>
     <string name="text_read">Read</string>
     <string name="text_search">Search</string>
+    <string name="text_advanced_options">Advanced Options</string>
+    <string name="text_search_gallery_name">Search Gallery Name</string>
+    <string name="text_search_gallery_tags">Search Gallery Tags</string>
+    <string name="text_search_gallery_description">Search Gallery Description</string>
+    <string name="text_search_torrent_filenames">Search Torrent Filenames</string>
+    <string name="text_only_show_galleries_with_torrents">Only Show Galleries With Torrents</string>
+    <string name="text_search_low_power_tags">Search Low-Power Tags</string>
+    <string name="text_search_downvoted_tags">Search Downvoted Tags</string>
+    <string name="text_show_expunged_galleries">Show Expunged Galleries</string>
+    <string name="text_minimum_rating">Minimum Rating:</string>
+    <string name="text_search_between_page">Between</string>
+    <string name="text_search_to">to</string>
+    <string name="text_search_pages">pages</string>
+    <string name="text_disable_default_filters">Disable default filters for:</string>
+    <string name="text_language">Language</string>
+    <string name="text_uploader">Uploader</string>
+    <string name="text_tags">Tags</string>
+    <string name="text_enable_advanced_options">Enable advanced options</string>
 
 
 </resources>

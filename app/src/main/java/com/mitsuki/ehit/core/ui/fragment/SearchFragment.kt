@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.core.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -9,19 +8,17 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenCreated
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.afollestad.materialdialogs.list.listItems
 import com.mitsuki.armory.extend.hideSoftInput
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.being.db.RoomData
+import com.mitsuki.ehit.core.model.ehparser.GalleryRating
 import com.mitsuki.ehit.core.model.entity.SearchKey
 import com.mitsuki.ehit.core.ui.adapter.*
-import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
 import com.mitsuki.ehit.core.viewmodel.MainViewModel
 import com.mitsuki.ehit.core.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,19 +35,19 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
     private val mMainViewModel: MainViewModel
             by createViewModelLazy(MainViewModel::class, { requireActivity().viewModelStore })
 
-    private val mSwitch by lazy { SearchSwitch() }
+    private val mModeSwitch by lazy { SearchModeSwitch() }
     private val mHistoryAdapter by lazy { SearchHistoryAdapter() }
     private val mShortcutAdapter by lazy { SearchShortcutAdapter() }
     private val mCategoryAdapter by lazy { SearchCategoryAdapter() }
     private val mAdvancedAdapter by lazy { SearchAdvancedAdapter() }
-    private val mExtendMore by lazy { SearchExpandMore() }
+    private val mAdvancedSwitch by lazy { SearchAdvancedOptionsSwitch() }
 
     private val mAdapter by lazy {
         ConcatAdapter(
             mCategoryAdapter,
+            mAdvancedSwitch,
             mAdvancedAdapter,
-            mExtendMore,
-            mSwitch,
+            mModeSwitch,
             mHistoryAdapter,
             mShortcutAdapter
         )
@@ -70,11 +67,14 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         mViewModel.initData(arguments)
         mHistoryAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
         mShortcutAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
+        mAdvancedAdapter.ratingEvent.observe(this, Observer(this::onRatingEvent))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
+
+        mViewModel.tempKey?.apply { onSearchUpdate(this) }
 
         search_list?.apply {
             layoutManager = GridLayoutManager(requireContext(), 2).apply {
@@ -99,12 +99,10 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
             }
         }
 
-        mSwitch.switchEvent.observe(viewLifecycleOwner, Observer(this::onSwitch))
+        mModeSwitch.switchEvent.observe(viewLifecycleOwner, Observer(this::onSwitch))
 
-        mExtendMore.expendEvent.observe(
+        mAdvancedSwitch.switchEvent.observe(
             viewLifecycleOwner, { mAdvancedAdapter.isVisible = it })
-
-        mViewModel.tempKey?.apply { onSearchUpdate(this) }
 
         lifecycle.coroutineScope.launch {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }
@@ -119,25 +117,41 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         back()
     }
 
+    private fun onRatingEvent(nil: String) {
+        MaterialDialog(requireContext()).show {
+            listItems(items = GalleryRating.strList(requireContext())) { _, index, _ ->
+                mAdvancedAdapter.applyRating(GalleryRating.DATA[index])
+            }
+            lifecycleOwner(this@SearchFragment)
+        }
+    }
+
     private fun onSwitch(isAdvancedMode: Boolean) {
         mHistoryAdapter.isEnable = !isAdvancedMode
         mShortcutAdapter.isEnable = !isAdvancedMode
         mCategoryAdapter.isEnable = isAdvancedMode
-        mExtendMore.isEnable = isAdvancedMode
+        mAdvancedSwitch.isEnable = isAdvancedMode
         mAdvancedAdapter.isEnable = isAdvancedMode
     }
 
     private fun onSearchUpdate(key: SearchKey) {
         search_input?.apply {
-            setText(key.showContent)
-            setSelection(key.showContent.length)
+            if (key.key.isNotEmpty()) {
+                setText(key.key)
+                setSelection(key.key.length)
+            }
         }
-
+        mAdvancedSwitch.isChecked = key.isAdvancedEnable
         mCategoryAdapter.submitData(key.category)
+        mAdvancedAdapter.submitData(key)
     }
 
     private fun obtainSearchKey(text: String): SearchKey {
-        return SearchKey(text, mCategoryAdapter.categoryCode())
+        return SearchKey(text, mCategoryAdapter.categoryCode()).apply {
+            isAdvancedEnable = mAdvancedSwitch.isChecked
+            if (isAdvancedEnable)
+                mAdvancedAdapter.getOptions(this)
+        }
     }
 
     private fun back() {

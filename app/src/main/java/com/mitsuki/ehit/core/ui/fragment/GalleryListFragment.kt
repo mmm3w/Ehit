@@ -88,7 +88,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         } ?: {
             mViewModel.searchKey?.apply {
                 gallery_list?.topBar {
-                    findViewById<TextView>(R.id.top_search_text).text = showContent
+                    if (showContent.isNotEmpty())
+                        findViewById<TextView>(R.id.top_search_text).text = showContent
                 }
             }
         }()

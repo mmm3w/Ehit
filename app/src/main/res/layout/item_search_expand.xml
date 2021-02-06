@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_expand"
+<androidx.appcompat.widget.SwitchCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_switch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="4dp"
-    android:src="@drawable/ic_round_expand_more_24" />
+    android:gravity="end|center_vertical"
+    android:paddingHorizontal="@dimen/dp_16"
+    android:src="@drawable/ic_round_expand_more_24"
+    android:text="@string/text_enable_advanced_options"
+    app:switchPadding="@dimen/dp_16" />

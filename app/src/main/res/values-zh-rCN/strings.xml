@@ -19,6 +19,12 @@
     <string name="text_login_by_account">账号登录</string>
     <string name="text_login_by_cookie">Cookie登录</string>
 
+    <string name="text_star_1">1 星</string>
+    <string name="text_star_2">2 星</string>
+    <string name="text_star_3">3 星</string>
+    <string name="text_star_4">4 星</string>
+    <string name="text_star_5">5 星</string>
+
     <string name="text_yes">是</string>
     <string name="text_no">否</string>
     <string name="text_confirm">确定</string>
@@ -27,5 +33,24 @@
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>
     <string name="text_search">搜索</string>
+    <string name="text_advanced_options">高级选项</string>
+    <string name="text_search_gallery_name">搜索画廊</string>
+    <string name="text_search_gallery_tags">搜索画廊标签</string>
+    <string name="text_search_gallery_description">搜索画廊描述</string>
+    <string name="text_search_torrent_filenames">搜索种子文件名</string>
+    <string name="text_only_show_galleries_with_torrents">仅显示有种子的画廊</string>
+    <string name="text_search_low_power_tags">搜索低愿力种子</string>
+    <string name="text_search_downvoted_tags">搜索差评标签</string>
+    <string name="text_show_expunged_galleries">显示被删除的画廊</string>
+    <string name="text_minimum_rating">最低评分：</string>
+    <string name="text_search_between_page">页码：</string>
+    <string name="text_search_to">到</string>
+    <string name="text_search_pages">页</string>
+    <string name="text_disable_default_filters">禁用排除项：</string>
+    <string name="text_language">语言</string>
+    <string name="text_uploader">上传者</string>
+    <string name="text_tags">标签</string>
+    <string name="text_enable_advanced_options">启用高级选项</string>
+
 
 </resources>
