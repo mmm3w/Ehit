@@ -77,22 +77,17 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        mMainViewModel.removeSearchKey(hashCode())?.apply {
-            gallery_list?.topBar {
-                findViewById<TextView>(R.id.top_search_text).text = showContent
-            }
-
+        (mMainViewModel.removeSearchKey(hashCode())?.apply {
             mViewModel.galleryListPage(1)
             mViewModel.galleryListCondition(this)
             mAdapter.refresh()
-        } ?: {
-            mViewModel.searchKey?.apply {
-                gallery_list?.topBar {
-                    if (showContent.isNotEmpty())
-                        findViewById<TextView>(R.id.top_search_text).text = showContent
-                }
+        } ?: mViewModel.searchKey)?.apply {
+            gallery_list?.topBar {
+                if (showContent.isNotEmpty())
+                    findViewById<TextView>(R.id.top_search_text).text = showContent
             }
-        }()
+        }
+
 
         gallery_list?.apply {
             //配置recycleView

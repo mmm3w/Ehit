@@ -61,6 +61,7 @@ dependencies {
     implementation project(':adapter')
     implementation project(':httprookie')
     implementation project(':imagegesture')
+    implementation project(':systemoverlay')
 
     //----------------------------------------------------------------------------------------------
     implementation deps.kotlin.stdlib
@@ -111,7 +112,6 @@ dependencies {
     implementation deps.coil
 
 //    implementation 'com.github.MitsukiNIBAN:Armory:0.1.0'
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.20")
 }
 
 androidExtensions {
