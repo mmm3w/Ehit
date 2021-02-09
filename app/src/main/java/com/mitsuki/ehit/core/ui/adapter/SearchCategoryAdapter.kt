@@ -78,9 +78,7 @@ class SearchCategoryAdapter : RecyclerView.Adapter<SearchCategoryAdapter.ViewHol
             checkState[index] = (code and Category.DATA[index].code) == Category.DATA[index].code
         }
 
-        if (isEnable) {
-            notifyDataSetChanged()
-        }
+        if (isEnable) notifyDataSetChanged()
     }
 
     class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(

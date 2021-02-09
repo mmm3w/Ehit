@@ -96,6 +96,20 @@ class SearchAdvancedAdapter : SingleItemAdapter(true) {
             lowPowerTags?.isChecked = isSearchLowPowerTags
             downvotedTags?.isChecked = isSearchDownvotedTags
             showExpungedGalleries?.isChecked = isShowExpungedGalleries
+
+            minimumRatingCheck?.isChecked = minimumRating?.apply {
+                minimumRatingSelect?.hint = toString()
+                minimumRatingSelect?.setText(GalleryRating.findText(this))
+            } != null
+
+            betweenPage?.isChecked = betweenPages?.apply {
+                startPage?.setText(first.toString())
+                endPage?.setText(second.toString())
+            } != null
+
+            disableFilterLanguage?.isChecked = isDisableLanguageFilter
+            disableFilterUploader?.isChecked = isDisableUploaderFilter
+            disableFilterTags?.isChecked = isDisableTagsFilter
         }
     }
 

@@ -2,6 +2,7 @@ package com.mitsuki.ehit.core.model.ehparser
 
 import android.content.Context
 import com.mitsuki.ehit.R
+import java.lang.RuntimeException
 
 object GalleryRating {
 
@@ -13,8 +14,11 @@ object GalleryRating {
         5 to R.string.text_star_5,
     )
 
-    fun selectDialog() {
-
+    fun findText(rating: Int): Int {
+        for (item in DATA) {
+            if (rating == item.first) return item.second
+        }
+        throw RuntimeException("Error rating")
     }
 
     fun strList(context: Context): List<String> {

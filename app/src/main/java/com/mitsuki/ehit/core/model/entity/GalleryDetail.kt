@@ -102,7 +102,7 @@ data class GalleryDetail(
                 }
             }
 
-            val ratingCount = gmNode.getElementById("rating_count")?.run { text().toInt() } ?: 0
+            val ratingCount = gmNode.getElementById("rating_count")?.run { text().toIntOrNull() } ?: 0
 
             val ratingNode = gmNode.getElementById("rating_label")?.let {
                 with(it.text()) { if ("Not Yet Rated" == this) -1f else matchNumber("-1").toFloat() }

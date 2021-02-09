@@ -60,7 +60,7 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
         token: String,
         index: Int
     ): RequestResult<GalleryPreview> {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
 
             val data = MemoryCache.getImagePage(gid, index)
             if (data != null) {
@@ -93,7 +93,7 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
         token: String,
         index: Int
     ): RequestResult<String> {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
 
             val remoteData = HttpRookie
                 .get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
@@ -121,7 +121,7 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
     }
 
     override suspend fun login(account: String, password: String): RequestResult<String> {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             val loginData = HttpRookie
                 .post<String>(Url.login()) {
                     convert = LoginConvert()

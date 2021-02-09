@@ -50,7 +50,7 @@
     <string name="text_language">语言</string>
     <string name="text_uploader">上传者</string>
     <string name="text_tags">标签</string>
-    <string name="text_enable_advanced_options">启用高级选项</string>
+    <string name="text_enable_advanced_options">启用更多高级选项</string>
 
 
 </resources>

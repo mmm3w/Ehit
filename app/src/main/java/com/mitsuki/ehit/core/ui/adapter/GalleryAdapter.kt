@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.core.ui.adapter
 
 import android.graphics.Outline
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import coil.load
 import com.mitsuki.armory.extend.view
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.being.extend.debug
 import com.mitsuki.ehit.core.model.entity.Gallery
 import com.mitsuki.ehit.core.ui.widget.CategoryView
 import java.util.*
@@ -74,17 +76,21 @@ class GalleryAdapter :
         private val mGalleryLayout = view<ConstraintLayout>(R.id.gallery_layout)
 
         fun bind(data: Gallery) {
-            mGalleryThumb?.load(data.thumb) { crossfade(300) }
-            mGalleryTitle?.text = data.title
-            mGalleryUploader?.text = data.uploader
-            mGalleryLanguage?.text = data.languageSimple
-            mGalleryCategory?.apply {
-                setCategoryColor(data.categoryColor)
-                text = data.category.toUpperCase(Locale.getDefault())
+            with(data) {
+                mGalleryThumb?.load(thumb) { crossfade(300) }
+                mGalleryTitle?.text = title
+                mGalleryUploader?.text = uploader
+                mGalleryLanguage?.text = languageSimple
+                mGalleryCategory?.apply {
+                    setCategoryColor(categoryColor)
+                    text = category.toUpperCase(Locale.getDefault())
+                }
+                mGalleryTime?.text = time
+                mGalleryRating?.rating = rating
+                mGalleryLayout?.transitionName = itemTransitionName
+                debug("rating:$rating")
             }
-            mGalleryTime?.text = data.time
-            mGalleryRating?.rating = data.rating
-            mGalleryLayout?.transitionName = data.itemTransitionName
+
         }
 
     }

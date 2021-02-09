@@ -34,7 +34,7 @@ class SearchModeSwitch : SingleItemAdapter(true) {
     override val onViewHolderBind: ViewHolder.() -> Unit = {
         view<ImageView>(R.id.search_item_icon)
             ?.setImageResource(if (isAdvancedMode) R.drawable.ic_round_keyboard_return_24 else R.drawable.ic_outline_change_circle_24)
-        view<TextView>(R.id.search_item_text)?.text = if (isAdvancedMode) "快速搜索" else "精确搜索"
+        view<TextView>(R.id.search_item_text)?.text = if (isAdvancedMode) "快速搜索" else "高级搜索"
     }
 
 }

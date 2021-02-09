@@ -18,11 +18,9 @@ class LoginViewModel @ViewModelInject constructor(@RemoteRepository var reposito
             when (val result = repository.login(account, password)) {
                 is RequestResult.SuccessResult -> {
                     //登录成功
-                    Log.e("asdf", "Success "+result.data)
                 }
                 is RequestResult.FailResult -> {
                     //登录失败
-                    Log.e("asdf", "Fail ${result.throwable}")
                 }
             }
         }

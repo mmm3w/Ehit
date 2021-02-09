@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 object Matcher {
     val ID_TOKEN: Pattern = Pattern.compile("(\\d+)/([0-9a-f]{10})(?:[^0-9a-f]|\$)")
-    val RATING: Pattern = Pattern.compile("var gid = (\\-?\\d+)px (\\-?\\d+)px")
+    val RATING: Pattern = Pattern.compile("background-position:(\\-?\\d+)px (\\-?\\d+)px")
     val DETAIL: Pattern = Pattern.compile(
         "var gid = (\\d+);.+?var token = \"([a-f0-9]+)\";.+?var apiuid = ([\\-\\d]+);.+?var apikey = \"([a-f0-9]+)\";",
         Pattern.DOTALL

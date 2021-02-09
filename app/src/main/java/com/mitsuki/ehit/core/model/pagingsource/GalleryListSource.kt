@@ -26,7 +26,7 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
             // Page里传进列表数据，以及上一页和下一页的页数,具体的是否最后一页或者其他逻辑就自行判断
             // 需要注意的是，如果是第一页，prevKey就传null，如果是最后一页那么nextKey也传null
             // 其他情况prevKey就是page-1，nextKey就是page+1
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.IO) {
                 val data: Response<ArrayList<Gallery>> =
                     HttpRookie
                         .get<ArrayList<Gallery>>(Url.galleryList()) {
