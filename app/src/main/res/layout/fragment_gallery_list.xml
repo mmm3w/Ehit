@@ -6,14 +6,21 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/fragment_gallery_list_scene">
 
-    <com.mitsuki.ehit.core.ui.widget.GalleryListLayout
-        android:id="@+id/gallery_list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/gallery_list_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.mitsuki.ehit.core.ui.widget.GalleryListLayout
+            android:id="@+id/gallery_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gallery_go_top"
@@ -21,14 +28,6 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/description_go_top"
         android:src="@drawable/ic_baseline_publish_24"
-        app:fabSize="mini" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/gallery_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/description_refresh"
-        android:src="@drawable/ic_round_refresh_24"
         app:fabSize="mini" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

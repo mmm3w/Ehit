@@ -50,18 +50,13 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-//    buildFeatures {
-//        viewBinding true
-//    }
+    buildFeatures {
+        viewBinding false
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':armory')
-    implementation project(':adapter')
-    implementation project(':httprookie')
-    implementation project(':imagegesture')
-    implementation project(':systemoverlay')
 
     //----------------------------------------------------------------------------------------------
     implementation deps.kotlin.stdlib
@@ -111,7 +106,7 @@ dependencies {
     implementation deps.okhttplogger
     implementation deps.coil
 
-//    implementation 'com.github.MitsukiNIBAN:Armory:0.1.0'
+    implementation 'com.github.MitsukiNIBAN:Armory:0.1.6'
 }
 
 androidExtensions {

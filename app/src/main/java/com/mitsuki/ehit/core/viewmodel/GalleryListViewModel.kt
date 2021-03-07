@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.mitsuki.ehit.being.extend.debug
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.entity.Gallery
 import com.mitsuki.ehit.core.model.entity.SearchKey
@@ -27,7 +28,7 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
             .asLiveData()
 
     fun galleryListPage(page: Int) {
-        mListPageIn.targetPage = page.coerceAtMost(1)
+        mListPageIn.targetPage = page.coerceAtLeast(1)
     }
 
     fun galleryListCondition(searchKey: SearchKey) {

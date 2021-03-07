@@ -7,8 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
-import androidx.core.view.NestedScrollingParent3
-import androidx.core.view.ViewCompat
+import androidx.core.view.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mitsuki.armory.extend.addOnScrollListenerBy
@@ -18,32 +17,18 @@ import com.mitsuki.ehit.R
 @Suppress("JoinDeclarationAndAssignment", "ConstantConditionIf")
 class GalleryListLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent3 {
+) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingChild3 {
 
     private var mRecyclerView: RecyclerView //数据列表
-//    private val marginSize: Int
 
-    //基础配置参数
-//    private val mCircleDiameter: Int //刷新View的大小
     private val mFabSlop: Int
-//
-//    private val mRefreshPlugin: RefreshPlugin
-//    private val mRefreshGate = InitialGate()
 
     private val mFloatBarPlugin: FloatBarPlugin
 
     private var mExtendControl: ((toHide: Boolean) -> Unit)? = null
     private var mExtendTag = false
 
-    companion object {
-        private const val CIRCLE_DIAMETER = 40
-    }
-
     init {
-//        resources.displayMetrics.density.apply {
-//            mCircleDiameter = (CIRCLE_DIAMETER * this).roundToInt()
-//            marginSize = dp2px(36f)
-//        }
         mFabSlop = ViewConfiguration.get(context).scaledTouchSlop
         //创建 RecyclerView
         mRecyclerView = RecyclerView(context).apply {
@@ -53,22 +38,8 @@ class GalleryListLayout @JvmOverloads constructor(
         }
         addView(mRecyclerView)
 
-        //刷新View
-//        mRefreshPlugin = RefreshPlugin(context).apply { addView(view()) }
-
-        //创建top bar
         mFloatBarPlugin =
             FloatBarPlugin(context, R.layout.part_top_search_bar, this).apply { addView(view()) }
-
-//        mRefreshPlugin.additional = {
-//            if (!endOfPrepend)
-//                false
-//            else
-//                if (it > 0)
-//                    true
-//                else
-//                    !mRecyclerView.canScrollVertically(-1)
-//        }
 
         mRecyclerView.addOnScrollListener(mFloatBarPlugin)
         mRecyclerView.addOnScrollListenerBy(
@@ -88,6 +59,8 @@ class GalleryListLayout @JvmOverloads constructor(
                 }
             })
     }
+
+    private val mScrollingChildHelper by lazy { NestedScrollingChildHelper(mRecyclerView) }
 
     @Suppress("unused", "PropertyName")
     class SavedState : BaseSavedState {
@@ -144,12 +117,6 @@ class GalleryListLayout @JvmOverloads constructor(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.EXACTLY)
         )
-//        mRefreshPlugin.view {
-//            measure(
-//                MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY),
-//                MeasureSpec.makeMeasureSpec(mCircleDiameter, MeasureSpec.EXACTLY)
-//            )
-//        }
 
         setMeasuredDimension(
             MeasureSpec.getSize(widthMeasureSpec),
@@ -160,59 +127,70 @@ class GalleryListLayout @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         mFloatBarPlugin.view { layout(0, 0, measuredWidth, measuredHeight) }
 
-//        mRefreshPlugin.view {
-//            layout(
-//                this@GalleryListLayout.measuredWidth / 2 - measuredWidth / 2,
-//                mFloatBarPlugin.view().measuredHeight,
-//                this@GalleryListLayout.measuredWidth / 2 + measuredWidth / 2,
-//                measuredHeight + mFloatBarPlugin.view().measuredHeight
-//            )
-//        }
-
         mRecyclerView.apply { layout(0, 0, measuredWidth, measuredHeight) }
 
     }
 
 
     /** nested scroll *****************************************************************************/
-    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
-        return axes and ViewCompat.SCROLL_AXIS_VERTICAL != 0
+    override fun startNestedScroll(axes: Int, type: Int): Boolean {
+        return mScrollingChildHelper.startNestedScroll(axes, type)
     }
 
-    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
-//        if (type == ViewCompat.TYPE_TOUCH) {
-//            mRefreshPlugin.startDrag()
-//        }
+    override fun stopNestedScroll(type: Int) {
+        mScrollingChildHelper.stopNestedScroll()
     }
 
-    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
-
-//        if (type != ViewCompat.TYPE_TOUCH) return
-//
-//        var temp = 0
-//        mRefreshPlugin.drag(dy).apply {
-//            if (abs(this) > temp) temp = this
-//        }
-//        consumed[1] = temp
-
+    override fun hasNestedScrollingParent(type: Int): Boolean {
+        return mScrollingChildHelper.hasNestedScrollingParent(type)
     }
 
-    override fun onNestedScroll(
-        target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int,
-        type: Int, consumed: IntArray
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?,
+        type: Int,
+        consumed: IntArray
     ) {
+        mScrollingChildHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            offsetInWindow,
+            type,
+            consumed
+        )
     }
 
-    override fun onNestedScroll(
-        target: View, dxConsumed: Int, dyConsumed: Int,
-        dxUnconsumed: Int, dyUnconsumed: Int, type: Int
-    ) {
+    override fun dispatchNestedScroll(
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?,
+        type: Int
+    ): Boolean {
+        return mScrollingChildHelper.dispatchNestedScroll(
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            offsetInWindow,
+            type
+        )
     }
 
-    override fun onStopNestedScroll(target: View, type: Int) {
-//        if (type == ViewCompat.TYPE_TOUCH) {
-//            mRefreshPlugin.finishDrag()
-//        }
+    override fun dispatchNestedPreScroll(
+        dx: Int,
+        dy: Int,
+        consumed: IntArray?,
+        offsetInWindow: IntArray?,
+        type: Int
+    ): Boolean {
+        return mScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type)
     }
 
     /**********************************************************************************************/
@@ -222,32 +200,10 @@ class GalleryListLayout @JvmOverloads constructor(
     fun topBar(action: View.() -> Unit) = mFloatBarPlugin.view(action)
 
     fun setListener(
-//        refreshListener: (() -> Unit)? = null,
         extendControl: ((toHide: Boolean) -> Unit)? = null
     ) {
-//        refreshListener?.apply { mRefreshPlugin.refreshListener = this }
         this.mExtendControl = extendControl
     }
-
-//    var endOfPrepend = false
-//
-//    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
-//        set(loadState) {
-//            if (field != loadState) {
-//                when (loadState) {
-//                    is LoadState.Loading -> mRefreshGate.prep(true)
-//                    is LoadState.Error -> mRefreshGate.prep(false)
-//                    is LoadState.NotLoading -> {
-//                        mRefreshGate.trigger()
-//                        if (mRefreshGate.ignore()) {
-//                            mRefreshPlugin.isEnable = true
-//                        }
-//                    }
-//                }
-//
-//                field = loadState
-//            }
-//        }
 
 
 }

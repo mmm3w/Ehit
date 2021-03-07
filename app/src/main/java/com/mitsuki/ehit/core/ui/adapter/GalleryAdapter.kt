@@ -88,9 +88,7 @@ class GalleryAdapter :
                 mGalleryTime?.text = time
                 mGalleryRating?.rating = rating
                 mGalleryLayout?.transitionName = itemTransitionName
-                debug("rating:$rating")
             }
-
         }
 
     }

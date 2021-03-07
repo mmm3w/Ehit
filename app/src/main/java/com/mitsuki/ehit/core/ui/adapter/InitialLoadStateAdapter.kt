@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.being
+package com.mitsuki.ehit.core.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,10 +7,12 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.core.crutch.InitialGate
 
-abstract class InitialLoadStateAdapter() :
+abstract class InitialLoadStateAdapter :
     RecyclerView.Adapter<InitialViewHolder>() {
 
     private val mGate = InitialGate()
+
+    val isOver get() = mGate.ignore()
 
     var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
         set(loadState) {

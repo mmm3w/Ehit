@@ -20,21 +20,12 @@
             app:layout_constraintStart_toEndOf="parent" />
 
         <Constraint
-            android:id="@+id/gallery_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:alpha="0"
-            app:layout_constraintBottom_toTopOf="@id/gallery_page_jump"
-            app:layout_constraintStart_toEndOf="parent" />
-
-        <Constraint
             android:id="@+id/gallery_go_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:alpha="0"
-            app:layout_constraintBottom_toTopOf="@id/gallery_refresh"
+            app:layout_constraintBottom_toTopOf="@id/gallery_page_jump"
             app:layout_constraintStart_toEndOf="parent" />
     </ConstraintSet>
 
@@ -51,7 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Constraint
-            android:id="@+id/gallery_refresh"
+            android:id="@+id/gallery_go_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
@@ -59,17 +50,6 @@
             app:layout_constraintBottom_toTopOf="@id/gallery_page_jump"
             app:layout_constraintEnd_toEndOf="@id/gallery_page_jump"
             app:layout_constraintStart_toStartOf="@id/gallery_page_jump" />
-
-
-        <Constraint
-            android:id="@+id/gallery_go_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:alpha="1"
-            app:layout_constraintBottom_toTopOf="@id/gallery_refresh"
-            app:layout_constraintEnd_toEndOf="@id/gallery_refresh"
-            app:layout_constraintStart_toStartOf="@id/gallery_refresh" />
     </ConstraintSet>
 
 </MotionScene>

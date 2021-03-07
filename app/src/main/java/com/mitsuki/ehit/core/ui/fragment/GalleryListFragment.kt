@@ -18,9 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.being.extend.debug
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.viewmodel.GalleryListViewModel
@@ -42,7 +44,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             by createViewModelLazy(MainViewModel::class, { requireActivity().viewModelStore })
 
     private val mAdapter by lazy { GalleryAdapter() }
-    private val mLoadAdapter by lazy { GalleryListLoadStateAdapter(mAdapter) }
+    private val mInitAdapter by lazy { GalleryListLoadStateAdapter(mAdapter) }
 
     private val mConcatAdapter by lazy {
         val header = DefaultLoadStateAdapter(mAdapter)
@@ -52,10 +54,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             header.loadState = loadStates.prepend
             footer.loadState = loadStates.append
         }
-        ConcatAdapter(header, mLoadAdapter, mAdapter, footer)
+        ConcatAdapter(header, mInitAdapter, mAdapter, footer)
     }
 
-    private var isRefresh = false
 
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,8 +66,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
-                isRefresh = it.refresh is LoadState.Loading
-                mLoadAdapter.loadState = it.refresh
+                if (mInitAdapter.isOver) {
+                    gallery_list_refresh?.isRefreshing = it.refresh is LoadState.Loading
+                } else {
+                    mInitAdapter.loadState = it.refresh
+                }
+                gallery_list_refresh?.isEnabled = it.prepend.endOfPaginationReached
             }
         }
 
@@ -123,9 +128,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             gallery_list?.recyclerView()?.smoothScrollToPosition(0)
         }
 
-        gallery_refresh?.setOnClickListener { mAdapter.refresh() }
-
         gallery_page_jump?.setOnClickListener { showPageJumpDialog() }
+
+        gallery_list_refresh?.apply {
+            setProgressViewOffset(true, dp2px(36f), dp2px(120f))
+            setOnRefreshListener { mAdapter.refresh() }
+        }
     }
 
     override fun onDestroy() {

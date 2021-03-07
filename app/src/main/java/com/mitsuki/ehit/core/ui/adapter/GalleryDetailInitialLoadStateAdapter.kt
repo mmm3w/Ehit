@@ -9,8 +9,6 @@ import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.being.InitialLoadStateAdapter
-import com.mitsuki.ehit.being.InitialViewHolder
 
 class GalleryDetailInitialLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
     InitialLoadStateAdapter() {
