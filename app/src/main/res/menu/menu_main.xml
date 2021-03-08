@@ -11,7 +11,7 @@
             android:id="@+id/nav_subscription"
             android:title="订阅" />
         <item
-            android:id="@+id/nav_opular"
+            android:id="@+id/nav_popular"
             android:title="热门" />
 
     </group>

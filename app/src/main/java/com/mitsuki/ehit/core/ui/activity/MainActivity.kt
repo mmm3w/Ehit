@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.being.ShareData
+import com.mitsuki.ehit.being.extend.debug
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -27,9 +28,27 @@ class MainActivity : BaseActivity() {
         window.decorView.systemUiVisibility = statusBarColorStyle()
 
         main_navigation.setupWithNavController(navController)
-
+        main_navigation.apply { post { setCheckedItem(R.id.nav_home) } }
         main_navigation.setNavigationItemSelectedListener {
             when (it.itemId) {
+                R.id.nav_home -> {
+                    debug("home")
+                }
+                R.id.nav_subscription -> {
+                    debug("subscription")
+                }
+                R.id.nav_popular -> {
+                    debug("popular")
+                }
+                R.id.nav_collection -> {
+                    debug("collection")
+                }
+                R.id.nav_history -> {
+                    debug("history")
+                }
+                R.id.nav_download -> {
+                    debug("download")
+                }
                 R.id.nav_setting -> startActivity(Intent(this, SettingActivity::class.java))
             }
             true
