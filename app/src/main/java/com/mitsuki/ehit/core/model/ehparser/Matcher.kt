@@ -49,6 +49,6 @@ object Matcher {
         Pattern.compile("<a href=\"([^\"]+)fullimg.php([^\"]+)\">")
 
     val PREVIEW_PAGE_TO_TOKEN: Pattern =
-        Pattern.compile("${Url.host()}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
+        Pattern.compile("${Url.currentDomain}/s/([0-9a-f]{10})/(\\d+)-(\\d+)")
 
 }

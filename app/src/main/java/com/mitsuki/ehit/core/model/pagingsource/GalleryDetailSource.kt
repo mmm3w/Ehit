@@ -73,9 +73,9 @@ class GalleryDetailSource(
                     nextKey = data.images.nextKey
                 )
             }
-        } catch (e: Exception) {
+        } catch (inner: Throwable) {
             // 捕获异常，返回一个Error
-            LoadResult.Error(e)
+            LoadResult.Error(inner)
         }
     }
 }

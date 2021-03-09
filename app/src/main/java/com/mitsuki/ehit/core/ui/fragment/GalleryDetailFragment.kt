@@ -36,13 +36,13 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
     private val mPreviewAdapter: GalleryDetailPreviewAdapter
             by lazy { GalleryDetailPreviewAdapter() }
+
     private val mConcatPreviewAdapter by lazy {
         mPreviewAdapter.withLoadStateHeaderAndFooter(
             header = DefaultLoadStateAdapter(mPreviewAdapter),
             footer = DefaultLoadStateAdapter(mPreviewAdapter)
         )
     }
-
 
     private val mHeader: GalleryDetailHeadAdapter by lazy {
         GalleryDetailHeadAdapter(mViewModel.detailWrap)

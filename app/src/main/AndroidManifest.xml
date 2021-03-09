@@ -20,10 +20,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".core.ui.activity.GalleryActivity" />
+
         <activity android:name=".core.ui.activity.GalleryInfoActivity" />
+
         <activity android:name=".core.ui.activity.GalleryCommentActivity" />
+
         <activity android:name=".core.ui.activity.SettingActivity" />
+
+        <activity android:name=".core.ui.activity.FavouriteActivity" />
+
+        <activity android:name=".core.ui.activity.HistoryActivity" />
+
+        <activity android:name=".core.ui.activity.DownloadActivity" />
+
+        <activity android:name=".core.ui.activity.GalleryMoreInfoActivity" />
+
     </application>
 
 </manifest>

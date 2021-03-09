@@ -18,7 +18,8 @@
         android:id="@+id/load_state_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:gravity="center" />
 
     <Button
         android:id="@+id/load_state_retry"

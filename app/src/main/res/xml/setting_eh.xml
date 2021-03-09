@@ -15,26 +15,19 @@
         app:title="@string/text_setting_cookie" />
 
     <ListPreference
-        app:key="domain"
-        app:persistent="false"
-        app:title="站点选择"
+        app:key="SP_DOMAIN"
+        app:title="@string/text_setting_site"
         app:useSimpleSummaryProvider="true" />
 
     <Preference
+        android:key="setting_site"
         app:persistent="false"
         app:title="打开站点设置" />
 
 
-    <Preference
-        app:persistent="false"
-        app:title="我的标签" />
+    <SwitchPreferenceCompat
+        app:key="SP_SHOW_JP_TITLE"
+        app:title="显示日文标题" />
 
-    <SwitchPreferenceCompat app:title="显示日文标题" />
-
-    <Preference
-        app:persistent="false"
-        app:title="屏蔽画廊" />
-
-    <SwitchPreferenceCompat app:title="移动网路警告" />
 
 </PreferenceScreen>

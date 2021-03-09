@@ -30,7 +30,7 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
             withContext(Dispatchers.IO) {
                 val data: Response<ArrayList<Gallery>> =
                     HttpRookie
-                        .get<ArrayList<Gallery>>(Url.galleryList()) {
+                        .get<ArrayList<Gallery>>(pageIn.targetUrl) {
                             convert = mConvert
                             if (page != 0) urlParams(RequestKey.PAGE_LIST to page.toString())
                             pageIn.searchKey?.addParams(this)
@@ -48,9 +48,9 @@ class GalleryListSource constructor(private val pageIn: PageIn) :
                     is Response.Fail<*> -> throw data.throwable
                 }
             }
-        } catch (e: Exception) {
+        } catch (inner: Throwable) {
             // 捕获异常，返回一个Error
-            LoadResult.Error(e)
+            LoadResult.Error(inner)
         }
     }
 

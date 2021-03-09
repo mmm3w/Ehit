@@ -32,23 +32,14 @@ class MainActivity : BaseActivity() {
         main_navigation.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_home -> {
-                    debug("home")
                 }
                 R.id.nav_subscription -> {
-                    debug("subscription")
                 }
                 R.id.nav_popular -> {
-                    debug("popular")
                 }
-                R.id.nav_collection -> {
-                    debug("collection")
-                }
-                R.id.nav_history -> {
-                    debug("history")
-                }
-                R.id.nav_download -> {
-                    debug("download")
-                }
+                R.id.nav_favourite -> startActivity(Intent(this, FavouriteActivity::class.java))
+                R.id.nav_history -> startActivity(Intent(this, HistoryActivity::class.java))
+                R.id.nav_download -> startActivity(Intent(this, DownloadActivity::class.java))
                 R.id.nav_setting -> startActivity(Intent(this, SettingActivity::class.java))
             }
             true

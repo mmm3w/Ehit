@@ -1,9 +1,7 @@
 package com.mitsuki.ehit.core.model.entity
 
-import com.mitsuki.ehit.being.exception.ParseException
+import com.mitsuki.ehit.being.throwable.ParseThrowable
 import com.mitsuki.ehit.core.model.ehparser.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
 data class GalleryDetail(
@@ -47,7 +45,7 @@ data class GalleryDetail(
     companion object {
         @Suppress("MemberVisibilityCanBePrivate")
         fun parse(content: String?): GalleryDetail {
-            if (content.isNullOrEmpty()) throw ParseException("未请求到数据")
+            if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
 
             val detail = content.parseDetail()
             val gid = detail[0].toLong()
@@ -62,17 +60,31 @@ data class GalleryDetail(
             val archiveUrl = content.parseArchive().htmlEscape().trim()
 
             val document = Jsoup.parse(content)
-            val gmNode = document.byClassFirst("gm")
+            val gmNode = document.byClassFirst("gm", "gm node".prefix())
 
             val detailThumb =
-                gmNode.byId("gd1").child(0).attr("style").parseDetailThumb()
-            val title = gmNode.byId("gn").text()
-            val titleJP = gmNode.byId("gj").text()
-            val category = gmNode.byId("gdc").child(0).text()
-            val uploader = gmNode.byId("gdn").text()
+                gmNode.getElementById("gd1")?.child(0)?.attr("style")
+                    ?.parseDetailThumb("detailThumb (gd1 node child0 style)".prefix())
+                    ?: throw ParseThrowable("detailThumb (gd1 node child0 style)".prefix())
+
+
+            val title = gmNode.getElementById("gn")?.text()
+                ?: throw ParseThrowable("title (gn node text)".prefix())
+
+            val titleJP = gmNode.getElementById("gj")?.text()
+                ?: throw ParseThrowable("titleJP (gj node text)".prefix())
+
+            val category = gmNode.getElementById("gdc")?.child(0)?.text()
+                ?: throw ParseThrowable("category (gdc node child0 text)".prefix())
+
+            val uploader = gmNode.getElementById("gdn")?.text()
+                ?: throw ParseThrowable("uploader (gdn node text)".prefix())
 
             val infoArray = Array(7) { "" }
-            val detailBlock = gmNode.byId("gdd").child(0).child(0).children()
+
+            val detailBlock = gmNode.getElementById("gdd").child(0).child(0).children()
+                ?: throw ParseThrowable("detailBlock (gdd node)".prefix())
+
             for (item in detailBlock) {
                 if (item.children().size < 2) continue
                 val itemText = item.child(0).text()
@@ -102,13 +114,16 @@ data class GalleryDetail(
                 }
             }
 
-            val ratingCount = gmNode.getElementById("rating_count")?.run { text().toIntOrNull() } ?: 0
+            val ratingCount =
+                gmNode.getElementById("rating_count")?.run { text().toIntOrNull() } ?: 0
 
             val ratingNode = gmNode.getElementById("rating_label")?.let {
                 with(it.text()) { if ("Not Yet Rated" == this) -1f else matchNumber("-1").toFloat() }
             } ?: -1f
 
-            val gdfNode = gmNode.byId("gdf")
+            val gdfNode = gmNode.getElementById("gdf")
+                ?: throw ParseThrowable("gdf node".prefix())
+
             val favoriteName =
                 if (!gdfNode.text().contains("Add to Favorites")) gdfNode.text() else null
 
@@ -123,10 +138,14 @@ data class GalleryDetail(
                 } ?: emptyArray()
 
 
-            val commentSet = CommentSet.parse(document.byId("cdiv"))
+            val commentSet = CommentSet.parse(
+                document.getElementById("cdiv") ?: throw ParseThrowable("cdiv node".prefix())
+            )
 
             val previewPages =
-                with(document.byClassFirst("ptt").child(0).child(0).children()) {
+                with(
+                    document.byClassFirst("ptt", "ptt node".prefix()).child(0).child(0).children()
+                ) {
                     get(size - 2).text().toInt()
                 }
 
@@ -162,6 +181,7 @@ data class GalleryDetail(
             )
         }
 
+        private fun String.prefix(): String = "Parse galleryDetail: not found $this"
     }
 
     override fun equals(other: Any?): Boolean {

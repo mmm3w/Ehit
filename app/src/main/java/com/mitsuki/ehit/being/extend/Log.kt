@@ -5,7 +5,7 @@ import com.mitsuki.ehit.BuildConfig
 
 @Suppress("SpellCheckingInspection")
 fun debug(str: String) {
-    if (BuildConfig.DEBUG) {
-        Log.e("EhitDebug", str)
-    }
+    if (!BuildConfig.DEBUG) return
+    val thisMethodStack = java.lang.Exception().stackTrace[1]
+    Log.e("EhitDebug", "${thisMethodStack.fileName + ":" + thisMethodStack.lineNumber}\t-->\t$str")
 }

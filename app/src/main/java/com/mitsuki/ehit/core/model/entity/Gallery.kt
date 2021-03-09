@@ -2,7 +2,8 @@ package com.mitsuki.ehit.core.model.entity
 
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
-import com.mitsuki.ehit.being.exception.ParseException
+import com.mitsuki.ehit.being.extend.debug
+import com.mitsuki.ehit.being.throwable.ParseThrowable
 import com.mitsuki.ehit.core.model.ehparser.*
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -71,8 +72,8 @@ data class Gallery(
                                 continue
                             try {
                                 add(parse(element))
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                            } catch (inner: Throwable) {
+                                debug("${inner.message}\n$element")
                             }
                         }
                     }
@@ -82,22 +83,27 @@ data class Gallery(
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun parse(element: Element): Gallery {
-            val glnameEle = element.byClassFirst("glname", "Not found glname")
+            val glnameEle = element.byClassFirst("glname", "glname node".prefix())
 
-            val title = glnameEle.byClassFirst("glink", "Not found title").text()
+            val title = glnameEle.byClassFirst("glink", "title (glink node text)".prefix()).text()
 
-            val url = glnameEle.byTagFirst("a", "Not found url tag").attr("href")
+            val url = glnameEle.byTagFirst("a", "url (glname node a href)".prefix()).attr("href")
+
             val tiData = url.splitIdToken()
 
-            val category = element.byClassFirst("cn", "Not found category").text()
+            val category = element.byClassFirst("cn", "category (cn node text)".prefix()).text()
 
-            val time = element.byId("posted_${tiData[0]}", "Not found upload time").text()
+            val time = element.getElementById("posted_${tiData[0]}")?.text()
+                ?: throw ParseThrowable("upload time (posted_${tiData[0]} node text)".prefix())
 
-            val uploader = element.byClassFirst("glhide", "Not found uploader")
-                .byTagFirst("a", "Not found uploader").text()
+            val uploader = element
+                .byClassFirst("glhide", "uploader (glhide node)".prefix())
+                .byTagFirst("a", "uploader (glhide node a text)".prefix())
+                .text()
 
-            val thumbNode = element.byClassFirst("glthumb", "Not found thumb")
-                .byTagFirst("img", "Not found thumb")
+            val thumbNode = element
+                .byClassFirst("glthumb", "thumbNode (glthumb node)".prefix())
+                .byTagFirst("img", "thumbNode (glthumb node img)".prefix())
 
             val thumb = thumbNode.attr("data-src").let {
                 if (it.startsWith("https")) it
@@ -108,19 +114,20 @@ data class Gallery(
                 ?.getElementsByClass("gt")
 
             val tagArray = Array(tagElement?.size ?: 0) { i: Int ->
-                tagElement?.get(i)?.attr("title") ?: throw ParseException(
-                    "parse tag error"
-                )
+                tagElement?.get(i)?.attr("title") ?: throw ParseThrowable("parse tag error")
             }
 
-            val rating = element.byClassFirst("ir", "Not found rating").attr("style").parseRating()
+            val rating = element
+                .byClassFirst("ir", "rating (ir node style)".prefix())
+                .attr("style")
+                .parseRating()
 
             return Gallery(
                 tiData[0].toLong(), tiData[1], category, time,
                 title, uploader, thumb, tagArray, rating
             )
         }
+
+        private fun String.prefix(): String = "Parse gallery item: not found $this"
     }
-
-
 }

@@ -1,8 +1,8 @@
 package com.mitsuki.ehit.core.model.entity
 
 import androidx.recyclerview.widget.DiffUtil
-import com.mitsuki.ehit.being.exception.ParseException
-import com.mitsuki.ehit.being.exception.assertContent
+import com.mitsuki.ehit.being.throwable.ParseThrowable
+import com.mitsuki.ehit.being.throwable.assertContent
 import com.mitsuki.ehit.core.model.ehparser.Matcher
 import com.mitsuki.ehit.core.model.ehparser.htmlEscape
 
@@ -68,7 +68,7 @@ data class ImageSource(
 
                         val pageUrl = it.group(5).trim().htmlEscape()
                         val pToken = Matcher.PREVIEW_PAGE_TO_TOKEN.matcher(pageUrl).run {
-                            if (find()) group(1) else throw ParseException()
+                            if (find()) group(1) else throw ParseThrowable("lost page token")
                         }
                         add(
                             ImageSource(
@@ -88,7 +88,7 @@ data class ImageSource(
         }
 
         fun parse(content: String?): PageInfo<ImageSource> {
-            if (content.isNullOrEmpty()) throw ParseException("未请求到数据")
+            if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
             val list = try {
                 parseWithNormal(content)
             } catch (e: Exception) {
@@ -97,8 +97,8 @@ data class ImageSource(
 
             val totalSize = Matcher.PAGER_TOTAL_SIZE.matcher(content).run {
                 if (find()) {
-                    group(1).toIntOrNull() ?: throw ParseException()
-                } else throw ParseException()
+                    group(1).toIntOrNull() ?: throw ParseThrowable("lost total size")
+                } else throw ParseThrowable("lost total size")
             }
 
             var prevKey: Int? = null
@@ -109,9 +109,9 @@ data class ImageSource(
                 if (it.find()) {
                     prevKey = (it.group(1) ?: "").toIntOrNull()
                     nextKey = (it.group(6) ?: "").toIntOrNull()
-                    index = (it.group(3) ?: throw  ParseException("未找到当前页码")).toIntOrNull()
-                        ?: throw ParseException("当前页码格式转换失败")
-                } else throw ParseException("未找到页码信息")
+                    index = (it.group(3) ?: throw  ParseThrowable("未找到当前页码")).toIntOrNull()
+                        ?: throw ParseThrowable("当前页码格式转换失败")
+                } else throw ParseThrowable("未找到页码信息")
             }
 
             return PageInfo(list, index.dec(), totalSize, 0, prevKey?.dec(), nextKey?.dec())

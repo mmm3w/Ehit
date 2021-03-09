@@ -6,26 +6,25 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:title="主页" />
+            android:title="@string/text_menu_main_page" />
         <item
             android:id="@+id/nav_subscription"
-            android:title="订阅" />
+            android:title="@string/text_menu_subscription" />
         <item
             android:id="@+id/nav_popular"
-            android:title="热门" />
-
+            android:title="@string/text_menu_whats_hot" />
     </group>
 
     <item
-        android:id="@+id/nav_collection"
-        android:title="收藏" />
+        android:id="@+id/nav_favourite"
+        android:title="@string/text_menu_favourite" />
     <item
         android:id="@+id/nav_history"
-        android:title="历史" />
+        android:title="@string/text_menu_history" />
     <item
         android:id="@+id/nav_download"
-        android:title="下载" />
+        android:title="@string/text_menu_download" />
     <item
         android:id="@+id/nav_setting"
-        android:title="设置" />
+        android:title="@string/text_menu_setting" />
 </menu>

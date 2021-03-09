@@ -33,13 +33,19 @@ class Comment(val id: Int, val time: String, val user: String, val text: String)
 
             //val c4Node = element.byClassFirst("c4") 这部分暂不解析
 
-            val c3Node = element.byClassFirst("c3")
+            val c3Node = element.byClassFirst("c3", "c3 node".prefix())
+
             val time =
                 with(c3Node.ownText()) { substring("Posted on ".length, length - " by:".length) }
+
             val user = c3Node.child(0).text()
-            val text = element.byClassFirst("c6").html()
+
+            val text = element.byClassFirst("c6", "comment text (c6 node text)".prefix()).html()
+
             return Comment(id, time, user, text)
         }
+
+        private fun String.prefix(): String = "Parse comment: not found $this"
     }
 }
 
