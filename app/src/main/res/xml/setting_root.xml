@@ -2,16 +2,20 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:summary="EH站点相关设置"
-        app:title="EH设置"
-        app:fragment="com.mitsuki.ehit.mvvm.ui.fragment.SettingEhFragment"/>
+        app:fragment="com.mitsuki.ehit.core.ui.fragment.setting.SettingEhFragment"
+        app:summary="@string/text_setting_eh_summary"
+        app:title="@string/text_setting_eh" />
 
     <Preference
-        app:summary=""
-        app:title="阅读设置" />
+        app:fragment="com.mitsuki.ehit.core.ui.fragment.setting.SettingReadFragment"
+        app:title="@string/text_setting_read" />
 
-    <Preference
-        app:summary=""
-        app:title="关于" />
+    <Preference app:title="@string/text_setting_download" />
+
+    <Preference app:title="@string/text_setting_security_and_privacy" />
+
+    <Preference app:title="@string/text_setting_other" />
+
+    <Preference app:title="@string/text_setting_about" />
 
 </PreferenceScreen>

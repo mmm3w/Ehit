@@ -12,6 +12,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.being.ShareData
 import com.mitsuki.ehit.being.extend.debug
+import com.mitsuki.ehit.core.crutch.whiteStyle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -24,8 +25,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        window.decorView.systemUiVisibility = statusBarColorStyle()
+        whiteStyle()
 
         main_navigation.setupWithNavController(navController)
         main_navigation.apply { post { setCheckedItem(R.id.nav_home) } }
@@ -65,13 +65,4 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()
-
-    private fun statusBarColorStyle(): Int {
-        var tag = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) tag =
-            tag or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) tag =
-            tag or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        return tag
-    }
 }

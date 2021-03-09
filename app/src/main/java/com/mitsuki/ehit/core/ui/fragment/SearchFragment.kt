@@ -102,7 +102,7 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         mModeSwitch.switchEvent.observe(viewLifecycleOwner, Observer(this::onSwitch))
 
         mAdvancedSwitch.switchEvent.observe(
-            viewLifecycleOwner, { mAdvancedAdapter.isVisible = it })
+            viewLifecycleOwner, Observer { mAdvancedAdapter.isVisible = it })
 
         lifecycle.coroutineScope.launch {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }

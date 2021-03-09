@@ -8,6 +8,10 @@
     <string name="description_refresh">刷新支持</string>
     <string name="description_search">搜索支持</string>
 
+    <string name="title_page_go_to">跳转</string>
+    <string name="title_sign_out">退出登录</string>
+    <string name="title_cookie">Cookie</string>
+
 
     <string name="hint_account">账号</string>
     <string name="hint_password">密码</string>
@@ -28,7 +32,7 @@
     <string name="text_yes">是</string>
     <string name="text_no">否</string>
     <string name="text_confirm">确定</string>
-    <string name="title_page_go_to">跳转</string>
+    <string name="text_copy">复制</string>
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>
@@ -51,6 +55,20 @@
     <string name="text_uploader">上传者</string>
     <string name="text_tags">标签</string>
     <string name="text_enable_advanced_options">启用更多高级选项</string>
+
+    <string name="text_setting_eh">EH设置</string>
+    <string name="text_setting_eh_summary">Cookie、站点、标签</string>
+    <string name="text_setting_read">阅读设置</string>
+    <string name="text_setting_download">下载设置</string>
+    <string name="text_setting_security_and_privacy">隐私安全</string>
+    <string name="text_setting_other">其他设置</string>
+    <string name="text_setting_about">关于</string>
+
+    <string name="text_setting_sign_out">退出登录</string>
+    <string name="text_setting_cookie">身份Cookie</string>
+    <string name="text_setting_cookie_summary">查看Cookie</string>
+
+    <string name="text_sign_out_desc">确定要退出登录吗？</string>
 
 
 </resources>

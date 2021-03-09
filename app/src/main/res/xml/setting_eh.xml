@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:summary=""
-        app:title="退出登录" />
+        app:key="setting_logout"
+        app:persistent="false"
+        app:title="@string/text_setting_sign_out" />
 
     <Preference
-        app:summary="用于请求相关数据"
-        app:title="身份Cookie" />
+        app:isPreferenceVisible="false"
+        app:key="setting_cookie"
+        app:persistent="false"
+        app:summary="@string/text_setting_cookie_summary"
+        app:title="@string/text_setting_cookie" />
 
     <ListPreference
         app:key="domain"
-        app:summary=""
-        app:title="站点选择" />
+        app:persistent="false"
+        app:title="站点选择"
+        app:useSimpleSummaryProvider="true" />
+
+    <Preference
+        app:persistent="false"
+        app:title="打开站点设置" />
+
+
+    <Preference
+        app:persistent="false"
+        app:title="我的标签" />
+
+    <SwitchPreferenceCompat app:title="显示日文标题" />
+
+    <Preference
+        app:persistent="false"
+        app:title="屏蔽画廊" />
+
+    <SwitchPreferenceCompat app:title="移动网路警告" />
 
 </PreferenceScreen>
