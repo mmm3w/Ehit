@@ -1,6 +1,7 @@
-package com.mitsuki.ehit.core.ui.adapter
+package com.mitsuki.ehit.core.ui.adapter.gallerydetail
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.paging.LoadState
@@ -9,13 +10,20 @@ import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.view
 import com.mitsuki.armory.widget.TagsView
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.being.extend.createItemView
+import com.mitsuki.ehit.being.extend.hideWithMainThread
 import com.mitsuki.ehit.core.crutch.InitialGate
 import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.core.model.entity.TagSet
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 03
 class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
     RecyclerView.Adapter<GalleryDetailTagAdapter.DetailTagViewHolder>() {
+
+    private val mSubject: PublishSubject<String> by lazy { PublishSubject.create() }
+
+    val event get() = mSubject.hideWithMainThread()
 
     private val mGate = InitialGate()
 
@@ -45,35 +53,27 @@ class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
     }
 
     override fun onBindViewHolder(holder: DetailTagViewHolder, position: Int) {
-        holder.bind(mData.tags[position], position == (mData.tags.size - 1))
-    }
-
-    class DetailTagViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_gallery_detail_tag, parent, false)
-    ) {
-        private val detailTags = view<TagsView>(R.id.gallery_detail_tag)
-
-        fun bind(data: TagSet, isLast: Boolean) {
-            detailTags?.run {
+        with(mData.tags[position]) {
+            holder.detailTags?.apply {
                 removeAllViews()
-                LayoutInflater.from(itemView.context)
-                    .inflate(R.layout.item_gallery_detail_tag_title, this, false)
-                    .run {
-                        (this as TextView).text = data.setName
+                createItemView(R.layout.item_gallery_detail_tag_title).run {
+                    (this as TextView).text = setName
+                    addView(this)
+                }
+                for (tag in tags) {
+                    createItemView(R.layout.item_gallery_detail_tag_item).run {
+                        (this as TextView).text = tag
+                        setOnClickListener { mSubject.onNext("$setName:$tag") }
                         addView(this)
                     }
-                for (tag in data.tags) {
-                    LayoutInflater.from(itemView.context)
-                        .inflate(R.layout.item_gallery_detail_tag_item, this, false)
-                        .run {
-                            (this as TextView).text = tag
-                            addView(this)
-                        }
                 }
-                setPadding(0, 0, 0, if (isLast) dp2px(16f) else 0)
-
-                //还要发射点击事件
+                setPadding(0, 0, 0, if (position == (mData.tags.size - 1)) dp2px(16f) else 0)
             }
         }
+    }
+
+    class DetailTagViewHolder(parent: ViewGroup) :
+        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_gallery_detail_tag)) {
+        val detailTags = view<TagsView>(R.id.gallery_detail_tag)
     }
 }

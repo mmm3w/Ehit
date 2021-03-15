@@ -58,13 +58,21 @@
     <string name="text_show_expunged_galleries">显示被删除的画廊</string>
     <string name="text_minimum_rating">最低评分：</string>
     <string name="text_search_between_page">页码：</string>
-    <string name="text_search_to">到</string>
-    <string name="text_search_pages">页</string>
+    <string name="text_to">到</string>
+    <string name="text_pages">页</string>
     <string name="text_disable_default_filters">禁用排除项：</string>
     <string name="text_language">语言</string>
     <string name="text_uploader">上传者</string>
     <string name="text_tags">标签</string>
     <string name="text_enable_advanced_options">启用更多高级选项</string>
+    <string name="text_more_information">更多信息</string>
+    <string name="text_similar">相似画廊</string>
+    <string name="text_reviews_number">%d条评价</string>
+    <string name="text_no_comments">暂无评论</string>
+    <string name="text_no_more_comments">已加载全部评论</string>
+    <string name="text_more_comments">更多评论</string>
+    <string name="text_quick_search">快速搜索</string>
+    <string name="text_advanced_search">高级搜索</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>

@@ -47,7 +47,7 @@ data class GalleryDetail(
         fun parse(content: String?): GalleryDetail {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
 
-            val detail = content.parseDetail()
+            val detail = content.parseDetail("detail block".prefix())
             val gid = detail[0].toLong()
             val token = detail[1]
             val apiUID = detail[2]

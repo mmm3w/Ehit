@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,13 +14,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.mitsuki.armory.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.being.extend.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.model.entity.ImageSource
 import com.mitsuki.ehit.core.ui.activity.GalleryActivity
 import com.mitsuki.ehit.core.ui.adapter.*
+import com.mitsuki.ehit.core.ui.adapter.gallerydetail.*
 import com.mitsuki.ehit.core.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_detail.*
@@ -44,14 +45,14 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         )
     }
 
-    private val mHeader: GalleryDetailHeadAdapter by lazy {
-        GalleryDetailHeadAdapter(mViewModel.detailWrap)
-    }
     private val mInitialLoadState: GalleryDetailInitialLoadStateAdapter by lazy {
         GalleryDetailInitialLoadStateAdapter(mPreviewAdapter)
     }
-    private val mOperating: GalleryDetailOperatingAdapter by lazy {
-        GalleryDetailOperatingAdapter(mViewModel.detailWrap)
+    private val mHeader: GalleryDetailHeader by lazy {
+        GalleryDetailHeader(mViewModel.detailWrap)
+    }
+    private val mOperating: GalleryDetailOperatingBlock by lazy {
+        GalleryDetailOperatingBlock(mViewModel.detailWrap)
     }
     private val mTag: GalleryDetailTagAdapter by lazy {
         GalleryDetailTagAdapter(mViewModel.detailWrap)
@@ -79,11 +80,19 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
 
-        mViewModel.galleryDetail.observe(this@GalleryDetailFragment, androidx.lifecycle.Observer {
+        mViewModel.galleryDetail.observe(this@GalleryDetailFragment, {
             mPreviewAdapter.submitData(lifecycle, it)
         })
 
-        mPreviewAdapter.currentItem.observe(this, Observer(this::onPreviewClick))
+
+        mHeader.event.observe(this, this::onHeaderEvent)
+        mOperating.event.observe(this, this::onOperatingEvent)
+        mTag.event.observe(this, this::onTagEvent)
+        mComment.event.observe(this) {
+            //TODO 更多评论
+        }
+
+        mPreviewAdapter.event.observe(this, this::onPreviewClick)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,6 +119,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         }
     }
 
+    //TODO 右上角扩展菜单
+
     private fun showPageJumpDialog() {
         MaterialDialog(requireContext()).show {
             input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
@@ -121,6 +132,42 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             positiveButton(R.string.text_confirm)
             lifecycleOwner(this@GalleryDetailFragment)
         }
+    }
+
+    private fun onHeaderEvent(event: GalleryDetailHeader.Event) {
+        when (event) {
+            is GalleryDetailHeader.Event.Uploader -> {
+                //TODO 跳转上传者搜索
+            }
+            is GalleryDetailHeader.Event.Category -> {
+                //TODO 跳转分类搜索
+            }
+        }
+    }
+
+    private fun onOperatingEvent(event: GalleryDetailOperatingBlock.Event) {
+        when (event) {
+            GalleryDetailOperatingBlock.Event.Read -> {
+                //TODO 阅读
+            }
+            GalleryDetailOperatingBlock.Event.Download -> {
+                //TODO 下载
+            }
+            GalleryDetailOperatingBlock.Event.Score -> {
+                //TODO 评分
+            }
+            GalleryDetailOperatingBlock.Event.SimilaritySearch -> {
+                //TODO 相似搜索
+            }
+            GalleryDetailOperatingBlock.Event.MoreInfo -> {
+                //TODO 更多详情
+            }
+        }
+    }
+
+    private fun onTagEvent(tag: String) {
+        //TODO tag点击
+        toast(tag)
     }
 
     private fun onPreviewClick(item: ImageSource) {

@@ -157,7 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/text_search_to"
+            android:text="@string/text_to"
             android:textColor="@color/black_25" />
 
         <EditText
@@ -175,7 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/text_search_pages"
+            android:text="@string/text_pages"
             android:textColor="@color/black_25" />
     </LinearLayout>
 

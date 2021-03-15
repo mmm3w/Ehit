@@ -55,9 +55,11 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
 
     private val mSpanSize = object : GridLayoutManager.SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
-            if (mCategoryAdapter.isEnable) {
-                return if (position < mCategoryAdapter.itemCount) 1 else 2
-            }
+            var newPosition = position
+
+            if (newPosition < mCategoryAdapter.itemCount) return 1
+            newPosition -= mCategoryAdapter.itemCount
+
             return 2
         }
     }

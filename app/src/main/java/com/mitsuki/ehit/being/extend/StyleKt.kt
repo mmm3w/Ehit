@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.core.crutch
+package com.mitsuki.ehit.being.extend
 
 import android.app.Activity
 import android.graphics.Color

@@ -32,9 +32,7 @@ fun String.matchNumber(default: String = "0"): String {
 
 /**************************************************************************************************/
 fun String.splitIdToken(): Array<String> {
-    if (TextUtils.isEmpty(this)) throw ParseThrowable(
-        "url is null"
-    )
+    if (TextUtils.isEmpty(this)) throw ParseThrowable("url is null")
     Matcher.ID_TOKEN.matcher(this).let {
         if (it.find()) {
             return arrayOf(it.group(1), it.group(2))
@@ -54,11 +52,11 @@ fun String.parseRating(): Float {
     }
 }
 
-fun String.parseDetail(): Array<String> {
+fun String.parseDetail(err: String): Array<String> {
     Matcher.DETAIL.matcher(this).let {
         if (it.find()) {
             return arrayOf(it.group(1), it.group(2), it.group(3), it.group(4))
-        } else throw ParseThrowable("not found detail")
+        } else throw ParseThrowable(err)
     }
 }
 
@@ -78,7 +76,7 @@ fun String.parseArchive(): String {
     }
 }
 
-fun String.parseDetailThumb(err:String): String {
+fun String.parseDetailThumb(err: String): String {
     Matcher.DETAIL_COVER.matcher(this).let {
         if (it.find()) {
             return it.group(3)

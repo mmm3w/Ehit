@@ -1,9 +1,7 @@
 package com.mitsuki.ehit.core.ui.activity
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -11,8 +9,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.being.ShareData
-import com.mitsuki.ehit.being.extend.debug
-import com.mitsuki.ehit.core.crutch.whiteStyle
+import com.mitsuki.ehit.being.extend.whiteStyle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 

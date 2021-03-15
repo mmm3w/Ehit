@@ -105,8 +105,10 @@ dependencies {
     implementation deps.okhttp
     implementation deps.okhttplogger
     implementation deps.coil
+    implementation deps.reactivex.rxkotlin
+    implementation deps.reactivex.rxandroid
 
-    implementation 'com.github.MitsukiNIBAN:Armory:0.1.6'
+    implementation 'com.github.MitsukiNIBAN:Armory:0.1.7'
 }
 
 androidExtensions {

@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.core.ui.adapter
 
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

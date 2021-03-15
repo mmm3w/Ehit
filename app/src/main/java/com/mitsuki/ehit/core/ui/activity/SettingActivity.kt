@@ -5,7 +5,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
-import com.mitsuki.ehit.core.crutch.whiteStyle
+import com.mitsuki.ehit.being.extend.whiteStyle
 import com.mitsuki.ehit.core.ui.fragment.setting.SettingRootFragment
 import kotlinx.android.synthetic.main.activity_setting.*
 

@@ -52,7 +52,7 @@ data class ImageSource(
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun parseWithNormal(content: String?): List<ImageSource> {
-            assertContent(content)
+            assertContent(content,"")
             return ArrayList<ImageSource>().apply {
                 Matcher.NORMAL_PREVIEW.matcher(content).also {
                     while (it.find()) {
@@ -83,7 +83,7 @@ data class ImageSource(
 
         @Suppress("MemberVisibilityCanBePrivate")
         fun parseWithLarge(content: String?): List<ImageSource> {
-            assertContent(content)
+            assertContent(content,"")
             return ArrayList<ImageSource>()
         }
 

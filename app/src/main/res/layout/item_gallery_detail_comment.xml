@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="@dimen/dp_12"
-        android:text="更多评论"
         android:textColor="@color/blue_5F6368" />
 
 </LinearLayout>

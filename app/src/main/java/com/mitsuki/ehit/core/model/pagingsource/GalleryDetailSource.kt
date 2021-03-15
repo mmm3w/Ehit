@@ -36,6 +36,7 @@ class GalleryDetailSource(
                     if (page == 0) {
                         mDetailSource.partInfo = obtainOperating()
                         mDetailSource.comment = obtainComments()
+                        mDetailSource.commentState = obtainCommentState()
                         mDetailSource.tags = tagSet
                     }
                 }
@@ -53,6 +54,7 @@ class GalleryDetailSource(
                             data = remoteData.requireBody().apply {
                                 mDetailSource.partInfo = obtainOperating()
                                 mDetailSource.comment = obtainComments()
+                                mDetailSource.commentState = obtainCommentState()
                                 mDetailSource.tags = tagSet
 
                                 if (images.data.isNotEmpty()) {

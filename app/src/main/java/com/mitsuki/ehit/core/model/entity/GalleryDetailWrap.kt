@@ -5,6 +5,7 @@ class GalleryDetailWrap {
     lateinit var partInfo: DetailPart
     lateinit var tags: Array<TagSet>
     lateinit var comment: Array<Comment>
+    lateinit var commentState: CommentState
 
     companion object {
         const val MAX_COMMENT = 5
@@ -25,30 +26,8 @@ class GalleryDetailWrap {
         val page: Int
     )
 
-    data class DetailComment(
-        val comments: Array<Comment>,
-        val isAll: Boolean
-    ) {
-        companion object {
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as DetailComment
-
-            if (!comments.contentEquals(other.comments)) return false
-            if (isAll != other.isAll) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = comments.contentHashCode()
-            result = 31 * result + isAll.hashCode()
-            return result
-        }
+    enum class CommentState {
+        NoComments, AllLoaded, MoreComments
     }
 }
 
@@ -66,17 +45,13 @@ fun GalleryDetail.obtainComments(): Array<Comment> {
 
     val count = GalleryDetailWrap.MAX_COMMENT.coerceAtMost(commentSet.comments.size)
 
-    return Array(count + 1) { index ->
-        if (index >= count) {
-            Comment(
-                -1, "", "", when (commentSet.comments.size) {
-                    0 -> "暂无评论"
-                    in 1..count -> "已显示全部评论"
-                    else -> "更多评论"
-                }
-            )
-        } else {
-            commentSet.comments[index]
-        }
+    return Array(count) { index -> commentSet.comments[index] }
+}
+
+fun GalleryDetail.obtainCommentState(): GalleryDetailWrap.CommentState {
+    return when (commentSet.comments.size) {
+        0 -> GalleryDetailWrap.CommentState.NoComments
+        in 1..GalleryDetailWrap.MAX_COMMENT -> GalleryDetailWrap.CommentState.AllLoaded
+        else -> GalleryDetailWrap.CommentState.MoreComments
     }
 }

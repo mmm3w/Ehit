@@ -82,13 +82,21 @@
     <string name="text_show_expunged_galleries">Show Expunged Galleries</string>
     <string name="text_minimum_rating">Minimum Rating:</string>
     <string name="text_search_between_page">Between</string>
-    <string name="text_search_to">to</string>
-    <string name="text_search_pages">pages</string>
+    <string name="text_to">to</string>
+    <string name="text_pages">pages</string>
     <string name="text_disable_default_filters">Disable default filters for:</string>
     <string name="text_language">Language</string>
     <string name="text_uploader">Uploader</string>
     <string name="text_tags">Tags</string>
     <string name="text_enable_advanced_options">Enable advanced options</string>
+    <string name="text_more_information">More info</string>
+    <string name="text_similar">Similar</string>
+    <string name="text_reviews_number">%d reviews</string>
+    <string name="text_no_comments">No comments</string>
+    <string name="text_no_more_comments">No more comments</string>
+    <string name="text_more_comments">More comments</string>
+    <string name="text_quick_search">Quick search</string>
+    <string name="text_advanced_search">Advanced search</string>
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>
