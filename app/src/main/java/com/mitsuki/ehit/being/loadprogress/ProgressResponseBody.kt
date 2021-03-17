@@ -1,6 +1,6 @@
-package com.mitsuki.ehit.being.imageloadprogress
+package com.mitsuki.ehit.being.loadprogress
 
-import androidx.lifecycle.MutableLiveData
+import io.reactivex.rxjava3.subjects.PublishSubject
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
@@ -8,12 +8,12 @@ import okio.*
 class ProgressResponseBody(
     tag: String,
     private val mResponseBody: ResponseBody,
-    private val onProgress: MutableLiveData<Progress>
+    private val onProgress: PublishSubject<Progress>
 ) : ResponseBody() {
 
     private val mProgress by lazy { Progress(tag, 0, 0) }
 
-    override fun contentLength(): Long = mResponseBody.contentLength() ?: 0
+    override fun contentLength(): Long = mResponseBody.contentLength()
 
     override fun contentType(): MediaType? = mResponseBody.contentType()
 
@@ -23,11 +23,13 @@ class ProgressResponseBody(
 
     private fun source(source: Source): Source {
         return object : ForwardingSource(source) {
+
             private var mTotalBytesRead: Long = 0
+
             override fun read(sink: Buffer, byteCount: Long): Long {
                 return super.read(sink, byteCount).apply {
                     mTotalBytesRead += if (this != -1L) this else 0
-                    onProgress.postValue(mProgress.apply {
+                    onProgress.onNext(mProgress.apply {
                         contentLength = contentLength()
                         currentBytes = mTotalBytesRead
                     })

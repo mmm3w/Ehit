@@ -17,9 +17,11 @@ import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.view
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.being.extend.createItemView
 import com.mitsuki.ehit.being.extend.debug
 import com.mitsuki.ehit.core.model.entity.Gallery
 import com.mitsuki.ehit.core.ui.widget.CategoryView
@@ -58,9 +60,7 @@ class GalleryAdapter :
     }
 
     class ViewHolder(parent: ViewGroup, provider: ViewOutlineProvider) :
-        RecyclerView.ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false)
-        ) {
+        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_gallery)) {
 
         private val mGalleryThumb = view<ImageView>(R.id.gallery_thumb)?.apply {
             outlineProvider = provider
@@ -72,7 +72,11 @@ class GalleryAdapter :
         private val mGalleryLanguage = view<TextView>(R.id.gallery_lang)
         private val mGalleryCategory = view<CategoryView>(R.id.gallery_category)
         private val mGalleryTime = view<TextView>(R.id.gallery_time)
-        private val mGalleryRating = view<RatingView>(R.id.gallery_rating)
+        private val mGalleryRating =
+            view<RatingView>(R.id.gallery_rating)?.apply {
+                intervalPadding = dp2px(2f)
+                isEnabled = false
+            }
         private val mGalleryLayout = view<ConstraintLayout>(R.id.gallery_layout)
 
         fun bind(data: Gallery) {

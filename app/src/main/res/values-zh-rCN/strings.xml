@@ -38,10 +38,12 @@
     <string name="text_retry">重试</string>
     <string name="text_login_by_account">账号登录</string>
     <string name="text_login_by_cookie">Cookie登录</string>
+    <string name="text_rate">给出你的评分</string>
 
     <string name="text_yes">是</string>
     <string name="text_no">否</string>
     <string name="text_confirm">确定</string>
+    <string name="text_cancel">取消</string>
     <string name="text_copy">复制</string>
 
     <string name="text_download">下载</string>

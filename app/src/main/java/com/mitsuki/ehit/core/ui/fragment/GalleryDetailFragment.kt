@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.mitsuki.armory.extend.toast
@@ -155,6 +156,13 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
             GalleryDetailOperatingBlock.Event.Score -> {
                 //TODO 评分
+                MaterialDialog(requireContext()).show {
+                    title(res = R.string.text_rate)
+                    customView(viewRes = R.layout.dialog_rating)
+                    positiveButton(res = R.string.text_confirm)
+                    negativeButton(res = R.string.text_cancel)
+                    lifecycleOwner(this@GalleryDetailFragment)
+                }
             }
             GalleryDetailOperatingBlock.Event.SimilaritySearch -> {
                 //TODO 相似搜索

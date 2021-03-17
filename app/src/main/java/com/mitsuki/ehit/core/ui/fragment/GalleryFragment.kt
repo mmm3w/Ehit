@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.request.ImageRequest
 import coil.request.ImageResult
@@ -14,9 +13,11 @@ import com.mitsuki.armory.imagegesture.ImageGesture
 import com.mitsuki.armory.imagegesture.StartType
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.being.extend.debug
 import com.mitsuki.ehit.being.extend.getInteger
-import com.mitsuki.ehit.being.imageloadprogress.Progress
-import com.mitsuki.ehit.being.imageloadprogress.ProgressProvider
+import com.mitsuki.ehit.being.extend.observe
+import com.mitsuki.ehit.being.loadprogress.Progress
+import com.mitsuki.ehit.being.loadprogress.ProgressProvider
 import com.mitsuki.ehit.core.ui.widget.OriginalTransformation
 import com.mitsuki.ehit.core.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,8 +43,8 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         mViewModel.data.observe(viewLifecycleOwner, Observer(this::onLoadImage))
         mViewModel.state.observe(viewLifecycleOwner, Observer(this::onViewState))
         //TODO：图片加载进度跳存在bug，整个界面还需要优化
-        ProgressProvider.event(mViewModel.tag())
-            .observe(viewLifecycleOwner, Observer(this@GalleryFragment::onLoadProgress))
+        ProgressProvider.event(mViewModel.tag)
+            .observe(this, this@GalleryFragment::onLoadProgress)
 
         mViewModel.obtainData()
     }
@@ -59,15 +60,10 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             size(OriginalSize)
             transformations(OriginalTransformation())
             listener(
-                onStart = { onLoadStart() },
                 onError = { _: ImageRequest, throwable: Throwable -> onLoadError(throwable) },
                 onSuccess = { _: ImageRequest, _: ImageResult.Metadata -> onLoadSuccess() }
             )
         }
-    }
-
-    private fun onLoadStart() {
-        gallery_progress?.isVisible = true
     }
 
     private fun onLoadError(throwable: Throwable) {
@@ -80,6 +76,8 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onLoadProgress(progress: Progress?) {
+        mViewModel.changeLoadingState(false)
+        gallery_progress?.isVisible = true
         progress?.apply { gallery_progress.progress = (progress() * 100).toInt() }
     }
 }

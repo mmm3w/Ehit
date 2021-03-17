@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.being.imageloadprogress
+package com.mitsuki.ehit.being.loadprogress
 
 data class Progress(
     val tag: String,

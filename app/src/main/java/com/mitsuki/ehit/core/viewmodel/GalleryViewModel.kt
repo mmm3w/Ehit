@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.ehit.being.MemoryCache
 import com.mitsuki.ehit.being.extend.postNext
-import com.mitsuki.ehit.being.imageloadprogress.addFeature
+import com.mitsuki.ehit.being.loadprogress.addFeature
 import com.mitsuki.ehit.being.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.model.repository.RemoteRepository
@@ -22,6 +22,8 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
     private var mId: Long = -1
     lateinit var galleryToken: String
     private var mPToken: String = ""
+
+    val tag get() = "$mId-$index"
 
     private val mData: MutableLiveData<String> = MutableLiveData()
     val data: LiveData<String> = mData
@@ -40,7 +42,7 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
     fun obtainData() {
         viewModelScope.launch {
             mState.postNext { it.copy(loading = true) }
-            if (mPToken.isEmpty()){
+            if (mPToken.isEmpty()) {
                 val detailIndex =
                     if (MemoryCache.detailPageSize > 0) index / MemoryCache.detailPageSize else 0
                 with(repository.galleryDetailWithPToken(mId, galleryToken, detailIndex)) {
@@ -56,15 +58,17 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
             var error: String? = null
             with(repository.galleryPreview(mId, mPToken, index)) {
                 when (this) {
-                    is RequestResult.SuccessResult -> mData.postValue(data.imageUrl.addFeature(tag()))
+                    is RequestResult.SuccessResult -> mData.postValue(data.imageUrl.addFeature(tag))
                     is RequestResult.FailResult -> error = throwable.message
                 }
             }
-            mState.postNext { it.copy(loading = false, error = error) }
+            mState.postNext { it.copy(loading = error == null, error = error) }
         }
     }
 
-    fun tag() = "$mId-$index"
+    fun changeLoadingState(isVisible:Boolean){
+        mState.postNext { it.copy(loading = isVisible) }
+    }
 
     data class ViewState(val loading: Boolean = false, val error: String? = null)
 }

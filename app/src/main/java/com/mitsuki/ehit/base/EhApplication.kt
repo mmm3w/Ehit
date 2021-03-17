@@ -7,6 +7,7 @@ import com.mitsuki.ehit.being.AppHolder
 import com.mitsuki.ehit.being.CoilProvider
 import com.mitsuki.ehit.being.ShareData
 import com.mitsuki.ehit.being.db.RoomData
+import com.mitsuki.ehit.being.loadprogress.ProgressProvider
 import com.mitsuki.ehit.being.network.FakeHeader
 import com.mitsuki.ehit.being.network.MyDns
 import com.mitsuki.ehit.being.network.Url
@@ -29,7 +30,7 @@ class EhApplication : Application() {
 //            cookieJar(CookieJarImpl(ShareData))
             addInterceptor(FakeHeader())
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
-//            addInterceptor(ProgressProvider.imageLoadInterceptor)
+            addInterceptor(ProgressProvider.imageLoadInterceptor)
         }
 
         RoomData.init(this)
