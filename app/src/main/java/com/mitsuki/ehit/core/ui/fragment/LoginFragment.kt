@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.core.ui.fragment
 
 import android.os.Bundle
+import android.view.DragEvent
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
@@ -8,8 +9,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.being.ShareData
+import com.mitsuki.ehit.being.extend.observe
 import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +35,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private val mDomain by lazy { LoginDomain() }
     private val mExtend by lazy { LoginExtend() }
 
-
     private val mAdapter by lazy {
         ConcatAdapter(
             mHeader,
@@ -44,38 +46,38 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        login_ui?.layoutManager = LinearLayoutManager(requireContext())
-        login_ui?.adapter = mAdapter
+        login_ui?.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mAdapter
+        }
 
-        mExtend.onSwitch.observe(viewLifecycleOwner, Observer {
+        mViewModel.event.observe(viewLifecycleOwner, this::onEvent)
+
+        mExtend.onSwitch.observe(viewLifecycleOwner) {
             mAccountAdapter.isEnable = !it
             mCookieAdapter.isEnable = it
-        })
+        }
 
-        mExtend.onSkip.observe(viewLifecycleOwner, Observer {
-            ShareData.spFirstOpen = false
-            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-                .navigate(R.id.action_login_fragment_to_gallery_list_fragment)
-        })
+        mExtend.onSkip.observe(viewLifecycleOwner) { goAhead() }
 
-        mAccountAdapter.onLogin.observe(viewLifecycleOwner, Observer {
-            it?.apply {
-                showLoading()
-                mViewModel.login(account, password)
-            }
-        })
+        mAccountAdapter.onLogin.observe(viewLifecycleOwner) {
+            it?.apply { mViewModel.login(account, password) }
+        }
 
-        mCookieAdapter.onLogin.observe(viewLifecycleOwner, Observer {
+        mCookieAdapter.onLogin.observe(viewLifecycleOwner) {
             it?.apply { mViewModel.login(memberId, passHash, igneous) }
-        })
+        }
     }
 
-
-    private fun showLoading() {
-
+    private fun onEvent(event: LoginViewModel.Event) {
+        event.message?.apply { Snackbar.make(requireView(), this, Snackbar.LENGTH_SHORT) }
     }
 
-    private fun dismissLoading() {
+    private fun goAhead() {
+        ShareData.spFirstOpen = false
+        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(R.id.action_login_fragment_to_gallery_list_fragment)
     }
+
 
 }

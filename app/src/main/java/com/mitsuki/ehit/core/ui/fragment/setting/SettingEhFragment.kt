@@ -27,8 +27,8 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<ListPreference>(ShareData.SP_DOMAIN)?.apply {
-            entries = Url.domain.map { it.first }.toTypedArray()
-            entryValues = Url.domain.map { it.second }.toTypedArray()
+            entries = Url.domain
+            entryValues = Url.domain
         }
 
         findPreference<Preference>("setting_site")?.setOnPreferenceClickListener { openSiteSetting() }

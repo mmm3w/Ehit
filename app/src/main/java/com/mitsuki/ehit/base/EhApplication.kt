@@ -7,10 +7,11 @@ import com.mitsuki.ehit.being.AppHolder
 import com.mitsuki.ehit.being.CoilProvider
 import com.mitsuki.ehit.being.ShareData
 import com.mitsuki.ehit.being.db.RoomData
-import com.mitsuki.ehit.being.loadprogress.ProgressProvider
+import com.mitsuki.ehit.being.network.CookieJarImpl
 import com.mitsuki.ehit.being.network.FakeHeader
 import com.mitsuki.ehit.being.network.MyDns
 import com.mitsuki.ehit.being.network.Url
+import com.mitsuki.loadprogress.ProgressProvider
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.logging.HttpLoggingInterceptor
 
@@ -27,7 +28,7 @@ class EhApplication : Application() {
         HttpRookie.configOkHttp = {
             cache(CoilUtils.createDefaultCache(this@EhApplication))
             dns(MyDns())
-//            cookieJar(CookieJarImpl(ShareData))
+            cookieJar(CookieJarImpl(ShareData))
             addInterceptor(FakeHeader())
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             addInterceptor(ProgressProvider.imageLoadInterceptor)

@@ -10,55 +10,43 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SearchKey(
-    @Key(RequestKey.SEARCH_KEY_WORD) var key: String = "",
-    @Key(RequestKey.SEARCH_KEY_CATEGORY) var category: Int = 0
-) : Parcelable {
-
+    @Key(RequestKey.SEARCH_KEY_WORD)
+    var key: String = "",
+    @Key(RequestKey.SEARCH_KEY_CATEGORY)
+    var category: Int = 0,
     @Key(RequestKey.SEARCH_KEY_ADVSEARCH)
-    var isAdvancedEnable: Boolean = false
-
+    var isAdvancedEnable: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_GALLERY_NAME)
-    var isSearchGalleryName: Boolean = true
-
+    var isSearchGalleryName: Boolean = true,
     @Key(RequestKey.SEARCH_KEY_TAGS)
-    var isSearchGalleryTags: Boolean = true
-
+    var isSearchGalleryTags: Boolean = true,
     @Key(RequestKey.SEARCH_KEY_DESCRIPTION)
-    var isSearchGalleryDescription: Boolean = false
-
+    var isSearchGalleryDescription: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_TORRENT_FILE_NAMES)
-    var isSearchTorrentFilenames: Boolean = false
-
+    var isSearchTorrentFilenames: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_ONLY_TORRENTS)
-    var isOnlyShowGalleriesWithTorrents: Boolean = false
-
+    var isOnlyShowGalleriesWithTorrents: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_LOW_POWER_TAGS)
-    var isSearchLowPowerTags: Boolean = false
-
+    var isSearchLowPowerTags: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_DOWNVOTED_TAGS)
-    var isSearchDownvotedTags: Boolean = false
-
+    var isSearchDownvotedTags: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_SHOW_EXPUNGED)
-    var isShowExpungedGalleries: Boolean = false
-
+    var isShowExpungedGalleries: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_MINIMUM_RATING, RequestKey.SEARCH_KEY_RATING)
-    var minimumRating: Int? = null
-
+    var minimumRating: Int? = null,
     @Key(
         RequestKey.SEARCH_KEY_BETWEEN_PAGES,
         RequestKey.SEARCH_KEY_BETWEEN_PAGES_START,
         RequestKey.SEARCH_KEY_BETWEEN_PAGES_END
     )
-    var betweenPages: Pair<Int, Int>? = null
-
+    var betweenPages: Pair<Int, Int>? = null,
     @Key(RequestKey.SEARCH_KEY_DISABLE_LANGUAGE)
-    var isDisableLanguageFilter: Boolean = false
-
+    var isDisableLanguageFilter: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_DISABLE_UPLOADER)
-    var isDisableUploaderFilter: Boolean = false
-
+    var isDisableUploaderFilter: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_DISABLE_TAGS)
     var isDisableTagsFilter: Boolean = false
+) : Parcelable {
 
     val showContent: String
         get() {
@@ -113,6 +101,4 @@ data class SearchKey(
             }
         }
     }
-
-
 }

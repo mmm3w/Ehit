@@ -7,27 +7,28 @@ import androidx.lifecycle.MutableLiveData
 import com.mitsuki.armory.adapter.SingleItemAdapter
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.being.extend.hideWithMainThread
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class LoginCookieAdapter : SingleItemAdapter(false) {
 
-    private val mLoginEvent: MutableLiveData<LoginCookie> = MutableLiveData()
+    private val mLoginEvent: PublishSubject<LoginCookie> = PublishSubject.create()
 
-    val onLogin: LiveData<LoginCookie> get() = mLoginEvent
+    val onLogin: Observable<LoginCookie> get() = mLoginEvent.hideWithMainThread()
 
-    override val layoutRes: Int = com.mitsuki.ehit.R.layout.item_login_cookie
+    override val layoutRes: Int = R.layout.item_login_cookie
 
     override val onViewHolderCreate: ViewHolder.() -> Unit = {
         view<Button>(R.id.login_login_btn)?.setOnClickListener {
             val member = view<EditText>(R.id.login_ipb_member_id)?.text.toString()
             val pass = view<EditText>(R.id.login_ipb_pass_hash)?.text.toString()
             val igneous = view<EditText>(R.id.login_igneous)?.text.toString()
-            mLoginEvent.postValue(LoginCookie(member, pass, igneous))
+            mLoginEvent.onNext(LoginCookie(member, pass, igneous))
         }
     }
 
-    override val onViewHolderBind: ViewHolder.() -> Unit = {
-
-    }
+    override val onViewHolderBind: ViewHolder.() -> Unit = {}
 
     data class LoginCookie(val memberId: String, val passHash: String, val igneous: String)
 }

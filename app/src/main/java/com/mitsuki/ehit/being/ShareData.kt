@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.being.network.CookieJarImpl
 import com.mitsuki.ehit.being.network.Url
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -37,6 +38,10 @@ object ShareData {
     const val SP_DOMAIN = "SP_DOMAIN"
     const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
 
+    const val SP_COOKIE_IPB_MEMBER_ID = "ipb_member_id"
+    const val SP_COOKIE_IPB_PASS_HASH = "ipb_pass_hash"
+    const val SP_COOKIE_IGNEOUS = "igneous"
+
     /**********************************************************************************************/
 
     var spCookies: String
@@ -55,4 +60,34 @@ object ShareData {
         set(value) = edit { putString(SP_DOMAIN, value) }
         get() = string(SP_DOMAIN)
 
+
+    fun saveCookie(id: String, hash: String, igneous: String) {
+        edit {
+            putString(
+                SP_COOKIE_IPB_MEMBER_ID,
+                CookieJarImpl.newBase64Cookie(SP_COOKIE_IPB_MEMBER_ID, id)
+            )
+            putString(
+                SP_COOKIE_IPB_PASS_HASH,
+                CookieJarImpl.newBase64Cookie(SP_COOKIE_IPB_PASS_HASH, hash)
+            )
+            putString(
+                SP_COOKIE_IGNEOUS,
+                CookieJarImpl.newBase64Cookie(SP_COOKIE_IGNEOUS, igneous)
+            )
+            putString(
+                SP_COOKIES,
+                "${SP_COOKIE_IPB_PASS_HASH},${SP_COOKIE_IPB_PASS_HASH},${SP_COOKIE_IGNEOUS}"
+            )
+        }
+    }
+
+    fun clearCookie() {
+        edit {
+            remove(SP_COOKIE_IPB_MEMBER_ID)
+            remove(SP_COOKIE_IPB_PASS_HASH)
+            remove(SP_COOKIE_IGNEOUS)
+            remove(SP_COOKIES)
+        }
+    }
 }

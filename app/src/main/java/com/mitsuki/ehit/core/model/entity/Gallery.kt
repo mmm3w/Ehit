@@ -22,9 +22,10 @@ data class Gallery(
     val uploader: String,
     val thumb: String,
     val tag: Array<String>,
-    val rating: Float
-) : Parcelable {
+    val rating: Float,
     val categoryColor: Int = Category.getColor(category)
+) : Parcelable {
+
     val language: String
     val languageSimple: String
 

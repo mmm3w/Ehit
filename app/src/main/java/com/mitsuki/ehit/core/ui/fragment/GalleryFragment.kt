@@ -13,13 +13,12 @@ import com.mitsuki.armory.imagegesture.ImageGesture
 import com.mitsuki.armory.imagegesture.StartType
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.being.extend.debug
 import com.mitsuki.ehit.being.extend.getInteger
 import com.mitsuki.ehit.being.extend.observe
-import com.mitsuki.ehit.being.loadprogress.Progress
-import com.mitsuki.ehit.being.loadprogress.ProgressProvider
 import com.mitsuki.ehit.core.ui.widget.OriginalTransformation
 import com.mitsuki.ehit.core.viewmodel.GalleryViewModel
+import com.mitsuki.loadprogress.Progress
+import com.mitsuki.loadprogress.ProgressProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
@@ -42,7 +41,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
         mViewModel.data.observe(viewLifecycleOwner, Observer(this::onLoadImage))
         mViewModel.state.observe(viewLifecycleOwner, Observer(this::onViewState))
-        //TODO：图片加载进度跳存在bug，整个界面还需要优化
         ProgressProvider.event(mViewModel.tag)
             .observe(this, this@GalleryFragment::onLoadProgress)
 
@@ -78,6 +76,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     private fun onLoadProgress(progress: Progress?) {
         mViewModel.changeLoadingState(false)
         gallery_progress?.isVisible = true
-        progress?.apply { gallery_progress.progress = (progress() * 100).toInt() }
+        progress?.apply {
+            gallery_progress.progress =
+                (currentBytes.toDouble() / contentLength.toDouble() * 100).toInt()
+        }
     }
 }

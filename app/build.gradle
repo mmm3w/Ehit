@@ -108,7 +108,7 @@ dependencies {
     implementation deps.reactivex.rxkotlin
     implementation deps.reactivex.rxandroid
 
-    implementation 'com.github.MitsukiNIBAN:Armory:0.1.8'
+    implementation 'com.github.MitsukiNIBAN:Armory:0.2.1'
 }
 
 androidExtensions {

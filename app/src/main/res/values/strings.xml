@@ -15,10 +15,8 @@
     <string name="hint_ipb_pass_hash" translatable="false">ipb_pass_hash</string>
     <string name="hint_igneous" translatable="false">igneous</string>
 
-    <string name="text_ex_ht" translatable="false">exhentai.org</string>
-    <string name="text_e_ht" translatable="false">e-hentai.org</string>
-    <string name="domain_ex_ht" translatable="false">https://exhentai.org</string>
-    <string name="domain_e_ht" translatable="false">https://e-hentai.org</string>
+    <string name="domain_ex_ht" translatable="false">exhentai.org</string>
+    <string name="domain_e_ht" translatable="false">e-hentai.org</string>
 
     <string name="text_1" translatable="false">1</string>
     <string name="text_2" translatable="false">2</string>

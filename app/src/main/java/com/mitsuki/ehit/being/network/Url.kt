@@ -5,21 +5,18 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.being.ShareData
 
 object Url {
-    lateinit var domain: Array<Pair<String, String>>
+    lateinit var domain: Array<String>
 
     var currentDomain: String
-        get() = ShareData.spDomain
+        get() = "https://${ShareData.spDomain}"
         set(value) {
             ShareData.spDomain = value
         }
 
     fun initDomain(context: Context) {
         with(context) {
-            domain = arrayOf(
-                getString(R.string.text_e_ht) to getString(R.string.domain_e_ht),
-                getString(R.string.text_ex_ht) to getString(R.string.domain_ex_ht)
-            )
-            if (currentDomain.isEmpty()) currentDomain = domain[0].second
+            domain = arrayOf(getString(R.string.domain_e_ht), getString(R.string.domain_ex_ht))
+            if (currentDomain.isEmpty()) currentDomain = domain[0]
         }
     }
 

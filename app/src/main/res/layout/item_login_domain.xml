@@ -11,13 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        android:text="@string/text_e_ht" />
+        android:text="@string/domain_e_ht" />
 
     <RadioButton
         android:id="@+id/domain_check_ex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        android:text="@string/text_ex_ht" />
+        android:text="@string/domain_ex_ht" />
 
 </RadioGroup>
