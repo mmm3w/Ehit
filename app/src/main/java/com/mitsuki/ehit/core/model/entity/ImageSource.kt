@@ -15,14 +15,11 @@ data class ImageSource(
     val index: Int,
     val pageUrl: String,
     val pToken: String,
-    val left: Int,
-    val top: Int,
-    val right: Int,
-    val bottom: Int
+    val left: Int = -1,
+    val top: Int = -1,
+    val right: Int = -1,
+    val bottom: Int = -1
 ) {
-    val width = right - left
-    val height = bottom - top
-
     override fun toString(): String {
         return "ImageSource: left($left) top($top) right($right) bottom($bottom) \n url($imageUrl)"
     }
@@ -51,14 +48,13 @@ data class ImageSource(
         }
 
         @Suppress("MemberVisibilityCanBePrivate")
-        fun parseWithNormal(content: String?): List<ImageSource> {
-            assertContent(content,"")
+        fun parseWithNormal(content: String?): MutableList<ImageSource> {
+            assertContent(content, "")
             return ArrayList<ImageSource>().apply {
                 Matcher.NORMAL_PREVIEW.matcher(content).also {
                     while (it.find()) {
                         val index = it.group(6).spToInt() - 1
-                        if (index < 0)
-                            continue
+                        if (index < 0) continue
                         val width = it.group(1).spToInt()
                         if (width <= 0) continue
                         val height = it.group(2).spToInt()
@@ -82,18 +78,29 @@ data class ImageSource(
         }
 
         @Suppress("MemberVisibilityCanBePrivate")
-        fun parseWithLarge(content: String?): List<ImageSource> {
-            assertContent(content,"")
-            return ArrayList<ImageSource>()
+        fun parseWithLarge(content: String?): MutableList<ImageSource> {
+            assertContent(content, "")
+            return ArrayList<ImageSource>().apply {
+                Matcher.LARGE_PREVIEW.matcher(content).also {
+                    while (it.find()) {
+                        val index: Int = it.group(2).spToInt() - 1
+                        if (index < 0) continue
+                        val pageUrl = it.group(1).trim().htmlEscape()
+                        val pToken = Matcher.PREVIEW_PAGE_TO_TOKEN.matcher(pageUrl).run {
+                            if (find()) group(1) else throw ParseThrowable("lost page token")
+                        }
+                        val imageUrl = it.group(3).trim().htmlEscape()
+                        add(ImageSource(imageUrl, index, pageUrl, pToken))
+                    }
+                }
+            }
         }
 
         fun parse(content: String?): PageInfo<ImageSource> {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
-            val list = try {
-                parseWithNormal(content)
-            } catch (e: Exception) {
-                parseWithNormal(content)
-            }
+            val list = parseWithNormal(content)
+            if (list.isEmpty()) list.addAll(parseWithLarge(content))
+            if (list.isEmpty()) throw ParseThrowable("lost total size")
 
             val totalSize = Matcher.PAGER_TOTAL_SIZE.matcher(content).run {
                 if (find()) {

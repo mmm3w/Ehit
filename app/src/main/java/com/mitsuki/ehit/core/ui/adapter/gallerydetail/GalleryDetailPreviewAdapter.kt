@@ -45,10 +45,12 @@ class GalleryDetailPreviewAdapter :
             holder.previewView?.apply {
                 load(it.imageUrl) {
                     crossfade(context.getInteger(R.integer.image_load_cross_fade))
-                    size(OriginalSize)
-                    transformations(
-                        PreviewTransformation(this@apply, it.left, it.top, it.right, it.bottom)
-                    )
+                    if (it.left >= 0 && it.top >= 0 && it.right >= 0 && it.bottom >= 0) {
+                        size(OriginalSize)
+                        transformations(
+                            PreviewTransformation(this@apply, it.left, it.top, it.right, it.bottom)
+                        )
+                    }
                     allowHardware(false)
                 }
             }
@@ -57,8 +59,8 @@ class GalleryDetailPreviewAdapter :
 
     class ViewHolder(parent: ViewGroup) :
         RecyclerView.ViewHolder(parent.createItemView(R.layout.item_gallery_detail_preview)) {
-            val previewView = view<ImageView>(R.id.gallery_detail_preview)
-            val numberView = view<TextView>(R.id.gallery_detail_preview_number)
+        val previewView = view<ImageView>(R.id.gallery_detail_preview)
+        val numberView = view<TextView>(R.id.gallery_detail_preview_number)
     }
 
 }

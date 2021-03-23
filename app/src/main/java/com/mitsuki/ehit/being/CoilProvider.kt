@@ -9,6 +9,7 @@ object CoilProvider {
     fun init(context: Context) {
         Coil.setImageLoader(ImageLoader.Builder(context)
             .okHttpClient(HttpRookie.client)
+            .availableMemoryPercentage(0.4)
             .build())
     }
 }

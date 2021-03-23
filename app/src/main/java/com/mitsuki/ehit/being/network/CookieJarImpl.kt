@@ -1,10 +1,12 @@
 package com.mitsuki.ehit.being.network
 
 import android.util.Base64
+import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.being.ShareData
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
+import okhttp3.internal.filterList
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
@@ -39,7 +41,7 @@ class CookieJarImpl(private val cache: ShareData) : CookieJar {
                 }
             }
         }
-        return mMemoryCache.map { it.value }
+        return mMemoryCache.map { it.value }.filterList { name != "yay" }
     }
 
     @Synchronized

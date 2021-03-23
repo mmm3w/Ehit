@@ -55,6 +55,7 @@ object ShareData {
     var spFirstOpen: Boolean
         set(value) = edit { putBoolean(SP_FIRST_OPEN, value) }
         get() = boolean(SP_FIRST_OPEN, true)
+//        get() = true
 
     var spDomain: String
         set(value) = edit { putString(SP_DOMAIN, value) }
@@ -77,7 +78,7 @@ object ShareData {
             )
             putString(
                 SP_COOKIES,
-                "${SP_COOKIE_IPB_PASS_HASH},${SP_COOKIE_IPB_PASS_HASH},${SP_COOKIE_IGNEOUS}"
+                "${SP_COOKIE_IPB_MEMBER_ID},${SP_COOKIE_IPB_PASS_HASH},${SP_COOKIE_IGNEOUS}"
             )
         }
     }

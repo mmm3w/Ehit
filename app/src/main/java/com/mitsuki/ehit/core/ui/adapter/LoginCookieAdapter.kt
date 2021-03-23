@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mitsuki.armory.adapter.SingleItemAdapter
 import com.mitsuki.armory.extend.view
+import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.being.extend.hideWithMainThread
 import io.reactivex.rxjava3.core.Observable
@@ -20,6 +21,10 @@ class LoginCookieAdapter : SingleItemAdapter(false) {
     override val layoutRes: Int = R.layout.item_login_cookie
 
     override val onViewHolderCreate: ViewHolder.() -> Unit = {
+        view<EditText>(R.id.login_ipb_member_id)?.setText(BuildConfig.ipb_member_id)
+        view<EditText>(R.id.login_ipb_pass_hash)?.setText(BuildConfig.ipb_pass_hash)
+        view<EditText>(R.id.login_igneous)?.setText(BuildConfig.igneous)
+
         view<Button>(R.id.login_login_btn)?.setOnClickListener {
             val member = view<EditText>(R.id.login_ipb_member_id)?.text.toString()
             val pass = view<EditText>(R.id.login_ipb_pass_hash)?.text.toString()

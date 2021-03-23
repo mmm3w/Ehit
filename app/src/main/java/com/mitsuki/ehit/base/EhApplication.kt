@@ -14,6 +14,7 @@ import com.mitsuki.ehit.being.network.Url
 import com.mitsuki.loadprogress.ProgressProvider
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 
 @HiltAndroidApp
 class EhApplication : Application() {
@@ -32,6 +33,10 @@ class EhApplication : Application() {
             addInterceptor(FakeHeader())
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             addInterceptor(ProgressProvider.imageLoadInterceptor)
+
+            connectTimeout(2, TimeUnit.MINUTES)
+            readTimeout(2, TimeUnit.MINUTES)
+            writeTimeout(2, TimeUnit.MINUTES)
         }
 
         RoomData.init(this)
