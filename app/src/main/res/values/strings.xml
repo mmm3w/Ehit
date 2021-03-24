@@ -38,6 +38,7 @@
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>
     <string name="hint_search">Search</string>
+    <string name="hint_rate_successfully">Rate successfully</string>
 
     <string name="text_test">Test content</string>
 

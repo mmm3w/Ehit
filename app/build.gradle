@@ -101,12 +101,20 @@ dependencies {
     implementation deps.material_dialogs.core
     implementation deps.material_dialogs.input
     implementation deps.material_dialogs.lifecycle
+
     implementation deps.jsoup
+
     implementation deps.okhttp
     implementation deps.okhttplogger
+
     implementation deps.coil
+
+    implementation deps.moshi.runtime
+    kapt deps.moshi.compiler
+
     implementation deps.reactivex.rxkotlin
     implementation deps.reactivex.rxandroid
+
 
     implementation 'com.github.MitsukiNIBAN:Armory:0.2.1'
 }

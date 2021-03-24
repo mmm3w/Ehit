@@ -1,6 +1,10 @@
 package com.mitsuki.ehit.const
 
 object RequestKey {
+
+    const val HEADER_ORIGIN = "Origin"
+    const val HEADER_REFERER = "Referer"
+
     const val PAGE_LIST = "page"
     const val NEW_LOAD = "nl"
     const val PAGE_DETAIL = "p"

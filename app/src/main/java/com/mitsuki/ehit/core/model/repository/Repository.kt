@@ -3,10 +3,7 @@ package com.mitsuki.ehit.core.model.repository
 import androidx.paging.PagingData
 import com.mitsuki.ehit.being.network.RequestResult
 import com.mitsuki.ehit.core.crutch.PageIn
-import com.mitsuki.ehit.core.model.entity.Gallery
-import com.mitsuki.ehit.core.model.entity.GalleryDetailWrap
-import com.mitsuki.ehit.core.model.entity.GalleryPreview
-import com.mitsuki.ehit.core.model.entity.ImageSource
+import com.mitsuki.ehit.core.model.entity.*
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -24,4 +21,6 @@ interface Repository {
     suspend fun galleryDetailWithPToken(gid: Long, token: String, index: Int): RequestResult<String>
 
     suspend fun login(account: String, password: String): RequestResult<String>
+
+    suspend fun rating(detail: GalleryDetail,rating:Float): RequestResult<RateBack>
 }

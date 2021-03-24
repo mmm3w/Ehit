@@ -38,6 +38,7 @@ class GalleryDetailSource(
                         mDetailSource.comment = obtainComments()
                         mDetailSource.commentState = obtainCommentState()
                         mDetailSource.tags = tagSet
+                        mDetailSource.sourceDetail = this
                     }
                 }
                 if (data == null) {
@@ -56,6 +57,8 @@ class GalleryDetailSource(
                                 mDetailSource.comment = obtainComments()
                                 mDetailSource.commentState = obtainCommentState()
                                 mDetailSource.tags = tagSet
+                                mDetailSource.sourceDetail = this
+
 
                                 if (images.data.isNotEmpty()) {
                                     MemoryCache.detailPageSize =

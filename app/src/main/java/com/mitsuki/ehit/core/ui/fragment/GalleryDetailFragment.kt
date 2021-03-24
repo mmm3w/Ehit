@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.armory.extend.toast
+import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.being.extend.observe
@@ -118,6 +121,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 pageJumpListener = { showPageJumpDialog() }
             )
         }
+
+        mViewModel.event.observe(viewLifecycleOwner, this::onViewEvent)
     }
 
     //TODO 右上角扩展菜单
@@ -132,6 +137,15 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             title(R.string.title_page_go_to)
             positiveButton(R.string.text_confirm)
             lifecycleOwner(this@GalleryDetailFragment)
+        }
+    }
+
+    private fun onViewEvent(event: GalleryDetailViewModel.Event) {
+        event.rateNotifyItem?.dispatch(mOperating)
+
+        event.message?.apply {
+            Snackbar.make(requireView(), this, Snackbar.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -159,7 +173,14 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 MaterialDialog(requireContext()).show {
                     title(res = R.string.text_rate)
                     customView(viewRes = R.layout.dialog_rating)
-                    positiveButton(res = R.string.text_confirm)
+                    getCustomView().findViewById<RatingView>(R.id.rating_target)?.rating =
+                        mViewModel.detailWrap.partInfo.rating
+                    positiveButton(res = R.string.text_confirm) {
+                        it.getCustomView()
+                            .findViewById<RatingView>(R.id.rating_target)?.rating?.apply {
+                                mViewModel.submitRating(this)
+                            }
+                    }
                     negativeButton(res = R.string.text_cancel)
                     lifecycleOwner(this@GalleryDetailFragment)
                 }

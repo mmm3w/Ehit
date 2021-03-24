@@ -7,17 +7,21 @@ import androidx.paging.PagingData
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.request.header
+import com.mitsuki.armory.httprookie.request.json
 import com.mitsuki.armory.httprookie.request.params
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.being.MemoryCache
 import com.mitsuki.ehit.being.network.RequestResult
 import com.mitsuki.ehit.being.network.Url
+import com.mitsuki.ehit.being.toJson
+import com.mitsuki.ehit.const.ParaValue
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.core.crutch.PageIn
 import com.mitsuki.ehit.core.model.convert.GalleryPreviewConvert
 import com.mitsuki.ehit.core.model.convert.ImageSourceConvert
 import com.mitsuki.ehit.core.model.convert.LoginConvert
+import com.mitsuki.ehit.core.model.convert.RateBackConvert
 import com.mitsuki.ehit.core.model.entity.*
 import com.mitsuki.ehit.core.model.pagingsource.GalleryDetailSource
 import com.mitsuki.ehit.core.model.pagingsource.GalleryListSource
@@ -26,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
-import kotlin.math.log
+import kotlin.math.ceil
 
 class RemoteRepositoryImpl @Inject constructor() : Repository {
 
@@ -37,7 +41,7 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
         PagingConfig(pageSize = 40)
 
     override fun galleryList(pageIn: PageIn): Flow<PagingData<Gallery>> {
-        Log.e("RemoteRepositoryImpl","galleryList")
+        Log.e("RemoteRepositoryImpl", "galleryList")
         return Pager(mListPagingConfig, initialKey = 0) {
             GalleryListSource(pageIn)
         }.flow
@@ -123,9 +127,9 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
     override suspend fun login(account: String, password: String): RequestResult<String> {
         return withContext(Dispatchers.IO) {
             val loginData = HttpRookie
-                .post<String>(Url.login()) {
+                .post<String>(Url.login) {
                     convert = LoginConvert()
-                    params(RequestKey.REFERER to "https://forums.e-hentai.org/index.php?")
+                    params(RequestKey.REFERER to ParaValue.LOGIN_REFERER)
                     params(RequestKey.B to "")
                     params(RequestKey.BT to "")
 
@@ -134,8 +138,8 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
                     params(RequestKey.COOKIE_DATE to "1")
                     //params(RequestKey.PRIVACY to "1")
 
-                    header("Origin" to "https://forums.e-hentai.org")
-                    header("Referer" to "https://forums.e-hentai.org/index.php?act=Login&CODE=00")
+                    header(RequestKey.HEADER_ORIGIN to ParaValue.LOGIN_HEADER_ORIGIN)
+                    header(RequestKey.HEADER_REFERER to ParaValue.LOGIN_HEADER_REFERER)
                 }
                 .execute()
             try {
@@ -144,11 +148,40 @@ class RemoteRepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw loginData.throwable
                 }
             } catch (inner: Throwable) {
-                RequestResult.FailResult<String>(inner)
-
+                RequestResult.FailResult(inner)
             }
         }
     }
 
 
+    override suspend fun rating(detail: GalleryDetail, rating: Float): RequestResult<RateBack> {
+        return withContext(Dispatchers.IO) {
+            val data = HttpRookie
+                .post<RateBack>(Url.api) {
+                    convert = RateBackConvert()
+                    json(
+                        RequestRateInfo(
+                            apiUid = detail.apiUID,
+                            apiKey = detail.apiKey,
+                            galleryID = detail.gid.toString(),
+                            token = detail.token,
+                            rating = ceil(rating * 2).toInt()
+                        ).toJson()
+                    )
+                    header(RequestKey.HEADER_ORIGIN to Url.currentDomain)
+                    header(RequestKey.HEADER_REFERER to Url.galleryDetail(detail.gid, detail.token))
+                }
+                .execute()
+            try {
+                when (data) {
+                    is Response.Success<RateBack> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Fail<*> -> throw data.throwable
+                }
+            } catch (inner: Throwable) {
+                RequestResult.FailResult(inner)
+            }
+        }
+
+
+    }
 }

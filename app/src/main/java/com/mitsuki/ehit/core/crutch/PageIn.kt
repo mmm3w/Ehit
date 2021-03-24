@@ -19,9 +19,9 @@ class PageIn {
 
     val targetUrl: String
         get() = when (type) {
-            Type.MAIN -> Url.galleryList()
-            Type.SUBSCRIPTION -> Url.galleryListBySubscription()
-            Type.WHATS_HOT -> Url.galleryListByPopular()
+            Type.MAIN -> Url.galleryList
+            Type.SUBSCRIPTION -> Url.galleryListBySubscription
+            Type.WHATS_HOT -> Url.galleryListByPopular
         }
 
     enum class Type {

@@ -1,4 +1,3 @@
-
 /**
  * Shared file between builds so that they can all use the same dependencies and
  * maven repositories.
@@ -45,6 +44,7 @@ versions.coil = "1.0.0-rc3"
 versions.rxjava3 = "3.0.8"
 versions.rxkotlin = "3.0.1"
 versions.rxandroid = "3.0.0"
+versions.moshi = "1.11.0"
 
 /**************************************************************************************************/
 //gradle
@@ -141,6 +141,11 @@ deps.okhttplogger = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 
 deps.arouter = "com.alibaba:arouter-api:$versions.arouter"
 deps.coil = "io.coil-kt:coil:$versions.coil"
+
+def moshi = [:]
+moshi.runtime = "com.squareup.moshi:moshi-kotlin:$versions.moshi"
+moshi.compiler = "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
+deps.moshi = moshi
 
 /**************************************************************************************************/
 

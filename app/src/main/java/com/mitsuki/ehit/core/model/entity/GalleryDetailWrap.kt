@@ -6,6 +6,7 @@ class GalleryDetailWrap {
     lateinit var tags: Array<TagSet>
     lateinit var comment: Array<Comment>
     lateinit var commentState: CommentState
+    lateinit var sourceDetail:GalleryDetail
 
     companion object {
         const val MAX_COMMENT = 5
@@ -21,8 +22,8 @@ class GalleryDetailWrap {
     }
 
     data class DetailPart(
-        val rating: Float,
-        val ratingCount: Int,
+        var rating: Float,
+        var ratingCount: Int,
         val page: Int
     )
 

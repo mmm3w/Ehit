@@ -34,9 +34,9 @@ class EhApplication : Application() {
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             addInterceptor(ProgressProvider.imageLoadInterceptor)
 
-            connectTimeout(2, TimeUnit.MINUTES)
-            readTimeout(2, TimeUnit.MINUTES)
-            writeTimeout(2, TimeUnit.MINUTES)
+            connectTimeout(1, TimeUnit.MINUTES)
+            readTimeout(1, TimeUnit.MINUTES)
+            writeTimeout(1, TimeUnit.MINUTES)
         }
 
         RoomData.init(this)

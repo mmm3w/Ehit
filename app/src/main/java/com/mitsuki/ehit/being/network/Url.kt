@@ -5,13 +5,8 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.being.ShareData
 
 object Url {
-    lateinit var domain: Array<String>
 
-    var currentDomain: String
-        get() = "https://${ShareData.spDomain}"
-        set(value) {
-            ShareData.spDomain = value
-        }
+    lateinit var domain: Array<String>
 
     fun initDomain(context: Context) {
         with(context) {
@@ -20,18 +15,26 @@ object Url {
         }
     }
 
-    fun login(): String = "https://forums.e-hentai.org/index.php?act=Login&CODE=01"
+    var currentDomain: String
+        get() = "https://${ShareData.spDomain}"
+        set(value) {
+            ShareData.spDomain = value
+        }
 
-    fun galleryList(): String = "$currentDomain/"
+    val login: String get() = "https://forums.e-hentai.org/index.php?act=Login&CODE=01"
 
-    fun galleryListBySubscription(): String = "$currentDomain/watched"
+    val galleryList: String get() = "$currentDomain/"
 
-    fun galleryListByPopular(): String = "$currentDomain/popular"
+    val galleryListBySubscription: String get() = "$currentDomain/watched"
+
+    val galleryListByPopular: String get() = "$currentDomain/popular"
 
     fun galleryDetail(gid: Long, token: String): String = "$currentDomain/g/$gid/$token"
 
     fun galleryPreviewDetail(gid: Long, token: String, index: Int): String =
         "$currentDomain/s/$token/$gid-${index + 1}"
 
-    fun ehSetting(): String = "$currentDomain/uconfig.php"
+    val ehSetting: String get() = "$currentDomain/uconfig.php"
+
+    val api: String get() = "$currentDomain/api.php"
 }

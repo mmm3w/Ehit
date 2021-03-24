@@ -5,7 +5,7 @@ import com.mitsuki.ehit.core.model.entity.GalleryDetail
 import okhttp3.Response
 
 class GalleryDetailConvert : Convert<GalleryDetail> {
-    override fun convertResponse(response: Response): GalleryDetail? {
+    override fun convertResponse(response: Response): GalleryDetail {
         val webStr = response.body?.string()
         response.close()
         return GalleryDetail.parse(webStr)
