@@ -22,7 +22,7 @@ class GalleryDetailLayout @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent2 {
 
     private val mTitleBar =
-        LayoutInflater.from(context).inflate(R.layout.part_top_title_bar, this, false)
+        LayoutInflater.from(context).inflate(R.layout.top_bar_detail_ver, this, false)
 
     private val mInfoView: RecyclerView = RecyclerView(context).apply {
         id = R.id.gallery_detail_inner_info

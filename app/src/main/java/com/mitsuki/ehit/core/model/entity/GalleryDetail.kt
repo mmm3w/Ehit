@@ -1,9 +1,14 @@
 package com.mitsuki.ehit.core.model.entity
 
+import android.os.Parcelable
 import com.mitsuki.ehit.being.throwable.ParseThrowable
 import com.mitsuki.ehit.core.model.ehparser.*
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import org.jsoup.Jsoup
 
+@Parcelize
 data class GalleryDetail(
     val gid: Long,
     val token: String,
@@ -30,8 +35,9 @@ data class GalleryDetail(
     val tagSet: Array<TagSet>,
     val commentSet: CommentSet,
     val previewPages: Int,
-    val images: PageInfo<ImageSource>
-) {
+    @IgnoredOnParcel
+    val images: @RawValue PageInfo<ImageSource> = PageInfo.emtpy()
+) : Parcelable {
     val categoryColor: Int = Category.getColor(category)
     val pages = pagesStr.matchNumber("1").toInt()
     val favoriteCount = when (favorite) {

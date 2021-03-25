@@ -1,13 +1,16 @@
 package com.mitsuki.ehit.core.model.entity
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.core.model.ehparser.byClassFirst
+import kotlinx.android.parcel.Parcelize
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.select.NodeTraversor
 import org.jsoup.select.NodeVisitor
 
-class Comment(val id: Int, val time: String, val user: String, val text: String) {
+@Parcelize
+class Comment(val id: Int, val time: String, val user: String, val text: String) : Parcelable {
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Comment>() {
             override fun areItemsTheSame(
@@ -49,8 +52,8 @@ class Comment(val id: Int, val time: String, val user: String, val text: String)
     }
 }
 
-@Suppress("ArrayInDataClass")
-data class CommentSet(val comments: Array<Comment>, var hasMore: Boolean) {
+@Parcelize
+data class CommentSet(val comments: Array<Comment>, var hasMore: Boolean) : Parcelable {
     companion object {
         fun parse(element: Element): CommentSet {
 
@@ -68,5 +71,23 @@ data class CommentSet(val comments: Array<Comment>, var hasMore: Boolean) {
             }, element.getElementById("chd"))
             return CommentSet(comments, temp)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CommentSet
+
+        if (!comments.contentEquals(other.comments)) return false
+        if (hasMore != other.hasMore) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = comments.contentHashCode()
+        result = 31 * result + hasMore.hashCode()
+        return result
     }
 }

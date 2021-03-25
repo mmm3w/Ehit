@@ -92,5 +92,23 @@
 
     <string name="text_sign_out_desc">确定要退出登录吗？</string>
 
+    <string name="text_info_gid">GID</string>
+    <string name="text_info_token">Token</string>
+    <string name="text_info_url">链接</string>
+    <string name="text_info_title">标题</string>
+    <string name="text_info_title_jp">日文标题</string>
+    <string name="text_info_thumb">缩略图</string>
+    <string name="text_info_category">分类</string>
+    <string name="text_info_uploader">上传者</string>
+    <string name="text_info_posted_time">上传时间</string>
+    <string name="text_info_visible">可见性</string>
+    <string name="text_info_language">语言</string>
+    <string name="text_info_pages">页数</string>
+    <string name="text_info_size">大小</string>
+    <string name="text_info_favorite_count">收藏数</string>
+    <string name="text_info_favorited">是否收藏</string>
+    <string name="text_info_rating_count">评价数</string>
+    <string name="text_info_rating">评分</string>
+    <string name="text_info_torrents">种子数</string>
 
 </resources>

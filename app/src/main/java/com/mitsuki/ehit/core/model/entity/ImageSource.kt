@@ -1,10 +1,12 @@
 package com.mitsuki.ehit.core.model.entity
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.being.throwable.ParseThrowable
 import com.mitsuki.ehit.being.throwable.assertContent
 import com.mitsuki.ehit.core.model.ehparser.Matcher
 import com.mitsuki.ehit.core.model.ehparser.htmlEscape
+import kotlinx.android.parcel.Parcelize
 
 @Suppress(
     "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS",
@@ -19,7 +21,7 @@ data class ImageSource(
     val top: Int = -1,
     val right: Int = -1,
     val bottom: Int = -1
-) {
+){
     override fun toString(): String {
         return "ImageSource: left($left) top($top) right($right) bottom($bottom) \n url($imageUrl)"
     }
@@ -48,7 +50,7 @@ data class ImageSource(
         }
 
         @Suppress("MemberVisibilityCanBePrivate")
-        fun parseWithNormal(content: String?): MutableList<ImageSource> {
+        fun parseWithNormal(content: String?): ArrayList<ImageSource> {
             assertContent(content, "")
             return ArrayList<ImageSource>().apply {
                 Matcher.NORMAL_PREVIEW.matcher(content).also {

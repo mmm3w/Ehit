@@ -25,12 +25,13 @@ import com.mitsuki.ehit.being.extend.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.core.model.entity.ImageSource
 import com.mitsuki.ehit.core.ui.activity.GalleryActivity
+import com.mitsuki.ehit.core.ui.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.core.ui.adapter.*
 import com.mitsuki.ehit.core.ui.adapter.gallerydetail.*
 import com.mitsuki.ehit.core.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_gallery_detail.*
-import kotlinx.android.synthetic.main.part_top_title_bar.*
+import kotlinx.android.synthetic.main.top_bar_detail_ver.*
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -169,7 +170,6 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 //TODO 下载
             }
             GalleryDetailOperatingBlock.Event.Score -> {
-                //TODO 评分
                 MaterialDialog(requireContext()).show {
                     title(res = R.string.text_rate)
                     customView(viewRes = R.layout.dialog_rating)
@@ -189,7 +189,10 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 //TODO 相似搜索
             }
             GalleryDetailOperatingBlock.Event.MoreInfo -> {
-                //TODO 更多详情
+                Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
+                    putExtra(DataKey.GALLERY_DETAIL, mViewModel.detailWrap.sourceDetail)
+                    startActivity(this)
+                }
             }
         }
     }

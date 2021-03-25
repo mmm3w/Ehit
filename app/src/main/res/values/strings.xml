@@ -114,4 +114,23 @@
 
     <string name="text_sign_out_desc">Do you really want to sign out?</string>
 
+    <string name="text_info_gid">GID</string>
+    <string name="text_info_token">Token</string>
+    <string name="text_info_url">Url</string>
+    <string name="text_info_title">Title</string>
+    <string name="text_info_title_jp">Jpn Title</string>
+    <string name="text_info_thumb">Thumb</string>
+    <string name="text_info_category">Category</string>
+    <string name="text_info_uploader">Uploader</string>
+    <string name="text_info_posted_time">Posted</string>
+    <string name="text_info_visible">Visible</string>
+    <string name="text_info_language">Language</string>
+    <string name="text_info_pages">Pages</string>
+    <string name="text_info_size">Size</string>
+    <string name="text_info_favorite_count">Favorite\ncount</string>
+    <string name="text_info_favorited">Favorited</string>
+    <string name="text_info_rating_count">Rating\ncount</string>
+    <string name="text_info_rating">Rating</string>
+    <string name="text_info_torrents">Torrents</string>
+
 </resources>
