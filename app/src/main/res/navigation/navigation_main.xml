@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/gallery_list_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.GalleryListFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.GalleryListFragment"
         android:label="@string/label_gallery_list_fragment">
         <action
             android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/gallery_detail_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.GalleryDetailFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.GalleryDetailFragment"
         android:label="@string/label_gallery_detail_fragment">
         <action
             android:id="@+id/action_gallery_detail_fragment_to_gallery_list_fragment"
@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/security_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.SecurityFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.SecurityFragment"
         android:label="@string/label_security_fragment">
         <action
             android:id="@+id/action_security_fragment_to_gallery_list_fragment"
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/disclaimer_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.DisclaimerFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.DisclaimerFragment"
         android:label="@string/label_disclaimer_fragment">
         <action
             android:id="@+id/action_disclaimer_fragment_to_login_fragment"
@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/login_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.LoginFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.LoginFragment"
         android:label="@string/label_login_fragment">
         <action
             android:id="@+id/action_login_fragment_to_gallery_list_fragment"
@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/search_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.SearchFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.SearchFragment"
         android:label="@string/label_search_fragment">
         <action
             android:id="@+id/action_search_fragment_to_gallery_list_fragment"
@@ -64,7 +64,7 @@
 
     <fragment
         android:id="@+id/main_fragment"
-        android:name="com.mitsuki.ehit.core.ui.fragment.MainFragment"
+        android:name="com.mitsuki.ehit.ui.fragment.MainFragment"
         android:label="@string/label_main_fragment">
         <action
             android:id="@+id/action_main_fragment_to_gallery_list_fragment"

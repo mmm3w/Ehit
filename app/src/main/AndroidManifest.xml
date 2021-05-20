@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".core.ui.activity.MainActivity">
+        <activity android:name="com.mitsuki.ehit.ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,21 +21,21 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".core.ui.activity.GalleryActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryActivity" />
 
-        <activity android:name=".core.ui.activity.GalleryInfoActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryInfoActivity" />
 
-        <activity android:name=".core.ui.activity.GalleryCommentActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryCommentActivity" />
 
-        <activity android:name=".core.ui.activity.SettingActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.SettingActivity" />
 
-        <activity android:name=".core.ui.activity.FavouriteActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.FavouriteActivity" />
 
-        <activity android:name=".core.ui.activity.HistoryActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.HistoryActivity" />
 
-        <activity android:name=".core.ui.activity.DownloadActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.DownloadActivity" />
 
-        <activity android:name=".core.ui.activity.GalleryMoreInfoActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryMoreInfoActivity" />
 
     </application>
 
