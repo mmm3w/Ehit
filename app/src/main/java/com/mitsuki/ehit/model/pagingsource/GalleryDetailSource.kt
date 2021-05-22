@@ -5,8 +5,6 @@ import androidx.paging.PagingState
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
-import com.mitsuki.ehit.const.DBValue
-import com.mitsuki.ehit.crutch.MemoryCache
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.db.RoomData
@@ -86,11 +84,6 @@ class GalleryDetailSource(
                                     RoomData.galleryDao
                                         .insertGalleryImageSource(mGid, mToken, result.second)
                                 }
-
-                                if (!images.isEmpty) {
-                                    MemoryCache.detailPageSize =
-                                        if (page == GalleryDetailPageIn.START) images.data.size else images.data[0].index / images.index
-                                }
                             }
                             is Response.Fail<*> -> throw remoteData.throwable
                         }
@@ -124,10 +117,6 @@ class GalleryDetailSource(
                                     images = result
                                     RoomData.galleryDao
                                         .insertGalleryImageSource(mGid, mToken, result)
-                                }
-                                if (!images.isEmpty) {
-                                    MemoryCache.detailPageSize =
-                                        if (page == GalleryDetailPageIn.START) images.data.size else images.data[0].index / images.index
                                 }
                             }
                             is Response.Fail<*> -> throw remoteData.throwable

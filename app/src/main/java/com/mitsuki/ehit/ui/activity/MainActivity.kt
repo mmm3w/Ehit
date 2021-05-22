@@ -10,6 +10,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extend.whiteStyle
+import com.mitsuki.ehit.ui.fragment.GalleryListFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 

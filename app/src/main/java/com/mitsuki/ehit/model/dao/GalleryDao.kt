@@ -56,8 +56,7 @@ abstract class GalleryDao {
         token: String,
         index: Int
     ): PageInfo<ImageSource> {
-        val targetTimestamp = System.currentTimeMillis() - DBValue.IMAGE_SROUCE_CACHE_DURATION
-        val cacheData = queryGalleryImageCache(gid, token, index, targetTimestamp)
+        val cacheData = queryGalleryImageCache(gid, token, index)
         if (cacheData.isEmpty()) return PageInfo.emtpy()
         return PageInfo(
             cacheData.map { ImageSource(it) },
@@ -91,30 +90,30 @@ abstract class GalleryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertGalleryImageCache(sources: List<GalleryImageSourceCache>)
 
-    @Query("SELECT * FROM ${DBValue.TABLE_IMAGE_SOURCE} WHERE ${DBValue.TABLE_IMAGE_SOURCE}.gid = :gid AND ${DBValue.TABLE_IMAGE_SOURCE}.token = :token AND ${DBValue.TABLE_IMAGE_SOURCE}.page = :page AND ${DBValue.TABLE_IMAGE_SOURCE}.timestamp < :timestamp")
+    @Query("SELECT * FROM ${DBValue.TABLE_IMAGE_SOURCE} WHERE ${DBValue.TABLE_IMAGE_SOURCE}.gid = :gid AND ${DBValue.TABLE_IMAGE_SOURCE}.token = :token AND ${DBValue.TABLE_IMAGE_SOURCE}.page = :page AND ${DBValue.TABLE_IMAGE_SOURCE}.timestamp > :timestamp")
     abstract suspend fun queryGalleryImageCache(
         gid: Long,
         token: String,
         page: Int,
-        timestamp: Long
+        timestamp: Long = System.currentTimeMillis() - DBValue.IMAGE_SROUCE_CACHE_DURATION
     ): List<GalleryImageSourceCache>
 
-    @Query("SELECT * FROM ${DBValue.TABLE_IMAGE_SOURCE} WHERE ${DBValue.TABLE_IMAGE_SOURCE}.gid = :gid AND ${DBValue.TABLE_IMAGE_SOURCE}.token = :token AND ${DBValue.TABLE_IMAGE_SOURCE}.`index` = :index AND ${DBValue.TABLE_IMAGE_SOURCE}.timestamp < :timestamp LIMIT 1")
+    @Query("SELECT * FROM ${DBValue.TABLE_IMAGE_SOURCE} WHERE ${DBValue.TABLE_IMAGE_SOURCE}.gid = :gid AND ${DBValue.TABLE_IMAGE_SOURCE}.token = :token AND ${DBValue.TABLE_IMAGE_SOURCE}.`index` = :index AND ${DBValue.TABLE_IMAGE_SOURCE}.timestamp > :timestamp LIMIT 1")
     abstract suspend fun querySingleGalleryImageCache(
         gid: Long,
         token: String,
         index: Int,
-        timestamp: Long
+        timestamp: Long = System.currentTimeMillis() - DBValue.IMAGE_SROUCE_CACHE_DURATION
     ): GalleryImageSourceCache?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertGalleryPreview(vararg data: GalleryPreviewCache)
 
-    @Query("SELECT * FROM ${DBValue.TABLE_GALLERY_PREVIEW} WHERE ${DBValue.TABLE_GALLERY_PREVIEW}.gid = :gid AND ${DBValue.TABLE_GALLERY_PREVIEW}.token = :token AND ${DBValue.TABLE_GALLERY_PREVIEW}.`index` = :index AND ${DBValue.TABLE_GALLERY_PREVIEW}.timestamp < :timestamp LIMIT 1")
+    @Query("SELECT * FROM ${DBValue.TABLE_GALLERY_PREVIEW} WHERE ${DBValue.TABLE_GALLERY_PREVIEW}.gid = :gid AND ${DBValue.TABLE_GALLERY_PREVIEW}.token = :token AND ${DBValue.TABLE_GALLERY_PREVIEW}.`index` = :index AND ${DBValue.TABLE_GALLERY_PREVIEW}.timestamp > :timestamp LIMIT 1")
     abstract suspend fun queryGalleryPreview(
         gid: Long,
         token: String,
         index: Int,
-        timestamp: Long
+        timestamp: Long = System.currentTimeMillis() - DBValue.GALLERY_PREVIEW_CACHE_DURATION
     ): GalleryPreviewCache?
 }

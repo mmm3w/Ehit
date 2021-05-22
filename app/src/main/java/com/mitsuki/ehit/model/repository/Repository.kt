@@ -18,11 +18,13 @@ interface Repository {
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>>
 
-    suspend fun galleryPreview(gid: Long, token: String, index: Int): RequestResult<GalleryPreview>
+    suspend fun galleryPreview(gid: Long, token: String, pToken: String, index: Int)
+            : RequestResult<GalleryPreview>
 
-    suspend fun galleryDetailWithPToken(gid: Long, token: String, index: Int): RequestResult<String>
+    suspend fun galleryDetailWithPToken(gid: Long, token: String, index: Int)
+            : RequestResult<String>
 
     suspend fun login(account: String, password: String): RequestResult<String>
 
-    suspend fun rating(detail: GalleryDetail,rating:Float): RequestResult<RateBack>
+    suspend fun rating(detail: GalleryDetail, rating: Float): RequestResult<RateBack>
 }

@@ -4,7 +4,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.mitsuki.ehit.crutch.MemoryCache
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.ui.fragment.GalleryFragment
 
@@ -24,7 +23,6 @@ class GalleryFragmentAdapter(
             }
         }
 
-
     override fun getItemCount(): Int {
         return mSize
     }
@@ -36,7 +34,6 @@ class GalleryFragmentAdapter(
                 bundleOf(
                     DataKey.GALLERY_ID to mId,
                     DataKey.GALLERY_TOKEN to mToken,
-//                    DataKey.IMAGE_TOKEN to MemoryCache.getImageToken(mId, realIndex),
                     DataKey.GALLERY_INDEX to realIndex
                 )
         }

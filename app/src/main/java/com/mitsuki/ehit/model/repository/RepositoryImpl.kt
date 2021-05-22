@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.model.repository
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -11,12 +10,12 @@ import com.mitsuki.armory.httprookie.request.params
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.const.DBValue
-import com.mitsuki.ehit.crutch.MemoryCache
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamValue
 import com.mitsuki.ehit.const.RequestKey
+import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.convert.GalleryPreviewConvert
@@ -45,7 +44,6 @@ class RepositoryImpl @Inject constructor() : Repository {
         PagingConfig(pageSize = 40)
 
     override fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>> {
-        Log.e("RemoteRepositoryImpl", "galleryList")
         return Pager(mListPagingConfig, initialKey = 0) {
             GalleryListSource(pageIn)
         }.flow
@@ -66,16 +64,16 @@ class RepositoryImpl @Inject constructor() : Repository {
     override suspend fun galleryPreview(
         gid: Long,
         token: String,
+        pToken:String,
         index: Int
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
-            val targetTimestamp = System.currentTimeMillis() - DBValue.GALLERY_PREVIEW_CACHE_DURATION
-            val data = RoomData.galleryDao.queryGalleryPreview(gid, token, index, targetTimestamp)
+            val data = RoomData.galleryDao.queryGalleryPreview(gid, token, index)
             if (data != null) {
                 RequestResult.SuccessResult(GalleryPreview(data))
             } else {
                 val remoteData: Response<GalleryPreview> = HttpRookie
-                    .get<GalleryPreview>(Url.galleryPreviewDetail(gid, token, index)) {
+                    .get<GalleryPreview>(Url.galleryPreviewDetail(gid, pToken, index)) {
                         convert = GalleryPreviewConvert()
                     }
                     .execute()
@@ -93,6 +91,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                         is Response.Fail<*> -> throw remoteData.throwable
                     }
                 } catch (inner: Throwable) {
+                    Log.debug("$inner")
                     RequestResult.FailResult(inner)
                 }
             }
@@ -106,8 +105,8 @@ class RepositoryImpl @Inject constructor() : Repository {
         index: Int
     ): RequestResult<String> {
         return withContext(Dispatchers.IO) {
-            val targetTimestamp = System.currentTimeMillis() - DBValue.IMAGE_SROUCE_CACHE_DURATION
-            val cache = RoomData.galleryDao.querySingleGalleryImageCache(gid, token, index ,targetTimestamp)
+            val cache =
+                RoomData.galleryDao.querySingleGalleryImageCache(gid, token, index)
             if (cache == null || cache.pToken.isEmpty()) {
                 val remoteData = HttpRookie
                     .get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
@@ -123,7 +122,11 @@ class RepositoryImpl @Inject constructor() : Repository {
                             }
 
                             val pToken =
-                                RoomData.galleryDao.querySingleGalleryImageCache(gid, token, index, targetTimestamp)
+                                RoomData.galleryDao.querySingleGalleryImageCache(
+                                    gid,
+                                    token,
+                                    index
+                                )
                                     ?.pToken
 
                             if (pToken.isNullOrEmpty()) throw IllegalStateException("not found pToken")
@@ -132,6 +135,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                         is Response.Fail<*> -> throw remoteData.throwable
                     }
                 } catch (inner: Throwable) {
+                    Log.debug("$inner")
                     RequestResult.FailResult(inner)
                 }
             } else RequestResult.SuccessResult(cache.pToken)
@@ -162,6 +166,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw loginData.throwable
                 }
             } catch (inner: Throwable) {
+                Log.debug("$inner")
                 RequestResult.FailResult(inner)
             }
         }
@@ -197,6 +202,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
+                Log.debug("$inner")
                 RequestResult.FailResult(inner)
             }
         }

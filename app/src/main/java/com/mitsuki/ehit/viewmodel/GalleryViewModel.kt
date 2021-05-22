@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mitsuki.ehit.crutch.MemoryCache
 import com.mitsuki.ehit.crutch.extend.postNext
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
@@ -21,7 +20,6 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
     var index: Int = 0
     private var mId: Long = -1
     lateinit var galleryToken: String
-    private var mPToken: String = ""
 
     val tag get() = "$mId-$index"
 
@@ -34,7 +32,6 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
         if (bundle == null) throw IllegalStateException()
         index = bundle.getInt(DataKey.GALLERY_INDEX, 0)
         mId = bundle.getLong(DataKey.GALLERY_ID, -1)
-        mPToken = bundle.getString(DataKey.IMAGE_TOKEN) ?: ""
         galleryToken =
             bundle.getString(DataKey.GALLERY_TOKEN) ?: throw IllegalStateException()
     }
@@ -42,21 +39,21 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
     fun obtainData() {
         viewModelScope.launch {
             mState.postNext { it.copy(loading = true) }
-            if (mPToken.isEmpty()) {
-                val detailIndex =
-                    if (MemoryCache.detailPageSize > 0) index / MemoryCache.detailPageSize else 0
-                with(repository.galleryDetailWithPToken(mId, galleryToken, detailIndex)) {
-                    when (this) {
-                        is RequestResult.SuccessResult -> mPToken = data
-                        is RequestResult.FailResult -> {
-                            mState.postNext { it.copy(loading = false, error = throwable.message) }
-                            return@launch
-                        }
+
+            val pToken: String
+
+            with(repository.galleryDetailWithPToken(mId, galleryToken, index)) {
+                when (this) {
+                    is RequestResult.SuccessResult -> pToken = data
+                    is RequestResult.FailResult -> {
+                        mState.postNext { it.copy(loading = false, error = throwable.message) }
+                        return@launch
                     }
                 }
             }
+
             var error: String? = null
-            with(repository.galleryPreview(mId, mPToken, index)) {
+            with(repository.galleryPreview(mId, galleryToken, pToken, index)) {
                 when (this) {
                     is RequestResult.SuccessResult -> mData.postValue(data.imageUrl.addFeature(tag))
                     is RequestResult.FailResult -> error = throwable.message
