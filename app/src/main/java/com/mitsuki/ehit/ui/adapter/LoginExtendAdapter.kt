@@ -16,7 +16,6 @@ class LoginHeader : SingleItemAdapter(true) {
     override val layoutRes: Int = R.layout.item_login_header
     override val onViewHolderCreate: ViewHolder.() -> Unit = {}
     override val onViewHolderBind: ViewHolder.() -> Unit = {}
-
 }
 
 class LoginExtend : SingleItemAdapter(true) {

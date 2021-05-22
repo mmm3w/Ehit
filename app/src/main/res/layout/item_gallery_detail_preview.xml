@@ -4,8 +4,10 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_4"
     android:layout_marginEnd="@dimen/dp_4"
+    android:background="?android:attr/selectableItemBackground"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/dp_4">
 
     <ImageView
         android:id="@+id/gallery_detail_preview"

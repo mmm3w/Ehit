@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:background="?android:attr/selectableItemBackground"
         android:paddingVertical="@dimen/dp_8"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"

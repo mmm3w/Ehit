@@ -14,8 +14,8 @@ android {
         applicationId "com.mitsuki.ehit"
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
-        versionCode 1000
-        versionName "1.0.00"
+        versionCode 1
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

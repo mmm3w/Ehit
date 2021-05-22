@@ -7,6 +7,7 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -84,7 +85,7 @@ class GalleryAdapter :
                 }
                 mGalleryTime?.text = time
                 mGalleryRating?.rating = rating
-                mGalleryLayout?.transitionName = itemTransitionName
+                ViewCompat.setTransitionName(itemView, itemTransitionName)
             }
         }
 

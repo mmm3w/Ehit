@@ -80,7 +80,9 @@ class GalleryDetailOperatingPart(
             0 -> {
                 holder.view<LinearLayout>(R.id.operatingExtend)?.apply {
                     addView(TextView(context).apply {
-                        text = String.format("%.1f", data?.rating ?: 0f)
+                        text = String.format(
+                            "%.1f",
+                            (data?.rating ?: 0f).run { if (this < 0) 0f else this })
                         textSize = 18f
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                         setPadding(0, 0, dp2px(4f), 0)

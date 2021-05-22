@@ -17,6 +17,8 @@
     <string name="hint_password">密码</string>
     <string name="hint_search">搜索</string>
     <string name="hint_rate_successfully">评分成功</string>
+    <string name="hint_gallery_info">画廊信息</string>
+    <string name="hint_copy_successfully">复制成功</string>
 
     <string name="text_test">测试内容</string>
 

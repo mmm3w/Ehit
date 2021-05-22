@@ -13,6 +13,31 @@ data class GalleryDetail(
     val tagGroup: Array<TagGroup>,
     val comments: Array<Comment>
 ) {
+    val gid get() = info.gid
+    val token get() = info.token
+    val apiUID get() = info.apiUID
+    val apiKey get() = info.apiKey
+    val torrentUrl get() = info.torrentUrl
+    val torrentCount get() = info.torrentCount
+    val archiveUrl get() = info.archiveUrl
+    val detailThumb get() = info.detailThumb
+    val title get() = info.title
+    val titleJP get() = info.titleJP
+    val category get() = info.category
+    val uploader get() = info.uploader
+    val posted get() = info.posted
+    val parent get() = info.parent
+    val visible get() = info.visible
+    val language get() = info.language
+    val size get() = info.size
+    val pagesStr get() = info.pagesStr
+    val favorite get() = info.favorite
+    val ratingCount get() = info.ratingCount
+    val rating get() = if (info.rating < 0) 0f else info.rating
+    val favoriteName get() = info.favoriteName
+    val previewPages get() = info.previewPages
+    val hasMoreComment get() = info.hasMoreComment
+
     val categoryColor: Int get() = Category.getColor(info.category)
 
     val pages: Int get() = info.pagesStr.matchNumber("1").toInt()

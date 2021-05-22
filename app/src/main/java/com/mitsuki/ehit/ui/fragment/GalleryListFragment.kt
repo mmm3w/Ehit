@@ -11,9 +11,11 @@ import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
@@ -142,7 +144,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                     R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
                     bundleOf(DataKey.GALLERY_INFO to data),
                     null,
-                    null
+                    FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
                 )
         }
     }

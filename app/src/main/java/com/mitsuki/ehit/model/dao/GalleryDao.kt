@@ -16,9 +16,13 @@ abstract class GalleryDao {
     }
 
     @Transaction
-    open suspend fun queryGalleryDetail(gid: Long, token: String): GalleryDetail? {
+    open suspend fun queryGalleryDetail(
+        gid: Long,
+        token: String,
+        careCacheTime: Boolean = true
+    ): GalleryDetail? {
         val info = queryGalleryInfo(gid, token) ?: return null
-        if (System.currentTimeMillis() - info.timestamp > DBValue.INFO_CACHE_DURATION) return null
+        if (careCacheTime && System.currentTimeMillis() - info.timestamp > DBValue.INFO_CACHE_DURATION) return null
 
         val tags = queryGalleryTags(gid, token).groupBy { it.group }.map { map ->
             TagGroup(map.key, map.value.map { it.name }.toTypedArray())

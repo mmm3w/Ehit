@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransform
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
@@ -25,6 +27,8 @@ import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.ui.activity.GalleryActivity
+import com.mitsuki.ehit.ui.activity.GalleryCommentActivity
+import com.mitsuki.ehit.ui.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.ui.adapter.gallerydetail.*
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
@@ -68,10 +72,13 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mViewModel.initData(arguments)
+
+        sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
+            scrimColor = 0x22000000
+        }
 
         lifecycleScope.launchWhenCreated {
             mPreviewAdapter.loadStateFlow.collectLatest { loadStates ->
@@ -94,16 +101,19 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         mTag.event.observe(this, this::onTagEvent)
         mComment.event.observe(this) {
             //TODO 更多评论
+            requireActivity().apply {
+                startActivity(Intent(this, GalleryCommentActivity::class.java))
+            }
         }
 
         mPreviewAdapter.event.observe(this, this::onPreviewClick)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ViewCompat.setTransitionName(gallery_detail_card, mViewModel.itemTransitionName)
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        gallery_detail_card?.transitionName = mViewModel.itemTransitionName
         top_title_back?.setOnClickListener { requireActivity().onBackPressed() }
 
         gallery_detail?.apply {
@@ -188,10 +198,11 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 //TODO 相似搜索
             }
             GalleryDetailOperatingBlock.Event.MoreInfo -> {
-//                Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
-//
-//                    startActivity(this)
-//                }
+                Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
+                    putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
+                    putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
+                    startActivity(this)
+                }
             }
         }
     }

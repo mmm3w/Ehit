@@ -22,11 +22,7 @@ fun String.htmlEscape(): String {
 
 fun String.matchNumber(default: String = "0"): String {
     return Matcher.NUMBER.matcher(this).let {
-        try {
-            if (it.find()) it.group(1) else default
-        } catch (e: Exception) {
-            default
-        }
+        if (it.find()) it.group(1) ?: default else default
     }
 }
 

@@ -24,6 +24,8 @@
     <string name="text_4" translatable="false">4</string>
     <string name="text_5" translatable="false">5</string>
 
+    <string name="page_separate" translatable="false">%d/%d</string>
+
     <string name="error_parse_throwable_text">Data parse error</string>
 
     <string name="description_page_jump">Page jump support</string>
@@ -39,6 +41,8 @@
     <string name="hint_password">password</string>
     <string name="hint_search">Search</string>
     <string name="hint_rate_successfully">Rate successfully</string>
+    <string name="hint_gallery_info">Gallery Info</string>
+    <string name="hint_copy_successfully">Copy successfully</string>
 
     <string name="text_test">Test content</string>
 

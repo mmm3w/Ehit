@@ -35,7 +35,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private val mAdapter by lazy {
         ConcatAdapter(
-            mHeader,
             mAccountAdapter,
             mCookieAdapter,
             mDomain,

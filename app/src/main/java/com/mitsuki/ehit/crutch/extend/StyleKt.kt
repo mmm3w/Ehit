@@ -19,3 +19,4 @@ fun Activity.whiteStyle() {
     }
     window.decorView.systemUiVisibility = tag
 }
+

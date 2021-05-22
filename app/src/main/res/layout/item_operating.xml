@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_20"
-    android:paddingBottom="@dimen/dp_20">
+    android:paddingVertical="@dimen/dp_20">
 
     <LinearLayout
         android:id="@+id/operatingExtend"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal" />
 
     <TextView
         android:id="@+id/operatingText"
@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
-        android:text="电子书"
         android:textColor="@color/blue_5F6368"
         android:textSize="@dimen/sp_12" />
 </LinearLayout>
