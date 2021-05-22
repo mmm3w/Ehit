@@ -36,7 +36,7 @@ class GalleryFragmentAdapter(
                 bundleOf(
                     DataKey.GALLERY_ID to mId,
                     DataKey.GALLERY_TOKEN to mToken,
-                    DataKey.IMAGE_TOKEN to MemoryCache.getImageToken(mId, realIndex),
+//                    DataKey.IMAGE_TOKEN to MemoryCache.getImageToken(mId, realIndex),
                     DataKey.GALLERY_INDEX to realIndex
                 )
         }

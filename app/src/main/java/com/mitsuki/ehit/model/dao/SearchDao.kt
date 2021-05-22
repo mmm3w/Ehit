@@ -1,7 +1,7 @@
 package com.mitsuki.ehit.model.dao
 
 import androidx.room.*
-import com.mitsuki.ehit.const.DBKey
+import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ interface SearchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHistory(data: SearchHistory)
 
-    @Query("SELECT * FROM ${DBKey.TABLE_SEARCH_HISTORY} ORDER BY created_at DESC LIMIT :count")
+    @Query("SELECT * FROM ${DBValue.TABLE_SEARCH_HISTORY} ORDER BY created_at DESC LIMIT :count")
     fun queryHistory(count: Int = 10): Flow<List<SearchHistory>>
 
     @Delete
@@ -21,7 +21,7 @@ interface SearchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertQuick(data: QuickSearch)
 
-    @Query("SELECT * FROM ${DBKey.TABLE_QUICK_SEARCH} ORDER BY created_at DESC")
+    @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} ORDER BY created_at DESC")
     fun queryQuick(): Flow<List<QuickSearch>>
 
     @Delete

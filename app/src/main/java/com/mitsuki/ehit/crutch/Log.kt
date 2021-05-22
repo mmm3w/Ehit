@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.extend
+package com.mitsuki.ehit.crutch
 
 import android.util.Log
 import com.mitsuki.ehit.BuildConfig

@@ -1,7 +1,9 @@
 package com.mitsuki.ehit.model.entity
 
+import com.mitsuki.ehit.const.ParseError
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
+import com.mitsuki.ehit.model.entity.db.GalleryCommentCache
 import com.mitsuki.ehit.model.entity.db.GalleryInfoCache
 import com.mitsuki.ehit.model.entity.db.GalleryTagCache
 import org.jsoup.Jsoup
@@ -9,26 +11,29 @@ import org.jsoup.Jsoup
 data class GalleryDetail(
     val info: GalleryInfoCache,
     val tagGroup: Array<TagGroup>,
-    val commentSet: CommentSet,
-    val images: PageInfo<ImageSource> = PageInfo.emtpy()
+    val comments: Array<Comment>
 ) {
     val categoryColor: Int get() = Category.getColor(info.category)
+
     val pages: Int get() = info.pagesStr.matchNumber("1").toInt()
+
     val favoriteCount: Int
         get() = when (info.favorite) {
             "Never" -> 0
             "Once" -> 1
             else -> info.favorite.matchNumber().toInt()
         }
-    val isFavorited: Boolean
-        get() = info.favoriteName != null
 
+    val isFavorited: Boolean get() = info.favoriteName != null
 
     val tagCache: List<GalleryTagCache>
         get() = tagGroup.flatMap { group ->
-            group.tags.map { tag ->
-                GalleryTagCache(tag, group.groupName, info.gid, info.token)
-            }
+            group.tags.map { tag -> GalleryTagCache(tag, group.groupName, info.gid, info.token) }
+        }
+
+    val commentCache: List<GalleryCommentCache>
+        get() = comments.map {
+            GalleryCommentCache(info.gid, info.token, it.id, it.time, it.user, it.text)
         }
 
     companion object {
@@ -127,7 +132,7 @@ data class GalleryDetail(
                 } ?: emptyArray()
 
 
-            val commentSet = CommentSet.parse(
+            val commentData = Comment.parse(
                 document.getElementById("cdiv") ?: throw ParseThrowable("cdiv node".prefix())
             )
 
@@ -137,9 +142,6 @@ data class GalleryDetail(
                 ) {
                     get(size - 2).text().toInt()
                 }
-
-            val images = ImageSource.parse(content)
-
 
             val info = GalleryInfoCache(
                 gid,
@@ -165,33 +167,51 @@ data class GalleryDetail(
                 ratingNode,
                 favoriteName,
                 previewPages,
+                commentData.second
             )
+
 
             return GalleryDetail(
                 info,
                 tagSetArray,
-                commentSet,
-                images
+                commentData.first
             )
         }
 
-        private fun String.prefix(): String = "Parse galleryDetail: not found $this"
+        private fun String.prefix(): String = String.format(ParseError.GALLERY_DETAIL, this)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return false
+        return other is GalleryDetail &&
+                info == other.info &&
+                tagGroup.contentEquals(other.tagGroup) &&
+                comments.contentEquals(other.comments)
     }
 
     override fun hashCode(): Int {
         var result = info.hashCode()
         result = 31 * result + tagGroup.contentHashCode()
-        result = 31 * result + commentSet.hashCode()
-        result = 31 * result + images.hashCode()
+        result = 31 * result + comments.contentHashCode()
         return result
     }
 
 
+    fun obtainOperating(): GalleryDetailWrap.DetailPart {
+        return GalleryDetailWrap.DetailPart(info.rating, info.ratingCount, pages)
+    }
+
+    fun obtainComments(): Array<Comment> {
+        return Array(GalleryDetailWrap.MAX_COMMENT.coerceAtMost(comments.size)) { index -> comments[index] }
+    }
+
+    fun obtainCommentState(): GalleryDetailWrap.CommentState {
+        return when (comments.size) {
+            0 -> GalleryDetailWrap.CommentState.NoComments
+            in 1..GalleryDetailWrap.MAX_COMMENT -> GalleryDetailWrap.CommentState.AllLoaded
+            else -> GalleryDetailWrap.CommentState.MoreComments
+        }
+    }
 }
 
 

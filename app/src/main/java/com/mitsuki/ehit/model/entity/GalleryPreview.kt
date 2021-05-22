@@ -3,9 +3,13 @@ package com.mitsuki.ehit.model.entity
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.Matcher
 import com.mitsuki.ehit.model.ehparser.htmlEscape
+import com.mitsuki.ehit.model.entity.db.GalleryPreviewCache
 import java.util.regex.Pattern
 
 data class GalleryPreview(val imageUrl: String, val reloadKey: String, val downloadUrl: String) {
+
+    constructor(cache: GalleryPreviewCache)
+            : this(cache.imageUrl, cache.reloadKey, cache.downloadUrl)
 
     companion object {
         fun parse(content: String?): GalleryPreview {

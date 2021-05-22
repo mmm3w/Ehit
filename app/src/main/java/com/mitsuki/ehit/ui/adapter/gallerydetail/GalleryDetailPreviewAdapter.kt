@@ -14,13 +14,14 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.getInteger
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
+import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.ui.widget.PreviewTransformation
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 05
 class GalleryDetailPreviewAdapter :
-    PagingDataAdapter<ImageSource, GalleryDetailPreviewAdapter.ViewHolder>(ImageSource.DIFF_CALLBACK) {
+    PagingDataAdapter<ImageSource, GalleryDetailPreviewAdapter.ViewHolder>(Diff.IMAGE_SOURCE) {
 
     private val mSubject: PublishSubject<ImageSource> by lazy { PublishSubject.create() }
 

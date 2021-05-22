@@ -2,17 +2,19 @@ package com.mitsuki.ehit.model.repository
 
 import androidx.paging.PagingData
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.PageIn
+import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
+import com.mitsuki.ehit.model.entity.ImageSource
+import com.mitsuki.ehit.model.page.GalleryDetailPageIn
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    fun galleryList(pageIn: PageIn): Flow<PagingData<Gallery>>
+    fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>>
 
     fun galleryDetail(
         gid: Long,
         token: String,
-        pageIn: PageIn,
+        pageIn: GalleryDetailPageIn,
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>>
 

@@ -3,9 +3,9 @@ package com.mitsuki.ehit.model.entity.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mitsuki.ehit.const.DBKey
+import com.mitsuki.ehit.const.DBValue
 
-@Entity(tableName = DBKey.TABLE_QUICK_SEARCH)
+@Entity(tableName = DBValue.TABLE_QUICK_SEARCH)
 data class QuickSearch(
     @PrimaryKey
     @ColumnInfo(name = "text") val text: String,

@@ -54,13 +54,13 @@ class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
             holder.detailTags?.apply {
                 removeAllViews()
                 createItemView(R.layout.item_gallery_detail_tag_title).run {
-                    (this as TextView).text = setName
+                    (this as TextView).text = groupName
                     addView(this)
                 }
                 for (tag in tags) {
                     createItemView(R.layout.item_gallery_detail_tag_item).run {
                         (this as TextView).text = tag
-                        setOnClickListener { mSubject.onNext("$setName:$tag") }
+                        setOnClickListener { mSubject.onNext("$groupName:$tag") }
                         addView(this)
                     }
                 }

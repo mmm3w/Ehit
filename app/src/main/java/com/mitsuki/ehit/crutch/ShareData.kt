@@ -28,7 +28,6 @@ object ShareData {
         edit { remove(key) }
     }
 
-
     /** Tag ***************************************************************************************/
     const val SP_COOKIES = "SP_COOKIES"
     const val SP_SECURITY = "SP_SECURITY"

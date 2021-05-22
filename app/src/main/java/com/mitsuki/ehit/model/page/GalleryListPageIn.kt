@@ -1,15 +1,18 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.model.page
 
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.model.entity.SearchKey
 import java.lang.RuntimeException
 
-class PageIn {
+class GalleryListPageIn {
+    companion object{
+        const val START = 0
+    }
 
     var type: Type = Type.MAIN
 
     //0为起始第一页
-    var targetPage: Int = 0
+    var targetPage: Int = START
         set(value) {
             if (value < 1) throw  RuntimeException("Value error")
             field = value - 1

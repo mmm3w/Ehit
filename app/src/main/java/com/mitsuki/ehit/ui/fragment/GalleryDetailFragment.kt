@@ -25,7 +25,6 @@ import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.ui.activity.GalleryActivity
-import com.mitsuki.ehit.ui.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.ui.adapter.gallerydetail.*
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
@@ -54,16 +53,16 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         GalleryDetailInitialLoadStateAdapter(mPreviewAdapter)
     }
     private val mHeader: GalleryDetailHeader by lazy {
-        GalleryDetailHeader(mViewModel.detailWrap)
+        GalleryDetailHeader(mViewModel.infoWrap)
     }
     private val mOperating: GalleryDetailOperatingBlock by lazy {
-        GalleryDetailOperatingBlock(mViewModel.detailWrap)
+        GalleryDetailOperatingBlock(mViewModel.infoWrap)
     }
     private val mTag: GalleryDetailTagAdapter by lazy {
-        GalleryDetailTagAdapter(mViewModel.detailWrap)
+        GalleryDetailTagAdapter(mViewModel.infoWrap)
     }
     private val mComment: GalleryDetailCommentAdapter by lazy {
-        GalleryDetailCommentAdapter(mViewModel.detailWrap)
+        GalleryDetailCommentAdapter(mViewModel.infoWrap)
     }
     private val mConcatAdapter: ConcatAdapter by lazy {
         ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment)
@@ -174,7 +173,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                     title(res = R.string.text_rate)
                     customView(viewRes = R.layout.dialog_rating)
                     getCustomView().findViewById<RatingView>(R.id.rating_target)?.rating =
-                        mViewModel.detailWrap.partInfo.rating
+                        mViewModel.infoWrap.partInfo.rating
                     positiveButton(res = R.string.text_confirm) {
                         it.getCustomView()
                             .findViewById<RatingView>(R.id.rating_target)?.rating?.apply {
@@ -189,10 +188,10 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 //TODO 相似搜索
             }
             GalleryDetailOperatingBlock.Event.MoreInfo -> {
-                Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
-                    putExtra(DataKey.GALLERY_DETAIL, mViewModel.detailWrap.sourceDetail)
-                    startActivity(this)
-                }
+//                Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
+//
+//                    startActivity(this)
+//                }
             }
         }
     }
@@ -205,7 +204,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private fun onPreviewClick(item: ImageSource) {
         startActivity(Intent(requireActivity(), GalleryActivity::class.java).apply {
             putExtra(DataKey.GALLERY_INDEX, item.index)
-            putExtra(DataKey.GALLERY_PAGE, mViewModel.detailWrap.partInfo.page)
+            putExtra(DataKey.GALLERY_PAGE, mViewModel.infoWrap.partInfo.page)
             putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
             putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
         })

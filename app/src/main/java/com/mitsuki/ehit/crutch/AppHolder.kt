@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.annotation.StringRes
 
 object AppHolder {
-
     private lateinit var mApplication: Application
 
     fun hold(application: Application) {

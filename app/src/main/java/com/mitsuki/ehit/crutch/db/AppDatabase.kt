@@ -8,10 +8,13 @@ import com.mitsuki.ehit.model.entity.db.*
 
 @Database(
     entities = [
-        SearchHistory::class,
-        QuickSearch::class,
+        GalleryCommentCache::class,
+        GalleryImageSourceCache::class,
         GalleryInfoCache::class,
-        GalleryTagCache::class
+        GalleryPreviewCache::class,
+        GalleryTagCache::class,
+        QuickSearch::class,
+        SearchHistory::class
     ], version = 1
 )
 abstract class AppDatabase : RoomDatabase() {

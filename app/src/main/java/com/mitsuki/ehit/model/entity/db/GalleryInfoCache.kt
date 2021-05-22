@@ -2,11 +2,11 @@ package com.mitsuki.ehit.model.entity.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import com.mitsuki.ehit.const.DBKey
+import com.mitsuki.ehit.const.DBValue
 
 
 @Entity(
-    tableName = DBKey.TABLE_GALLERY_INFO,
+    tableName = DBValue.TABLE_GALLERY_INFO,
     primaryKeys = ["gid", "token"]
 )
 data class GalleryInfoCache(
@@ -33,6 +33,7 @@ data class GalleryInfoCache(
     @ColumnInfo(name = "rating") val rating: Float,
     @ColumnInfo(name = "favorite_name") val favoriteName: String? = null,
     @ColumnInfo(name = "preview_pages") val previewPages: Int,
+    @ColumnInfo(name = "has_more_comment") val hasMoreComment: Boolean,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 ) {
     override fun equals(other: Any?): Boolean {

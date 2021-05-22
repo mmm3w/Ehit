@@ -24,6 +24,7 @@ class EhApplication : Application() {
         //TODO：注意缓存的配置
 
         AppHolder.hold(this)
+        RoomData.init(this)
         ShareData.init(this)
 
         HttpRookie.configOkHttp = {
@@ -39,7 +40,7 @@ class EhApplication : Application() {
             writeTimeout(1, TimeUnit.MINUTES)
         }
 
-        RoomData.init(this)
+
         CoilProvider.init(this)
         Url.initDomain(this)
 

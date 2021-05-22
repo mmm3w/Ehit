@@ -3,9 +3,9 @@ package com.mitsuki.ehit.model.entity.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mitsuki.ehit.const.DBKey
+import com.mitsuki.ehit.const.DBValue
 
-@Entity(tableName = DBKey.TABLE_SEARCH_HISTORY)
+@Entity(tableName = DBValue.TABLE_SEARCH_HISTORY)
 data class SearchHistory(
     @PrimaryKey
     @ColumnInfo(name = "text") val text: String,

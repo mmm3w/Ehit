@@ -14,11 +14,10 @@ import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.PageIn
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.entity.obtainHeader
+import com.mitsuki.ehit.model.page.GalleryDetailPageIn
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -31,21 +30,21 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
     val event get() = eventSubject.hideWithMainThread()
 
     lateinit var baseInfo: Gallery
-    private val mDetailPageIn = PageIn()
-    val detailWrap = GalleryDetailWrap()
+    private val mDetailPageIn = GalleryDetailPageIn()
+    val infoWrap = GalleryDetailWrap()
 
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
         baseInfo =
             bundle.getParcelable(DataKey.GALLERY_INFO) ?: throw IllegalStateException()
-        detailWrap.headInfo = baseInfo.obtainHeader()
+        infoWrap.headInfo = baseInfo.obtainHeader()
     }
 
     val itemTransitionName: String
         get() = baseInfo.itemTransitionName
 
     val galleryDetail: LiveData<PagingData<ImageSource>>
-        get() = repository.galleryDetail(baseInfo.gid, baseInfo.token, mDetailPageIn, detailWrap)
+        get() = repository.galleryDetail(baseInfo.gid, baseInfo.token, mDetailPageIn, infoWrap)
             .cachedIn(viewModelScope)
             .asLiveData()
 
@@ -55,17 +54,17 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
 
     fun submitRating(rating: Float) {
         viewModelScope.launch {
-            when (val result = repository.rating(detailWrap.sourceDetail, rating)) {
+            when (val result = repository.rating(infoWrap.sourceDetail, rating)) {
                 is RequestResult.SuccessResult -> {
                     var handle = false
 
-                    if (detailWrap.partInfo.rating != result.data.avg.toFloat()) {
-                        detailWrap.partInfo.rating = result.data.avg.toFloat()
+                    if (infoWrap.partInfo.rating != result.data.avg.toFloat()) {
+                        infoWrap.partInfo.rating = result.data.avg.toFloat()
                         handle = true
                     }
 
-                    if (detailWrap.partInfo.ratingCount != result.data.count) {
-                        detailWrap.partInfo.ratingCount = result.data.count
+                    if (infoWrap.partInfo.ratingCount != result.data.count) {
+                        infoWrap.partInfo.ratingCount = result.data.count
                         handle = true
                     }
 

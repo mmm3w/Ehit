@@ -17,5 +17,5 @@ abstract class RemoteRepositoryModule {
     @RemoteRepository
     @Singleton
     @Binds
-    abstract fun getRepository(impl: RemoteRepositoryImpl): Repository
+    abstract fun getRepository(impl: RepositoryImpl): Repository
 }

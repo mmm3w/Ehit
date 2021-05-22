@@ -21,7 +21,7 @@ object RoomData {
     val searchDao: SearchDao
         get() = db.searchDao()
 
-    val gallery: GalleryDao
+    val galleryDao: GalleryDao
         get() = db.galleryDao()
 
 }

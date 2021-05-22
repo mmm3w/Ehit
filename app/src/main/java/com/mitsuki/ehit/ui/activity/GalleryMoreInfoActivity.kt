@@ -19,17 +19,16 @@ class GalleryMoreInfoActivity : BaseActivity() {
         setContentView(R.layout.activity_more_info)
         whiteStyle()
 
-        val info = intent?.getParcelableExtra<GalleryDetail>(DataKey.GALLERY_DETAIL)
-            ?: throw IllegalStateException()
 
-        val infoAdapter = MoreInfoAdapter(info)
-
-        top_bar_back?.setOnClickListener { onBackPressed() }
-        more_info_value?.text = getText(R.string.text_more_information)
-
-        more_info_target?.apply {
-            layoutManager = LinearLayoutManager(this@GalleryMoreInfoActivity)
-            adapter = infoAdapter
-        }
+//
+//        val infoAdapter = MoreInfoAdapter(info)
+//
+//        top_bar_back?.setOnClickListener { onBackPressed() }
+//        more_info_value?.text = getText(R.string.text_more_information)
+//
+//        more_info_target?.apply {
+//            layoutManager = LinearLayoutManager(this@GalleryMoreInfoActivity)
+//            adapter = infoAdapter
+//        }
     }
 }

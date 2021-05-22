@@ -13,4 +13,6 @@ data class PageInfo<D>(
             return PageInfo(arrayListOf(), 0, 0, 0, null, null)
         }
     }
+
+    val isEmpty get() = data.isEmpty()
 }

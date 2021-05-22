@@ -2,7 +2,7 @@ package com.mitsuki.ehit.model.entity
 
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
-import com.mitsuki.ehit.crutch.extend.Log
+import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
 import kotlinx.android.parcel.IgnoredOnParcel
@@ -25,15 +25,16 @@ data class Gallery(
     val categoryColor: Int = Category.getColor(category)
 ) : Parcelable {
 
+    @IgnoredOnParcel
     val language: String
-    val languageSimple: String
-
-    init {
-        with(tag.isNotEmpty() && tag[0].contains("language")) {
-            language = if (this) tag[0] else ""
-            languageSimple = Language.getLangSimple(language)
+        get() = (tag.isNotEmpty() && tag[0].contains("language")).run {
+            if (this) tag[0] else ""
         }
-    }
+
+    @IgnoredOnParcel
+    val languageSimple: String
+        get() = Language.getLangSimple(language)
+
 
     @IgnoredOnParcel
     val itemTransitionName = "gallery:$gid$token"
@@ -130,4 +131,7 @@ data class Gallery(
 
         private fun String.prefix(): String = "Parse gallery item: not found $this"
     }
+
+
+    fun obtainHeader() = GalleryDetailWrap.DetailHeader(thumb, title, uploader, category)
 }

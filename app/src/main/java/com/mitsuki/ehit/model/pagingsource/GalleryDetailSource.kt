@@ -1,30 +1,36 @@
 package com.mitsuki.ehit.model.pagingsource
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
+import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.crutch.MemoryCache
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.const.RequestKey
-import com.mitsuki.ehit.crutch.PageIn
+import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.convert.GalleryDetailConvert
+import com.mitsuki.ehit.model.convert.ImageSourceConvert
 import com.mitsuki.ehit.model.entity.*
+import com.mitsuki.ehit.model.entity.ImageSource
+import com.mitsuki.ehit.model.page.GalleryDetailPageIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GalleryDetailSource(
     private val mGid: Long,
     private val mToken: String,
-    private val mPageIn: PageIn,
+    private val mPageIn: GalleryDetailPageIn,
     private val mDetailSource: GalleryDetailWrap
 ) : PagingSource<Int, ImageSource>() {
 
     private val mConvert by lazy { GalleryDetailConvert() }
+    private val mJustImageConvert by lazy { ImageSourceConvert() }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageSource> {
-        val page = params.key ?: 0
+        val page = params.key ?: GalleryDetailPageIn.START
 
         return try {
             // 如果成功加载，那么返回一个LoadResult.Page,如果失败就返回一个Error
@@ -32,55 +38,115 @@ class GalleryDetailSource(
             // 需要注意的是，如果是第一页，prevKey就传null，如果是最后一页那么nextKey也传null
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.IO) {
-                var data = MemoryCache.getGalleryDetail(mGid, page)?.apply {
-                    if (page == 0) {
-                        mDetailSource.partInfo = obtainOperating()
-                        mDetailSource.comment = obtainComments()
-                        mDetailSource.commentState = obtainCommentState()
-                        mDetailSource.tags = tagSet
-                        mDetailSource.sourceDetail = this
-                    }
-                }
-                if (data == null) {
-                    val remoteData: Response<GalleryDetail> =
-                        HttpRookie
-                            .get<GalleryDetail>(Url.galleryDetail(mGid, mToken)) {
-                                convert = mConvert
-                                urlParams(RequestKey.PAGE_DETAIL to page.toString())
-                            }
-                            .execute()
-
-                    when (remoteData) {
-                        is Response.Success<GalleryDetail> -> {
-                            data = remoteData.requireBody().apply {
-                                mDetailSource.partInfo = obtainOperating()
-                                mDetailSource.comment = obtainComments()
-                                mDetailSource.commentState = obtainCommentState()
-                                mDetailSource.tags = tagSet
-                                mDetailSource.sourceDetail = this
-
-
-                                if (images.data.isNotEmpty()) {
-                                    MemoryCache.detailPageSize =
-                                        if (page == 0) images.data.size else images.data[0].index / images.index
-                                }
-                                MemoryCache.cacheImageToken(mGid, images.data)
-                                MemoryCache.cacheGalleryDetail(mGid, page, this)
-                            }
+                if (page == GalleryDetailPageIn.START) {
+                    var reObtain = false
+                    val cacheData = RoomData.galleryDao.queryGalleryDetail(mGid, mToken)
+                    if (cacheData == null) {
+                        reObtain = true
+                    } else {
+                        cacheData.apply {
+                            mDetailSource.partInfo = obtainOperating()
+                            mDetailSource.comment = obtainComments()
+                            mDetailSource.commentState = obtainCommentState()
+                            mDetailSource.tags = tagGroup
+                            mDetailSource.sourceDetail = this
                         }
-                        is Response.Fail<*> -> throw remoteData.throwable
                     }
-                }
 
-                LoadResult.Page(
-                    data = data.images.data,
-                    prevKey = data.images.prevKey,
-                    nextKey = data.images.nextKey
-                )
+                    var images = RoomData.galleryDao.queryGalleryImageSource(mGid, mToken, page)
+                    if (images.isEmpty) reObtain = true
+
+                    if (reObtain) {
+                        val remoteData: Response<Pair<GalleryDetail, PageInfo<ImageSource>>> =
+                            HttpRookie
+                                .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
+                                    Url.galleryDetail(
+                                        mGid,
+                                        mToken
+                                    )
+                                ) {
+                                    convert = mConvert
+                                    urlParams(RequestKey.PAGE_DETAIL to page.toString())
+                                }
+                                .execute()
+
+                        when (remoteData) {
+                            is Response.Success<Pair<GalleryDetail, PageInfo<ImageSource>>> -> {
+                                remoteData.requireBody().also { result ->
+                                    result.first.apply {
+                                        mDetailSource.partInfo = obtainOperating()
+                                        mDetailSource.comment = obtainComments()
+                                        mDetailSource.commentState = obtainCommentState()
+                                        mDetailSource.tags = tagGroup
+                                        mDetailSource.sourceDetail = this
+                                    }
+                                    images = result.second
+
+                                    RoomData.galleryDao.insertGalleryDetail(result.first)
+                                    RoomData.galleryDao
+                                        .insertGalleryImageSource(mGid, mToken, result.second)
+                                }
+
+                                if (!images.isEmpty) {
+                                    MemoryCache.detailPageSize =
+                                        if (page == GalleryDetailPageIn.START) images.data.size else images.data[0].index / images.index
+                                }
+                            }
+                            is Response.Fail<*> -> throw remoteData.throwable
+                        }
+                    }
+                    LoadResult.Page(
+                        data = images.data,
+                        prevKey = images.prevKey,
+                        nextKey = images.nextKey
+                    )
+                } else {
+                    //只解析图片
+
+                    var images = RoomData.galleryDao.queryGalleryImageSource(mGid, mToken, page)
+                    if (images.isEmpty) {
+                        val remoteData: Response<PageInfo<ImageSource>> =
+                            HttpRookie
+                                .get<PageInfo<ImageSource>>(
+                                    Url.galleryDetail(
+                                        mGid,
+                                        mToken
+                                    )
+                                ) {
+                                    convert = mJustImageConvert
+                                    urlParams(RequestKey.PAGE_DETAIL to page.toString())
+                                }
+                                .execute()
+
+                        when (remoteData) {
+                            is Response.Success<PageInfo<ImageSource>> -> {
+                                remoteData.requireBody().also { result ->
+                                    images = result
+                                    RoomData.galleryDao
+                                        .insertGalleryImageSource(mGid, mToken, result)
+                                }
+                                if (!images.isEmpty) {
+                                    MemoryCache.detailPageSize =
+                                        if (page == GalleryDetailPageIn.START) images.data.size else images.data[0].index / images.index
+                                }
+                            }
+                            is Response.Fail<*> -> throw remoteData.throwable
+                        }
+                    }
+                    LoadResult.Page(
+                        data = images.data,
+                        prevKey = images.prevKey,
+                        nextKey = images.nextKey
+                    )
+                }
             }
         } catch (inner: Throwable) {
             // 捕获异常，返回一个Error
             LoadResult.Error(inner)
         }
     }
+
+    override val jumpingSupported: Boolean = true
+
+    override fun getRefreshKey(state: PagingState<Int, ImageSource>): Int = mPageIn.targetPage
 }

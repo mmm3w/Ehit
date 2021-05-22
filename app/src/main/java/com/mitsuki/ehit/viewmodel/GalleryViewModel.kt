@@ -34,7 +34,7 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
         if (bundle == null) throw IllegalStateException()
         index = bundle.getInt(DataKey.GALLERY_INDEX, 0)
         mId = bundle.getLong(DataKey.GALLERY_ID, -1)
-        bundle.getString(DataKey.IMAGE_TOKEN)?.apply { mPToken = this }
+        mPToken = bundle.getString(DataKey.IMAGE_TOKEN) ?: ""
         galleryToken =
             bundle.getString(DataKey.GALLERY_TOKEN) ?: throw IllegalStateException()
     }
@@ -66,7 +66,7 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
         }
     }
 
-    fun changeLoadingState(isVisible:Boolean){
+    fun changeLoadingState(isVisible: Boolean) {
         mState.postNext { it.copy(loading = isVisible) }
     }
 
