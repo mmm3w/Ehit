@@ -3,8 +3,13 @@ package com.mitsuki.ehit.crutch
 import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.res.TypedArray
 import android.widget.Toast
+import androidx.annotation.AttrRes
+import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
+import androidx.annotation.StyleableRes
+import com.mitsuki.ehit.R
 
 object AppHolder {
     private lateinit var mApplication: Application

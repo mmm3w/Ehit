@@ -9,7 +9,7 @@
     <string name="label_search_fragment" translatable="false">SearchFragment</string>
     <string name="label_main_fragment" translatable="false">MainFragment</string>
 
-    <string name="transition_name_gallery_list_toolbar" translatable="false">GalleryListToolbar</string>
+    <string name="transition_name_gallery_list_toolbar" translatable="false">GalleryListToolbarTransition</string>
 
     <string name="hint_ipb_member_id" translatable="false">ipb_member_id</string>
     <string name="hint_ipb_pass_hash" translatable="false">ipb_pass_hash</string>

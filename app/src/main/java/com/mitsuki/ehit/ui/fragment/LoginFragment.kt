@@ -11,10 +11,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.FragmentLoginBinding
 import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_login.*
 
 /**
  * 登录
@@ -42,8 +43,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         )
     }
 
+    private val binding by viewBinding(FragmentLoginBinding::bind)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        login_ui?.apply {
+        binding?.loginUi?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
         }

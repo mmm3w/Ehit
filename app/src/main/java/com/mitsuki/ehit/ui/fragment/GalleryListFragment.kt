@@ -1,10 +1,15 @@
 package com.mitsuki.ehit.ui.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.FrameLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
@@ -15,19 +20,24 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionInflater
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.mitsuki.armory.extend.dp2px
+import com.mitsuki.armory.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.ListFloatHeader
+import com.mitsuki.ehit.crutch.ListScrollTrigger
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
+import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.ui.activity.SearchActivity
 import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
-import com.mitsuki.ehit.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_gallery_list.*
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -35,9 +45,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
     private val mViewModel: GalleryListViewModel
             by createViewModelLazy(GalleryListViewModel::class, { viewModelStore })
-
-    private val mMainViewModel: MainViewModel
-            by createViewModelLazy(MainViewModel::class, { requireActivity().viewModelStore })
 
     private val mAdapter by lazy { GalleryAdapter() }
     private val mInitAdapter by lazy { GalleryListLoadStateAdapter(mAdapter) }
@@ -53,6 +60,21 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         ConcatAdapter(header, mInitAdapter, mAdapter, footer)
     }
 
+    private val binding by viewBinding(FragmentGalleryListBinding::bind)
+
+    private val searchActivityLaunch: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            //结果处理
+            if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+
+            it.data?.getParcelableExtra<SearchKey>(DataKey.GALLERY_SEARCH_KEY)?.apply {
+                mViewModel.galleryListPage(1)
+                mViewModel.galleryListCondition(this)
+                mAdapter.refresh()
+                if (showContent.isNotEmpty()) binding?.topBar?.topSearchText?.text = showContent
+            }
+        }
+
 
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +85,11 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
                 if (mInitAdapter.isOver) {
-                    gallery_list_refresh?.isRefreshing = it.refresh is LoadState.Loading
+                    binding?.galleryListRefresh?.isRefreshing = it.refresh is LoadState.Loading
                 } else {
                     mInitAdapter.loadState = it.refresh
                 }
-                gallery_list_refresh?.isEnabled = it.prepend.endOfPaginationReached
+                binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
             }
         }
 
@@ -78,63 +100,57 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        (mMainViewModel.removeSearchKey(hashCode())?.apply {
-            mViewModel.galleryListPage(1)
-            mViewModel.galleryListCondition(this)
-            mAdapter.refresh()
-        } ?: mViewModel.searchKey)?.apply {
-            gallery_list?.topBar {
-                if (showContent.isNotEmpty())
-                    findViewById<TextView>(R.id.top_search_text).text = showContent
+        mViewModel.searchKey?.apply {
+            if (showContent.isNotEmpty())
+                binding?.topBar?.topSearchText?.text = showContent
+        }
+
+        binding?.galleryList?.apply {
+            setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mConcatAdapter
+            addOnScrollListener(ListScrollTrigger(this) {
+                if (it) binding?.galleryMotionLayout?.transitionToStart()
+                else binding?.galleryMotionLayout?.transitionToEnd()
+            })
+
+            binding?.topBar?.topSearchLayout?.apply {
+                addOnScrollListener(ListFloatHeader(this))
             }
         }
 
-
-        gallery_list?.apply {
-            //配置recycleView
-            recyclerView {
-                layoutManager = LinearLayoutManager(activity)
-                adapter = mConcatAdapter
+        binding?.topBar?.topSearchLayout?.apply {
+            layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
+                setMargins(
+                    leftMargin,
+                    topMargin + requireActivity().statusBarHeight(),
+                    rightMargin,
+                    bottomMargin
+                )
             }
 
-            topBar {
-                setOnClickListener {
-                    Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-                        .navigate(
-                            R.id.action_gallery_list_fragment_to_search_fragment,
-                            bundleOf(
-                                DataKey.GALLERY_FRAGMENT_CODE to this@GalleryListFragment.hashCode(),
-                                DataKey.GALLERY_SEARCH_KEY to mViewModel.searchKey
-                            ),
-                            null,
-                            null
-                        )
+            setOnClickListener {
+                requireActivity().apply {
+                    val name = AppHolder.string(R.string.transition_name_gallery_list_toolbar)
+                    val options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(this, it, name)
+                    searchActivityLaunch.launch(Intent(this, SearchActivity::class.java).apply {
+                        putExtra(DataKey.GALLERY_SEARCH_KEY, mViewModel.searchKey)
+                    }, options)
                 }
             }
-
-            setListener(
-                extendControl = {
-                    if (it) gallery_motion_layout?.transitionToStart()
-                    else gallery_motion_layout?.transitionToEnd()
-                }
-            )
         }
 
-        gallery_go_top?.setOnClickListener {
-            gallery_list?.recyclerView()?.smoothScrollToPosition(0)
+        binding?.galleryGoTop?.setOnClickListener {
+            binding?.galleryList?.smoothScrollToPosition(0)
         }
 
-        gallery_page_jump?.setOnClickListener { showPageJumpDialog() }
+        binding?.galleryPageJump?.setOnClickListener { showPageJumpDialog() }
 
-        gallery_list_refresh?.apply {
-            setProgressViewOffset(true, dp2px(36f), dp2px(120f))
+        binding?.galleryListRefresh?.apply {
+            setProgressViewOffset(false, dp2px(8f).toInt(), dp2px(120f).toInt())
             setOnRefreshListener { mAdapter.refresh() }
         }
-    }
-
-    override fun onDestroy() {
-        mMainViewModel.removeSearchKey(hashCode())
-        super.onDestroy()
     }
 
     private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {
@@ -161,5 +177,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             lifecycleOwner(this@GalleryListFragment)
         }
     }
+
 
 }

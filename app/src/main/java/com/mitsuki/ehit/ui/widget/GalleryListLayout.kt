@@ -38,7 +38,7 @@ class GalleryListLayout @JvmOverloads constructor(
         addView(mRecyclerView)
 
         mFloatBarPlugin =
-            FloatBarPlugin(context, R.layout.part_top_search_bar, this).apply { addView(view()) }
+            FloatBarPlugin(context, R.layout.top_bar_main_search, this).apply { addView(view()) }
 
         mRecyclerView.addOnScrollListener(mFloatBarPlugin)
         mRecyclerView.addOnScrollListenerBy(
@@ -77,17 +77,6 @@ class GalleryListLayout @JvmOverloads constructor(
             super.writeToParcel(out, flags)
             out?.writeFloat(topBarOffset)
         }
-
-        val CREATOR: Parcelable.Creator<SavedState> =
-            object : Parcelable.Creator<SavedState> {
-                override fun createFromParcel(source: Parcel?): SavedState {
-                    return SavedState(source)
-                }
-
-                override fun newArray(size: Int): Array<SavedState?> {
-                    return arrayOfNulls(size)
-                }
-            }
     }
 
     override fun onSaveInstanceState(): Parcelable {

@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.mitsuki.ehit.R
-import kotlinx.android.synthetic.main.fragment_security.*
 
 /**
  * 图案指纹锁定
@@ -13,8 +12,8 @@ import kotlinx.android.synthetic.main.fragment_security.*
  */
 class SecurityFragment : Fragment(R.layout.fragment_security) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        test_btn.setOnClickListener {
-            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment).navigateUp()
-        }
+//        test_btn.setOnClickListener {
+//            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment).navigateUp()
+//        }
     }
 }

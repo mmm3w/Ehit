@@ -7,9 +7,10 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.WindowController
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.ui.adapter.GalleryFragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_gallery.*
 
 @AndroidEntryPoint
 class GalleryActivity : BaseActivity() {
@@ -24,6 +25,8 @@ class GalleryActivity : BaseActivity() {
     private var isReverse = true
 
     private val controller by lazy { WindowController(this) }
+
+    private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,12 +43,12 @@ class GalleryActivity : BaseActivity() {
         updateIndex(mIndex)
 
         mViewPagerAdapter = GalleryFragmentAdapter(this, isReverse, mId, mToken, mPage)
-        gallery_view_pager?.apply {
+        binding.galleryViewPager.apply {
             adapter = mViewPagerAdapter
             setCurrentItem(if (isReverse) mPage - mIndex - 1 else mIndex, false)
             offscreenPageLimit = 2
         }
-        gallery_view_pager?.registerOnPageChangeCallback(object :
+        binding.galleryViewPager?.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 updateIndex(if (isReverse) mPage - position - 1 else position)
@@ -54,7 +57,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     private fun updateIndex(index: Int) {
-        gallery_index?.text =
+        binding.galleryIndex.text =
             String.format(AppHolder.string(R.string.page_separate), index + 1, mPage)
     }
 }

@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 

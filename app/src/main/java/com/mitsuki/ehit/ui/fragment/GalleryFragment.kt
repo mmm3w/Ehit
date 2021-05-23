@@ -15,12 +15,13 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extend.getInteger
 import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.widget.OriginalTransformation
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import com.mitsuki.loadprogress.Progress
 import com.mitsuki.loadprogress.ProgressProvider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_gallery.*
 
 @AndroidEntryPoint
 class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
@@ -28,7 +29,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     private val mViewModel: GalleryViewModel
             by createViewModelLazy(GalleryViewModel::class, { viewModelStore })
 
-    private lateinit var mImageGesture: ImageGesture
+    private var mImageGesture: ImageGesture? = null
+
+    private val binding by viewBinding(FragmentGalleryBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +39,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mImageGesture = ImageGesture(gallery_image).apply { startType = StartType.TOP }
-        gallery_index?.text = (mViewModel.index + 1).toString()
+        mImageGesture =
+            binding?.galleryImage?.run { ImageGesture(this).apply { startType = StartType.TOP } }
+        binding?.galleryIndex?.text = (mViewModel.index + 1).toString()
 
         mViewModel.data.observe(viewLifecycleOwner, Observer(this::onLoadImage))
         mViewModel.state.observe(viewLifecycleOwner, Observer(this::onViewState))
@@ -47,13 +51,18 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         mViewModel.obtainData()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mImageGesture = null
+    }
+
     private fun onViewState(state: GalleryViewModel.ViewState) {
-        gallery_loading?.isVisible = state.loading
-        gallery_error_message?.text = state.error ?: ""
+        binding?.galleryLoading?.isVisible = state.loading
+        binding?.galleryErrorMessage?.text = state.error ?: ""
     }
 
     private fun onLoadImage(url: String) {
-        gallery_image.load(url) {
+        binding?.galleryImage?.load(url) {
             crossfade(getInteger(R.integer.image_load_cross_fade))
             size(OriginalSize)
             transformations(OriginalTransformation())
@@ -65,19 +74,19 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onLoadError(throwable: Throwable) {
-        gallery_progress?.isVisible = false
-        gallery_error_message?.text = throwable.message
+        binding?.galleryProgress?.isVisible = false
+        binding?.galleryErrorMessage?.text = throwable.message
     }
 
     private fun onLoadSuccess() {
-        gallery_progress?.isVisible = false
+        binding?.galleryProgress?.isVisible = false
     }
 
     private fun onLoadProgress(progress: Progress?) {
         mViewModel.changeLoadingState(false)
-        gallery_progress?.isVisible = true
+        binding?.galleryProgress?.isVisible = true
         progress?.apply {
-            gallery_progress.progress =
+            binding?.galleryProgress?.progress =
                 (currentBytes.toDouble() / contentLength.toDouble() * 100).toInt()
         }
     }

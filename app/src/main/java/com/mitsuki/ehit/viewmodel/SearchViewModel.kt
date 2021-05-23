@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.viewmodel
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
@@ -19,13 +20,10 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
 
     @Suppress("PrivatePropertyName")
     private val HISTORY_COUNT = 3
-    var code: Int = -1
     var tempKey:SearchKey? = null
 
-    fun initData(bundle: Bundle?) {
-        if (bundle == null) throw RuntimeException("no data")
-        code = bundle.getInt(DataKey.GALLERY_FRAGMENT_CODE)
-        tempKey = bundle.getParcelable(DataKey.GALLERY_SEARCH_KEY)
+    fun initData(intent: Intent?) {
+        tempKey = intent?.getParcelableExtra(DataKey.GALLERY_SEARCH_KEY)
     }
 
     suspend fun searchHistory(): Flow<List<SearchHistory>> =
@@ -35,8 +33,7 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
         withContext(Dispatchers.IO) { RoomData.searchDao.queryQuick() }
 
     suspend fun saveSearch(text: String) = withContext(Dispatchers.IO) {
-        if (text.isNotEmpty())
-            RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
+        if (text.isNotEmpty()) RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
     }
 
 

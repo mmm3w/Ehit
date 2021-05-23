@@ -1,10 +1,12 @@
 package com.mitsuki.ehit.ui.fragment
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
@@ -18,13 +20,18 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.mitsuki.armory.extend.dp2px
+import com.mitsuki.armory.extend.statusBarHeight
 import com.mitsuki.armory.extend.toast
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.ui.activity.GalleryActivity
 import com.mitsuki.ehit.ui.activity.GalleryCommentActivity
@@ -33,8 +40,6 @@ import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.ui.adapter.gallerydetail.*
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_gallery_detail.*
-import kotlinx.android.synthetic.main.top_bar_detail_ver.*
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -72,22 +77,22 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment)
     }
 
+    private val binding by viewBinding(FragmentGalleryDetailBinding::bind)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.initData(arguments)
-
         sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
-            scrimColor = 0x22000000
+            startContainerColor = Color.WHITE
+            endContainerColor = Color.WHITE
         }
 
+        mViewModel.initData(arguments)
         lifecycleScope.launchWhenCreated {
             mPreviewAdapter.loadStateFlow.collectLatest { loadStates ->
                 mInitialLoadState.loadState = loadStates.refresh
                 mOperating.loadState = loadStates.refresh
                 mTag.loadState = loadStates.refresh
                 mComment.loadState = loadStates.refresh
-
-                gallery_detail?.endOfPrepend = loadStates.prepend.endOfPaginationReached
             }
         }
 
@@ -110,14 +115,30 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        ViewCompat.setTransitionName(gallery_detail_card, mViewModel.itemTransitionName)
+        ViewCompat.setTransitionName(view, mViewModel.itemTransitionName)
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
+        binding?.topBar?.topTitleLayout?.apply {
+            layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
+                setMargins(
+                    leftMargin,
+                    topMargin + requireActivity().statusBarHeight(),
+                    rightMargin,
+                    bottomMargin
+                )
+            }
+        }
 
-        top_title_back?.setOnClickListener { requireActivity().onBackPressed() }
+        binding?.topBar?.topTitleBack?.setOnClickListener { requireActivity().onBackPressed() }
 
-        gallery_detail?.apply {
+        binding?.galleryDetail?.apply {
             infoList {
+                setPadding(
+                    0,
+                    requireActivity().statusBarHeight() + dp2px(56f).toInt(),
+                    0,
+                    0
+                )
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = mConcatAdapter
             }
@@ -127,27 +148,13 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 adapter = mConcatPreviewAdapter
             }
 
-            setListener(
-                pageJumpListener = { showPageJumpDialog() }
-            )
+            bindbarMove {
+                binding?.topBar?.topTitleLayout?.translationY =
+                    it.coerceIn(-(dp2px(56f) + requireActivity().statusBarHeight()), 0f)
+            }
         }
 
         mViewModel.event.observe(viewLifecycleOwner, this::onViewEvent)
-    }
-
-    //TODO 右上角扩展菜单
-
-    private fun showPageJumpDialog() {
-        MaterialDialog(requireContext()).show {
-            input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
-                //配置页码，刷新数据
-                mViewModel.galleryDetailPage(text.toString().toIntOrNull() ?: 0)
-                mPreviewAdapter.refresh()
-            }
-            title(R.string.title_page_go_to)
-            positiveButton(R.string.text_confirm)
-            lifecycleOwner(this@GalleryDetailFragment)
-        }
     }
 
     private fun onViewEvent(event: GalleryDetailViewModel.Event) {
@@ -172,9 +179,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
     private fun onOperatingEvent(event: GalleryDetailOperatingBlock.Event) {
         when (event) {
-            GalleryDetailOperatingBlock.Event.Read -> {
-                //TODO 阅读
-            }
+            GalleryDetailOperatingBlock.Event.Read -> goPreview(0)
             GalleryDetailOperatingBlock.Event.Download -> {
                 //TODO 下载
             }
@@ -213,12 +218,17 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     }
 
     private fun onPreviewClick(item: ImageSource) {
+        goPreview(item.index)
+    }
+
+    private fun goPreview(index: Int) {
         startActivity(Intent(requireActivity(), GalleryActivity::class.java).apply {
-            putExtra(DataKey.GALLERY_INDEX, item.index)
+            putExtra(DataKey.GALLERY_INDEX, index)
             putExtra(DataKey.GALLERY_PAGE, mViewModel.infoWrap.partInfo.page)
             putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
             putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
         })
     }
+
 
 }

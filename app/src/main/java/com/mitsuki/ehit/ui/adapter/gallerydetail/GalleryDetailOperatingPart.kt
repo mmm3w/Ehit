@@ -36,7 +36,7 @@ class GalleryDetailOperatingPart(
             state: RecyclerView.State
         ) {
             if (parent.getChildAdapterPosition(view) != itemCount - 1)
-                outRect.set(0, 0, dp2px(1f), 0)
+                outRect.set(0, 0, dp2px(1f).toInt(), 0)
         }
 
         override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -46,9 +46,9 @@ class GalleryDetailOperatingPart(
                     c.drawRect(
                         Rect(
                             left,
-                            center - dp2px(16f),
-                            left + dp2px(1f),
-                            center + dp2px(16f)
+                            center - dp2px(16f).toInt(),
+                            left + dp2px(1f).toInt(),
+                            center + dp2px(16f).toInt()
                         ), paint
                     )
                 }
@@ -85,7 +85,7 @@ class GalleryDetailOperatingPart(
                             (data?.rating ?: 0f).run { if (this < 0) 0f else this })
                         textSize = 18f
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        setPadding(0, 0, dp2px(4f), 0)
+                        setPadding(0, 0, dp2px(4f).toInt(), 0)
                     })
                     addView(ImageView(context).apply { setImageResource(R.drawable.ic_baseline_star_20) })
                 }

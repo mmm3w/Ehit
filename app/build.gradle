@@ -3,7 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -59,7 +59,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding false
+        viewBinding true
     }
 }
 
@@ -84,6 +84,7 @@ dependencies {
     implementation deps.swiperefreshlayout
     implementation deps.preference
     implementation deps.recyclerview
+    implementation deps.activity
 
     //----------------------------------------------------------------------------------------------
     //paging3
@@ -124,11 +125,7 @@ dependencies {
     implementation deps.reactivex.rxandroid
 
 
-    implementation 'com.github.MitsukiNIBAN:Armory:0.2.1'
-}
-
-androidExtensions {
-    experimental = true
+    implementation 'com.github.MitsukiNIBAN:Armory:0.2.3'
 }
 
 repositories {

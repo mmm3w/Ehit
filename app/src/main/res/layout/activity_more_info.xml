@@ -3,13 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/top_bar_normal_ver" />
+    <include
+        android:id="@+id/top_bar"
+        layout="@layout/top_bar_normal_ver" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/more_info_target"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="56dp"
         android:overScrollMode="never" />
 
 </FrameLayout>

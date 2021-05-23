@@ -21,13 +21,17 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.mitsuki.ehit.ui.activity.SearchActivity" />
+
+        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryMoreInfoActivity" />
+
         <activity android:name="com.mitsuki.ehit.ui.activity.GalleryActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryInfoActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.activity.SettingActivity" />
+
 
         <activity android:name="com.mitsuki.ehit.ui.activity.GalleryCommentActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.SettingActivity" />
 
         <activity android:name="com.mitsuki.ehit.ui.activity.FavouriteActivity" />
 
@@ -35,7 +39,7 @@
 
         <activity android:name="com.mitsuki.ehit.ui.activity.DownloadActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryMoreInfoActivity" />
+
 
     </application>
 

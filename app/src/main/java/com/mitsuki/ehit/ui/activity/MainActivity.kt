@@ -2,56 +2,77 @@ package com.mitsuki.ehit.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Window
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.ShareData
-import com.mitsuki.ehit.crutch.extend.whiteStyle
-import com.mitsuki.ehit.ui.fragment.GalleryListFragment
+import com.mitsuki.ehit.crutch.WindowController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
-    //may be crash, not sure
-    private val navController: NavController by lazy { findNavController(R.id.main_nav_fragment) }
+    //在使用FragmentContainerView作为容器的情况下需要以下面的形式来获取NavController实例
+    private val navController: NavController by lazy {
+        (supportFragmentManager.findFragmentById(R.id.main_nav_fragment) as NavHostFragment).navController
+    }
+
+    private val controller by lazy { WindowController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = true
+        window.sharedElementReturnTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        whiteStyle()
+        controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
 
-        main_navigation.setupWithNavController(navController)
-        main_navigation.apply { post { setCheckedItem(R.id.nav_home) } }
-        main_navigation.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_home -> {
+        //通过ViewBinding构建的NavigationView可能无法让navigation组件正常工作
+        findViewById<NavigationView>(R.id.main_navigation).apply {
+            setupWithNavController(navController)
+            post { setCheckedItem(R.id.nav_home) }
+            setNavigationItemSelectedListener {
+                when (it.itemId) {
+                    R.id.nav_home -> {
+                    }
+                    R.id.nav_subscription -> {
+                    }
+                    R.id.nav_popular -> {
+                    }
+                    R.id.nav_favourite -> startActivity(
+                        Intent(this@MainActivity, FavouriteActivity::class.java)
+                    )
+                    R.id.nav_history -> startActivity(
+                        Intent(this@MainActivity, HistoryActivity::class.java)
+                    )
+                    R.id.nav_download -> startActivity(
+                        Intent(this@MainActivity, DownloadActivity::class.java)
+                    )
+                    R.id.nav_setting -> startActivity(
+                        Intent(this@MainActivity, SettingActivity::class.java)
+                    )
                 }
-                R.id.nav_subscription -> {
-                }
-                R.id.nav_popular -> {
-                }
-                R.id.nav_favourite -> startActivity(Intent(this, FavouriteActivity::class.java))
-                R.id.nav_history -> startActivity(Intent(this, HistoryActivity::class.java))
-                R.id.nav_download -> startActivity(Intent(this, DownloadActivity::class.java))
-                R.id.nav_setting -> startActivity(Intent(this, SettingActivity::class.java))
+                true
             }
-            true
         }
 
         when {
-            ShareData.spFirstOpen -> Navigation.findNavController(this, R.id.main_nav_fragment)
-                .navigate(R.id.action_main_fragment_to_disclaimer_fragment)
-            ShareData.spSecurity -> Navigation.findNavController(this, R.id.main_nav_fragment)
-                .navigate(R.id.action_main_fragment_to_security_fragment)
-            else -> Navigation.findNavController(this, R.id.main_nav_fragment)
-                .navigate(R.id.action_main_fragment_to_gallery_list_fragment)
+            ShareData.spFirstOpen -> navController.setGraph(R.navigation.navigation_main_with_first_open)
+            ShareData.spSecurity -> navController.setGraph(R.navigation.navigation_main_with_authority)
+            else -> navController.setGraph(R.navigation.navigation_main_normal)
         }
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()
+
 }

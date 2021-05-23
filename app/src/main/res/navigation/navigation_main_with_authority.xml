@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/security_fragment">
+
+    <fragment
+        android:id="@+id/gallery_list_fragment"
+        android:name="com.mitsuki.ehit.ui.fragment.GalleryListFragment"
+        android:label="@string/label_gallery_list_fragment">
+        <action
+            android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"
+            app:destination="@id/gallery_detail_fragment" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/gallery_detail_fragment"
+        android:name="com.mitsuki.ehit.ui.fragment.GalleryDetailFragment"
+        android:label="@string/label_gallery_detail_fragment">
+        <action
+            android:id="@+id/action_gallery_detail_fragment_to_gallery_list_fragment"
+            app:destination="@id/gallery_list_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/security_fragment"
+        android:name="com.mitsuki.ehit.ui.fragment.SecurityFragment"
+        android:label="@string/label_security_fragment">
+        <action
+            android:id="@+id/action_security_fragment_to_gallery_list_fragment"
+            app:destination="@id/gallery_list_fragment" />
+    </fragment>
+
+
+</navigation>

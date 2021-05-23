@@ -15,9 +15,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr), NestedScrollingParent2 {
 
-    private val mTitleBar =
-        LayoutInflater.from(context).inflate(R.layout.top_bar_detail_ver, this, false)
-
     private val mInfoView: RecyclerView = RecyclerView(context).apply {
         id = R.id.gallery_detail_inner_info
         overScrollMode = RecyclerView.OVER_SCROLL_NEVER
@@ -34,14 +31,16 @@ class GalleryDetailLayout @JvmOverloads constructor(
     private var mCurrentOffset = 0f
 
     private var mExtraScrolled = 0f
-    private var mTitleOffsetRange = 0
+//    private var mTitleOffsetRange = 0
 
     private var mTopToPreview = 0f
+
+    private var mBarMoveEvent: ((Float) -> Unit)? = null
+
 
     init {
         addView(mInfoView)
         addView(mPreviewView)
-        addView(mTitleBar)
 
         mInfoView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -52,15 +51,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
-        mTitleBar.measure(
-            widthMeasureSpec,
-            MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
-        )
-
-        mTitleOffsetRange = mTitleBar.measuredHeight
-
-        mInfoView.setPadding(0, mTitleBar.measuredHeight, 0, 0)
         mInfoView.measure(
             widthMeasureSpec,
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST)
@@ -83,8 +73,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        mTitleBar.apply { layout(0, 0, measuredWidth, measuredHeight) }
-
         mInfoView.apply { layout(0, 0, measuredWidth, measuredHeight) }
 
         mPreviewView.apply {
@@ -129,7 +117,7 @@ class GalleryDetailLayout @JvmOverloads constructor(
         }
 
         if (dy < 0) {
-            if (!mPreviewView.canScrollVertically(-1) && endOfPrepend) {
+            if (!mPreviewView.canScrollVertically(-1)) {
                 if (mCurrentOffset - dy > 0) {
                     consumed[1] = (mCurrentOffset).toInt()
                     if (mInfoView.canScrollVertically(-1)) {
@@ -164,25 +152,13 @@ class GalleryDetailLayout @JvmOverloads constructor(
 
     /**********************************************************************************************/
     private fun moveTitle() {
+        mBarMoveEvent?.invoke(mExtraScrolled + mCurrentOffset)
 
-        if (mCurrentOffset + mTopToPreview == 0f) {
-            //显示按钮
-        } else {
-            //隐藏按钮
-        }
-
-        mTitleBar.translationY =
-            (mExtraScrolled + mCurrentOffset).coerceIn((-mTitleOffsetRange).toFloat(), 0f)
-    }
-
-    private fun autoAlign() {
-
+//        mTitleBar.translationY =
+//            (mExtraScrolled + mCurrentOffset).coerceIn((-mTitleOffsetRange).toFloat(), 0f)
     }
 
     /**********************************************************************************************/
-
-    var endOfPrepend: Boolean = true
-
     fun infoList(action: (RecyclerView.() -> Unit)? = null): RecyclerView {
         return action?.run { mInfoView.apply(this) } ?: mInfoView
     }
@@ -191,13 +167,17 @@ class GalleryDetailLayout @JvmOverloads constructor(
         return action?.run { mPreviewView.apply(this) } ?: mPreviewView
     }
 
-    fun setListener(pageJumpListener: (() -> Unit)? = null) {
-        pageJumpListener?.apply {
-            mTitleBar.findViewById<ImageView>(R.id.top_title_page_jump)?.setOnClickListener {
-                //通过动画对其title和preview
-                autoAlign()
-                this()
-            }
-        }
+    fun bindbarMove(action: ((Float) -> Unit)? = null) {
+        mBarMoveEvent = action
     }
+
+//    fun setListener(pageJumpListener: (() -> Unit)? = null) {
+//        pageJumpListener?.apply {
+//            mTitleBar.findViewById<ImageView>(R.id.top_title_page_jump)?.setOnClickListener {
+//                //通过动画对其title和preview
+//                autoAlign()
+//                this()
+//            }
+//        }
+//    }
 }

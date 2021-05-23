@@ -1,20 +1,33 @@
 package com.mitsuki.ehit.ui.activity
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
-import com.mitsuki.ehit.crutch.extend.whiteStyle
+import com.mitsuki.ehit.crutch.WindowController
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.ActivitySettingBinding
 import com.mitsuki.ehit.ui.fragment.setting.SettingRootFragment
-import kotlinx.android.synthetic.main.activity_setting.*
 
 class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+
+    private val binding by viewBinding(ActivitySettingBinding::inflate)
+
+    private val controller by lazy { WindowController(this) }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
-        whiteStyle()
-        setSupportActionBar(appBar)
+        controller.window(
+            navigationBarLight = true, statusBarLight = true,
+            navigationBarColor = Color.WHITE,
+            statusBarColor = Color.WHITE
+        )
+
+        setSupportActionBar(binding.appBar)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings_container, SettingRootFragment())

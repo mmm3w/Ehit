@@ -64,7 +64,7 @@ class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
                         addView(this)
                     }
                 }
-                setPadding(0, 0, 0, if (position == (mData.tags.size - 1)) dp2px(16f) else 0)
+                setPadding(0, 0, 0, if (position == (mData.tags.size - 1)) dp2px(16f).toInt() else 0)
             }
         }
     }

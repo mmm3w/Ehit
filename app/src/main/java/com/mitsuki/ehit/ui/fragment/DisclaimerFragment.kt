@@ -7,15 +7,17 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.FragmentDisclaimerBinding
 import com.mitsuki.ehit.ui.adapter.DisclaimerAdapter
-import kotlinx.android.synthetic.main.fragment_disclaimer.*
 
 class DisclaimerFragment : Fragment(R.layout.fragment_disclaimer) {
 
     private val mAdapter by lazy { DisclaimerAdapter() }
+    private val binding by viewBinding(FragmentDisclaimerBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        disclaimer_ui?.apply {
+        binding?.disclaimerUi?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
         }
