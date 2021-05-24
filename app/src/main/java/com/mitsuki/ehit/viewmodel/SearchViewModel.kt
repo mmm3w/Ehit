@@ -36,5 +36,14 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
         if (text.isNotEmpty()) RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
     }
 
+    suspend fun delSearch(text: String) = withContext(Dispatchers.IO) {
+        if (text.isNotEmpty()) RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
+    }
+
+
+    suspend fun saveQuick(text: String) = withContext(Dispatchers.IO) {
+        if (text.isNotEmpty()) RoomData.searchDao.insertQuick(QuickSearch(text, System.currentTimeMillis()))
+    }
+
 
 }

@@ -46,7 +46,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         mViewModel.data.observe(viewLifecycleOwner, Observer(this::onLoadImage))
         mViewModel.state.observe(viewLifecycleOwner, Observer(this::onViewState))
         ProgressProvider.event(mViewModel.tag)
-            .observe(this, this@GalleryFragment::onLoadProgress)
+            .observe(viewLifecycleOwner, this@GalleryFragment::onLoadProgress)
 
         mViewModel.obtainData()
     }
@@ -74,6 +74,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onLoadError(throwable: Throwable) {
+
+
+
         binding?.galleryProgress?.isVisible = false
         binding?.galleryErrorMessage?.text = throwable.message
     }

@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.dao
 
+import androidx.paging.PagingData
 import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.QuickSearch

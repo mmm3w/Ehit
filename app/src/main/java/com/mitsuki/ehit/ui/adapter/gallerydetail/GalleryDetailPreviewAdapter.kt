@@ -52,7 +52,6 @@ class GalleryDetailPreviewAdapter :
                             PreviewTransformation(this@apply, it.left, it.top, it.right, it.bottom)
                         )
                     }
-                    allowHardware(false)
                 }
             }
         }

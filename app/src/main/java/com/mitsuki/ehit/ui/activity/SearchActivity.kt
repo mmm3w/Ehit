@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -24,10 +25,12 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.WindowController
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ActivitySearchBinding
 import com.mitsuki.ehit.model.ehparser.GalleryRating
 import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -95,7 +98,7 @@ class SearchActivity : BaseActivity() {
 
         mViewModel.initData(intent)
 
-        mHistoryAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
+        mHistoryAdapter.itemEvent.observe(this, this::onItemEvent)
         mShortcutAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
         mAdvancedAdapter.ratingEvent.observe(this, Observer(this::onRatingEvent))
 
@@ -129,10 +132,19 @@ class SearchActivity : BaseActivity() {
         mAdvancedSwitch.switchEvent.observe(
             this, Observer { mAdvancedAdapter.isVisible = it })
 
-        lifecycle.coroutineScope.launch {
+        lifecycleScope.launchWhenCreated {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }
             mViewModel.quickSearch().collect { mShortcutAdapter.submitData(it) }
         }
+    }
+
+    private fun onItemEvent(event: SearchWordEvent) {
+        lifecycleScope.launch {
+            when (event) {
+                is SearchWordEvent.Select -> onSearchEvent(event.data.text)
+            }
+        }
+
     }
 
 
@@ -185,4 +197,10 @@ class SearchActivity : BaseActivity() {
         finish()
     }
 
+}
+
+sealed class SearchWordEvent(val data: SearchHistory) {
+    class Select(data: SearchHistory) : SearchWordEvent(data)
+    class Mark(data: SearchHistory) : SearchWordEvent(data)
+    class Delete(data: SearchHistory, val type: Int) : SearchWordEvent(data)
 }

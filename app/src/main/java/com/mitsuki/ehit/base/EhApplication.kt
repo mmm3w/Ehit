@@ -4,7 +4,7 @@ import android.app.Application
 import coil.util.CoilUtils
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.CoilProvider
+import com.mitsuki.ehit.coil.CoilProvider
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
@@ -35,9 +35,9 @@ class EhApplication : Application() {
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             addInterceptor(ProgressProvider.imageLoadInterceptor)
 
-            connectTimeout(1, TimeUnit.MINUTES)
-            readTimeout(1, TimeUnit.MINUTES)
-            writeTimeout(1, TimeUnit.MINUTES)
+            connectTimeout(5, TimeUnit.MINUTES)
+            readTimeout(5, TimeUnit.MINUTES)
+            writeTimeout(5, TimeUnit.MINUTES)
         }
 
 

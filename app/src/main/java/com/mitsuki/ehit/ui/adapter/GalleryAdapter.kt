@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.ui.adapter
 
 import android.graphics.Outline
+import android.media.Image
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
@@ -12,19 +13,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.memory.MemoryCache
+import coil.metadata
 import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.view
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.ui.widget.CategoryView
+import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.*
 
 class GalleryAdapter :
     PagingDataAdapter<Gallery, GalleryAdapter.ViewHolder>(Gallery.DIFF_CALLBACK) {
 
-    val currentItem: MutableLiveData<GalleryClick> = MutableLiveData()
+    private val mSubject = PublishSubject.create<GalleryClick>()
+
+    val clickEvent get() = mSubject.hideWithMainThread()
 
     private val mGalleryThumbViewOutlineProvider = object : ViewOutlineProvider() {
         override fun getOutline(view: View, outline: Outline) {
@@ -33,13 +40,12 @@ class GalleryAdapter :
     }
 
     private val mItemClick = { view: View ->
-        val holder = view.tag as ViewHolder
-        getItem(holder.bindingAdapterPosition).diffuse {
-            currentItem.postValue(
-                currentItem.value?.copy(target = view, data = this)
-                    ?: GalleryClick(target = view, data = this)
-            )
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        val imageView = view.findViewById<ImageView>(R.id.gallery_thumb)
+        getItem(position)?.apply {
+            mSubject.onNext(GalleryClick(view, imageView.metadata?.memoryCacheKey, this))
         }
+        Unit
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -75,7 +81,7 @@ class GalleryAdapter :
 
         fun bind(data: Gallery) {
             with(data) {
-                mGalleryThumb?.load(thumb) { crossfade(300) }
+                mGalleryThumb?.load(thumb)
                 mGalleryTitle?.text = title
                 mGalleryUploader?.text = uploader
                 mGalleryLanguage?.text = languageSimple
@@ -86,14 +92,12 @@ class GalleryAdapter :
                 mGalleryTime?.text = time
                 mGalleryRating?.rating = rating
                 ViewCompat.setTransitionName(itemView, itemTransitionName)
+                mGalleryThumb?.metadata?.memoryCacheKey
             }
         }
 
     }
 
-    private fun Gallery?.diffuse(action: Gallery.() -> Unit) {
-        this?.apply(action)
-    }
 
-    data class GalleryClick(val target: View, val data: Gallery)
+    data class GalleryClick(val target: View, val cacheKey: MemoryCache.Key?, val data: Gallery)
 }

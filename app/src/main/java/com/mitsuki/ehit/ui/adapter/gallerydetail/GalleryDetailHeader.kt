@@ -26,17 +26,20 @@ class GalleryDetailHeader(private var mData: GalleryDetailWrap) : SingleItemAdap
     override val onViewHolderCreate: ViewHolder.() -> Unit = {
         mThumb = view(R.id.gallery_detail_thumb)
         mTitle = view(R.id.gallery_detail_title)
-        mUploader = view<TextView>(R.id.gallery_detail_uploader)?.apply{
+        mUploader = view<TextView>(R.id.gallery_detail_uploader)?.apply {
             setOnClickListener { mSubject.onNext(Event.Uploader) }
         }
-        mCategory = view<CategoryView>(R.id.gallery_detail_category)?.apply{
+        mCategory = view<CategoryView>(R.id.gallery_detail_category)?.apply {
             setOnClickListener { mSubject.onNext(Event.Category) }
         }
     }
 
     override val onViewHolderBind: ViewHolder.() -> Unit = {
         with(mData.headInfo) {
-            mThumb?.load(thumb) { allowHardware(false) }
+            mThumb?.load(thumb) {
+                allowHardware(false)
+                placeholderMemoryCacheKey(cacheKey)
+            }
             mTitle?.text = title
             mUploader?.text = uploader
             mCategory?.text = category
@@ -46,7 +49,7 @@ class GalleryDetailHeader(private var mData: GalleryDetailWrap) : SingleItemAdap
 
 
     sealed class Event {
-        object Uploader:Event()
-        object Category :Event()
+        object Uploader : Event()
+        object Category : Event()
     }
 }

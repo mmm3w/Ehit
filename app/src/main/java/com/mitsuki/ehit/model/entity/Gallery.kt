@@ -2,6 +2,7 @@ package com.mitsuki.ehit.model.entity
 
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
+import coil.memory.MemoryCache
 import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
@@ -133,5 +134,6 @@ data class Gallery(
     }
 
 
-    fun obtainHeader() = GalleryDetailWrap.DetailHeader(thumb, title, uploader, category)
+    fun obtainHeader(key: MemoryCache.Key?) =
+        GalleryDetailWrap.DetailHeader(thumb, title, uploader, category, key)
 }

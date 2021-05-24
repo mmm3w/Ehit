@@ -31,6 +31,7 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.ListFloatHeader
 import com.mitsuki.ehit.crutch.ListScrollTrigger
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.entity.SearchKey
@@ -80,7 +81,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mAdapter.currentItem.observe(this, Observer(this::toDetail))
+        mAdapter.clickEvent.observe(this, this::toDetail)
 
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
@@ -158,7 +159,10 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(
                     R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
-                    bundleOf(DataKey.GALLERY_INFO to data),
+                    bundleOf(
+                        DataKey.GALLERY_INFO to data,
+                        DataKey.IMAGE_CACHE_KEY to cacheKey
+                    ),
                     null,
                     FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
                 )

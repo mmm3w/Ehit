@@ -8,6 +8,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import coil.memory.MemoryCache
 import com.mitsuki.armory.adapter.NotifyItem
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.AppHolder
@@ -37,7 +38,8 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
         if (bundle == null) throw IllegalStateException()
         baseInfo =
             bundle.getParcelable(DataKey.GALLERY_INFO) ?: throw IllegalStateException()
-        infoWrap.headInfo = baseInfo.obtainHeader()
+        val cacheKey = bundle.getParcelable<MemoryCache.Key>(DataKey.IMAGE_CACHE_KEY)
+        infoWrap.headInfo = baseInfo.obtainHeader(cacheKey)
     }
 
     val itemTransitionName: String
@@ -47,10 +49,6 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
         get() = repository.galleryDetail(baseInfo.gid, baseInfo.token, mDetailPageIn, infoWrap)
             .cachedIn(viewModelScope)
             .asLiveData()
-
-    fun galleryDetailPage(page: Int) {
-        mDetailPageIn.targetPage = page
-    }
 
     fun submitRating(rating: Float) {
         viewModelScope.launch {

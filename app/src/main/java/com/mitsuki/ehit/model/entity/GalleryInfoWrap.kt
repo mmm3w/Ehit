@@ -1,5 +1,7 @@
 package com.mitsuki.ehit.model.entity
 
+import coil.memory.MemoryCache
+
 class GalleryDetailWrap {
     lateinit var headInfo: DetailHeader
     lateinit var partInfo: DetailPart
@@ -16,7 +18,8 @@ class GalleryDetailWrap {
         val thumb: String,
         val title: String,
         val uploader: String,
-        val category: String
+        val category: String,
+        val cacheKey: MemoryCache.Key?
     ) {
         val categoryColor: Int = com.mitsuki.ehit.model.ehparser.Category.getColor(category)
     }

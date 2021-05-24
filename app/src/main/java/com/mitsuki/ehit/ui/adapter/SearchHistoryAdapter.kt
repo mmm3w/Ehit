@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.adapter
 
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.calculateDiff
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.SearchHistory
+import com.mitsuki.ehit.ui.activity.SearchWordEvent
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,20 +37,32 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
 
     private val mData: MutableList<SearchHistory> = arrayListOf()
 
-    private val currentItem: MutableLiveData<String> = MutableLiveData()
+    private val mEventSubject = PublishSubject.create<SearchWordEvent>()
 
     private val mItemClick = { view: View ->
-        val holder = view.tag as ViewHolder
-        currentItem.postValue(mData[holder.bindingAdapterPosition].text)
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        when (view.id) {
+            R.id.search_item_delete -> mEventSubject.onNext(SearchWordEvent.Delete(mData[position], 0))
+            else -> mEventSubject.onNext(SearchWordEvent.Select(mData[position]))
+        }
     }
 
-    val itemClickEvent: LiveData<String>
-        get() = currentItem
+    private val mItemLongClick = { view: View ->
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        mEventSubject.onNext(SearchWordEvent.Mark(mData[position]))
+        true
+    }
+
+    val itemEvent: Observable<SearchWordEvent>
+        get() = mEventSubject.hideWithMainThread()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent).apply {
             itemView.tag = this
             itemView.setOnClickListener(mItemClick)
+            itemView.setOnLongClickListener(mItemLongClick)
+            mSearchDelete?.tag = this
+            mSearchDelete?.setOnClickListener(mItemClick)
         }
     }
 
@@ -77,13 +94,11 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
 
         private val mSearchIcon = view<ImageView>(R.id.search_item_icon)
         private val mSearchText = view<TextView>(R.id.search_item_text)
-
+        val mSearchDelete = view<ImageView>(R.id.search_item_delete)
 
         fun bind(index: Int, item: SearchHistory) {
             mSearchIcon?.setImageResource(R.drawable.ic_round_history_24)
             mSearchText?.text = item.text
         }
     }
-
-
 }
