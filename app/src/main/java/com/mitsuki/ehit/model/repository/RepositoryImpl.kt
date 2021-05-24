@@ -16,6 +16,7 @@ import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamValue
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.Log
+import com.mitsuki.ehit.crutch.VolatileCache
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.convert.GalleryPreviewConvert
@@ -64,7 +65,7 @@ class RepositoryImpl @Inject constructor() : Repository {
     override suspend fun galleryPreview(
         gid: Long,
         token: String,
-        pToken:String,
+        pToken: String,
         index: Int
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
@@ -108,16 +109,20 @@ class RepositoryImpl @Inject constructor() : Repository {
             val cache =
                 RoomData.galleryDao.querySingleGalleryImageCache(gid, token, index)
             if (cache == null || cache.pToken.isEmpty()) {
+                val webIndex =
+                    if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
+
                 val remoteData = HttpRookie
                     .get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
                         convert = ImageSourceConvert()
-                        if (index != 0) urlParams(RequestKey.PAGE_DETAIL to index.toString())
+                        urlParams(RequestKey.PAGE_DETAIL to webIndex.toString())
                     }
                     .execute()
                 try {
                     when (remoteData) {
                         is Response.Success<PageInfo<ImageSource>> -> {
                             remoteData.requireBody().also {
+                                VolatileCache.galleryPageSize = it.data.size
                                 RoomData.galleryDao.insertGalleryImageSource(gid, token, it)
                             }
 

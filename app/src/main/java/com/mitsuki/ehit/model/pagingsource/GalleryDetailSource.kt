@@ -7,6 +7,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.const.RequestKey
+import com.mitsuki.ehit.crutch.VolatileCache
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.convert.GalleryDetailConvert
 import com.mitsuki.ehit.model.convert.ImageSourceConvert
@@ -88,6 +89,7 @@ class GalleryDetailSource(
                             is Response.Fail<*> -> throw remoteData.throwable
                         }
                     }
+                    VolatileCache.galleryPageSize = images.data.size
                     LoadResult.Page(
                         data = images.data,
                         prevKey = images.prevKey,
@@ -122,6 +124,7 @@ class GalleryDetailSource(
                             is Response.Fail<*> -> throw remoteData.throwable
                         }
                     }
+                    VolatileCache.galleryPageSize = images.data.size
                     LoadResult.Page(
                         data = images.data,
                         prevKey = images.prevKey,

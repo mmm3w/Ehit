@@ -63,7 +63,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
     private fun onLoadImage(url: String) {
         binding?.galleryImage?.load(url) {
-            crossfade(getInteger(R.integer.image_load_cross_fade))
             size(OriginalSize)
             transformations(OriginalTransformation())
             listener(
@@ -74,9 +73,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onLoadError(throwable: Throwable) {
-
-
-
         binding?.galleryProgress?.isVisible = false
         binding?.galleryErrorMessage?.text = throwable.message
     }
