@@ -155,15 +155,13 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         }
 
         mViewModel.event.observe(viewLifecycleOwner, this::onViewEvent)
+        mViewModel.toastData.observe(viewLifecycleOwner, {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
+        })
     }
 
     private fun onViewEvent(event: GalleryDetailViewModel.Event) {
         event.rateNotifyItem?.dispatch(mOperating)
-
-        event.message?.apply {
-            Snackbar.make(requireView(), this, Snackbar.LENGTH_SHORT)
-                .show()
-        }
     }
 
     private fun onHeaderEvent(event: GalleryDetailHeader.Event) {

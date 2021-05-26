@@ -15,6 +15,7 @@ import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -33,6 +34,10 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
     lateinit var baseInfo: Gallery
     private val mDetailPageIn = GalleryDetailPageIn()
     val infoWrap = GalleryDetailWrap()
+
+
+    val toastData: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+
 
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
@@ -66,20 +71,19 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
                         handle = true
                     }
 
-                    postEvent(
-                        message = AppHolder.string(R.string.hint_rate_successfully),
-                        notifyItem = if (handle) NotifyItem.UpdateData(0) else null
-                    )
+                    toastData.postValue(AppHolder.string(R.string.hint_rate_successfully))
+
+                    postEvent(if (handle) NotifyItem.UpdateData(0) else null)
                 }
-                is RequestResult.FailResult -> postEvent(message = result.throwable.message)
+                is RequestResult.FailResult -> toastData.postValue(result.throwable.message)
             }
         }
     }
 
 
-    data class Event(val message: String?, val rateNotifyItem: NotifyItem?)
+    data class Event(val rateNotifyItem: NotifyItem?)
 
-    private fun postEvent(message: String? = null, notifyItem: NotifyItem? = null) {
-        eventSubject.onNext(Event(message, notifyItem))
+    private fun postEvent(notifyItem: NotifyItem? = null) {
+        eventSubject.onNext(Event(notifyItem))
     }
 }

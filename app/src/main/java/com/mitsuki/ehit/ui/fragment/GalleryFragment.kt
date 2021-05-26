@@ -49,6 +49,10 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             .observe(viewLifecycleOwner, this@GalleryFragment::onLoadProgress)
 
         mViewModel.obtainData()
+
+        binding?.galleryHotspot?.setOnLongClickListener {
+            false
+        }
     }
 
     override fun onDestroyView() {

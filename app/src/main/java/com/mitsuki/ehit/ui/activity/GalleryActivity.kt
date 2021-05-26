@@ -28,7 +28,6 @@ class GalleryActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
@@ -46,18 +45,41 @@ class GalleryActivity : BaseActivity() {
         binding.galleryViewPager.apply {
             adapter = mViewPagerAdapter
             setCurrentItem(if (isReverse) mPage - mIndex - 1 else mIndex, false)
-            offscreenPageLimit = 2
+            offscreenPageLimit = 4
+            registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    updateIndex(if (isReverse) mPage - position - 1 else position)
+                }
+            })
         }
-        binding.galleryViewPager?.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                updateIndex(if (isReverse) mPage - position - 1 else position)
-            }
-        })
     }
 
     private fun updateIndex(index: Int) {
         binding.galleryIndex.text =
             String.format(AppHolder.string(R.string.page_separate), index + 1, mPage)
     }
+
+    fun nextPage() {
+        val current = binding.galleryViewPager.currentItem
+        val targetPage = if (isReverse) current - 1 else current + 1
+
+        if ((isReverse && targetPage < 0) || (!isReverse && targetPage >= mPage)) {
+            //最后一页了
+            return
+        }
+        binding.galleryViewPager.currentItem = targetPage
+    }
+
+    fun previousPage() {
+        val current = binding.galleryViewPager.currentItem
+        val targetPage = if (isReverse) current + 1 else current - 1
+
+        if ((isReverse && targetPage >= mPage) || (!isReverse && targetPage < 0)) {
+            //第一页了
+            return
+        }
+        binding.galleryViewPager.currentItem = targetPage
+    }
+
 }
