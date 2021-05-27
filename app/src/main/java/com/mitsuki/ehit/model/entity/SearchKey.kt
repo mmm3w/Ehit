@@ -6,7 +6,9 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.crutch.Key
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.model.ehparser.Category
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
+//import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SearchKey(
@@ -62,42 +64,42 @@ data class SearchKey(
         get() = (category.inv() and Category.ALL_CATEGORY).toString()
 
     fun addParams(source: UrlParams) {
-        source.urlParams(RequestKey.SEARCH_KEY_WORD to key)
-        source.urlParams(RequestKey.SEARCH_KEY_CATEGORY to categoryForSearch)
+        source.urlParams(RequestKey.SEARCH_KEY_WORD, key)
+        source.urlParams(RequestKey.SEARCH_KEY_CATEGORY, categoryForSearch)
         if (isAdvancedEnable) {
-            source.urlParams(RequestKey.SEARCH_KEY_ADVSEARCH to "1")
+            source.urlParams(RequestKey.SEARCH_KEY_ADVSEARCH, "1")
             if (isSearchGalleryName)
-                source.urlParams(RequestKey.SEARCH_KEY_GALLERY_NAME to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_GALLERY_NAME, "on")
             if (isSearchGalleryTags)
-                source.urlParams(RequestKey.SEARCH_KEY_TAGS to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_TAGS, "on")
             if (isSearchGalleryDescription)
-                source.urlParams(RequestKey.SEARCH_KEY_DESCRIPTION to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_DESCRIPTION, "on")
             if (isSearchTorrentFilenames)
-                source.urlParams(RequestKey.SEARCH_KEY_TORRENT_FILE_NAMES to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_TORRENT_FILE_NAMES, "on")
             if (isOnlyShowGalleriesWithTorrents)
-                source.urlParams(RequestKey.SEARCH_KEY_ONLY_TORRENTS to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_ONLY_TORRENTS, "on")
             if (isSearchLowPowerTags)
-                source.urlParams(RequestKey.SEARCH_KEY_LOW_POWER_TAGS to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_LOW_POWER_TAGS, "on")
             if (isSearchDownvotedTags)
-                source.urlParams(RequestKey.SEARCH_KEY_DOWNVOTED_TAGS to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_DOWNVOTED_TAGS, "on")
             if (isShowExpungedGalleries)
-                source.urlParams(RequestKey.SEARCH_KEY_SHOW_EXPUNGED to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_SHOW_EXPUNGED, "on")
             if (isDisableLanguageFilter)
-                source.urlParams(RequestKey.SEARCH_KEY_DISABLE_LANGUAGE to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_DISABLE_LANGUAGE, "on")
             if (isDisableUploaderFilter)
-                source.urlParams(RequestKey.SEARCH_KEY_DISABLE_UPLOADER to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_DISABLE_UPLOADER, "on")
             if (isDisableTagsFilter)
-                source.urlParams(RequestKey.SEARCH_KEY_DISABLE_TAGS to "on")
+                source.urlParams(RequestKey.SEARCH_KEY_DISABLE_TAGS, "on")
 
             minimumRating?.apply {
-                source.urlParams(RequestKey.SEARCH_KEY_MINIMUM_RATING to "on")
-                source.urlParams(RequestKey.SEARCH_KEY_RATING to toString())
+                source.urlParams(RequestKey.SEARCH_KEY_MINIMUM_RATING, "on")
+                source.urlParams(RequestKey.SEARCH_KEY_RATING, toString())
             }
 
             betweenPages?.apply {
-                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES to "on")
-                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_START to first.toString())
-                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_END to second.toString())
+                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES, "on")
+                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_START, first.toString())
+                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_END, second.toString())
             }
         }
     }

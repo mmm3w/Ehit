@@ -65,7 +65,7 @@ class GalleryDetailSource(
                                     )
                                 ) {
                                     convert = mConvert
-                                    urlParams(RequestKey.PAGE_DETAIL to page.toString())
+                                    urlParams(RequestKey.PAGE_DETAIL, page.toString())
                                 }
                                 .execute()
 
@@ -74,7 +74,7 @@ class GalleryDetailSource(
                                 remoteData.requireBody().also { result ->
                                     result.first.apply {
                                         mDetailSource.partInfo = obtainOperating()
-                                        mDetailSource.comment = obtainComments()
+                                       mDetailSource.comment = obtainComments()
                                         mDetailSource.commentState = obtainCommentState()
                                         mDetailSource.tags = tagGroup
                                         mDetailSource.sourceDetail = this
@@ -109,7 +109,7 @@ class GalleryDetailSource(
                                     )
                                 ) {
                                     convert = mJustImageConvert
-                                    urlParams(RequestKey.PAGE_DETAIL to page.toString())
+                                    urlParams(RequestKey.PAGE_DETAIL, page.toString())
                                 }
                                 .execute()
 

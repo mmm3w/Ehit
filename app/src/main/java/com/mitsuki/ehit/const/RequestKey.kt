@@ -17,6 +17,14 @@ object RequestKey {
     const val REFERER = "referer"
     const val PRIVACY = "Privacy"
     const val SUBMIT = "submit"
+    const val GID = "gid"
+    const val T = "t"
+    const val ACT = "act"
+
+    const val FAVORITE_KEY_CAT = "favcat"
+    const val FAVORITE_KEY_NOTE = "favnote"
+    const val FAVORITE_KEY_APPLY = "apply"
+    const val FAVORITE_KEY_UPDATE = "update"
 
     const val SEARCH_KEY_WORD = "f_search"
     const val SEARCH_KEY_CATEGORY = "f_cats"

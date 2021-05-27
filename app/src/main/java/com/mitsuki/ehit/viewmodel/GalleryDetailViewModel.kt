@@ -16,8 +16,12 @@ import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.db.RoomData
+import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
+import com.mitsuki.ehit.model.entity.HeaderInfo
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryDetailPageIn
 import com.mitsuki.ehit.model.repository.RemoteRepository
@@ -28,23 +32,28 @@ import kotlinx.coroutines.launch
 class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
-    private val eventSubject: PublishSubject<Event> = PublishSubject.create()
-    val event get() = eventSubject.hideWithMainThread()
-
     lateinit var baseInfo: Gallery
+    private var cacheKey: MemoryCache.Key? = null
     private val mDetailPageIn = GalleryDetailPageIn()
+
     val infoWrap = GalleryDetailWrap()
 
-
     val toastData: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+    val rateNotify: SingleLiveEvent<NotifyItem> by lazy { SingleLiveEvent() }
+    val favNotify: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
 
+    val headerInfo: HeaderInfo get() = HeaderInfo(baseInfo, cacheKey)
+
+    val isFavorited: Boolean
+        get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
+    val favoriteName: String?
+        get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.favoriteName else null
 
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
-        baseInfo =
-            bundle.getParcelable(DataKey.GALLERY_INFO) ?: throw IllegalStateException()
-        val cacheKey = bundle.getParcelable<MemoryCache.Key>(DataKey.IMAGE_CACHE_KEY)
-        infoWrap.headInfo = baseInfo.obtainHeader(cacheKey)
+        baseInfo = bundle.getParcelable(DataKey.GALLERY_INFO)
+            ?: throw IllegalStateException()
+        cacheKey = bundle.getParcelable(DataKey.IMAGE_CACHE_KEY)
     }
 
     val itemTransitionName: String
@@ -71,19 +80,41 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
                         handle = true
                     }
 
-                    toastData.postValue(AppHolder.string(R.string.hint_rate_successfully))
-
-                    postEvent(if (handle) NotifyItem.UpdateData(0) else null)
+                    toastData.postValue(string(R.string.hint_rate_successfully))
+                    if (handle) rateNotify.postValue(NotifyItem.UpdateData(0))
                 }
                 is RequestResult.FailResult -> toastData.postValue(result.throwable.message)
             }
         }
     }
 
+    fun submitFavorites(cat: Int) {
+        viewModelScope.launch {
+            when (repository.favorites(baseInfo.gid, baseInfo.token, cat)) {
+                is RequestResult.SuccessResult -> {
+                    val strRes =
+                        if (cat < 0) R.string.hint_remove_favorite_success else R.string.hint_add_favorite_success
 
-    data class Event(val rateNotifyItem: NotifyItem?)
+                    val name = GalleryFavorites.findName(cat)
+                    RoomData.galleryDao.updateGalleryFavorites(baseInfo.gid, baseInfo.token, name)
+                    infoWrap.sourceDetail.favoriteName = name
 
-    private fun postEvent(notifyItem: NotifyItem? = null) {
-        eventSubject.onNext(Event(notifyItem))
+                    favNotify.postValue(name)
+                    toastData.postValue(string(strRes))
+                }
+                is RequestResult.FailResult -> toastData.postValue(
+                    string(
+                        if (cat < 0) R.string.hint_remove_favorite_failure
+                        else R.string.hint_add_favorite_failure
+                    )
+                )
+            }
+        }
+    }
+
+    fun clearCache() {
+        viewModelScope.launch {
+            RoomData.galleryDao.deleteGalleryInfo(baseInfo.gid, baseInfo.token)
+        }
     }
 }

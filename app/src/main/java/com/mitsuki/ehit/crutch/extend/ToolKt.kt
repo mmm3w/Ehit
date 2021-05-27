@@ -16,6 +16,6 @@ inline fun <reified T : Parcelable> parcelableCreatorOf(): Parcelable.Creator<T>
 
 fun String.copying2Clipboard() {
     AppHolder.clipboardManager.setPrimaryClip(
-        ClipData.newPlainText(AppHolder.string(R.string.hint_gallery_info), this)
+        ClipData.newPlainText(string(R.string.hint_gallery_info), this)
     )
 }

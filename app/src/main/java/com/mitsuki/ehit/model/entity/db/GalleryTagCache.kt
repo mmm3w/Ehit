@@ -9,7 +9,8 @@ import com.mitsuki.ehit.const.DBValue
     foreignKeys = [ForeignKey(
         entity = GalleryInfoCache::class,
         parentColumns = ["gid", "token"],
-        childColumns = ["gid", "token"]
+        childColumns = ["gid", "token"],
+        onDelete = ForeignKey.CASCADE
     )],
     indices = [
         Index(value = ["gid", "token"]),

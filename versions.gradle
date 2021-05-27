@@ -127,6 +127,7 @@ deps.room = room
 def material_dialogs = [:]
 material_dialogs.core = "com.afollestad.material-dialogs:core:$versions.material_dialogs"
 material_dialogs.input = "com.afollestad.material-dialogs:input:$versions.material_dialogs"
+material_dialogs.bottomsheets = "com.afollestad.material-dialogs:bottomsheets:$versions.material_dialogs"
 material_dialogs.lifecycle = "com.afollestad.material-dialogs:lifecycle:$versions.material_dialogs"
 deps.material_dialogs = material_dialogs
 

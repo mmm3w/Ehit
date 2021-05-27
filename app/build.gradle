@@ -109,6 +109,7 @@ dependencies {
     //----------------------------------------------------------------------------------------------
     implementation deps.material_dialogs.core
     implementation deps.material_dialogs.input
+    implementation deps.material_dialogs.bottomsheets
     implementation deps.material_dialogs.lifecycle
 
     implementation deps.jsoup
@@ -124,8 +125,12 @@ dependencies {
     implementation deps.reactivex.rxkotlin
     implementation deps.reactivex.rxandroid
 
-
-    implementation 'com.github.MitsukiNIBAN:Armory:0.2.3'
+    //----------------------------------------------------------------------------------------------
+    implementation project(':armory')
+    implementation project(':adapter')
+    implementation project(':httprookie')
+    implementation project(':imagegesture')
+    implementation project(':loadprogress')
 }
 
 repositories {

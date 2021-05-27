@@ -34,7 +34,11 @@ data class GalleryDetail(
     val favorite get() = info.favorite
     val ratingCount get() = info.ratingCount
     val rating get() = if (info.rating < 0) 0f else info.rating
-    val favoriteName get() = info.favoriteName
+    var favoriteName
+        get() = info.favoriteName
+        set(value) {
+            info.favoriteName = value
+        }
     val previewPages get() = info.previewPages
     val hasMoreComment get() = info.hasMoreComment
 

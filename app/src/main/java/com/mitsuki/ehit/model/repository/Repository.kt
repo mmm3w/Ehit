@@ -27,4 +27,6 @@ interface Repository {
     suspend fun login(account: String, password: String): RequestResult<String>
 
     suspend fun rating(detail: GalleryDetail, rating: Float): RequestResult<RateBack>
+
+    suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
 }

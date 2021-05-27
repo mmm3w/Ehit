@@ -30,7 +30,7 @@ class GalleryListSource constructor(private val pageIn: GalleryListPageIn) :
                     HttpRookie
                         .get<ArrayList<Gallery>>(pageIn.targetUrl) {
                             convert = mConvert
-                            if (page != GalleryListPageIn.START) urlParams(RequestKey.PAGE_LIST to page.toString())
+                            if (page != GalleryListPageIn.START) urlParams(RequestKey.PAGE_LIST, page.toString())
                             pageIn.searchKey?.addParams(this)
                         }
                         .execute()

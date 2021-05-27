@@ -61,7 +61,7 @@ abstract class GalleryDao {
         index: Int
     ): PageInfo<ImageSource> {
         val cacheData = queryGalleryImageCache(gid, token, index)
-        if (cacheData.isEmpty()) return PageInfo.emtpy()
+        if (cacheData.isNullOrEmpty()) return PageInfo.emtpy()
         return PageInfo(
             cacheData.map { ImageSource(it) },
             index,
@@ -72,6 +72,11 @@ abstract class GalleryDao {
         )
     }
 
+    @Query("UPDATE ${DBValue.TABLE_GALLERY_INFO} SET favorite_name=:name WHERE ${DBValue.TABLE_GALLERY_INFO}.gid = :gid AND ${DBValue.TABLE_GALLERY_INFO}.token = :token")
+    abstract suspend fun updateGalleryFavorites(gid: Long, token: String, name: String?)
+
+    @Query("DELETE FROM ${DBValue.TABLE_GALLERY_INFO} WHERE ${DBValue.TABLE_GALLERY_INFO}.gid = :gid AND ${DBValue.TABLE_GALLERY_INFO}.token = :token")
+    abstract suspend fun deleteGalleryInfo(gid: Long, token: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertGalleryInfo(info: GalleryInfoCache)

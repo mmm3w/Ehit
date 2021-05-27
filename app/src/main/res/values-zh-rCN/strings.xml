@@ -12,6 +12,7 @@
     <string name="title_page_go_to">跳转</string>
     <string name="title_sign_out">退出登录</string>
     <string name="title_cookie">Cookie</string>
+    <string name="title_add_favorites">添加收藏</string>
 
     <string name="hint_account">账号</string>
     <string name="hint_password">密码</string>
@@ -19,6 +20,10 @@
     <string name="hint_rate_successfully">评分成功</string>
     <string name="hint_gallery_info">画廊信息</string>
     <string name="hint_copy_successfully">复制成功</string>
+    <string name="hint_remove_favorite_success">已从收藏中移除</string>
+    <string name="hint_add_favorite_success">已添加至收藏</string>
+    <string name="hint_remove_favorite_failure">移除收藏失败</string>
+    <string name="hint_add_favorite_failure">添加收藏失败</string>
 
     <string name="text_test">测试内容</string>
 
@@ -48,6 +53,7 @@
     <string name="text_confirm">确定</string>
     <string name="text_cancel">取消</string>
     <string name="text_copy">复制</string>
+    <string name="text_refresh">刷新</string>
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>

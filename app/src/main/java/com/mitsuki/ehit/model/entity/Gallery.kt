@@ -133,7 +133,4 @@ data class Gallery(
         private fun String.prefix(): String = "Parse gallery item: not found $this"
     }
 
-
-    fun obtainHeader(key: MemoryCache.Key?) =
-        GalleryDetailWrap.DetailHeader(thumb, title, uploader, category, key)
 }

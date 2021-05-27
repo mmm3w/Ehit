@@ -8,6 +8,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.WindowController
 import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivitySettingBinding
 import com.mitsuki.ehit.ui.fragment.setting.SettingRootFragment
 
@@ -15,8 +16,7 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
 
     private val binding by viewBinding(ActivitySettingBinding::inflate)
 
-    private val controller by lazy { WindowController(this) }
-
+    private val controller by windowController()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

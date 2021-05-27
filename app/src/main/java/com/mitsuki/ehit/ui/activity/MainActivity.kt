@@ -13,6 +13,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.WindowController
+import com.mitsuki.ehit.crutch.windowController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +24,7 @@ class MainActivity : BaseActivity() {
         (supportFragmentManager.findFragmentById(R.id.main_nav_fragment) as NavHostFragment).navController
     }
 
-    private val controller by lazy { WindowController(this) }
+    private val controller by windowController()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)

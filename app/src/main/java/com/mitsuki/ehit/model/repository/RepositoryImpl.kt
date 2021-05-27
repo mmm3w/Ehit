@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.mitsuki.armory.httprookie.HttpRookie
+import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.request.header
 import com.mitsuki.armory.httprookie.request.json
 import com.mitsuki.armory.httprookie.request.params
@@ -115,7 +116,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                 val remoteData = HttpRookie
                     .get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
                         convert = ImageSourceConvert()
-                        urlParams(RequestKey.PAGE_DETAIL to webIndex.toString())
+                        urlParams(RequestKey.PAGE_DETAIL, webIndex.toString())
                     }
                     .execute()
                 try {
@@ -152,17 +153,17 @@ class RepositoryImpl @Inject constructor() : Repository {
             val loginData = HttpRookie
                 .post<String>(Url.login) {
                     convert = LoginConvert()
-                    params(RequestKey.REFERER to ParamValue.LOGIN_REFERER)
-                    params(RequestKey.B to "")
-                    params(RequestKey.BT to "")
+                    params(RequestKey.REFERER, ParamValue.LOGIN_REFERER)
+                    params(RequestKey.B, "")
+                    params(RequestKey.BT, "")
 
-                    params(RequestKey.USER_NAME to account)
-                    params(RequestKey.PASS_WORD to password)
-                    params(RequestKey.COOKIE_DATE to "1")
+                    params(RequestKey.USER_NAME, account)
+                    params(RequestKey.PASS_WORD, password)
+                    params(RequestKey.COOKIE_DATE, "1")
                     //params(RequestKey.PRIVACY to "1")
 
-                    header(RequestKey.HEADER_ORIGIN to ParamValue.LOGIN_HEADER_ORIGIN)
-                    header(RequestKey.HEADER_REFERER to ParamValue.LOGIN_HEADER_REFERER)
+                    header(RequestKey.HEADER_ORIGIN, ParamValue.LOGIN_HEADER_ORIGIN)
+                    header(RequestKey.HEADER_REFERER, ParamValue.LOGIN_HEADER_REFERER)
                 }
                 .execute()
             try {
@@ -192,9 +193,9 @@ class RepositoryImpl @Inject constructor() : Repository {
                             rating = ceil(rating * 2).toInt()
                         ).toJson()
                     )
-                    header(RequestKey.HEADER_ORIGIN to Url.currentDomain)
+                    header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
                     header(
-                        RequestKey.HEADER_REFERER to Url.galleryDetail(
+                        RequestKey.HEADER_REFERER, Url.galleryDetail(
                             detail.info.gid,
                             detail.info.token
                         )
@@ -213,5 +214,39 @@ class RepositoryImpl @Inject constructor() : Repository {
         }
 
 
+    }
+
+    override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
+        return withContext(Dispatchers.IO) {
+            val data = HttpRookie
+                .post<String>(Url.favorites) {
+                    convert = StringConvert()
+                    urlParams(RequestKey.GID, gid.toString())
+                    urlParams(RequestKey.T, token)
+                    urlParams(RequestKey.ACT, ParamValue.ACT_FAVORITE)
+
+                    params(
+                        RequestKey.FAVORITE_KEY_CAT,
+                        if (cat < 0) ParamValue.FAVORITE_VALUE_CAT_DEL else cat.toString()
+                    )
+                    params(RequestKey.FAVORITE_KEY_NOTE, ParamValue.FAVORITE_VALUE_NOTE)
+                    params(RequestKey.FAVORITE_KEY_APPLY, ParamValue.FAVORITE_VALUE_APPLY_APPLY)
+                    params(RequestKey.FAVORITE_KEY_UPDATE, ParamValue.FAVORITE_VALUE_UPDATE)
+
+                    header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
+                    header(RequestKey.HEADER_REFERER, url())
+                }
+                .execute()
+
+            try {
+                when (data) {
+                    is Response.Success<String> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Fail<*> -> throw data.throwable
+                }
+            } catch (inner: Throwable) {
+                Log.debug("$inner")
+                RequestResult.FailResult(inner)
+            }
+        }
     }
 }

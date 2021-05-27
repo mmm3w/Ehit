@@ -28,10 +28,10 @@ import com.mitsuki.armory.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.ListFloatHeader
 import com.mitsuki.ehit.crutch.ListScrollTrigger
 import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.entity.SearchKey
@@ -132,7 +132,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
             setOnClickListener {
                 requireActivity().apply {
-                    val name = AppHolder.string(R.string.transition_name_gallery_list_toolbar)
+                    val name = string(R.string.transition_name_gallery_list_toolbar)
                     val options =
                         ActivityOptionsCompat.makeSceneTransitionAnimation(this, it, name)
                     searchActivityLaunch.launch(Intent(this, SearchActivity::class.java).apply {

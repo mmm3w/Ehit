@@ -59,10 +59,4 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/gallery_hotspot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

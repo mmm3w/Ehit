@@ -37,4 +37,6 @@ object Url {
     val ehSetting: String get() = "$currentDomain/uconfig.php"
 
     val api: String get() = "$currentDomain/api.php"
+
+    val favorites: String get() = "$currentDomain/gallerypopups.php"
 }

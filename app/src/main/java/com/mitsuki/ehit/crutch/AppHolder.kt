@@ -4,11 +4,10 @@ import android.app.Application
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.drawable.Drawable
 import android.widget.Toast
-import androidx.annotation.AttrRes
-import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
-import androidx.annotation.StyleableRes
+import androidx.annotation.*
+import androidx.appcompat.content.res.AppCompatResources
 import com.mitsuki.ehit.R
 
 object AppHolder {
@@ -19,6 +18,8 @@ object AppHolder {
     }
 
     fun string(@StringRes id: Int): String = mApplication.getString(id)
+
+    fun drawable(@DrawableRes id: Int): Drawable? = AppCompatResources.getDrawable(mApplication, id)
 
     //请少用该方法弹出toast
     fun toast(

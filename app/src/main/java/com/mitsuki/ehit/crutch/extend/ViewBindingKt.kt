@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -15,7 +16,7 @@ fun <VB : ViewBinding> Activity.viewBinding(inflate: (LayoutInflater) -> VB) = l
     inflate(layoutInflater).apply { setContentView(root) }
 }
 
-fun <VB : ViewBinding> Fragment.viewBinding(bind: (View) -> VB) =  FragmentViewBindingHolder(bind)
+fun <VB : ViewBinding> Fragment.viewBinding(bind: (View) -> VB) = FragmentViewBindingHolder(bind)
 
 class FragmentViewBindingHolder<VB : ViewBinding>(private val bind: (View) -> VB) :
     ReadOnlyProperty<Fragment, VB?> {
@@ -37,6 +38,10 @@ class FragmentViewBindingHolder<VB : ViewBinding>(private val bind: (View) -> VB
         return binding
     }
 }
+
+
+fun <VB : ViewBinding> RecyclerView.ViewHolder.viewBinding(bind: (View) -> VB) =
+    lazy { bind(itemView) }
 
 
 

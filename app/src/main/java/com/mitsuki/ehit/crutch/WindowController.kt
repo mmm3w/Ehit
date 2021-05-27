@@ -1,25 +1,19 @@
 package com.mitsuki.ehit.crutch
 
 import android.app.Activity
+import android.view.View
+import android.view.Window
 import android.view.WindowInsets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.DialogFragment
 
-class WindowController(private val activity: Activity) {
+class WindowController(view: View, private val windowProvider: () -> Window?) {
 
     private val controller: WindowInsetsControllerCompat? by lazy {
-        ViewCompat.getWindowInsetsController(activity.findViewById(android.R.id.content))
+        ViewCompat.getWindowInsetsController(view)
     }
-
-    private var stable = false
-
-//    init {
-//        activity.window.decorView.setOnApplyWindowInsetsListener { v, insets ->
-//            //异形屏的适配可能也要放在这里
-//            insets
-//        }
-//    }
 
     fun window(
         statusBarHide: Boolean = false,
@@ -47,26 +41,25 @@ class WindowController(private val activity: Activity) {
         }
 
         if (showTag != 0) controller?.show(showTag)
-        if (hideTag != 0) controller?.hide(hideTag)
-        if (hideTag != 0) controller?.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        if (hideTag != 0) controller?.apply {
+            hide(hideTag)
+            systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
         controller?.isAppearanceLightStatusBars = statusBarLight
         controller?.isAppearanceLightNavigationBars = navigationBarLight
 
-        statusBarColor?.apply { activity.window.statusBarColor = this }
-        navigationBarColor?.apply { activity.window.navigationBarColor = this }
+        statusBarColor?.apply { windowProvider()?.statusBarColor = this }
+        navigationBarColor?.apply { windowProvider()?.navigationBarColor = this }
 
-        activity.window.setDecorFitsSystemWindows(barFit)
+        windowProvider()?.setDecorFitsSystemWindows(barFit)
     }
+}
 
-//    fun windowBeforeCreate(
-//        statusBarFit: Boolean = false,
-//        navigationBarFit: Boolean = false
-//    ) {
-//        var insetsType = 0
-//        if (statusBarFit) insetsType = insetsType or WindowInsetsCompat.Type.statusBars()
-//        if (navigationBarFit) insetsType = insetsType or WindowInsetsCompat.Type.navigationBars()
-//        activity.window.attributes.fitInsetsTypes = insetsType
-//    }
+fun Activity.windowController() = lazy {
+    WindowController(findViewById(android.R.id.content)) { window }
+}
 
+fun DialogFragment.windowController() = lazy {
+    WindowController(requireView()) { requireDialog().window }
 }

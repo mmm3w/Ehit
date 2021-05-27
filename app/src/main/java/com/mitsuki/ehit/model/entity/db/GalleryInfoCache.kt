@@ -31,7 +31,7 @@ data class GalleryInfoCache(
     @ColumnInfo(name = "favorite") val favorite: String,
     @ColumnInfo(name = "rating_count") val ratingCount: Int,
     @ColumnInfo(name = "rating") val rating: Float,
-    @ColumnInfo(name = "favorite_name") val favoriteName: String? = null,
+    @ColumnInfo(name = "favorite_name") var favoriteName: String? = null,
     @ColumnInfo(name = "preview_pages") val previewPages: Int,
     @ColumnInfo(name = "has_more_comment") val hasMoreComment: Boolean,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()

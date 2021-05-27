@@ -4,7 +4,7 @@ import android.app.Application
 import coil.util.CoilUtils
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.coil.CoilProvider
+import com.mitsuki.ehit.crutch.coil.CoilProvider
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
