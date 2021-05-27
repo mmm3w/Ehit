@@ -6,6 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
+            android:checked="true"
             android:title="@string/text_menu_main_page" />
         <item
             android:id="@+id/nav_subscription"

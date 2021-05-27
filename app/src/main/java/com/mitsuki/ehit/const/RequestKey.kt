@@ -9,6 +9,8 @@ object RequestKey {
     const val NEW_LOAD = "nl"
     const val PAGE_DETAIL = "p"
 
+    const val PAGE = "page"
+
     const val USER_NAME = "UserName"
     const val PASS_WORD = "PassWord"
     const val COOKIE_DATE = "CookieDate"

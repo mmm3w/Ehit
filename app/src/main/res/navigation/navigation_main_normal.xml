@@ -12,6 +12,12 @@
             android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"
             app:destination="@id/gallery_detail_fragment" />
 
+        <action
+            android:id="@+id/action_gallery_list_fragment_self"
+            app:destination="@id/gallery_list_fragment"
+            app:popUpTo="@id/gallery_list_fragment"
+            app:popUpToInclusive="true" />
+
     </fragment>
 
     <fragment
@@ -20,7 +26,11 @@
         android:label="@string/label_gallery_detail_fragment">
         <action
             android:id="@+id/action_gallery_detail_fragment_to_gallery_list_fragment"
-            app:destination="@id/gallery_list_fragment" />
+            app:destination="@id/gallery_list_fragment"
+            app:enterAnim="@anim/gallery_list_enter_anim"
+            app:exitAnim="@anim/gallery_detail_exit_anim"
+            app:popEnterAnim="@anim/gallery_detail_pop_enter_anim"
+            app:popExitAnim="@anim/gallery_list_pop_exit_anim" />
     </fragment>
 
 </navigation>

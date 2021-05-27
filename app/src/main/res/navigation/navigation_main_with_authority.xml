@@ -12,6 +12,12 @@
             android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"
             app:destination="@id/gallery_detail_fragment" />
 
+        <action
+            android:id="@+id/action_gallery_list_fragment_self"
+            app:destination="@id/gallery_list_fragment"
+            app:popUpTo="@id/gallery_list_fragment"
+            app:popUpToInclusive="true" />
+
     </fragment>
 
 

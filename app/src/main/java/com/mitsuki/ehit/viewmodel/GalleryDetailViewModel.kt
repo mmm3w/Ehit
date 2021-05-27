@@ -49,6 +49,12 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
     val favoriteName: String?
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.favoriteName else null
 
+    val galleryName: String
+        get() = baseInfo.title
+
+    val uploader: String
+        get() = baseInfo.uploader
+
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
         baseInfo = bundle.getParcelable(DataKey.GALLERY_INFO)

@@ -6,15 +6,15 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.createViewModelLazy
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.CombinedLoadStates
+import androidx.navigation.Navigation
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,24 +23,21 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.afollestad.materialdialogs.list.listItems
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.statusBarHeight
-import com.mitsuki.armory.extend.toast
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.const.ParamValue
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
-import com.mitsuki.ehit.model.ehparser.GalleryRating
 import com.mitsuki.ehit.model.entity.ImageSource
+import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.ui.gallerydetail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.gallerydetail.activity.GalleryMoreInfoActivity
@@ -115,14 +112,14 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
 
-        mViewModel.galleryDetail.observe(this@GalleryDetailFragment, {
+        mViewModel.galleryDetail.observe(this, {
             mPreviewAdapter.submitData(lifecycle, it)
         })
 
 
         mHeader.event.observe(this, this::onHeaderEvent)
         mOperating.event.observe(this, this::onOperatingEvent)
-        mTag.event.observe(this, this::onTagEvent)
+        mTag.tagEvent.observe(this, Observer(this::onTagNavigation))
         mComment.event.observe(this) {
             //TODO 更多评论
             requireActivity().apply {
@@ -213,9 +210,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
     private fun onHeaderEvent(event: GalleryDetailHeader.Event) {
         when (event) {
-            is GalleryDetailHeader.Event.Uploader -> {
-                //TODO 跳转上传者搜索
-            }
+            is GalleryDetailHeader.Event.Uploader -> onUploaderNavigation()
             is GalleryDetailHeader.Event.Category -> {
                 //TODO 跳转分类搜索
             }
@@ -229,9 +224,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 //TODO 下载
             }
             GalleryDetailOperatingBlock.Event.Score -> showRatingDialog()
-            GalleryDetailOperatingBlock.Event.SimilaritySearch -> {
-                //TODO 相似搜索
-            }
+            GalleryDetailOperatingBlock.Event.SimilaritySearch -> onNameNavigation()
             GalleryDetailOperatingBlock.Event.MoreInfo -> {
                 Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
                     putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
@@ -242,10 +235,6 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         }
     }
 
-    private fun onTagEvent(tag: String) {
-        //TODO tag点击
-        toast(tag)
-    }
 
     private fun onPreviewClick(item: ImageSource) {
         goPreview(item.index)
@@ -273,6 +262,45 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             setStartEndTrim(0.1f, 0.9f)
             arrowEnabled = true
         }
+    }
+
+    private fun onTagNavigation(tag: Pair<String, String>) {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(
+                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+                bundleOf(
+                    DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.TAG,
+                    DataKey.GALLERY_LIST_INIT_KEY to "${tag.first}:${tag.second}"
+                ),
+                null,
+                null
+            )
+    }
+
+    private fun onNameNavigation() {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(
+                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+                bundleOf(
+                    DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.NORMAL,
+                    DataKey.GALLERY_LIST_INIT_KEY to mViewModel.galleryName
+                ),
+                null,
+                null
+            )
+    }
+
+    private fun onUploaderNavigation() {
+        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(
+                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+                bundleOf(
+                    DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.UPLOADER,
+                    DataKey.GALLERY_LIST_INIT_KEY to mViewModel.uploader
+                ),
+                null,
+                null
+            )
     }
 
     private fun showRatingDialog() {

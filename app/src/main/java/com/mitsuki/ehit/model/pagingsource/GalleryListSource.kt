@@ -30,8 +30,8 @@ class GalleryListSource constructor(private val pageIn: GalleryListPageIn) :
                     HttpRookie
                         .get<ArrayList<Gallery>>(pageIn.targetUrl) {
                             convert = mConvert
-                            if (page != GalleryListPageIn.START) urlParams(RequestKey.PAGE_LIST, page.toString())
-                            pageIn.searchKey?.addParams(this)
+                            pageIn.addPage(this, page)
+                            pageIn.addSearchKey(this)
                         }
                         .execute()
                 when (data) {
@@ -39,8 +39,8 @@ class GalleryListSource constructor(private val pageIn: GalleryListPageIn) :
                         val list: ArrayList<Gallery> = data.requireBody()
                         LoadResult.Page(
                             data = list,
-                            prevKey = if (page <= GalleryListPageIn.START) null else page - 1,
-                            nextKey = if (list.isNotEmpty()) page + 1 else null
+                            prevKey = pageIn.docerPrevKey(if (page <= GalleryListPageIn.START) null else page - 1),
+                            nextKey = pageIn.docerNextKey(if (list.isNotEmpty()) page + 1 else null)
                         )
                     }
                     is Response.Fail<*> -> throw data.throwable

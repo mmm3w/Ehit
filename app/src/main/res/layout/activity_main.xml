@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_drawer"
-    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    tools:viewBindingIgnore="false">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_nav_fragment"
@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:overScrollMode="never"
         app:headerLayout="@layout/drawer_main_header"
         app:menu="@menu/menu_main" />
 

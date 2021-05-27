@@ -29,6 +29,10 @@ object Url {
 
     val galleryListByPopular: String get() = "$currentDomain/popular"
 
+    fun galleryListByTag(key: String): String = "$currentDomain/tag/$key"
+
+    fun galleryListByUploader(name: String): String = "$currentDomain/uploader/$name"
+
     fun galleryDetail(gid: Long, token: String): String = "$currentDomain/g/$gid/$token"
 
     fun galleryPreviewDetail(gid: Long, token: String, index: Int): String =

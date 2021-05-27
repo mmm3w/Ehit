@@ -80,9 +80,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mViewModel.initData(arguments)
 
         mAdapter.clickEvent.observe(this, this::toDetail)
-
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
                 if (mInitAdapter.isOver) {
@@ -94,7 +94,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             }
         }
 
-        mViewModel.galleryList.observe(this, Observer { mAdapter.submitData(lifecycle, it) })
+        mViewModel.galleryList.observe(this, { mAdapter.submitData(lifecycle, it) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

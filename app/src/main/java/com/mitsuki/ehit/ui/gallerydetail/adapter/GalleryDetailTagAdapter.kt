@@ -11,6 +11,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
+import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import io.reactivex.rxjava3.subjects.PublishSubject
 
@@ -18,9 +19,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
     RecyclerView.Adapter<GalleryDetailTagAdapter.DetailTagViewHolder>() {
 
-    private val mSubject: PublishSubject<String> by lazy { PublishSubject.create() }
-
-    val event get() = mSubject.hideWithMainThread()
+    val tagEvent: SingleLiveEvent<Pair<String, String>> by lazy { SingleLiveEvent() }
 
     private val mGate = InitialGate()
 
@@ -60,7 +59,7 @@ class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
                 for (tag in tags) {
                     createItemView(R.layout.item_gallery_detail_tag_item).run {
                         (this as TextView).text = tag
-                        setOnClickListener { mSubject.onNext("$groupName:$tag") }
+                        setOnClickListener { tagEvent.postValue(groupName to tag) }
                         addView(this)
                     }
                 }
