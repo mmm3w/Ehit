@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="4dp">
 
-    <com.mitsuki.ehit.ui.widget.CategoryView
+    <com.mitsuki.ehit.ui.common.widget.CategoryView
         android:id="@+id/search_category_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

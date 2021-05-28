@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.model.ehparser.Category
-import com.mitsuki.ehit.ui.widget.CategoryView
+import com.mitsuki.ehit.ui.common.widget.CategoryView
 
 class SearchCategoryAdapter : RecyclerView.Adapter<SearchCategoryAdapter.ViewHolder>() {
 

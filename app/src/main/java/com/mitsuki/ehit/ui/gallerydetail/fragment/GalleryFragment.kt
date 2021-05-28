@@ -19,7 +19,7 @@ import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.gallerydetail.GalleryPreviewMenu
 import com.mitsuki.ehit.ui.gallerydetail.widget.GalleryImageGesture
-import com.mitsuki.ehit.ui.widget.OriginalTransformation
+import com.mitsuki.ehit.ui.common.widget.OriginalTransformation
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import com.mitsuki.loadprogress.Progress
 import com.mitsuki.loadprogress.ProgressProvider

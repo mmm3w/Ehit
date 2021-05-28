@@ -9,7 +9,7 @@ import com.mitsuki.ehit.model.entity.SearchKey
 import kotlinx.parcelize.Parcelize
 import java.lang.RuntimeException
 
-class GalleryListPageIn(t: Type, private val initKey: String) {
+class GalleryListPageIn(t: Type, val initKey: String) {
     companion object {
         const val START = 0
     }
@@ -68,16 +68,5 @@ class GalleryListPageIn(t: Type, private val initKey: String) {
         TAG, //转到normal taggroup:tagname
         SUBSCRIPTION, //内部搜索 订阅
         WHATS_HOT //没有搜索 显示热点并禁用事件
-
-
-        /*
-        * 关于搜索有类型，
-        * 搜索的类型 加上key
-        * 不考虑高级筛选
-        *
-        *
-        * */
-
-
     }
 }

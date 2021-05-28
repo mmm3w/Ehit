@@ -16,7 +16,7 @@ import com.mitsuki.ehit.crutch.extend.getInteger
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.ui.widget.PreviewTransformation
+import com.mitsuki.ehit.ui.common.widget.PreviewTransformation
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 05

@@ -2,10 +2,7 @@ package com.mitsuki.ehit.viewmodel
 
 import android.os.Bundle
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.mitsuki.ehit.R
@@ -26,9 +23,14 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
     val searchKey: SearchKey?
         get() = mListPageIn.searchKey
 
-    val searchBarText: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+    val currentKey: String
+        get() = mListPageIn.searchKey?.key ?: mListPageIn.initKey
 
-    val searchBarHint: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+    val currentType get() = mListPageIn.type
+
+    val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
+
+    val searchBarHint: MutableLiveData<String> by lazy { MutableLiveData() }
 
     val galleryList: LiveData<PagingData<Gallery>> by lazy {
         repository.galleryList(mListPageIn)

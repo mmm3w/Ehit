@@ -5,9 +5,11 @@ import android.view.View
 import android.view.Window
 import android.view.WindowInsets
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
+import com.mitsuki.ehit.crutch.extend.requireWindow
 
 class WindowController(view: View, private val windowProvider: () -> Window?) {
 
@@ -51,8 +53,9 @@ class WindowController(view: View, private val windowProvider: () -> Window?) {
 
         statusBarColor?.apply { windowProvider()?.statusBarColor = this }
         navigationBarColor?.apply { windowProvider()?.navigationBarColor = this }
-
-        windowProvider()?.setDecorFitsSystemWindows(barFit)
+        windowProvider()?.apply {
+            WindowCompat.setDecorFitsSystemWindows(this, barFit)
+        }
     }
 }
 
@@ -61,5 +64,5 @@ fun Activity.windowController() = lazy {
 }
 
 fun DialogFragment.windowController() = lazy {
-    WindowController(requireView()) { requireDialog().window }
+    WindowController(requireWindow().decorView) { requireWindow() }
 }

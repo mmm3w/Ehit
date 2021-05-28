@@ -38,13 +38,12 @@
 
     </FrameLayout>
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/gallery_go_top"
+        android:id="@+id/gallery_quick_search_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/description_go_top"
-        android:src="@drawable/ic_baseline_publish_24"
+        android:contentDescription="@string/description_quick_search"
+        android:src="@drawable/ic_baseline_format_indent_increase_24"
         app:fabSize="mini" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

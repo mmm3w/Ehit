@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.mitsuki.ehit.ui.widget.AdaptWidthSquareImageView
+    <com.mitsuki.ehit.ui.common.widget.AdaptWidthSquareImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"

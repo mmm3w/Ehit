@@ -9,7 +9,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
-import com.mitsuki.ehit.ui.layoutmanager.DetailOperatingLayoutManager
+import com.mitsuki.ehit.ui.gallerydetail.layoutmanager.DetailOperatingLayoutManager
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 02

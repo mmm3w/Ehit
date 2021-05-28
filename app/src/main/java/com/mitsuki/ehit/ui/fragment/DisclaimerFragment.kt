@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentDisclaimerBinding
-import com.mitsuki.ehit.ui.adapter.DisclaimerAdapter
+import com.mitsuki.ehit.ui.temp.adapter.DisclaimerAdapter
 
 class DisclaimerFragment : Fragment(R.layout.fragment_disclaimer) {
 

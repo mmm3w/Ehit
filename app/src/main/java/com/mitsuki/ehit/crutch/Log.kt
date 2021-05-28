@@ -9,7 +9,7 @@ object Log {
         val thisMethodStack = java.lang.Exception().stackTrace[1]
         Log.e(
             "EhitDebug",
-            "$str\t${thisMethodStack.fileName + ":" + thisMethodStack.lineNumber}"
+            "$str\t${thisMethodStack.fileName + ":" + thisMethodStack.lineNumber}\t\t${System.currentTimeMillis()}"
         )
     }
 }

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/gallery_list_fragment"
-        android:name="com.mitsuki.ehit.ui.fragment.GalleryListFragment"
+        android:name="com.mitsuki.ehit.ui.main.GalleryListFragment"
         android:label="@string/label_gallery_list_fragment">
         <action
             android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"

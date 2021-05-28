@@ -13,7 +13,7 @@ import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentLoginBinding
-import com.mitsuki.ehit.ui.adapter.*
+import com.mitsuki.ehit.ui.temp.adapter.*
 import com.mitsuki.ehit.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.MainActivity">
+        <activity android:name="com.mitsuki.ehit.ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,17 +27,17 @@
 
         <activity android:name="com.mitsuki.ehit.ui.gallerydetail.activity.GalleryActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.SettingActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.setting.SettingActivity" />
 
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.GalleryCommentActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.temp.activity.GalleryCommentActivity" />
 
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.FavouriteActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.temp.activity.FavouriteActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.HistoryActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.temp.activity.HistoryActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.DownloadActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.temp.activity.DownloadActivity" />
 
 
 

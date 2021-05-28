@@ -8,7 +8,7 @@ import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.entity.HeaderInfo
-import com.mitsuki.ehit.ui.widget.CategoryView
+import com.mitsuki.ehit.ui.common.widget.CategoryView
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class GalleryDetailHeader(private val info: HeaderInfo) : SingleItemAdapter(true) {

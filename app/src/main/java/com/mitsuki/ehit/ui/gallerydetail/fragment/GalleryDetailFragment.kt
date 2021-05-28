@@ -39,9 +39,9 @@ import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.ui.gallerydetail.activity.GalleryActivity
-import com.mitsuki.ehit.ui.activity.GalleryCommentActivity
+import com.mitsuki.ehit.ui.temp.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.gallerydetail.activity.GalleryMoreInfoActivity
-import com.mitsuki.ehit.ui.adapter.*
+import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.gallerydetail.adapter.*
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint

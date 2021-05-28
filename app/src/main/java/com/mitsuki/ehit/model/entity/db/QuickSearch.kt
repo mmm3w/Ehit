@@ -13,10 +13,28 @@ import com.mitsuki.ehit.model.page.GalleryListPageIn
 )
 data class QuickSearch(
     @ColumnInfo(name = "type") val type: GalleryListPageIn.Type,
+    @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "key") val key: String,
-    @ColumnInfo(name = "sort") val sort: Int,
+    @ColumnInfo(name = "sort") var sort: Int,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id") val _id: Long = 0,
     @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
 ) {
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        return other is QuickSearch &&
+                type == other.type &&
+                name == other.name &&
+                key == other.key &&
+                sort == other.sort
+    }
+
+    override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + key.hashCode()
+        result = 31 * result + sort
+        return result
+    }
+
 }
