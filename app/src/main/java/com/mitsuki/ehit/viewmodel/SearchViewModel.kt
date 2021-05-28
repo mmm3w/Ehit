@@ -19,8 +19,8 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
     ViewModel() {
 
     @Suppress("PrivatePropertyName")
-    private val HISTORY_COUNT = 3
-    var tempKey:SearchKey? = null
+    private val HISTORY_COUNT = 10
+    var tempKey: SearchKey? = null
 
     fun initData(intent: Intent?) {
         tempKey = intent?.getParcelableExtra(DataKey.GALLERY_SEARCH_KEY)
@@ -29,21 +29,11 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
     suspend fun searchHistory(): Flow<List<SearchHistory>> =
         withContext(Dispatchers.IO) { RoomData.searchDao.queryHistory(HISTORY_COUNT) }
 
-    suspend fun quickSearch(): Flow<List<QuickSearch>> =
-        withContext(Dispatchers.IO) { RoomData.searchDao.queryQuick() }
-
     suspend fun saveSearch(text: String) = withContext(Dispatchers.IO) {
-        if (text.isNotEmpty()) RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
+        if (text.isNotEmpty()) RoomData.searchDao.insertHistory(SearchHistory(text))
     }
 
-    suspend fun delSearch(text: String) = withContext(Dispatchers.IO) {
-        if (text.isNotEmpty()) RoomData.searchDao.insertHistory(SearchHistory(text, System.currentTimeMillis()))
+    suspend fun delSearch(data: SearchHistory) = withContext(Dispatchers.IO) {
+        RoomData.searchDao.deleteHistory(data)
     }
-
-
-    suspend fun saveQuick(text: String) = withContext(Dispatchers.IO) {
-        if (text.isNotEmpty()) RoomData.searchDao.insertQuick(QuickSearch(text, System.currentTimeMillis()))
-    }
-
-
 }

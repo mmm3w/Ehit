@@ -23,7 +23,8 @@ class GalleryListPageIn(t: Type, private val initKey: String) {
             field = value - 1
         }
 
-    var searchKey: SearchKey? = null
+    var searchKey: SearchKey? =
+        if (t == Type.NORMAL && initKey.isNotEmpty()) SearchKey(key = initKey) else null
         set(value) {
             if (type == Type.TAG || type == Type.UPLOADER) type = Type.NORMAL
             field = value
@@ -62,10 +63,21 @@ class GalleryListPageIn(t: Type, private val initKey: String) {
 
     @Parcelize
     enum class Type : Parcelable {
-        NORMAL,
-        UPLOADER, //转到normal
-        TAG, //转到normal
-        SUBSCRIPTION, //内部搜索
-        WHATS_HOT //没有搜索
+        NORMAL, //仅显示key
+        UPLOADER, //转到normal uploader:name
+        TAG, //转到normal taggroup:tagname
+        SUBSCRIPTION, //内部搜索 订阅
+        WHATS_HOT //没有搜索 显示热点并禁用事件
+
+
+        /*
+        * 关于搜索有类型，
+        * 搜索的类型 加上key
+        * 不考虑高级筛选
+        *
+        *
+        * */
+
+
     }
 }

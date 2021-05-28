@@ -20,6 +20,8 @@
         android:id="@+id/top_search_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
         android:gravity="center"
         android:text="@string/text_search" />
 </LinearLayout>

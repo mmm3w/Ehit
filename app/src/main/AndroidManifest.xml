@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.mitsuki.ehit.ui.activity.SearchActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />
 
         <activity android:name="com.mitsuki.ehit.ui.gallerydetail.activity.GalleryMoreInfoActivity" />
 

@@ -2,23 +2,21 @@ package com.mitsuki.ehit.model.entity.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mitsuki.ehit.const.DBValue
+import com.mitsuki.ehit.model.page.GalleryListPageIn
 
-@Entity(tableName = DBValue.TABLE_QUICK_SEARCH)
+@Entity(
+    tableName = DBValue.TABLE_QUICK_SEARCH,
+    indices = [Index(value = ["type", "key"], unique = true)]
+)
 data class QuickSearch(
-    @PrimaryKey
-    @ColumnInfo(name = "text") val text: String,
-    @ColumnInfo(name = "created_at") val createdAt: Long
+    @ColumnInfo(name = "type") val type: GalleryListPageIn.Type,
+    @ColumnInfo(name = "key") val key: String,
+    @ColumnInfo(name = "sort") val sort: Int,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id") val _id: Long = 0,
+    @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis()
 ) {
-    override fun equals(other: Any?): Boolean {
-        return other is QuickSearch &&
-                text == other.text
-    }
-
-    override fun hashCode(): Int {
-        var result = text.hashCode()
-        result = 31 * result + createdAt.hashCode()
-        return result
-    }
 }

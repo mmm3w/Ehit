@@ -13,7 +13,6 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -30,12 +29,11 @@ import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.ListFloatHeader
 import com.mitsuki.ehit.crutch.ListScrollTrigger
-import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.entity.SearchKey
-import com.mitsuki.ehit.ui.activity.SearchActivity
+import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.adapter.*
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,7 +70,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                 mViewModel.galleryListPage(1)
                 mViewModel.galleryListCondition(this)
                 mAdapter.refresh()
-                if (showContent.isNotEmpty()) binding?.topBar?.topSearchText?.text = showContent
             }
         }
 
@@ -82,7 +79,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         super.onCreate(savedInstanceState)
         mViewModel.initData(arguments)
 
-        mAdapter.clickEvent.observe(this, this::toDetail)
+        mAdapter.clickEvent.observe(this, this::onDetailNavigation)
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
                 if (mInitAdapter.isOver) {
@@ -101,10 +98,13 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        mViewModel.searchKey?.apply {
-            if (showContent.isNotEmpty())
-                binding?.topBar?.topSearchText?.text = showContent
-        }
+        mViewModel.searchBarText.observe(viewLifecycleOwner, {
+            binding?.topBar?.topSearchText?.text = it
+        })
+
+        mViewModel.searchBarHint.observe(viewLifecycleOwner, {
+            binding?.topBar?.topSearchText?.hint = it
+        })
 
         binding?.galleryList?.apply {
             setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
@@ -154,7 +154,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         }
     }
 
-    private fun toDetail(galleryClick: GalleryAdapter.GalleryClick) {
+    private fun onDetailNavigation(galleryClick: GalleryAdapter.GalleryClick) {
         with(galleryClick) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(

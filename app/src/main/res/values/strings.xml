@@ -41,6 +41,8 @@
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>
     <string name="hint_search">Search</string>
+    <string name="hint_subscription">Subscription</string>
+    <string name="hint_popular">Popular</string>
     <string name="hint_rate_successfully">Rate successfully</string>
     <string name="hint_gallery_info">Gallery Info</string>
     <string name="hint_copy_successfully">Copy successfully</string>

@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.activity
+package com.mitsuki.ehit.ui.search
 
 import android.app.Activity
 import android.content.Intent
@@ -45,7 +45,6 @@ class SearchActivity : BaseActivity() {
 
     private val mModeSwitch by lazy { SearchModeSwitch() }
     private val mHistoryAdapter by lazy { SearchHistoryAdapter() }
-    private val mShortcutAdapter by lazy { SearchShortcutAdapter() }
     private val mCategoryAdapter by lazy { SearchCategoryAdapter() }
     private val mAdvancedAdapter by lazy { SearchAdvancedAdapter() }
     private val mAdvancedSwitch by lazy { SearchAdvancedOptionsSwitch() }
@@ -56,8 +55,7 @@ class SearchActivity : BaseActivity() {
             mAdvancedSwitch,
             mAdvancedAdapter,
             mModeSwitch,
-            mHistoryAdapter,
-            mShortcutAdapter
+            mHistoryAdapter
         )
     }
 
@@ -99,8 +97,7 @@ class SearchActivity : BaseActivity() {
 
         mViewModel.initData(intent)
 
-        mHistoryAdapter.itemEvent.observe(this, this::onItemEvent)
-        mShortcutAdapter.itemClickEvent.observe(this, Observer(this::onSearchEvent))
+        mHistoryAdapter.clickItem.observe(this, this::onItemEvent)
         mAdvancedAdapter.ratingEvent.observe(this, Observer(this::onRatingEvent))
 
         mViewModel.tempKey?.apply { onSearchUpdate(this) }
@@ -130,12 +127,10 @@ class SearchActivity : BaseActivity() {
 
         mModeSwitch.switchEvent.observe(this, Observer(this::onSwitch))
 
-        mAdvancedSwitch.switchEvent.observe(
-            this, Observer { mAdvancedAdapter.isVisible = it })
+        mAdvancedSwitch.switchEvent.observe(this, { mAdvancedAdapter.isVisible = it })
 
         lifecycleScope.launchWhenCreated {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }
-            mViewModel.quickSearch().collect { mShortcutAdapter.submitData(it) }
         }
     }
 
@@ -143,11 +138,10 @@ class SearchActivity : BaseActivity() {
         lifecycleScope.launch {
             when (event) {
                 is SearchWordEvent.Select -> onSearchEvent(event.data.text)
+                is SearchWordEvent.Delete -> mViewModel.delSearch(event.data)
             }
         }
-
     }
-
 
     private fun onSearchEvent(text: String) {
         lifecycle.coroutineScope.launch { mViewModel.saveSearch(text) }
@@ -165,7 +159,6 @@ class SearchActivity : BaseActivity() {
 
     private fun onSwitch(isAdvancedMode: Boolean) {
         mHistoryAdapter.isEnable = !isAdvancedMode
-        mShortcutAdapter.isEnable = !isAdvancedMode
         mCategoryAdapter.isEnable = isAdvancedMode
         mAdvancedSwitch.isEnable = isAdvancedMode
         mAdvancedAdapter.isEnable = isAdvancedMode
@@ -202,6 +195,5 @@ class SearchActivity : BaseActivity() {
 
 sealed class SearchWordEvent(val data: SearchHistory) {
     class Select(data: SearchHistory) : SearchWordEvent(data)
-    class Mark(data: SearchHistory) : SearchWordEvent(data)
-    class Delete(data: SearchHistory, val type: Int) : SearchWordEvent(data)
+    class Delete(data: SearchHistory) : SearchWordEvent(data)
 }

@@ -1,20 +1,17 @@
 package com.mitsuki.ehit.ui.search.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.calculateDiff
-import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
+import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.databinding.ItemSearchBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.SearchHistory
-import com.mitsuki.ehit.ui.activity.SearchWordEvent
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import com.mitsuki.ehit.ui.search.SearchWordEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -34,32 +31,23 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
 
     private val mData: MutableList<SearchHistory> = arrayListOf()
 
-    private val mEventSubject = PublishSubject.create<SearchWordEvent>()
+    val clickItem: SingleLiveEvent<SearchWordEvent> by lazy { SingleLiveEvent() }
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
+
         when (view.id) {
-            R.id.search_item_delete -> mEventSubject.onNext(SearchWordEvent.Delete(mData[position], 0))
-            else -> mEventSubject.onNext(SearchWordEvent.Select(mData[position]))
+            R.id.search_item_delete -> clickItem.postValue(SearchWordEvent.Delete(mData[position]))
+            else -> clickItem.postValue(SearchWordEvent.Select(mData[position]))
         }
     }
-
-    private val mItemLongClick = { view: View ->
-        val position = (view.tag as ViewHolder).bindingAdapterPosition
-        mEventSubject.onNext(SearchWordEvent.Mark(mData[position]))
-        true
-    }
-
-    val itemEvent: Observable<SearchWordEvent>
-        get() = mEventSubject.hideWithMainThread()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent).apply {
             itemView.tag = this
             itemView.setOnClickListener(mItemClick)
-            itemView.setOnLongClickListener(mItemLongClick)
-            mSearchDelete?.tag = this
-            mSearchDelete?.setOnClickListener(mItemClick)
+            binding.searchItemDelete.tag = this
+            binding.searchItemDelete.setOnClickListener(mItemClick)
         }
     }
 
@@ -68,7 +56,7 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(position, mData[position])
+        holder.bind(mData[position])
     }
 
     suspend fun submitData(data: List<SearchHistory>) {
@@ -85,17 +73,16 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
     }
 
     class ViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_search, parent, false)
-        ) {
+        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_search)) {
 
-        private val mSearchIcon = view<ImageView>(R.id.search_item_icon)
-        private val mSearchText = view<TextView>(R.id.search_item_text)
-        val mSearchDelete = view<ImageView>(R.id.search_item_delete)
+        val binding by viewBinding(ItemSearchBinding::bind)
 
-        fun bind(index: Int, item: SearchHistory) {
-            mSearchIcon?.setImageResource(R.drawable.ic_round_history_24)
-            mSearchText?.text = item.text
+        init {
+            binding.searchItemIcon.setImageResource(R.drawable.ic_round_history_24)
+        }
+
+        fun bind(item: SearchHistory) {
+            binding.searchItemText.text = item.text
         }
     }
 }
