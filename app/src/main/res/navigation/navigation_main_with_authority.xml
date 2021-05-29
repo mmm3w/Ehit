@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/gallery_detail_fragment"
-        android:name="com.mitsuki.ehit.ui.gallerydetail.fragment.GalleryDetailFragment"
+        android:name="com.mitsuki.ehit.ui.detail.fragment.GalleryDetailFragment"
         android:label="@string/label_gallery_detail_fragment">
         <action
             android:id="@+id/action_gallery_detail_fragment_to_gallery_list_fragment"
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/security_fragment"
-        android:name="com.mitsuki.ehit.ui.fragment.SecurityFragment"
+        android:name="com.mitsuki.ehit.ui.temp.fragment.SecurityFragment"
         android:label="@string/label_security_fragment">
         <action
             android:id="@+id/action_security_fragment_to_gallery_list_fragment"

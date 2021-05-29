@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.widget
+package com.mitsuki.ehit.ui.detail.widget
 
 import android.view.MotionEvent
 import android.widget.ImageView

@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import android.graphics.Canvas
 import android.graphics.Paint

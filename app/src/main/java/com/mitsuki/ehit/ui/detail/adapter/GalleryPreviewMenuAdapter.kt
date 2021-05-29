@@ -1,10 +1,8 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import android.view.ViewGroup
-import android.view.ViewParent
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding

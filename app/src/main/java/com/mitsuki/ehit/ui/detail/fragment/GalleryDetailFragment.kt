@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.fragment
+package com.mitsuki.ehit.ui.detail.fragment
 
 import android.content.Intent
 import android.graphics.Color
@@ -38,11 +38,11 @@ import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryListPageIn
-import com.mitsuki.ehit.ui.gallerydetail.activity.GalleryActivity
+import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.temp.activity.GalleryCommentActivity
-import com.mitsuki.ehit.ui.gallerydetail.activity.GalleryMoreInfoActivity
+import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
-import com.mitsuki.ehit.ui.gallerydetail.adapter.*
+import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -54,7 +54,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             by createViewModelLazy(GalleryDetailViewModel::class, { viewModelStore })
 
     private val mPreviewAdapter: GalleryDetailPreviewAdapter
-            by lazy { GalleryDetailPreviewAdapter() }
+            by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }
 
     private val mConcatPreviewAdapter by lazy {
         mPreviewAdapter.withLoadStateHeaderAndFooter(

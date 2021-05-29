@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.fragment
+package com.mitsuki.ehit.ui.temp.fragment
 
 /**
  * 警告

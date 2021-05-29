@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.model.entity
 
 import coil.memory.MemoryCache
+import com.mitsuki.ehit.crutch.coil.CacheKey
 
 class GalleryDetailWrap {
     lateinit var partInfo: DetailPart
@@ -33,10 +34,16 @@ data class HeaderInfo(
     val title: String,
     val uploader: String,
     val category: String,
-    val cacheKey: MemoryCache.Key?
+    val cacheKey: String
 ) {
     val categoryColor: Int = com.mitsuki.ehit.model.ehparser.Category.getColor(category)
 
-    constructor(info: Gallery, key: MemoryCache.Key?)
-            : this(info.thumb, info.title, info.uploader, info.category, key)
+    constructor(info: Gallery)
+            : this(
+        info.thumb,
+        info.title,
+        info.uploader,
+        info.category,
+        CacheKey.thumbKey(info.gid, info.token)
+    )
 }

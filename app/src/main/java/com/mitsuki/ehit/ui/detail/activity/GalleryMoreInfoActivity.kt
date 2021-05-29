@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.activity
+package com.mitsuki.ehit.ui.detail.activity
 
 import android.graphics.Color
 import android.os.Bundle
@@ -11,7 +11,7 @@ import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityMoreInfoBinding
-import com.mitsuki.ehit.ui.gallerydetail.adapter.MoreInfoAdapter
+import com.mitsuki.ehit.ui.detail.adapter.MoreInfoAdapter
 
 class GalleryMoreInfoActivity : BaseActivity() {
     private val binding by viewBinding(ActivityMoreInfoBinding::inflate)

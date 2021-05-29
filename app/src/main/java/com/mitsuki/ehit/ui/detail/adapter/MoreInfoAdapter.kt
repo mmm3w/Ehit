@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import android.view.View
 import android.view.ViewGroup

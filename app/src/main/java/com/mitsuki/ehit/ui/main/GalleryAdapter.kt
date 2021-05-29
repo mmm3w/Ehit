@@ -12,6 +12,7 @@ import coil.metadata
 import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.crutch.extend.corners
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.viewBinding
@@ -26,9 +27,8 @@ class GalleryAdapter :
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
-        val imageView = view.findViewById<ImageView>(R.id.gallery_thumb)
         getItem(position)?.apply {
-            clickEvent.postValue(GalleryClick(view, imageView.metadata?.memoryCacheKey, this))
+            clickEvent.postValue(GalleryClick(view, this))
         }
         Unit
     }
@@ -54,7 +54,7 @@ class GalleryAdapter :
 
         fun bind(data: Gallery) {
             with(data) {
-                binding.galleryThumb.load(thumb)
+                binding.galleryThumb.load(thumb) { memoryCacheKey(CacheKey.thumbKey(gid, token)) }
                 binding.galleryTitle.text = title
                 binding.galleryUploader.text = uploader
                 binding.galleryLang.text = languageSimple
@@ -72,5 +72,5 @@ class GalleryAdapter :
     }
 
 
-    data class GalleryClick(val target: View, val cacheKey: MemoryCache.Key?, val data: Gallery)
+    data class GalleryClick(val target: View, val data: Gallery)
 }

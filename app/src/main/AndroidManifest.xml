@@ -24,9 +24,9 @@
 
         <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.gallerydetail.activity.GalleryMoreInfoActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.gallerydetail.activity.GalleryActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryActivity" />
 
         <activity android:name="com.mitsuki.ehit.ui.setting.SettingActivity" />
 

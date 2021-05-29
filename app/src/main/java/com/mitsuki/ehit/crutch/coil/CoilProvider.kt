@@ -4,8 +4,13 @@ import android.content.Context
 import android.os.StatFs
 import coil.Coil
 import coil.ImageLoader
-import com.mitsuki.armory.httprookie.HttpRookie
+import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.network.CookieJarImpl
+import com.mitsuki.ehit.crutch.network.FakeHeader
+import com.mitsuki.loadprogress.ProgressProvider
 import okhttp3.Cache
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
 object CoilProvider {
@@ -24,18 +29,28 @@ object CoilProvider {
 
     fun init(context: Context) {
         Coil.setImageLoader(ImageLoader.Builder(context)
-            .okHttpClient(HttpRookie.client)
+            .okHttpClient(buildCoilOkHttpClient(context))
+            .availableMemoryPercentage(0.9)
             .crossfade(true)
             .componentRegistry { add(RetryInterceptor(RETRY_TIMES)) }
             .build())
     }
-
 
     @JvmStatic
     fun coilCache(context: Context): Cache {
         val cacheDirectory = File(context.cacheDir, CACHE_DIRECTORY_NAME).apply { mkdirs() }
         val cacheSize = autoDiskCache(cacheDirectory)
         return Cache(cacheDirectory, cacheSize)
+    }
+
+    private fun buildCoilOkHttpClient(context: Context): OkHttpClient {
+        return OkHttpClient.Builder()
+            .cache(coilCache(context))
+            .cookieJar(CookieJarImpl(ShareData))
+            .addInterceptor(FakeHeader())
+            .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
+            .addInterceptor(ProgressProvider.imageLoadInterceptor)
+            .build()
     }
 
     //adapt to max

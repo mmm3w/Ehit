@@ -1,11 +1,11 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.ui.gallerydetail.fragment.GalleryFragment
+import com.mitsuki.ehit.ui.detail.fragment.GalleryFragment
 
 class GalleryFragmentAdapter(
     activity: FragmentActivity,

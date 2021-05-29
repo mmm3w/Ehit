@@ -49,7 +49,7 @@ data class SearchKey(
     @Key(RequestKey.SEARCH_KEY_DISABLE_TAGS)
     var isDisableTagsFilter: Boolean = false
 ) : Parcelable {
-    companion object{
+    companion object {
         val DEFAULT = SearchKey()
     }
 
@@ -68,7 +68,7 @@ data class SearchKey(
 
     fun addParams(source: UrlParams) {
         source.urlParams(RequestKey.SEARCH_KEY_WORD, key)
-        source.urlParams(RequestKey.SEARCH_KEY_CATEGORY, categoryForSearch)
+        if (category != 0) source.urlParams(RequestKey.SEARCH_KEY_CATEGORY, categoryForSearch)
         if (isAdvancedEnable) {
             source.urlParams(RequestKey.SEARCH_KEY_ADVSEARCH, "1")
             if (isSearchGalleryName)

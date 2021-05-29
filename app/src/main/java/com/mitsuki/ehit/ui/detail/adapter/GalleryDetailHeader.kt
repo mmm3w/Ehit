@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import android.widget.ImageView
 import android.widget.TextView
@@ -36,10 +36,7 @@ class GalleryDetailHeader(private val info: HeaderInfo) : SingleItemAdapter(true
 
     override val onViewHolderBind: ViewHolder.() -> Unit = {
         with(info) {
-            mThumb?.load(thumb) {
-                allowHardware(false)
-                placeholderMemoryCacheKey(cacheKey)
-            }
+            mThumb?.load(thumb) { placeholderMemoryCacheKey(cacheKey) }
             mTitle?.text = title
             mUploader?.text = uploader
             mCategory?.text = category

@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.fragment
+package com.mitsuki.ehit.ui.detail.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -17,8 +17,8 @@ import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
-import com.mitsuki.ehit.ui.gallerydetail.GalleryPreviewMenu
-import com.mitsuki.ehit.ui.gallerydetail.widget.GalleryImageGesture
+import com.mitsuki.ehit.ui.detail.GalleryPreviewMenu
+import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.ui.common.widget.OriginalTransformation
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import com.mitsuki.loadprogress.Progress

@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import android.annotation.SuppressLint
 import android.view.View
@@ -11,8 +11,8 @@ import coil.load
 import coil.size.OriginalSize
 import com.mitsuki.armory.extend.view
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.getInteger
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -20,8 +20,10 @@ import com.mitsuki.ehit.ui.common.widget.PreviewTransformation
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 05
-class GalleryDetailPreviewAdapter :
-    PagingDataAdapter<ImageSource, GalleryDetailPreviewAdapter.ViewHolder>(Diff.IMAGE_SOURCE) {
+class GalleryDetailPreviewAdapter(
+    private val gid: Long,
+    private val token: String
+) : PagingDataAdapter<ImageSource, GalleryDetailPreviewAdapter.ViewHolder>(Diff.IMAGE_SOURCE) {
 
     private val mSubject: PublishSubject<ImageSource> by lazy { PublishSubject.create() }
 
@@ -45,7 +47,8 @@ class GalleryDetailPreviewAdapter :
             holder.numberView?.text = "${it.index + 1}"
             holder.previewView?.apply {
                 load(it.imageUrl) {
-                    crossfade(context.getInteger(R.integer.image_load_cross_fade))
+                    memoryCacheKey(CacheKey.previewKey(gid, token, it.index + 1))
+                    placeholderMemoryCacheKey(CacheKey.previewKey(gid, token, it.index + 1))
                     if (it.left >= 0 && it.top >= 0 && it.right >= 0 && it.bottom >= 0) {
                         size(OriginalSize)
                         transformations(

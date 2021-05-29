@@ -169,10 +169,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(
                     R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
-                    bundleOf(
-                        DataKey.GALLERY_INFO to data,
-                        DataKey.IMAGE_CACHE_KEY to cacheKey
-                    ),
+                    bundleOf(DataKey.GALLERY_INFO to data),
                     null,
                     FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
                 )

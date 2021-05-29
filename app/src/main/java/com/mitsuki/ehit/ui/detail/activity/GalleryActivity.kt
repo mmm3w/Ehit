@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.activity
+package com.mitsuki.ehit.ui.detail.activity
 
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
@@ -9,7 +9,7 @@ import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
-import com.mitsuki.ehit.ui.gallerydetail.adapter.GalleryFragmentAdapter
+import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

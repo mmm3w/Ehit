@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.layoutmanager
+package com.mitsuki.ehit.ui.detail.layoutmanager
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager

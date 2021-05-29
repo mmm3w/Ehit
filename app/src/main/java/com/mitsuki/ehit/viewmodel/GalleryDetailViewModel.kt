@@ -33,7 +33,6 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
     ViewModel() {
 
     lateinit var baseInfo: Gallery
-    private var cacheKey: MemoryCache.Key? = null
     private val mDetailPageIn = GalleryDetailPageIn()
 
     val infoWrap = GalleryDetailWrap()
@@ -42,24 +41,21 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
     val rateNotify: SingleLiveEvent<NotifyItem> by lazy { SingleLiveEvent() }
     val favNotify: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
 
-    val headerInfo: HeaderInfo get() = HeaderInfo(baseInfo, cacheKey)
+    val headerInfo: HeaderInfo get() = HeaderInfo(baseInfo)
+    val galleryName: String get() = baseInfo.title
+    val uploader: String get() = baseInfo.uploader
+    val gid: Long get() = baseInfo.gid
+    val token: String get() = baseInfo.token
 
     val isFavorited: Boolean
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
     val favoriteName: String?
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.favoriteName else null
 
-    val galleryName: String
-        get() = baseInfo.title
-
-    val uploader: String
-        get() = baseInfo.uploader
-
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
         baseInfo = bundle.getParcelable(DataKey.GALLERY_INFO)
             ?: throw IllegalStateException()
-        cacheKey = bundle.getParcelable(DataKey.IMAGE_CACHE_KEY)
     }
 
     val itemTransitionName: String

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.mitsuki.ehit.crutch.extend.postNext
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.loadprogress.addFeature
@@ -21,7 +22,7 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
     private var mId: Long = -1
     lateinit var galleryToken: String
 
-    val tag get() = "$mId-$index"
+    val tag get() = CacheKey.previewKey(mId, galleryToken, index + 1)
 
     private val mData: MutableLiveData<String> = MutableLiveData()
     val data: LiveData<String> = mData

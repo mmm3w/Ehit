@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.mitsuki.ehit.ui.gallerydetail.widget.GalleryDetailLayout
+    <com.mitsuki.ehit.ui.detail.widget.GalleryDetailLayout
         android:id="@+id/gallery_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

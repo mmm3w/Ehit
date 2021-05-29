@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.gallerydetail.adapter
+package com.mitsuki.ehit.ui.detail.adapter
 
 import android.view.ViewGroup
 import android.widget.TextView
@@ -9,11 +9,9 @@ import com.mitsuki.armory.extend.view
 import com.mitsuki.armory.widget.TagsView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
 import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
-import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 03
 class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
