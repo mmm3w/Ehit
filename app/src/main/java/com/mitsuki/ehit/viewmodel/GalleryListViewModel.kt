@@ -34,6 +34,7 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
     fun initData(bundle: Bundle?) {
         val source: GalleryPageSource = bundle?.getParcelable(DataKey.GALLERY_PAGE_SOURCE)
             ?: GalleryPageSource.DEFAULT_NORMAL
+
         mListPageIn = GalleryListPageIn(source)
         searchBarText.postValue(source.showContent)
 

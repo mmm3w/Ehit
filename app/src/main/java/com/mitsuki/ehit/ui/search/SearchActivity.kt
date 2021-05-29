@@ -76,7 +76,7 @@ class SearchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         ViewCompat.setTransitionName(
-            findViewById<View>(android.R.id.content),
+            findViewById(android.R.id.content),
             string(R.string.transition_name_gallery_list_toolbar)
         )
         setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
@@ -90,7 +90,6 @@ class SearchActivity : BaseActivity() {
         }
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
         controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
         findViewById<View>(android.R.id.content).setPadding(0, statusBarHeight(), 0, 0)
 

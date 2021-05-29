@@ -8,6 +8,7 @@
     <string name="label_disclaimer_fragment" translatable="false">DisclaimerFragment</string>
     <string name="label_search_fragment" translatable="false">SearchFragment</string>
     <string name="label_main_fragment" translatable="false">MainFragment</string>
+    <string name="label_favourite_fragment" translatable="false">FavouriteFragment</string>
 
     <string name="transition_name_gallery_list_toolbar" translatable="false">GalleryListToolbarTransition</string>
 

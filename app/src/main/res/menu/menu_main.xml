@@ -14,11 +14,11 @@
         <item
             android:id="@+id/nav_popular"
             android:title="@string/text_menu_whats_hot" />
+        <item
+            android:id="@+id/nav_favourite"
+            android:title="@string/text_menu_favourite" />
     </group>
 
-    <item
-        android:id="@+id/nav_favourite"
-        android:title="@string/text_menu_favourite" />
     <item
         android:id="@+id/nav_history"
         android:title="@string/text_menu_history" />

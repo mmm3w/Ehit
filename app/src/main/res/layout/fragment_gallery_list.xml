@@ -7,7 +7,6 @@
     android:background="@color/white"
     app:layoutDescription="@xml/fragment_gallery_list_scene">
 
-
     <FrameLayout
         android:id="@+id/gallery_list_container"
         android:layout_width="match_parent"
@@ -43,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/description_quick_search"
-        android:src="@drawable/ic_baseline_format_indent_increase_24"
+        android:src="@drawable/ic_round_menu_open_24"
         app:fabSize="mini" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -51,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/description_page_jump"
-        android:src="@drawable/ic_round_low_priority_24"
+        android:src="@drawable/ic_baseline_pages_24"
         app:fabSize="mini" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

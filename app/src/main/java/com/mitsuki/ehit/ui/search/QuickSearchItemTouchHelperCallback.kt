@@ -47,7 +47,7 @@ class QuickSearchItemTouchHelperCallback : ItemTouchHelper.Callback() {
                     //1、可防止内部实现修改自行设置的elevation
                     //2、不用再重写clearView来处理elevation，内部实现会在clearView方法中自动读取该tag
                     setTag(R.id.item_touch_helper_previous_elevation, 0f)
-                    ViewCompat.setElevation(this, dp2px(4f))
+                    ViewCompat.setElevation(this, dp2px(8f))
                 }
             }
             ItemTouchHelper.ACTION_STATE_IDLE -> {

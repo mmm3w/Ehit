@@ -34,6 +34,7 @@
         android:id="@+id/quick_search_target"
         android:layout_width="match_parent"
         android:layout_height="480dp"
+        android:background="#ebebeb"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="@dimen/dp_16" />

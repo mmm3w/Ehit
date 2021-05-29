@@ -18,6 +18,8 @@ interface Repository {
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>>
 
+//    fun favoriteList()
+
     suspend fun galleryPreview(gid: Long, token: String, pToken: String, index: Int)
             : RequestResult<GalleryPreview>
 

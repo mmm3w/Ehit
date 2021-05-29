@@ -31,7 +31,7 @@ class EhApplication : Application() {
         ShareData.init(this)
 
         HttpRookie.configOkHttp = {
-            dns(MyDns())
+//            dns(MyDns())
             cookieJar(CookieJarImpl(ShareData))
             addInterceptor(FakeHeader())
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })

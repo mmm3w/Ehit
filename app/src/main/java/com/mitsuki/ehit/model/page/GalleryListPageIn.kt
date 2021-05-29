@@ -36,7 +36,7 @@ class GalleryListPageIn(var pageSource: GalleryPageSource) {
     }
 
     fun docerNextKey(key: Int?): Int? {
-        if (pageSource.hasPaging) return null
+        if (!pageSource.hasPaging) return null
         return key
     }
 }

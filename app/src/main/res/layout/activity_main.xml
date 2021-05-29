@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         app:defaultNavHost="true" />
 
-
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/main_navigation"
         android:layout_width="wrap_content"

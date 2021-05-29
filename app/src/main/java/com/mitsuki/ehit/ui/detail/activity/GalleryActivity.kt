@@ -30,7 +30,6 @@ class GalleryActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery)
         controller.window(statusBarHide = true, navigationBarHide = true, barFit = false)
 
         mIndex = intent.getIntExtra(DataKey.GALLERY_INDEX, 0)
@@ -38,8 +37,6 @@ class GalleryActivity : BaseActivity() {
         mId = intent.getLongExtra(DataKey.GALLERY_ID, -1)
         mToken = intent.getStringExtra(DataKey.GALLERY_TOKEN)
             ?: throw IllegalStateException("Missing token")
-
-        updateIndex(mIndex)
 
         mViewPagerAdapter = GalleryFragmentAdapter(this, isReverse, mId, mToken, mPage)
         binding.galleryViewPager.apply {
@@ -53,6 +50,8 @@ class GalleryActivity : BaseActivity() {
                 }
             })
         }
+
+        updateIndex(mIndex)
     }
 
     private fun updateIndex(index: Int) {
