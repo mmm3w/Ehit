@@ -16,6 +16,7 @@ import com.mitsuki.ehit.databinding.ItemSearchQuickBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.page.GalleryListPageIn
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -106,7 +107,7 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
         return true
     }
 
-    fun addItem(name: String, key: String, type: GalleryListPageIn.Type) {
+    fun addItem(name: String, key: String, type: GalleryPageSource.Type) {
         mData.add(QuickSearch(type, name, key, 0))
         notifyItemInserted(mData.size - 1)
     }

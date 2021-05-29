@@ -6,13 +6,14 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.page.GalleryListPageIn
+import com.mitsuki.ehit.model.page.GalleryPageSource
 
 @Entity(
     tableName = DBValue.TABLE_QUICK_SEARCH,
     indices = [Index(value = ["type", "key"], unique = true)]
 )
 data class QuickSearch(
-    @ColumnInfo(name = "type") val type: GalleryListPageIn.Type,
+    @ColumnInfo(name = "type") val type: GalleryPageSource.Type,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "key") val key: String,
     @ColumnInfo(name = "sort") var sort: Int,

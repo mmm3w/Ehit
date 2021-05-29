@@ -12,6 +12,7 @@ import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 
@@ -20,17 +21,9 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
 
     private lateinit var mListPageIn: GalleryListPageIn
 
-    val searchKey: SearchKey
-        get() = mListPageIn.searchKey
-
-    val currentKey: String
-        get() = mListPageIn.searchKey.key
-
-    val currentType get() = mListPageIn.type
-
     val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
-
     val searchBarHint: MutableLiveData<String> by lazy { MutableLiveData() }
+    val pageSource: GalleryPageSource get() = mListPageIn.pageSource
 
     val galleryList: LiveData<PagingData<Gallery>> by lazy {
         repository.galleryList(mListPageIn)
@@ -39,29 +32,17 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
     }
 
     fun initData(bundle: Bundle?) {
-        val source =
-            bundle?.getParcelable(DataKey.GALLERY_LIST_TYPE) ?: GalleryListPageIn.Type.NORMAL
-        val initKey = bundle?.getString(DataKey.GALLERY_LIST_INIT_KEY) ?: ""
-        mListPageIn = GalleryListPageIn(source, initKey)
+        val source: GalleryPageSource = bundle?.getParcelable(DataKey.GALLERY_PAGE_SOURCE)
+            ?: GalleryPageSource.DEFAULT_NORMAL
+        mListPageIn = GalleryListPageIn(source)
+        searchBarText.postValue(source.showContent)
 
         when (source) {
-            GalleryListPageIn.Type.NORMAL,
-            GalleryListPageIn.Type.TAG -> {
-                searchBarText.postValue(initKey)
-                searchBarHint.postValue(string(R.string.hint_search))
-            }
-            GalleryListPageIn.Type.UPLOADER -> {
-                searchBarText.postValue("uploader:$initKey")
-                searchBarHint.postValue(string(R.string.hint_search))
-            }
-            GalleryListPageIn.Type.SUBSCRIPTION -> {
-                searchBarText.postValue("")
-                searchBarHint.postValue(string(R.string.hint_subscription))
-            }
-            GalleryListPageIn.Type.WHATS_HOT -> {
-                searchBarText.postValue("")
-                searchBarHint.postValue(string(R.string.hint_popular))
-            }
+            is GalleryPageSource.Normal,
+            is GalleryPageSource.Uploader,
+            is GalleryPageSource.Tag -> searchBarHint.postValue(string(R.string.hint_search))
+            is GalleryPageSource.Subscription -> searchBarHint.postValue(string(R.string.hint_subscription))
+            is GalleryPageSource.Popular -> searchBarHint.postValue(string(R.string.hint_popular))
         }
     }
 
@@ -69,19 +50,9 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
         mListPageIn.targetPage = page.coerceAtLeast(1)
     }
 
-    fun galleryListCondition(
-        searchKey: SearchKey,
-        type: GalleryListPageIn.Type = GalleryListPageIn.Type.NORMAL
-    ) {
-        mListPageIn.type = type
-        mListPageIn.searchKey = searchKey
-        when (mListPageIn.type) {
-            GalleryListPageIn.Type.NORMAL,
-            GalleryListPageIn.Type.UPLOADER,
-            GalleryListPageIn.Type.TAG -> searchBarText.postValue(searchKey.showContent)
-            GalleryListPageIn.Type.SUBSCRIPTION,
-            GalleryListPageIn.Type.WHATS_HOT -> {
-            }
-        }
+    fun galleryListCondition(source: GalleryPageSource) {
+        galleryListPage(1)
+        mListPageIn.pageSource = source
+        searchBarText.postValue(mListPageIn.showContent)
     }
 }

@@ -4,11 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +23,23 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
 
     @Suppress("PrivatePropertyName")
     private val HISTORY_COUNT = 10
-    var tempKey: SearchKey? = null
+    lateinit var pageSource: GalleryPageSource
+
+    val searchKey: SearchKey get() = pageSource.searchKeyProvider()
+
+    fun buildNewSource(searchKey: SearchKey): GalleryPageSource {
+        return when (pageSource) {
+            is GalleryPageSource.Normal,
+            is GalleryPageSource.Uploader,
+            is GalleryPageSource.Tag -> GalleryPageSource.Normal(searchKey)
+            is GalleryPageSource.Subscription -> GalleryPageSource.Subscription(searchKey)
+            is GalleryPageSource.Popular -> throw IllegalStateException()
+        }
+    }
 
     fun initData(intent: Intent?) {
-        tempKey = intent?.getParcelableExtra(DataKey.GALLERY_SEARCH_KEY)
+        pageSource = intent?.getParcelableExtra(DataKey.GALLERY_PAGE_SOURCE)
+            ?: GalleryPageSource.DEFAULT_NORMAL
     }
 
     suspend fun searchHistory(): Flow<List<SearchHistory>> =

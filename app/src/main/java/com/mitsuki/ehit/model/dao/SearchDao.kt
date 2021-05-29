@@ -5,6 +5,7 @@ import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.model.page.GalleryListPageIn
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -12,7 +13,7 @@ import java.util.*
 abstract class SearchDao {
 
     @Transaction
-    open suspend fun saveQuick(name: String, key: String, type: GalleryListPageIn.Type) {
+    open suspend fun saveQuick(name: String, key: String, type: GalleryPageSource.Type) {
         val count = quickCount()
         insertQuick(QuickSearch(type, name, key, count + 1))
     }
@@ -44,7 +45,7 @@ abstract class SearchDao {
     abstract suspend fun quickCount(): Int
 
     @Query("DELETE FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:type")
-    abstract suspend fun deleteQuick(key: String, type: GalleryListPageIn.Type)
+    abstract suspend fun deleteQuick(key: String, type: GalleryPageSource.Type)
 
     @Query("SELECT _id FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE sort=:sort")
     abstract suspend fun queryQuickIDBySort(sort: Int): Long

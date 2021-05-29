@@ -6,6 +6,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.crutch.Key
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.model.ehparser.Category
+import com.mitsuki.ehit.model.page.GalleryListPageIn
 import kotlinx.parcelize.Parcelize
 
 //import kotlinx.parcelize.Parcelize

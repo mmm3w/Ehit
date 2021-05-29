@@ -99,7 +99,7 @@ class SearchActivity : BaseActivity() {
         mHistoryAdapter.clickItem.observe(this, this::onItemEvent)
         mAdvancedAdapter.ratingEvent.observe(this, Observer(this::onRatingEvent))
 
-        mViewModel.tempKey?.apply { onSearchUpdate(this) }
+        mViewModel.searchKey.apply { onSearchUpdate(this) }
 
         binding.searchList.apply {
             layoutManager = GridLayoutManager(this@SearchActivity, 2).apply {
@@ -185,7 +185,8 @@ class SearchActivity : BaseActivity() {
 
     private fun finishWithResult(text: String) {
         setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(DataKey.GALLERY_SEARCH_KEY, obtainSearchKey(text))
+            val searchKey = obtainSearchKey(text)
+            putExtra(DataKey.GALLERY_PAGE_SOURCE, mViewModel.buildNewSource(searchKey))
         })
         finish()
     }

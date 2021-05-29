@@ -33,6 +33,7 @@ import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.temp.adapter.*
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
@@ -64,8 +65,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     private val quickSearchPanel by lazy {
         QuickSearchPanel().apply {
             onQuickSearch = {
-                mViewModel.galleryListPage(1)
-                mViewModel.galleryListCondition(SearchKey(it.key), it.type)
+                mViewModel.galleryListCondition(it)
                 mAdapter.refresh()
             }
         }
@@ -75,11 +75,9 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            //结果处理
             if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
-            it.data?.getParcelableExtra<SearchKey>(DataKey.GALLERY_SEARCH_KEY)?.apply {
-                mViewModel.galleryListPage(1)
+            it.data?.getParcelableExtra<GalleryPageSource>(DataKey.GALLERY_PAGE_SOURCE)?.apply {
                 mViewModel.galleryListCondition(this)
                 mAdapter.refresh()
             }
@@ -148,7 +146,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                     val options =
                         ActivityOptionsCompat.makeSceneTransitionAnimation(this, it, name)
                     searchActivityLaunch.launch(Intent(this, SearchActivity::class.java).apply {
-                        putExtra(DataKey.GALLERY_SEARCH_KEY, mViewModel.searchKey)
+                        putExtra(DataKey.GALLERY_PAGE_SOURCE, mViewModel.pageSource)
                     }, options)
                 }
             }

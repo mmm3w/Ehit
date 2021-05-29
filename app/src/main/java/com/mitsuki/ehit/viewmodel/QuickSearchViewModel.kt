@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.page.GalleryListPageIn
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +20,11 @@ class QuickSearchViewModel @ViewModelInject constructor(@RemoteRepository var re
         withContext(Dispatchers.IO) { RoomData.searchDao.queryQuick() }
 
 
-    fun saveSearch(name: String, key:String, type: GalleryListPageIn.Type) {
+    fun saveSearch(name: String, key:String, type: GalleryPageSource.Type) {
         doInIO { if (name.isNotEmpty()) RoomData.searchDao.saveQuick(name, key, type) }
     }
 
-    fun delSearch(key: String, type: GalleryListPageIn.Type) {
+    fun delSearch(key: String, type: GalleryPageSource.Type) {
         doInIO { RoomData.searchDao.deleteQuick(key, type) }
     }
 

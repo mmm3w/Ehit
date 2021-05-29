@@ -17,6 +17,7 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.model.page.GalleryListPageIn
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.temp.activity.DownloadActivity
 import com.mitsuki.ehit.ui.temp.activity.FavouriteActivity
 import com.mitsuki.ehit.ui.temp.activity.HistoryActivity
@@ -59,7 +60,7 @@ class MainActivity : BaseActivity() {
                         Navigation.findNavController(this@MainActivity, R.id.main_nav_fragment)
                             .navigate(
                                 R.id.action_gallery_list_fragment_self,
-                                bundleOf(DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.NORMAL),
+                                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_NORMAL),
                                 null,
                                 null
                             )
@@ -69,7 +70,7 @@ class MainActivity : BaseActivity() {
                         Navigation.findNavController(this@MainActivity, R.id.main_nav_fragment)
                             .navigate(
                                 R.id.action_gallery_list_fragment_self,
-                                bundleOf(DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.SUBSCRIPTION),
+                                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_SUBSCRIPTION),
                                 null,
                                 null
                             )
@@ -79,7 +80,7 @@ class MainActivity : BaseActivity() {
                         Navigation.findNavController(this@MainActivity, R.id.main_nav_fragment)
                             .navigate(
                                 R.id.action_gallery_list_fragment_self,
-                                bundleOf(DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.WHATS_HOT),
+                                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.POPULAR),
                                 null,
                                 null
                             )

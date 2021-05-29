@@ -9,6 +9,7 @@ import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
 import com.mitsuki.loadprogress.ProgressProvider
 import okhttp3.Cache
+import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File

@@ -13,6 +13,7 @@ import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
 import com.mitsuki.ehit.model.entity.SearchKey
 import com.mitsuki.ehit.model.entity.db.QuickSearch
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.search.QuickSearchItemTouchHelperCallback
 import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
@@ -33,7 +34,7 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
 
     private val mAdapter by lazy { QuickSearchAdapter() }
 
-    var onQuickSearch: ((QuickSearch) -> Unit)? = null
+    var onQuickSearch: ((GalleryPageSource) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,14 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
         mAdapter.clickItem.observe(this, {
             when (it) {
                 is QuickSearchAdapter.Event.Click -> {
-                    onQuickSearch?.invoke(it.data)
+                    val data = when (it.data.type) {
+                        GalleryPageSource.Type.NORMAL -> GalleryPageSource.Normal(it.data.key)
+                        GalleryPageSource.Type.UPLOADER -> GalleryPageSource.Uploader(it.data.key)
+                        GalleryPageSource.Type.TAG -> GalleryPageSource.Tag(it.data.key)
+                        GalleryPageSource.Type.SUBSCRIPTION -> GalleryPageSource.Subscription(it.data.key)
+                        GalleryPageSource.Type.WHATS_HOT -> GalleryPageSource.POPULAR
+                    }
+                    onQuickSearch?.invoke(data)
                     dismiss()
                 }
                 is QuickSearchAdapter.Event.Delete ->
@@ -59,16 +67,10 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
         requireDialog().setCanceledOnTouchOutside(true)
 
         binding?.quickSearchAdd?.setOnClickListener {
-            mAdapter.addItem(
-                mParentViewModel.currentKey,
-                mParentViewModel.currentKey,
-                mParentViewModel.currentType
-            )
-            mViewModel.saveSearch(
-                mParentViewModel.currentKey,
-                mParentViewModel.currentKey,
-                mParentViewModel.currentType
-            )
+            mParentViewModel.pageSource.apply {
+                mAdapter.addItem(cacheKey, cacheKey, type)
+                mViewModel.saveSearch(cacheKey, cacheKey, type)
+            }
         }
 
         val touchCallBack = QuickSearchItemTouchHelperCallback()

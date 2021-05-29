@@ -38,6 +38,7 @@ import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryListPageIn
+import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.temp.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
@@ -268,10 +269,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
             .navigate(
                 R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(
-                    DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.TAG,
-                    DataKey.GALLERY_LIST_INIT_KEY to "${tag.first}:${tag.second}"
-                ),
+                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Tag("${tag.first}:${tag.second}")),
                 null,
                 null
             )
@@ -281,10 +279,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
             .navigate(
                 R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(
-                    DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.NORMAL,
-                    DataKey.GALLERY_LIST_INIT_KEY to mViewModel.galleryName
-                ),
+                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Normal(mViewModel.galleryName)),
                 null,
                 null
             )
@@ -294,10 +289,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
             .navigate(
                 R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(
-                    DataKey.GALLERY_LIST_TYPE to GalleryListPageIn.Type.UPLOADER,
-                    DataKey.GALLERY_LIST_INIT_KEY to mViewModel.uploader
-                ),
+                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Uploader(mViewModel.uploader)),
                 null,
                 null
             )
