@@ -13,6 +13,10 @@ import com.mitsuki.ehit.crutch.network.MyDns
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.loadprogress.ProgressProvider
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
@@ -21,14 +25,13 @@ class EhApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        //TODO：注意缓存的配置
 
         AppHolder.hold(this)
         RoomData.init(this)
         ShareData.init(this)
 
         HttpRookie.configOkHttp = {
-            cache(CoilUtils.createDefaultCache(this@EhApplication))
+            cache(CoilProvider.coilCache(this@EhApplication))
             dns(MyDns())
             cookieJar(CookieJarImpl(ShareData))
             addInterceptor(FakeHeader())
@@ -43,6 +46,5 @@ class EhApplication : Application() {
 
         CoilProvider.init(this)
         Url.initDomain(this)
-
     }
 }

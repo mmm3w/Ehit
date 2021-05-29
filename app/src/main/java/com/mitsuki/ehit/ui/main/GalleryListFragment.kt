@@ -61,6 +61,16 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         ConcatAdapter(header, mInitAdapter, mAdapter, footer)
     }
 
+    private val quickSearchPanel by lazy {
+        QuickSearchPanel().apply {
+            onQuickSearch = {
+                mViewModel.galleryListPage(1)
+                mViewModel.galleryListCondition(SearchKey(it.key), it.type)
+                mAdapter.refresh()
+            }
+        }
+    }
+
     private val binding by viewBinding(FragmentGalleryListBinding::bind)
 
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
@@ -183,13 +193,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     }
 
     private fun showQuickSearchPanel() {
-        QuickSearchPanel().apply {
-            arguments = bundleOf(
-                DataKey.GALLERY_QUICK_TYPE to mViewModel.currentType,
-                DataKey.GALLERY_QUICK_KEY to mViewModel.currentKey
-            )
-            show(this@GalleryListFragment.childFragmentManager, "p")
-        }
+        quickSearchPanel.show(childFragmentManager, "QuickSearchPanel")
     }
 
 

@@ -49,6 +49,9 @@ data class SearchKey(
     @Key(RequestKey.SEARCH_KEY_DISABLE_TAGS)
     var isDisableTagsFilter: Boolean = false
 ) : Parcelable {
+    companion object{
+        val DEFAULT = SearchKey()
+    }
 
     val showContent: String
         get() {

@@ -20,11 +20,11 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
 
     private lateinit var mListPageIn: GalleryListPageIn
 
-    val searchKey: SearchKey?
+    val searchKey: SearchKey
         get() = mListPageIn.searchKey
 
     val currentKey: String
-        get() = mListPageIn.searchKey?.key ?: mListPageIn.initKey
+        get() = mListPageIn.searchKey.key
 
     val currentType get() = mListPageIn.type
 
@@ -69,13 +69,18 @@ class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var re
         mListPageIn.targetPage = page.coerceAtLeast(1)
     }
 
-    fun galleryListCondition(searchKey: SearchKey) {
+    fun galleryListCondition(
+        searchKey: SearchKey,
+        type: GalleryListPageIn.Type = GalleryListPageIn.Type.NORMAL
+    ) {
+        mListPageIn.type = type
         mListPageIn.searchKey = searchKey
         when (mListPageIn.type) {
             GalleryListPageIn.Type.NORMAL,
+            GalleryListPageIn.Type.UPLOADER,
+            GalleryListPageIn.Type.TAG -> searchBarText.postValue(searchKey.showContent)
             GalleryListPageIn.Type.SUBSCRIPTION,
-            GalleryListPageIn.Type.WHATS_HOT -> searchBarText.postValue(searchKey.showContent)
-            else -> {
+            GalleryListPageIn.Type.WHATS_HOT -> {
             }
         }
     }

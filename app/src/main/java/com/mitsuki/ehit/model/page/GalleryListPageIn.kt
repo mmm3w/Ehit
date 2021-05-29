@@ -9,7 +9,7 @@ import com.mitsuki.ehit.model.entity.SearchKey
 import kotlinx.parcelize.Parcelize
 import java.lang.RuntimeException
 
-class GalleryListPageIn(t: Type, val initKey: String) {
+class GalleryListPageIn(t: Type,initKey: String) {
     companion object {
         const val START = 0
     }
@@ -23,19 +23,13 @@ class GalleryListPageIn(t: Type, val initKey: String) {
             field = value - 1
         }
 
-    var searchKey: SearchKey? =
-        if (t == Type.NORMAL && initKey.isNotEmpty()) SearchKey(key = initKey) else null
-        set(value) {
-            if (type == Type.TAG || type == Type.UPLOADER) type = Type.NORMAL
-            field = value
-        }
-
+    var searchKey: SearchKey = if (t == Type.NORMAL && initKey.isNotEmpty()) SearchKey(key = initKey) else SearchKey.DEFAULT
 
     val targetUrl: String
         get() = when (type) {
             Type.NORMAL -> Url.galleryList
-            Type.UPLOADER -> Url.galleryListByUploader(initKey)
-            Type.TAG -> Url.galleryListByTag(initKey)
+            Type.UPLOADER -> Url.galleryListByUploader(searchKey.key)
+            Type.TAG -> Url.galleryListByTag(searchKey.key)
             Type.SUBSCRIPTION -> Url.galleryListBySubscription
             Type.WHATS_HOT -> Url.galleryListByPopular
         }
@@ -48,7 +42,7 @@ class GalleryListPageIn(t: Type, val initKey: String) {
 
     fun addSearchKey(source: UrlParams) {
         if (type == Type.NORMAL || type == Type.SUBSCRIPTION)
-            searchKey?.addParams(source)
+            searchKey.addParams(source)
     }
 
     fun docerPrevKey(key: Int?): Int? {

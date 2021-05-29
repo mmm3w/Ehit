@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.search.dialog
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.createViewModelLazy
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -10,9 +11,12 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
+import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.search.QuickSearchItemTouchHelperCallback
 import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
+import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import com.mitsuki.ehit.viewmodel.QuickSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,13 +26,17 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
 
     private val mViewModel: QuickSearchViewModel by viewModels()
 
+    private val mParentViewModel: GalleryListViewModel
+            by viewModels(ownerProducer = { requireParentFragment() })
+
     private val binding by viewBinding(DialogQuickSearchBinding::bind)
 
     private val mAdapter by lazy { QuickSearchAdapter() }
 
+    var onQuickSearch: ((QuickSearch) -> Unit)? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.initData(arguments)
         lifecycleScope.launchWhenCreated {
             mAdapter.submitData(mViewModel.quickSearch())
         }
@@ -36,7 +44,7 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
         mAdapter.clickItem.observe(this, {
             when (it) {
                 is QuickSearchAdapter.Event.Click -> {
-
+                    onQuickSearch?.invoke(it.data)
                     dismiss()
                 }
                 is QuickSearchAdapter.Event.Delete ->
@@ -51,7 +59,16 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
         requireDialog().setCanceledOnTouchOutside(true)
 
         binding?.quickSearchAdd?.setOnClickListener {
-            mViewModel.saveSearch(mViewModel.key)
+            mAdapter.addItem(
+                mParentViewModel.currentKey,
+                mParentViewModel.currentKey,
+                mParentViewModel.currentType
+            )
+            mViewModel.saveSearch(
+                mParentViewModel.currentKey,
+                mParentViewModel.currentKey,
+                mParentViewModel.currentType
+            )
         }
 
         val touchCallBack = QuickSearchItemTouchHelperCallback()
