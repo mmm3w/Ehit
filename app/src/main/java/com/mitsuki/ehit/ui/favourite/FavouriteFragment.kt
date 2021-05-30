@@ -1,17 +1,24 @@
 package com.mitsuki.ehit.ui.favourite
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
+import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.crutch.ListFloatHeader
+import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
@@ -20,6 +27,7 @@ import com.mitsuki.ehit.ui.main.GalleryAdapter
 import com.mitsuki.ehit.ui.temp.adapter.GalleryListLoadStateAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
@@ -41,8 +49,37 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
         ConcatAdapter(header, mInitAdapter, mAdapter, footer)
     }
 
+    private val favouriteSelectPanel by lazy {
+        FavouriteSelectPanel().apply {
+            onFavouriteSelect = {
+                mViewModel.setFavouriteGroup(it)
+                mAdapter.refresh()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launchWhenCreated {
+            mAdapter.loadStateFlow.collectLatest {
+                if (mInitAdapter.isOver) {
+                    binding?.favouriteRefresh?.isRefreshing = it.refresh is LoadState.Loading
+                } else {
+                    mInitAdapter.loadState = it.refresh
+                }
+                binding?.favouriteRefresh?.isEnabled = it.prepend.endOfPaginationReached
+            }
+        }
+        mAdapter.clickEvent.observe(this, this::onDetailNavigation)
+        mViewModel.count.observe(this, { favouriteSelectPanel.setCountData(it) })
+        mViewModel.favouriteList.observe(this, { mAdapter.submitData(lifecycle, it) })
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postponeEnterTransition()
+        (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
         binding?.favouriteTarget?.apply {
             setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
@@ -62,6 +99,10 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
             }
         }
 
+        mViewModel.searchBarHint.observe(viewLifecycleOwner, {
+            binding?.topBar?.topSearchText?.hint = it
+        })
+
         binding?.favouriteCate?.setOnClickListener { showFavouriteSelectPanel() }
 
         binding?.favouriteRefresh?.apply {
@@ -70,8 +111,20 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
         }
     }
 
-    private fun showFavouriteSelectPanel() {
+    private fun onDetailNavigation(galleryClick: GalleryAdapter.GalleryClick) {
+        with(galleryClick) {
+            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+                .navigate(
+                    R.id.action_favourite_fragment_to_gallery_detail_fragment,
+                    bundleOf(DataKey.GALLERY_INFO to data),
+                    null,
+                    FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
+                )
+        }
+    }
 
+    private fun showFavouriteSelectPanel() {
+        favouriteSelectPanel.show(childFragmentManager, "FavouriteSelectPanel")
     }
 
 

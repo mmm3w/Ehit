@@ -10,7 +10,6 @@ import com.mitsuki.armory.httprookie.request.json
 import com.mitsuki.armory.httprookie.request.params
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
-import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.crutch.toJson
@@ -27,13 +26,14 @@ import com.mitsuki.ehit.model.convert.RateBackConvert
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.GalleryPreviewCache
-import com.mitsuki.ehit.model.page.GalleryDetailPageIn
+import com.mitsuki.ehit.model.page.FavouritePageIn
+import com.mitsuki.ehit.model.page.GeneralPageIn
+import com.mitsuki.ehit.model.pagingsource.FavoritesSource
 import com.mitsuki.ehit.model.pagingsource.GalleryDetailSource
 import com.mitsuki.ehit.model.pagingsource.GalleryListSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.ceil
 
@@ -45,8 +45,11 @@ class RepositoryImpl @Inject constructor() : Repository {
     private val mDetailPagingConfig =
         PagingConfig(pageSize = 40)
 
+    private val mFavoritePagingConfig =
+        PagingConfig(pageSize = 50)
+
     override fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>> {
-        return Pager(mListPagingConfig, initialKey = 0) {
+        return Pager(mListPagingConfig, initialKey = GeneralPageIn.START) {
             GalleryListSource(pageIn)
         }.flow
     }
@@ -54,11 +57,20 @@ class RepositoryImpl @Inject constructor() : Repository {
     override fun galleryDetail(
         gid: Long,
         token: String,
-        pageIn: GalleryDetailPageIn,
+        pageIn: GeneralPageIn,
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>> {
-        return Pager(mDetailPagingConfig, initialKey = 0) {
+        return Pager(mDetailPagingConfig, initialKey = GeneralPageIn.START) {
             GalleryDetailSource(gid, token, pageIn, detailSource)
+        }.flow
+    }
+
+    override fun favoriteList(
+        pageIn: FavouritePageIn,
+        dataWrap: FavouriteCountWrap
+    ): Flow<PagingData<Gallery>> {
+        return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
+            FavoritesSource(pageIn, dataWrap)
         }.flow
     }
 

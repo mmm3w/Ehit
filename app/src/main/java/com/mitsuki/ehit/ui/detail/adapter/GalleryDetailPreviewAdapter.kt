@@ -47,8 +47,8 @@ class GalleryDetailPreviewAdapter(
             holder.numberView?.text = "${it.index + 1}"
             holder.previewView?.apply {
                 load(it.imageUrl) {
-                    memoryCacheKey(CacheKey.previewKey(gid, token, it.index + 1))
-                    placeholderMemoryCacheKey(CacheKey.previewKey(gid, token, it.index + 1))
+                    val metaTag = CacheKey.previewKey(gid, token, it.index + 1)
+                    placeholderMemoryCacheKey(CacheKey.largeTempKey(metaTag))
                     if (it.left >= 0 && it.top >= 0 && it.right >= 0 && it.bottom >= 0) {
                         size(OriginalSize)
                         transformations(

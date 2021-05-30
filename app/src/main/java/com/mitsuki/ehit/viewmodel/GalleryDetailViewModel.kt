@@ -8,11 +8,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import coil.memory.MemoryCache
 import com.mitsuki.armory.adapter.NotifyItem
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.SingleLiveEvent
@@ -23,17 +20,16 @@ import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.model.entity.HeaderInfo
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.page.GalleryDetailPageIn
+import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
-import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.launch
 
 class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
     lateinit var baseInfo: Gallery
-    private val mDetailPageIn = GalleryDetailPageIn()
+    private val mDetailPageIn = GeneralPageIn()
 
     val infoWrap = GalleryDetailWrap()
 

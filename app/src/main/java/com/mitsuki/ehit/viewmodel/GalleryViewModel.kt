@@ -24,6 +24,8 @@ class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var reposi
 
     val tag get() = CacheKey.previewKey(mId, galleryToken, index + 1)
 
+    val largeCacheTag get() = CacheKey.largeTempKey(tag)
+
     private val mData: MutableLiveData<String> = MutableLiveData()
     val data: LiveData<String> = mData
     private val mState: MutableLiveData<ViewState> = MutableLiveData(ViewState())

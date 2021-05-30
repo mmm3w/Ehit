@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.ui.common.widget
 
 import android.view.ViewConfiguration
 import androidx.recyclerview.widget.RecyclerView

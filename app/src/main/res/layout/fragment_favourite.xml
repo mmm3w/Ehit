@@ -32,7 +32,6 @@
         android:layout_marginEnd="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_32"
         android:contentDescription="@string/description_quick_search"
-        android:src="@drawable/ic_round_menu_open_24"
-        app:fabSize="mini" />
+        android:src="@drawable/ic_round_menu_open_24" />
 
 </FrameLayout>

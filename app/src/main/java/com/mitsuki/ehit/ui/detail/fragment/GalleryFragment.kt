@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.createViewModelLazy
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import coil.load
 import coil.request.ImageRequest
@@ -28,8 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
-    private val mViewModel: GalleryViewModel
-            by createViewModelLazy(GalleryViewModel::class, { viewModelStore })
+    private val mViewModel: GalleryViewModel by viewModels()
 
     private var mImageGesture: ImageGesture? = null
 
@@ -70,6 +70,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
     private fun onLoadImage(url: String) {
         binding?.galleryImage?.load(url) {
+            memoryCacheKey(mViewModel.largeCacheTag)
             size(OriginalSize)
             transformations(OriginalTransformation())
             listener(
@@ -99,12 +100,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
 
     private fun showGalleryMenu() {
-        Log.debug("showGalleryMenu")
-//        MaterialDialog(requireContext(), BottomSheet(LayoutMode.MATCH_PARENT)).show {
-//
-//        }
-
-
         GalleryPreviewMenu().show(childFragmentManager, "menu")
     }
 }

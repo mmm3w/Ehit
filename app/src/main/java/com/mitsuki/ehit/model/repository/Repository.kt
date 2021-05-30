@@ -5,7 +5,8 @@ import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.page.GalleryDetailPageIn
+import com.mitsuki.ehit.model.page.FavouritePageIn
+import com.mitsuki.ehit.model.page.GeneralPageIn
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -14,11 +15,11 @@ interface Repository {
     fun galleryDetail(
         gid: Long,
         token: String,
-        pageIn: GalleryDetailPageIn,
+        pageIn: GeneralPageIn,
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>>
 
-//    fun favoriteList()
+    fun favoriteList(pageIn: FavouritePageIn, dataWrap: FavouriteCountWrap): Flow<PagingData<Gallery>>
 
     suspend fun galleryPreview(gid: Long, token: String, pToken: String, index: Int)
             : RequestResult<GalleryPreview>

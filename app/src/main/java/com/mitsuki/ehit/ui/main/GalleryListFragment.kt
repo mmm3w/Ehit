@@ -27,12 +27,11 @@ import com.mitsuki.armory.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.ListFloatHeader
-import com.mitsuki.ehit.crutch.ListScrollTrigger
+import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
+import com.mitsuki.ehit.ui.common.widget.ListScrollTrigger
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
-import com.mitsuki.ehit.model.entity.SearchKey
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.temp.adapter.*

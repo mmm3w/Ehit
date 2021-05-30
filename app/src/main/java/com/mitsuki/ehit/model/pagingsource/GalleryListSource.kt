@@ -9,6 +9,7 @@ import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.convert.GalleryListConvert
 import com.mitsuki.ehit.model.entity.Gallery
+import com.mitsuki.ehit.model.page.GeneralPageIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +20,7 @@ class GalleryListSource constructor(private val pageIn: GalleryListPageIn) :
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gallery> {
-        val page = params.key ?: GalleryListPageIn.START
+        val page = params.key ?: GeneralPageIn.START
         return try {
             // 如果成功加载，那么返回一个LoadResult.Page,如果失败就返回一个Error
             // Page里传进列表数据，以及上一页和下一页的页数,具体的是否最后一页或者其他逻辑就自行判断
@@ -39,7 +40,7 @@ class GalleryListSource constructor(private val pageIn: GalleryListPageIn) :
                         val list: ArrayList<Gallery> = data.requireBody()
                         LoadResult.Page(
                             data = list,
-                            prevKey = pageIn.docerPrevKey(if (page <= GalleryListPageIn.START) null else page - 1),
+                            prevKey = pageIn.docerPrevKey(if (page <= GeneralPageIn.START) null else page - 1),
                             nextKey = pageIn.docerNextKey(if (list.isNotEmpty()) page + 1 else null)
                         )
                     }

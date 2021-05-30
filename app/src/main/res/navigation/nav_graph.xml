@@ -4,6 +4,5 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/nav_stack_main">
     <include app:graph="@navigation/nav_stack_main" />
-    <include app:graph="@navigation/nav_stack_subscription" />
-    <include app:graph="@navigation/nav_stack_popular" />
+    <include app:graph="@navigation/nav_stack_favourite" />
 </navigation>

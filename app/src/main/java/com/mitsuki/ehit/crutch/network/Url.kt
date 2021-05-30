@@ -43,4 +43,6 @@ object Url {
     val api: String get() = "$currentDomain/api.php"
 
     val favorites: String get() = "$currentDomain/gallerypopups.php"
+
+    val favoriteList: String get() = "$currentDomain/favorites.php"
 }

@@ -14,9 +14,8 @@ class GalleryPreviewMenu : BottomDialogFragment(R.layout.dialog_gallery_preview_
     private val binding by viewBinding(DialogGalleryPreviewMenuBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        isCancelable = true
         requireDialog().setCanceledOnTouchOutside(true)
+        isCancelable = true
 
         binding?.galleryMenuOption?.apply {
             layoutManager = LinearLayoutManager(requireContext())

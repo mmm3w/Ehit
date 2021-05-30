@@ -13,14 +13,14 @@ import com.mitsuki.ehit.model.convert.GalleryDetailConvert
 import com.mitsuki.ehit.model.convert.ImageSourceConvert
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.page.GalleryDetailPageIn
+import com.mitsuki.ehit.model.page.GeneralPageIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GalleryDetailSource(
     private val mGid: Long,
     private val mToken: String,
-    private val mPageIn: GalleryDetailPageIn,
+    private val mPageIn: GeneralPageIn,
     private val mDetailSource: GalleryDetailWrap
 ) : PagingSource<Int, ImageSource>() {
 
@@ -29,7 +29,7 @@ class GalleryDetailSource(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageSource> {
-        val page = params.key ?: GalleryDetailPageIn.START
+        val page = params.key ?: GeneralPageIn.START
 
         return try {
             // 如果成功加载，那么返回一个LoadResult.Page,如果失败就返回一个Error
@@ -37,7 +37,7 @@ class GalleryDetailSource(
             // 需要注意的是，如果是第一页，prevKey就传null，如果是最后一页那么nextKey也传null
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.IO) {
-                if (page == GalleryDetailPageIn.START) {
+                if (page == GeneralPageIn.START) {
                     var reObtain = false
                     val cacheData = RoomData.galleryDao.queryGalleryDetail(mGid, mToken)
                     if (cacheData == null) {

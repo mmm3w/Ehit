@@ -99,9 +99,9 @@ data class Gallery(
                 ?: throw ParseThrowable("upload time (posted_${tiData[0]} node text)".prefix())
 
             val uploader = element
-                .byClassFirst("glhide", "uploader (glhide node)".prefix())
-                .byTagFirst("a", "uploader (glhide node a text)".prefix())
-                .text()
+                .byClassFirstIgnoreError("glhide")
+                ?.byTagFirstIgnoreError("a")
+                ?.text() ?: ""
 
             val thumbNode = element
                 .byClassFirst("glthumb", "thumbNode (glthumb node)".prefix())

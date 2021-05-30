@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import androidx.core.os.bundleOf
@@ -16,6 +17,9 @@ import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.ui.setting.SettingActivity
+import com.mitsuki.ehit.ui.temp.activity.DownloadActivity
+import com.mitsuki.ehit.ui.temp.activity.HistoryActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,12 +29,8 @@ class MainActivity : BaseActivity() {
     private val navController: NavController by lazy {
         (supportFragmentManager.findFragmentById(R.id.main_nav_fragment) as NavHostFragment).navController
     }
-
     private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -43,65 +43,40 @@ class MainActivity : BaseActivity() {
 
         controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
 
-
         //NavigationUI提供的setup方法无法满足需求
         binding.mainNavigation.setNavigationItemSelectedListener {
-            binding.mainDrawer.close()
+            var handle = true
             when (it.itemId) {
-                R.id.nav_home -> {
-                    navDestination(
-                        R.id.nav_stack_main,
-                        bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_NORMAL)
-                    )
-                    true
-                }
-                R.id.nav_subscription -> {
-                    navDestination(
-                        R.id.nav_stack_subscription,
-                        bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_SUBSCRIPTION)
-                    )
-                    true
-                }
-                R.id.nav_popular -> {
-                    navDestination(
-                        R.id.nav_stack_popular,
-                        bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.POPULAR)
-                    )
-                    true
-                }
-//                R.id.nav_favourite -> {
-//                    navController.navigate(
-//                        R.id.action_global_favourite_fragment,
-//                        null,
-//                        null,
-//                        null
-//                    )
-//                    binding.mainDrawer.close()
-//                    true
-//                }
-//                R.id.nav_history -> {
-//                    startActivity(
-//                        Intent(this@MainActivity, HistoryActivity::class.java)
-//                    )
-//                    binding.mainDrawer.close()
-//                    true
-//                }
-//                R.id.nav_download -> {
-//                    startActivity(
-//                        Intent(this@MainActivity, DownloadActivity::class.java)
-//                    )
-//                    binding.mainDrawer.close()
-//                    true
-//                }
-//                R.id.nav_setting -> {
-//                    startActivity(
-//                        Intent(this@MainActivity, SettingActivity::class.java)
-//                    )
-//                    binding.mainDrawer.close()
-//                    true
-//                }
-                else -> false
+                R.id.nav_home -> navDestination(
+                    R.id.nav_stack_main,
+                    bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_NORMAL)
+                )
+
+                R.id.nav_subscription -> navDestination(
+                    R.id.nav_stack_main,
+                    bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_SUBSCRIPTION)
+                )
+
+                R.id.nav_popular -> navDestination(
+                    R.id.nav_stack_main,
+                    bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.POPULAR)
+                )
+
+                R.id.nav_favourite -> navDestination(R.id.nav_stack_favourite, null)
+
+                R.id.nav_history ->
+                    startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
+
+                R.id.nav_download ->
+                    startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
+
+                R.id.nav_setting ->
+                    startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+
+                else -> handle = false
             }
+            if (handle) binding.mainDrawer.close()
+            handle
         }
 
         navController.setGraph(R.navigation.nav_graph)

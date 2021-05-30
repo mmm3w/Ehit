@@ -5,17 +5,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.const.RequestKey
 import java.lang.RuntimeException
 
-class GalleryListPageIn(var pageSource: GalleryPageSource) {
-    companion object {
-        const val START = 0
-    }
-
-    //0为起始第一页
-    var targetPage: Int = START
-        set(value) {
-            if (value < 1) throw  RuntimeException("Value error")
-            field = value - 1
-        }
+class GalleryListPageIn(var pageSource: GalleryPageSource) : GeneralPageIn() {
 
     val targetUrl: String get() = pageSource.targetUrl
     val showContent: String get() = pageSource.showContent

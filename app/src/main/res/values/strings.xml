@@ -83,6 +83,7 @@
     <string name="text_cancel">Cancel</string>
     <string name="text_copy">Copy</string>
     <string name="text_refresh">Refresh</string>
+    <string name="text_all">All</string>
 
     <string name="text_download">Download</string>
     <string name="text_read">Read</string>

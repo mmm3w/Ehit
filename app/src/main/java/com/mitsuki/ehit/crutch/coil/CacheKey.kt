@@ -8,4 +8,8 @@ object CacheKey {
     fun previewKey(gid: Long, token: String, index: Int): String {
         return "GalleryPreview:$gid-$token-$index"
     }
+
+    fun largeTempKey(meta:String) :String{
+        return "$meta-temp"
+    }
 }

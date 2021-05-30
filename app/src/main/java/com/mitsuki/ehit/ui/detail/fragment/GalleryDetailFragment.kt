@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.createViewModelLazy
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -51,8 +52,7 @@ import kotlinx.coroutines.flow.collectLatest
 @AndroidEntryPoint
 class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
-    private val mViewModel: GalleryDetailViewModel
-            by createViewModelLazy(GalleryDetailViewModel::class, { viewModelStore })
+    private val mViewModel: GalleryDetailViewModel by viewModels()
 
     private val mPreviewAdapter: GalleryDetailPreviewAdapter
             by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }

@@ -27,4 +27,5 @@
             app:popEnterAnim="@anim/gallery_detail_pop_enter_anim"
             app:popExitAnim="@anim/gallery_list_pop_exit_anim" />
     </fragment>
+
 </navigation>
