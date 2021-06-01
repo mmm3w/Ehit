@@ -13,6 +13,7 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityMainBinding
@@ -80,10 +81,17 @@ class MainActivity : BaseActivity() {
         }
 
         navController.setGraph(R.navigation.nav_graph)
+
+//        when {
+//            ShareData.spFirstOpen -> navDestination(R.id.nav_stack_first_open, null)
+//            ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
+//        }
+
+        navDestination(R.id.nav_stack_first_open, null)
     }
 
 
-    private fun navDestination(navID: Int, args: Bundle?) {
+    fun navDestination(navID: Int, args: Bundle?) {
         val builder = NavOptions.Builder().setLaunchSingleTop(true)
         builder.setEnterAnim(androidx.navigation.ui.R.animator.nav_default_enter_anim)
             .setExitAnim(androidx.navigation.ui.R.animator.nav_default_exit_anim)

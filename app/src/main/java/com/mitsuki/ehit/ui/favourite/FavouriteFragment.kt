@@ -72,7 +72,7 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
             }
         }
         mAdapter.clickEvent.observe(this, this::onDetailNavigation)
-        mViewModel.count.observe(this, { favouriteSelectPanel.setCountData(it) })
+        mViewModel.count.observe(this, { favouriteSelectPanel.postCountData(it) })
         mViewModel.favouriteList.observe(this, { mAdapter.submitData(lifecycle, it) })
     }
 

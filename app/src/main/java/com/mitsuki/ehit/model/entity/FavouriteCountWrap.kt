@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 
 class FavouriteCountWrap {
 
-    val count: MutableLiveData<Array<Int>> by lazy { MutableLiveData() }
+    val count: MutableLiveData<Array<Pair<String, Int>>> by lazy { MutableLiveData() }
 
-    fun postData(data: Array<Int>) {
+    fun postData(data: Array<Pair<String, Int>>) {
         count.postValue(data)
     }
 }

@@ -11,13 +11,6 @@ import com.mitsuki.ehit.crutch.network.Url
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
 
-
-class LoginHeader : SingleItemAdapter(true) {
-    override val layoutRes: Int = R.layout.item_login_header
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {}
-    override val onViewHolderBind: ViewHolder.() -> Unit = {}
-}
-
 class LoginExtend : SingleItemAdapter(true) {
     private var mIsCookieLogin = false
 
@@ -62,9 +55,9 @@ class LoginDomain : SingleItemAdapter(true) {
     }
 
     override val onViewHolderBind: ViewHolder.() -> Unit = {
-        when (ShareData.spDomain) {
-            Url.domain[0] -> checkRadioGroup?.check(R.id.domain_check_e)
-            Url.domain[1] -> checkRadioGroup?.check(R.id.domain_check_ex)
+        when {
+            ShareData.spDomain.contains(Url.domain[0]) -> checkRadioGroup?.check(R.id.domain_check_e)
+            ShareData.spDomain.contains(Url.domain[1]) -> checkRadioGroup?.check(R.id.domain_check_ex)
         }
     }
 }

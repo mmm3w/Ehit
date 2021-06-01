@@ -8,6 +8,7 @@ import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.model.convert.GalleryListWithFavoriteCountConvert
+import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.FavouriteCountWrap
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.FavouritePageIn
@@ -40,9 +41,7 @@ class FavoritesSource(
                         val dataPair: Pair<ArrayList<Gallery>, Array<Int>> = data.requireBody()
                         val list = dataPair.first
                         val countData = dataPair.second
-                        var total = 0
-                        countData.forEach { total += it }
-                        dataWrap.postData(Array(11) { if (it <= 0) total else countData[it - 1] })
+                        dataWrap.postData(GalleryFavorites.attachName(countData))
                         LoadResult.Page(
                             data = list,
                             prevKey = if (page <= GeneralPageIn.START) null else page - 1,

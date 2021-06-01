@@ -35,8 +35,8 @@ class FavouriteSelectPanel : BottomDialogFragment(R.layout.dialog_favourite_sele
         }
     }
 
-    fun setCountData(data: Array<Int>) {
-        mAdapter.setExtendData(data)
+    fun postCountData(data: Array<Pair<String, Int>>) {
+        mAdapter.postUpdate(lifecycle, data = data.toList())
     }
 
 }

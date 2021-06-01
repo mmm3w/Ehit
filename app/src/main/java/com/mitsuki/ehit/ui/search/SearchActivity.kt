@@ -96,7 +96,7 @@ class SearchActivity : BaseActivity() {
         mViewModel.initData(intent)
 
         mHistoryAdapter.clickItem.observe(this, this::onItemEvent)
-        mAdvancedAdapter.ratingEvent.observe(this, Observer(this::onRatingEvent))
+        mAdvancedAdapter.ratingEvent.observe(this, { onRatingEvent() })
 
         mViewModel.searchKey.apply { onSearchUpdate(this) }
 
@@ -146,7 +146,7 @@ class SearchActivity : BaseActivity() {
         finishWithResult(text)
     }
 
-    private fun onRatingEvent(nil: String) {
+    private fun onRatingEvent() {
         MaterialDialog(this).show {
             listItems(items = GalleryRating.strList(this@SearchActivity)) { _, index, _ ->
                 mAdvancedAdapter.applyRating(GalleryRating.DATA[index])

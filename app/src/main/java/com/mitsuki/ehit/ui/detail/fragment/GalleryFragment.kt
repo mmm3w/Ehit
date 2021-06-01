@@ -3,7 +3,6 @@ package com.mitsuki.ehit.ui.detail.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
-import androidx.fragment.app.createViewModelLazy
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import coil.load
@@ -14,11 +13,10 @@ import com.mitsuki.armory.imagegesture.ImageGesture
 import com.mitsuki.armory.imagegesture.StartType
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
-import com.mitsuki.ehit.ui.detail.GalleryPreviewMenu
+import com.mitsuki.ehit.ui.detail.dialog.GalleryPreviewMenu
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.ui.common.widget.OriginalTransformation
 import com.mitsuki.ehit.viewmodel.GalleryViewModel

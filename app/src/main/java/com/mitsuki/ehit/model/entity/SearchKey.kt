@@ -16,7 +16,7 @@ data class SearchKey(
     @Key(RequestKey.SEARCH_KEY_WORD)
     var key: String = "",
     @Key(RequestKey.SEARCH_KEY_CATEGORY)
-    var category: Int = 0,
+    var category: Int = Category.ALL_CATEGORY,
     @Key(RequestKey.SEARCH_KEY_ADVSEARCH)
     var isAdvancedEnable: Boolean = false,
     @Key(RequestKey.SEARCH_KEY_GALLERY_NAME)
@@ -69,7 +69,7 @@ data class SearchKey(
 
     fun addParams(source: UrlParams) {
         source.urlParams(RequestKey.SEARCH_KEY_WORD, key)
-        if (category != 0) source.urlParams(RequestKey.SEARCH_KEY_CATEGORY, categoryForSearch)
+        if (category != Category.ALL_CATEGORY) source.urlParams(RequestKey.SEARCH_KEY_CATEGORY, categoryForSearch)
         if (isAdvancedEnable) {
             source.urlParams(RequestKey.SEARCH_KEY_ADVSEARCH, "1")
             if (isSearchGalleryName)

@@ -1,15 +1,14 @@
-package com.mitsuki.ehit.ui.temp.fragment
+package com.mitsuki.ehit.ui.start.fragment
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentDisclaimerBinding
-import com.mitsuki.ehit.ui.temp.adapter.DisclaimerAdapter
+import com.mitsuki.ehit.ui.start.adapter.DisclaimerAdapter
 
 class DisclaimerFragment : Fragment(R.layout.fragment_disclaimer) {
 
@@ -22,12 +21,12 @@ class DisclaimerFragment : Fragment(R.layout.fragment_disclaimer) {
             adapter = mAdapter
         }
 
-        mAdapter.onEvent.observe(viewLifecycleOwner, Observer {
+        mAdapter.onEvent.observe(viewLifecycleOwner, {
             if (it == true) {
                 Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                     .navigate(R.id.action_disclaimer_fragment_to_login_fragment)
             } else {
-                //TODO:退出APP
+                requireActivity().finish()
             }
         })
     }

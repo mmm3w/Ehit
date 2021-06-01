@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.StatFs
 import coil.Coil
 import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
@@ -28,6 +29,8 @@ object CoilProvider {
 
     private const val DISK_CACHE_PERCENTAGE = 0.02
 
+
+    @Suppress("EXPERIMENTAL_API_USAGE")
     fun init(context: Context) {
         Coil.setImageLoader(ImageLoader.Builder(context)
             .okHttpClient(buildCoilOkHttpClient(context))

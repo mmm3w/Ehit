@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.mitsuki.armory.extend.dp2px
 import com.mitsuki.armory.extend.statusBarHeight
+import com.mitsuki.armory.extend.toast
 import com.mitsuki.armory.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment

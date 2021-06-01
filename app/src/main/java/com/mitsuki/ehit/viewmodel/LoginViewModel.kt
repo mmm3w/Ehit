@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.RequestResult
@@ -16,50 +17,43 @@ import kotlinx.coroutines.launch
 class LoginViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
-    private val eventSubject: PublishSubject<Event> = PublishSubject.create()
-    val event get() = eventSubject.hideWithMainThread()
-
+    val toastEvent: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+    val nextEvent: SingleLiveEvent<Int> by lazy { SingleLiveEvent() }
 
     fun login(account: String, password: String) {
         if (account.isEmpty()) {
-            postEvent(message = "")
+            toastEvent.postValue("")
             return
         }
         if (password.isEmpty()) {
-            postEvent(message = "")
+            toastEvent.postValue("")
             return
         }
 
         viewModelScope.launch {
             when (val result = repository.login(account, password)) {
-                is RequestResult.SuccessResult -> postEvent(goAhead = 0)
-                is RequestResult.FailResult -> postEvent(message = result.throwable.message)
+                is RequestResult.SuccessResult -> nextEvent.postValue(0)
+                is RequestResult.FailResult -> toastEvent.postValue(result.throwable.message)
             }
         }
     }
 
     fun login(id: String, hash: String, igneous: String) {
         if (id.isEmpty()) {
-            postEvent(message = "")
+            toastEvent.postValue("")
             return
         }
         if (hash.isEmpty()) {
-            postEvent(message = "")
+            toastEvent.postValue("")
             return
         }
         if (igneous.isEmpty()) {
-            postEvent(message = "")
+            toastEvent.postValue("")
             return
         }
         ShareData.saveCookie(id, hash, igneous)
         (HttpRookie.client.cookieJar as? CookieJarImpl)?.refresh()
-        postEvent(goAhead = 0)
+        nextEvent.postValue(0)
     }
 
-
-    data class Event(val message: String?, val goAhead: Int?)
-
-    private fun postEvent(message: String? = null, goAhead: Int? = null) {
-        eventSubject.onNext(Event(message, goAhead))
-    }
 }

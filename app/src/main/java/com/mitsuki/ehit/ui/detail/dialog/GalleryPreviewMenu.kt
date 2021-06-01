@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.detail
+package com.mitsuki.ehit.ui.detail.dialog
 
 import android.os.Bundle
 import android.view.View

@@ -1,5 +1,11 @@
 package com.mitsuki.ehit.model.ehparser
 
+import androidx.recyclerview.widget.DiffUtil
+import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extend.saveToInt
+import com.mitsuki.ehit.crutch.extend.string
+import org.jsoup.Jsoup
+
 object GalleryFavorites {
     private const val FAV_CAT_0 = "Favorites 0"
     private const val FAV_CAT_1 = "Favorites 1"
@@ -34,5 +40,40 @@ object GalleryFavorites {
         if (index < 0) return null
         if (index >= favorites.size) return null
         return favorites[index]
+    }
+
+    fun parse(content: String): Array<Int> {
+        val doc = Jsoup.parse(content)
+        val fpNodes = doc.getElementsByClass("fp")
+        if (fpNodes.size != 11) return Array(10) { 0 }
+        return Array(10) { fpNodes[it].child(0).text().saveToInt() }
+    }
+
+    fun attachName(countData: Array<Int>): Array<Pair<String, Int>> {
+        var total = 0
+        countData.forEach { total += it }
+        val data = favorites.mapIndexed { index: Int, str: String ->
+            try {
+                str to countData[index]
+            } catch (inner: Throwable) {
+                str to 0
+            }
+        }
+        return Array(11) { if (it == 0) string(R.string.text_all) to total else data[it - 1] }
+    }
+
+    val DIFF = object : DiffUtil.ItemCallback<Pair<String, Int>>() {
+        override fun areItemsTheSame(
+            oldItem: Pair<String, Int>,
+            newItem: Pair<String, Int>
+        ): Boolean = oldItem === newItem
+
+        override fun areContentsTheSame(
+            oldItem: Pair<String, Int>,
+            newItem: Pair<String, Int>
+        ): Boolean {
+            return oldItem.first == newItem.first &&
+                    oldItem.second == newItem.second
+        }
     }
 }
