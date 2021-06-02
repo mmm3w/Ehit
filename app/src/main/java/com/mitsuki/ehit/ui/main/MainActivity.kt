@@ -82,12 +82,10 @@ class MainActivity : BaseActivity() {
 
         navController.setGraph(R.navigation.nav_graph)
 
-//        when {
-//            ShareData.spFirstOpen -> navDestination(R.id.nav_stack_first_open, null)
-//            ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
-//        }
-
-        navDestination(R.id.nav_stack_first_open, null)
+        when {
+            ShareData.spFirstOpen -> navDestination(R.id.nav_stack_first_open, null)
+            ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
+        }
     }
 
 

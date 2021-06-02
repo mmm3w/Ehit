@@ -8,7 +8,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.mitsuki.armory.adapter.NotifyItem
+import com.mitsuki.armory.adapter.notify.NotifyItem
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
