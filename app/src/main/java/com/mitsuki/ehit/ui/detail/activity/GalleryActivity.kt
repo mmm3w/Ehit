@@ -42,7 +42,7 @@ class GalleryActivity : BaseActivity() {
         binding.galleryViewPager.apply {
             adapter = mViewPagerAdapter
             setCurrentItem(if (isReverse) mPage - mIndex - 1 else mIndex, false)
-            offscreenPageLimit = 2
+            offscreenPageLimit = 3
             registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {

@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
@@ -50,7 +52,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             adapter = mAdapter
         }
 
-        mViewModel.nextEvent.observe(viewLifecycleOwner) { goAhead() }
+//        mViewModel.nextEvent.observe(viewLifecycleOwner) { nextNav() }
 
         mViewModel.toastEvent.observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
@@ -60,7 +62,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             mCookieAdapter.isEnable = it
         }
 
-        mExtend.onSkip.observe(viewLifecycleOwner) { goAhead() }
+        mExtend.onSkip.observe(viewLifecycleOwner) { nextNav() }
 
         mAccountAdapter.onLogin.observe(viewLifecycleOwner) {
             it?.apply { mViewModel.login(account, password) }
@@ -71,10 +73,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
-    private fun goAhead() {
-        ShareData.spFirstOpen = false
-        (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
+    private fun nextNav() {
+        ShareData.spLoginShowed = true
+        with(OpenGate.nextNav) {
+            if (this == -1) {
+                (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
+            } else {
+                (requireActivity() as MainActivity).navigate(this)
+            }
+        }
     }
-
-
 }

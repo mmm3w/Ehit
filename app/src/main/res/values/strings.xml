@@ -16,8 +16,8 @@
     <string name="hint_ipb_pass_hash" translatable="false">ipb_pass_hash</string>
     <string name="hint_igneous" translatable="false">igneous</string>
 
-    <string name="domain_ex_ht" translatable="false">exhentai.org</string>
-    <string name="domain_e_ht" translatable="false">e-hentai.org</string>
+    <string name="text_domain_ex_ht" translatable="false">exhentai.org</string>
+    <string name="text_domain_e_ht" translatable="false">e-hentai.org</string>
 
     <string name="text_1" translatable="false">1</string>
     <string name="text_2" translatable="false">2</string>
@@ -53,6 +53,7 @@
     <string name="hint_add_favorite_success">Added to favorites</string>
     <string name="hint_remove_favorite_failure">Failed to remove from favorites</string>
     <string name="hint_add_favorite_failure">Failed to add to favorites</string>
+    <string name="hint_exit_by_next_back">Press again to exit</string>
 
     <string name="text_test">Test content</string>
     <string name="text_app_waring">The content of this application is from the Internet. Some of it may do physical or mental harm to you.\n You have learnt the risks above and would like to undertake them.</string>

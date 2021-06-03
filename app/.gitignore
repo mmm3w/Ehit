@@ -231,3 +231,4 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,kotlin,java
 /schemas/com.mitsuki.ehit.being.db.AppDatabase/
+/google-services.json

@@ -7,15 +7,14 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.extend.viewBinding
-import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.setting.SettingActivity
@@ -83,7 +82,7 @@ class MainActivity : BaseActivity() {
         navController.setGraph(R.navigation.nav_graph)
 
         when {
-            ShareData.spFirstOpen -> navDestination(R.id.nav_stack_first_open, null)
+            OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
     }
@@ -100,6 +99,27 @@ class MainActivity : BaseActivity() {
         navController.navigate(navID, args, builder.build(), null)
     }
 
-    override fun onSupportNavigateUp() = navController.navigateUp() || super.onSupportNavigateUp()
+    fun navigate(id: Int) {
+        navController.navigate(id)
+    }
 
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    private val lastPressedTime: Long = 0
+
+    override fun onBackPressed() {
+        Log.debug("${onBackPressedDispatcher.hasEnabledCallbacks()}")
+        super.onBackPressed()
+//        if (System.currentTimeMillis() - lastPressedTime < 2000) {
+//            ActivityKeep.out()
+//        } else {
+//            Snackbar.make(
+//                binding.mainDrawer,
+//                R.string.hint_exit_by_next_back,
+//                Snackbar.LENGTH_SHORT
+//            ).show()
+//        }
+    }
 }

@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.setting
 
 import android.graphics.Color
 import android.os.Bundle
+import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
@@ -19,7 +20,6 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
         controller.window(
             navigationBarLight = true, statusBarLight = true,
             navigationBarColor = Color.WHITE,
@@ -27,25 +27,25 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
         )
 
         setSupportActionBar(binding.appBar)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.settings_container, SettingRootFragment())
-            .commit()
+        supportFragmentManager.commit { replace(R.id.settings_container, SettingRootFragment()) }
     }
 
     override fun onPreferenceStartFragment(
         caller: PreferenceFragmentCompat, pref: Preference
     ): Boolean {
-        val args = pref.extras
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(
-            classLoader,
-            pref.fragment
-        )
-        fragment.arguments = args
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.settings_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.commit {
+            val fragment =
+                supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+            fragment.arguments = pref.extras
+            replace(R.id.settings_container, fragment)
+            setCustomAnimations(
+                androidx.navigation.ui.R.animator.nav_default_enter_anim,
+                androidx.navigation.ui.R.animator.nav_default_exit_anim,
+                androidx.navigation.ui.R.animator.nav_default_pop_enter_anim,
+                androidx.navigation.ui.R.animator.nav_default_pop_exit_anim
+            )
+            addToBackStack(pref.fragment)
+        }
         return true
     }
 }

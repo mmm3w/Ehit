@@ -4,6 +4,10 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
+
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 android {
@@ -125,6 +129,11 @@ dependencies {
     implementation deps.reactivex.rxkotlin
     implementation deps.reactivex.rxandroid
 
+    //----------------------------------------------------------------------------------------------
+    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-perf-ktx'
     //----------------------------------------------------------------------------------------------
     implementation project(':armory')
     implementation project(':adapter')

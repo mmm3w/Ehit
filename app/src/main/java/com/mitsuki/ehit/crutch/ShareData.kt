@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
+import com.mitsuki.ehit.crutch.network.Url
 
 @Suppress("MemberVisibilityCanBePrivate")
 object ShareData {
@@ -31,15 +32,21 @@ object ShareData {
     /** Tag ***************************************************************************************/
     const val SP_COOKIES = "SP_COOKIES"
     const val SP_SECURITY = "SP_SECURITY"
-    const val SP_FIRST_OPEN = "SP_FIRST_OPEN"
+
     const val SP_DOMAIN = "SP_DOMAIN"
     const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
+
+    const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
+    const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
 
     const val SP_COOKIE_IPB_MEMBER_ID = "ipb_member_id"
     const val SP_COOKIE_IPB_PASS_HASH = "ipb_pass_hash"
     const val SP_COOKIE_IGNEOUS = "igneous"
 
     /**********************************************************************************************/
+    var spDomain: String
+        set(value) = edit { putString(SP_DOMAIN, value) }
+        get() = string(SP_DOMAIN, Url.EH)
 
     var spCookies: String
         set(value) = edit { putString(SP_COOKIES, value) }
@@ -49,14 +56,13 @@ object ShareData {
         set(value) = edit { putBoolean(SP_SECURITY, value) }
         get() = boolean(SP_SECURITY)
 
-    var spFirstOpen: Boolean
-        set(value) = edit { putBoolean(SP_FIRST_OPEN, value) }
-        get() = boolean(SP_FIRST_OPEN, true)
-//        get() = true
+    var spWaringConfirm: Boolean
+        set(value) = edit { putBoolean(SP_OPEN_APP_WARING_CONFIRM, value) }
+        get() = boolean(SP_OPEN_APP_WARING_CONFIRM)
 
-    var spDomain: String
-        set(value) = edit { putString(SP_DOMAIN, value) }
-        get() = string(SP_DOMAIN)
+    var spLoginShowed: Boolean
+        set(value) = edit { putBoolean(SP_OPEN_LOGIN_SHOWED, value) }
+        get() = boolean(SP_OPEN_LOGIN_SHOWED)
 
 
     fun saveCookie(id: String, hash: String, igneous: String) {

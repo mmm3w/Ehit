@@ -2,12 +2,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="com.mitsuki.ehit.core.ui.fragment.setting.SettingEhFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.SettingEhFragment"
         app:summary="@string/text_setting_eh_summary"
         app:title="@string/text_setting_eh" />
 
     <Preference
-        app:fragment="com.mitsuki.ehit.core.ui.fragment.setting.SettingReadFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.SettingReadFragment"
         app:title="@string/text_setting_read" />
 
     <Preference app:title="@string/text_setting_download" />

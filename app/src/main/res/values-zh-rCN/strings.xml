@@ -28,6 +28,7 @@
     <string name="hint_add_favorite_success">已添加至收藏</string>
     <string name="hint_remove_favorite_failure">移除收藏失败</string>
     <string name="hint_add_favorite_failure">添加收藏失败</string>
+    <string name="hint_exit_by_next_back">再按一次退出</string>
 
     <string name="text_test">测试内容</string>
     <string name="text_app_waring">本应用内容来自互联网，其中一些可能对您造成身体或精神伤害。\n您已了解上述风险并愿意承担这些风险。</string>

@@ -6,14 +6,10 @@ import com.mitsuki.ehit.crutch.ShareData
 
 object Url {
 
-    lateinit var domain: Array<String>
+    const val EH = "e-hentai.org"
+    const val EX = "exhentai.org"
 
-    fun initDomain(context: Context) {
-        with(context) {
-            domain = arrayOf(getString(R.string.domain_e_ht), getString(R.string.domain_ex_ht))
-            if (currentDomain.isEmpty()) currentDomain = domain[0]
-        }
-    }
+    var domain: Array<String> = arrayOf(EH, EX)
 
     var currentDomain: String
         get() = "https://${ShareData.spDomain}"

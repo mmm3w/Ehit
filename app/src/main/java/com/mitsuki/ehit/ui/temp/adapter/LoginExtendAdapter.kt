@@ -47,8 +47,8 @@ class LoginDomain : SingleItemAdapter(true) {
         checkRadioGroup = itemView.findViewById<RadioGroup>(R.id.domain_check_radio)?.apply {
             setOnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {
-                    R.id.domain_check_e -> ShareData.spDomain = Url.domain[0]
-                    R.id.domain_check_ex -> ShareData.spDomain = Url.domain[1]
+                    R.id.domain_check_e -> ShareData.spDomain = Url.EH
+                    R.id.domain_check_ex -> ShareData.spDomain = Url.EX
                 }
             }
         }
@@ -56,8 +56,8 @@ class LoginDomain : SingleItemAdapter(true) {
 
     override val onViewHolderBind: ViewHolder.() -> Unit = {
         when {
-            ShareData.spDomain.contains(Url.domain[0]) -> checkRadioGroup?.check(R.id.domain_check_e)
-            ShareData.spDomain.contains(Url.domain[1]) -> checkRadioGroup?.check(R.id.domain_check_ex)
+            ShareData.spDomain.contains(Url.EH) -> checkRadioGroup?.check(R.id.domain_check_e)
+            ShareData.spDomain.contains(Url.EX) -> checkRadioGroup?.check(R.id.domain_check_ex)
         }
     }
 }

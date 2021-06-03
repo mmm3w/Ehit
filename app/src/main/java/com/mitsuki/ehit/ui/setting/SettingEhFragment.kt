@@ -38,7 +38,8 @@ class SettingEhFragment : PreferenceFragmentCompat() {
 
     private fun showLogoutDialog(): Boolean {
         MaterialDialog(requireContext()).show {
-            title(res = R.string.title_sign_out)
+//            title(res = R.string.title_sign_out)
+            title(text = "中")
             message(res = R.string.text_sign_out_desc)
             positiveButton(R.string.text_confirm) { /*退出操作*/ }
             lifecycleOwner(this@SettingEhFragment)
