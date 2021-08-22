@@ -26,9 +26,9 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [
-                        "room.schemaLocation":"$projectDir/schemas".toString(),
-                        "room.incremental":"true",
-                        "room.expandProjection":"true"]
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
             }
         }
     }
@@ -53,9 +53,37 @@ android {
         }
     }
 
+    flavorDimensions "version"
+
+    productFlavors {
+        dev {
+            applicationIdSuffix '.dev'
+            dimension "version"
+            manifestPlaceholders = [
+                    appName: "Ehit-Dev",
+            ]
+            buildConfigField "Boolean", "DEV", "true"
+        }
+
+        official {
+            dimension "version"
+            manifestPlaceholders = [
+                    appName: "Ehit",
+            ]
+            buildConfigField "Boolean", "DEV", "false"
+        }
+
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 
     kotlinOptions {

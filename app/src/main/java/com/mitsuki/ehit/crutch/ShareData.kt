@@ -35,6 +35,8 @@ object ShareData {
 
     const val SP_DOMAIN = "SP_DOMAIN"
     const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
+    const val SAVE_SOME_DATA_IN_PUBLIC_STORAGE = "SAVE_SOME_DATA_IN_PUBLIC_STORAGE"
+
 
     const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
     const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
@@ -63,6 +65,10 @@ object ShareData {
     var spLoginShowed: Boolean
         set(value) = edit { putBoolean(SP_OPEN_LOGIN_SHOWED, value) }
         get() = boolean(SP_OPEN_LOGIN_SHOWED)
+
+    var spSaveSomeDataInPublicStorage: Boolean
+        set(value) = edit { putBoolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE, value) }
+        get() = boolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE)
 
 
     fun saveCookie(id: String, hash: String, igneous: String) {

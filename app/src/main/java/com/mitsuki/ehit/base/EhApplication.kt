@@ -18,9 +18,12 @@ class EhApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        /** 此处的顺序必须固定 **********************************************************************/
         AppHolder.hold(this)
-        RoomData.init(this)
         ShareData.init(this)
+        RoomData.init(this)
+        /******************************************************************************************/
+
 
         HttpRookie.configOkHttp = {
             cookieJar(CookieJarImpl(ShareData))
