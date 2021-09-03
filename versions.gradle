@@ -35,7 +35,7 @@ versions.hilt_ext = '1.0.0-alpha01'
 versions.paging = '3.0.0'
 versions.lifecycle = "2.3.1"
 versions.navigation = "2.3.5"
-versions.room = "2.3.0"
+versions.room = "2.4.0-alpha04"
 
 versions.material_dialogs = '3.3.0'
 versions.jsoup = '1.13.1'

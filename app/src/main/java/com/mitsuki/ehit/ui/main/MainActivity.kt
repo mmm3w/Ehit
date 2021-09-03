@@ -3,6 +3,7 @@ package com.mitsuki.ehit.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -10,10 +11,13 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.mitsuki.armory.permission.readStorePermissionLauncher
+import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
+import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -31,6 +35,8 @@ class MainActivity : BaseActivity() {
     }
     private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
+
+    private val storePermissionLauncher by readStorePermissionLauncher()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -85,6 +91,8 @@ class MainActivity : BaseActivity() {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
+
+        rebuildDevDB()
     }
 
 
@@ -121,5 +129,15 @@ class MainActivity : BaseActivity() {
 //                Snackbar.LENGTH_SHORT
 //            ).show()
 //        }
+    }
+
+    private fun rebuildDevDBPermission() {
+        if (BuildConfig.DEV) {
+            storePermissionLauncher.launch {
+                if(it){
+                    //重启app重建外部存储数据库
+                }
+            }
+        }
     }
 }

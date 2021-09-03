@@ -3,19 +3,19 @@ include ':app'
 
 
 include ':armory'
-project(':armory').projectDir = new File("/Armory/armory")
+project(':armory').projectDir = new File("Armory/armory")
 
 include ':httprookie'
-project(':httprookie').projectDir = new File("/Armory/httprookie")
+project(':httprookie').projectDir = new File("Armory/httprookie")
 
 include ':imagegesture'
-project(':imagegesture').projectDir = new File("/Armory/imagegesture")
+project(':imagegesture').projectDir = new File("Armory/imagegesture")
 
 include ':adapter'
-project(':adapter').projectDir = new File("/Armory/adapter")
+project(':adapter').projectDir = new File("Armory/adapter")
 
 include ':systemoverlay'
-project(':systemoverlay').projectDir = new File("/Armory/systemoverlay")
+project(':systemoverlay').projectDir = new File("Armory/systemoverlay")
 
 include ':loadprogress'
-project(':loadprogress').projectDir = new File("/Armory/loadprogress")
+project(':loadprogress').projectDir = new File("Armory/loadprogress")
