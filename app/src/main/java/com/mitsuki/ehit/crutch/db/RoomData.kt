@@ -38,8 +38,8 @@ object RoomData {
                 )
             )
         ) {
-//            DevRoomDB.checkRoomFile(application.getExternalFilesDir("") ,
-//                dbFolder, dbFile, dbShmFile, dbWalFile)
+            DevRoomDB.checkRoomFile(application.getE ,
+                dbFolder, dbFile, dbShmFile, dbWalFile)
             db = Room
                 .databaseBuilder(
                     application,
@@ -56,10 +56,6 @@ object RoomData {
                 DATABASE_NAME
             )
             .build()
-    }
-
-    fun rebuildDevDB(context: Context) {
-
     }
 
 

@@ -91,8 +91,6 @@ class MainActivity : BaseActivity() {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
-
-        rebuildDevDB()
     }
 
 

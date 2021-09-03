@@ -9,7 +9,7 @@ object DevRoomDB {
         db: String,
         shm: String,
         wal: String
-    ){
+    ) {
         val targetFolder = File(target)
         //检查目标目录
         if (targetFolder.exists()) {
@@ -21,26 +21,18 @@ object DevRoomDB {
             targetFolder.mkdirs()
         }
 
-        val targetDBFile = File(targetFolder, db)
-        if (targetDBFile.exists() && targetDBFile.isFile) return
+        dbFileCheck(File(source, db), File(target, db))
+        dbFileCheck(File(source, shm), File(target, shm))
+        dbFileCheck(File(source, wal), File(target, wal))
 
+    }
 
-
-
-
-        val sourceFolder = File(source)
-        if (!sourceFolder.exists() || sourceFolder.isFile) return
-
-
-        //copy相关文件
-        val srcDbFile = File(sourceFolder, db)
-        if (srcDbFile.exists() && srcDbFile.isFile){
-
-        }else{
-
+    private fun dbFileCheck(src: File, dst: File) {
+        if (dst.exists()) {
+            if (dst.isFile) return
         }
-
-
+        if (!src.exists()) return
+        copyFile(src, dst)
     }
 
     private fun copyFile(src: File, dst: File) {
