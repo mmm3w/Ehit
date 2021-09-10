@@ -163,11 +163,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
     //----------------------------------------------------------------------------------------------
-    implementation project(':armory')
-    implementation project(':adapter')
-    implementation project(':httprookie')
-    implementation project(':imagegesture')
-    implementation project(':loadprogress')
+    implementation project(path: ':armory')
+    implementation project(path: ':adapter')
+    implementation project(path: ':httprookie')
+    implementation project(path: ':imagegesture')
+    implementation project(path: ':loadprogress')
+    implementation project(path: ':systemoverlay')
 }
 
 repositories {

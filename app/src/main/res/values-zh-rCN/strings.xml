@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Ehit</string>
 
+
     <string name="error_parse_throwable_text">数据解析异常</string>
 
     <string name="description_page_jump">跳页支持</string>
@@ -30,6 +31,7 @@
     <string name="hint_add_favorite_failure">添加收藏失败</string>
     <string name="hint_exit_by_next_back">再按一次退出</string>
 
+    <string name="dev_text_restart">请重启APP</string>
     <string name="text_test">测试内容</string>
     <string name="text_app_waring">本应用内容来自互联网，其中一些可能对您造成身体或精神伤害。\n您已了解上述风险并愿意承担这些风险。</string>
 

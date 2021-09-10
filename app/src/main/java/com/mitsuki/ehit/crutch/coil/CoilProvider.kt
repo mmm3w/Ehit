@@ -9,9 +9,7 @@ import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
 import com.mitsuki.loadprogress.ProgressProvider
-import okhttp3.Cache
-import okhttp3.ConnectionPool
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
@@ -36,7 +34,10 @@ object CoilProvider {
             .okHttpClient(buildCoilOkHttpClient(context))
             .availableMemoryPercentage(0.9)
             .crossfade(true)
-            .componentRegistry { add(RetryInterceptor(RETRY_TIMES)) }
+            .componentRegistry {
+                add(RetryInterceptor(RETRY_TIMES))
+                add(LoadBreakInterceptor()) //NSFW内容遮蔽
+            }
             .build())
     }
 
@@ -76,5 +77,4 @@ object CoilProvider {
             CACHE_LEVEL_MIN
         }
     }
-
 }

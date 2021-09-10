@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.os.Environment
+import android.util.Log
 import androidx.room.Room
 import com.mitsuki.armory.permission.Tool
 import com.mitsuki.ehit.BuildConfig
@@ -28,36 +29,35 @@ object RoomData {
     private const val dbShmFile = "$DATABASE_NAME-shm"
     private const val dbWalFile = "$DATABASE_NAME-wal"
 
-    fun init(application: Application) {
-        //直接现先在内部存储建立数据库
-        if (BuildConfig.DEV &&
-            Tool.Companion.checkSelfPermission(
-                application, arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            )
-        ) {
-            DevRoomDB.checkRoomFile(application.getE ,
-                dbFolder, dbFile, dbShmFile, dbWalFile)
-            db = Room
-                .databaseBuilder(
-                    application,
-                    AppDatabase::class.java,
-                    "$dbFolder/$dbFile"
-                )
-                .build()
-            return
-        }
+    fun init(context: Context) {
         db = Room
             .databaseBuilder(
-                application,
+                context,
                 AppDatabase::class.java,
                 DATABASE_NAME
             )
             .build()
     }
 
+    fun importAndRebuild(context: Context) {
+        db.close()
+        import()
+        init(context)
+    }
+
+    fun exportAndBuild(context: Context) {
+        db.close()
+        export()
+        init(context)
+    }
+
+    private fun import() {
+
+    }
+
+    private fun export() {
+
+    }
 
     val searchDao: SearchDao
         get() = db.searchDao()

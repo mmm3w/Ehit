@@ -1,9 +1,9 @@
 package com.mitsuki.ehit.ui.main
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -11,13 +11,13 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.mitsuki.armory.permission.Tool
 import com.mitsuki.armory.permission.readStorePermissionLauncher
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
-import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -91,6 +91,8 @@ class MainActivity : BaseActivity() {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
+
+        requestDevDBPermission()
     }
 
 
@@ -121,20 +123,30 @@ class MainActivity : BaseActivity() {
 //        if (System.currentTimeMillis() - lastPressedTime < 2000) {
 //            ActivityKeep.out()
 //        } else {
-//            Snackbar.make(
-//                binding.mainDrawer,
-//                R.string.hint_exit_by_next_back,
-//                Snackbar.LENGTH_SHORT
-//            ).show()
+//        Snackbar.make(
+//            binding.mainDrawer,
+//            R.string.hint_exit_by_next_back,
+//            Snackbar.LENGTH_SHORT
+//        ).show()
 //        }
     }
 
-    private fun rebuildDevDBPermission() {
-        if (BuildConfig.DEV) {
+    private fun requestDevDBPermission() {
+        if (BuildConfig.DEV &&
+            !Tool.checkSelfPermission(
+                application, arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            )
+        ) {
             storePermissionLauncher.launch {
-                if(it){
-                    //重启app重建外部存储数据库
-                }
+                if (it)
+                    Snackbar.make(
+                        binding.mainDrawer,
+                        R.string.dev_text_restart,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
             }
         }
     }
