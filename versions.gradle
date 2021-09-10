@@ -157,6 +157,7 @@ static def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.maven { url 'https://jitpack.io' }
+    handler.maven { url 'https://raw.githubusercontent.com/mmm3w/maven/main'}
 }
 
 ext.deps = deps
