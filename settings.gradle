@@ -1,19 +1,2 @@
 rootProject.name='Ehit'
 include ':app'
-
-
-include ':armory'
-project(':armory').projectDir = new File("Armory/armory")
-
-include ':imagegesture'
-project(':imagegesture').projectDir = new File("Armory/imagegesture")
-
-include ':adapter'
-project(':adapter').projectDir = new File("Armory/adapter")
-
-include ':loadprogress'
-project(':loadprogress').projectDir = new File("Armory/loadprogress")
-
-
-include ':systemoverlay'
-project(':systemoverlay').projectDir = new File("Armory/systemoverlay")
