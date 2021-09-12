@@ -32,6 +32,8 @@
     <string name="dev_text_db">About DB: </string>
     <string name="dev_text_db_export">DB Export</string>
     <string name="dev_text_db_import">DB Import</string>
+    <string name="dev_text_nsfw_change">NSFW Switch</string>
+
 
 
     <string name="error_parse_throwable_text">Data parse error</string>

@@ -15,6 +15,7 @@ import com.mitsuki.armory.systemoverlay.*
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.dev.DevEnv
 
 object OverlayTool : LifecycleObserver {
 
@@ -36,6 +37,7 @@ object OverlayTool : LifecycleObserver {
                 setOnClickListener(OverlayTool::onPanelControl)
                 findViewById<TextView>(R.id.dev_overlay_db_import)?.setOnClickListener(OverlayTool::onPanelControl)
                 findViewById<TextView>(R.id.dev_overlay_db_export)?.setOnClickListener(OverlayTool::onPanelControl)
+                findViewById<TextView>(R.id.dev_overlay_nsfw)?.setOnClickListener(OverlayTool::onPanelControl)
             }
         }
     }
@@ -62,6 +64,8 @@ object OverlayTool : LifecycleObserver {
                 //导入数据库
                 AppHolder.toast("导入数据库")
             }
+            R.id.dev_overlay_nsfw ->
+                AppHolder.toast(if (DevEnv.nsfwSwitch()) "已开启NSFW，请手动刷新" else "已关闭NSFW，请手动刷新")
         }
 
         OverlayManager.switch(triggerButton)

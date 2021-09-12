@@ -19,7 +19,9 @@ class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
     RecyclerView.Adapter<FavouriteItemAdapter.ViewHolder>() {
 
     private val notifyQueueData: NotifyQueueData<Pair<String, Int>> by lazy {
-        NotifyQueueData(GalleryFavorites.DIFF)
+        NotifyQueueData(GalleryFavorites.DIFF).apply {
+            attachAdapter(this@FavouriteItemAdapter)
+        }
     }
 
     val checkItem: SingleLiveEvent<Int> by lazy { SingleLiveEvent() }
