@@ -3,7 +3,7 @@ package com.mitsuki.ehit.ui.search
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.extend.dp2px
+import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.SingleLiveEvent
 

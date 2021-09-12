@@ -4,7 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import coil.load
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.entity.HeaderInfo

@@ -5,7 +5,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.model.ehparser.GalleryRating
 import com.mitsuki.ehit.model.entity.SearchKey

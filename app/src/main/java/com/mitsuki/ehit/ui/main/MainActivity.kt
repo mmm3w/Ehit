@@ -11,8 +11,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import com.mitsuki.armory.permission.Tool
-import com.mitsuki.armory.permission.readStorePermissionLauncher
+import com.mitsuki.armory.base.permission.Tool
+import com.mitsuki.armory.base.permission.readStorePermissionLauncher
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
@@ -20,6 +20,7 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
+import com.mitsuki.ehit.dev.overlay.OverlayTool
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.setting.SettingActivity
 import com.mitsuki.ehit.ui.temp.activity.DownloadActivity
@@ -91,8 +92,9 @@ class MainActivity : BaseActivity() {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
-
-        requestDevDBPermission()
+        lifecycle.addObserver(OverlayTool)
+        OverlayTool.permission(this)?.apply { startActivity(this) }
+//        requestDevDBPermission()
     }
 
 

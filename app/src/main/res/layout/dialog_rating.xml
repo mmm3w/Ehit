@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.mitsuki.armory.widget.RatingView
+    <com.mitsuki.armory.base.widget.RatingView
         android:id="@+id/rating_target"
         android:layout_width="240dp"
         android:layout_height="wrap_content"

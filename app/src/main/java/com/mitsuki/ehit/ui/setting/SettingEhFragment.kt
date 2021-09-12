@@ -6,7 +6,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.mitsuki.armory.span.SpannableBuilder
+import com.mitsuki.armory.base.span.SpannableBuilder
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.Url

@@ -3,7 +3,7 @@ package com.mitsuki.ehit.ui.start.adapter
 import android.widget.Button
 import androidx.lifecycle.MutableLiveData
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.SingleLiveEvent
 

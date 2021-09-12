@@ -2,8 +2,8 @@ package com.mitsuki.ehit.ui.common.widget
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.extend.marginVertical
-import com.mitsuki.armory.extend.paddingVertical
+import com.mitsuki.armory.base.extend.marginVertical
+import com.mitsuki.armory.base.extend.paddingVertical
 
 class ListFloatHeader(private val mView: View) : RecyclerView.OnScrollListener() {
 

@@ -10,8 +10,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.extend.dp2px
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.dp2px
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap

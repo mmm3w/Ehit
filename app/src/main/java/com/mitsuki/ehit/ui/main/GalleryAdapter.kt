@@ -2,14 +2,11 @@ package com.mitsuki.ehit.ui.main
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.memory.MemoryCache
-import coil.metadata
-import com.mitsuki.armory.extend.dp2px
+import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.coil.CacheKey

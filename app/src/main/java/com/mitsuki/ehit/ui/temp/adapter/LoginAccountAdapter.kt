@@ -5,7 +5,7 @@ import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 
 class LoginAccountAdapter : SingleItemAdapter(true) {

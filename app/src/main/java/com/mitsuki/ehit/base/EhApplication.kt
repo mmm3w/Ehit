@@ -9,6 +9,7 @@ import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
 import com.mitsuki.armory.systemoverlay.OverlayManager
+import com.mitsuki.ehit.dev.overlay.OverlayTool
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
@@ -23,7 +24,7 @@ class EhApplication : Application() {
         AppHolder.hold(this)
         ShareData.init(this)
         RoomData.init(this)
-        OverlayManager.init(this)
+        OverlayTool.init(this)
         /******************************************************************************************/
 
 

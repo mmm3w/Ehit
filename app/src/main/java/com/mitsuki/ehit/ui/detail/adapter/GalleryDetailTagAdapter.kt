@@ -4,9 +4,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.extend.dp2px
-import com.mitsuki.armory.extend.view
-import com.mitsuki.armory.widget.TagsView
+import com.mitsuki.armory.base.extend.dp2px
+import com.mitsuki.armory.base.extend.view
+import com.mitsuki.armory.base.widget.TagsView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.InitialGate

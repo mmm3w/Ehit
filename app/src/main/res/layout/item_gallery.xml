@@ -57,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="@id/gallery_thumb"
         app:layout_constraintStart_toEndOf="@id/gallery_thumb" />
 
-    <com.mitsuki.armory.widget.RatingView
+    <com.mitsuki.armory.base.widget.RatingView
         android:id="@+id/gallery_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

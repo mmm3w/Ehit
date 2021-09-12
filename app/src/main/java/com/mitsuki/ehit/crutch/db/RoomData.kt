@@ -6,9 +6,6 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 import androidx.room.Room
-import com.mitsuki.armory.permission.Tool
-import com.mitsuki.ehit.BuildConfig
-import com.mitsuki.ehit.dev.DevRoomDB
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.dao.SearchDao
 import java.io.File

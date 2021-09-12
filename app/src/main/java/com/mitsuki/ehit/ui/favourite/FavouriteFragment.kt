@@ -13,8 +13,8 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mitsuki.armory.extend.dp2px
-import com.mitsuki.armory.extend.statusBarHeight
+import com.mitsuki.armory.base.extend.dp2px
+import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey

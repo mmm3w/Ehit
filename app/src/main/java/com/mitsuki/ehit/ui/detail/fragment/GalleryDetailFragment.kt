@@ -27,10 +27,10 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import com.mitsuki.armory.extend.dp2px
-import com.mitsuki.armory.extend.statusBarHeight
-import com.mitsuki.armory.extend.toast
-import com.mitsuki.armory.widget.RatingView
+import com.mitsuki.armory.base.extend.dp2px
+import com.mitsuki.armory.base.extend.statusBarHeight
+import com.mitsuki.armory.base.extend.toast
+import com.mitsuki.armory.base.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extend.observe

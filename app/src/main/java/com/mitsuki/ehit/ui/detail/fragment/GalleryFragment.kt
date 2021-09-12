@@ -11,6 +11,8 @@ import coil.request.ImageResult
 import coil.size.OriginalSize
 import com.mitsuki.armory.imagegesture.ImageGesture
 import com.mitsuki.armory.imagegesture.StartType
+import com.mitsuki.armory.loadprogress.Progress
+import com.mitsuki.armory.loadprogress.ProgressProvider
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extend.observe
@@ -20,8 +22,6 @@ import com.mitsuki.ehit.ui.detail.dialog.GalleryPreviewMenu
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.ui.common.widget.OriginalTransformation
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
-import com.mitsuki.loadprogress.Progress
-import com.mitsuki.loadprogress.ProgressProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -6,13 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mitsuki.armory.loadprogress.addFeature
 import com.mitsuki.ehit.crutch.extend.postNext
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
-import com.mitsuki.loadprogress.addFeature
 import kotlinx.coroutines.launch
 
 class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :

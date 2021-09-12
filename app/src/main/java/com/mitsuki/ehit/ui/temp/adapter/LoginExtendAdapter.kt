@@ -3,7 +3,7 @@ package com.mitsuki.ehit.ui.temp.adapter
 import android.widget.Button
 import android.widget.RadioGroup
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread

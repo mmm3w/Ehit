@@ -3,7 +3,7 @@ package com.mitsuki.ehit.ui.search.adapter
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.MutableLiveData
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 
 class SearchAdvancedOptionsSwitch : SingleItemAdapter(false) {

@@ -4,7 +4,7 @@ import android.widget.TextView
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.extend.view
+import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
