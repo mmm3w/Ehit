@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.Lifecycle
@@ -21,6 +22,7 @@ object OverlayTool : LifecycleObserver {
 
     private lateinit var triggerButton: OverlayView
     private lateinit var controlPanel: OverlayView
+    private lateinit var actionReference: (Int) -> Unit
 
     fun init(context: Context) {
         if (BuildConfig.DEV) {
@@ -54,18 +56,17 @@ object OverlayTool : LifecycleObserver {
         return null
     }
 
+    fun panelAction(action: (Int) -> Unit) {
+        actionReference = action
+        Log.d("asdf","asdf")
+    }
+
     private fun onPanelControl(view: View) {
         when (view.id) {
-            R.id.dev_overlay_db_import -> {
-                //导出数据库
-                AppHolder.toast("导出数据库")
-            }
-            R.id.dev_overlay_db_export -> {
-                //导入数据库
-                AppHolder.toast("导入数据库")
-            }
+            R.id.dev_overlay_db_import,
+            R.id.dev_overlay_db_export -> actionReference.invoke(view.id)
             R.id.dev_overlay_nsfw ->
-                AppHolder.toast(if (DevEnv.nsfwSwitch()) "已开启NSFW，请手动刷新" else "已关闭NSFW，请手动刷新")
+                AppHolder.toast(if (DevEnv.nsfwSwitch()) "已开启NSFW" else "已关闭NSFW")
         }
 
         OverlayManager.switch(triggerButton)

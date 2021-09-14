@@ -8,18 +8,20 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.armory.base.permission.Tool
 import com.mitsuki.armory.base.permission.readStorePermissionLauncher
-import com.mitsuki.ehit.BuildConfig
+import com.mitsuki.armory.base.permission.writeStorePermissionLauncher
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
+import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
+import com.mitsuki.ehit.crutch.zip.ZipPacker
 import com.mitsuki.ehit.dev.overlay.OverlayTool
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.setting.SettingActivity
@@ -37,7 +39,6 @@ class MainActivity : BaseActivity() {
     private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
-    private val storePermissionLauncher by readStorePermissionLauncher()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -49,7 +50,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
-
         //NavigationUI提供的setup方法无法满足需求
         binding.mainNavigation.setNavigationItemSelectedListener {
             var handle = true
@@ -92,9 +92,8 @@ class MainActivity : BaseActivity() {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
-        lifecycle.addObserver(OverlayTool)
-        OverlayTool.permission(this)?.apply { startActivity(this) }
-//        requestDevDBPermission()
+
+        onCreateDev()
     }
 
 
@@ -133,23 +132,48 @@ class MainActivity : BaseActivity() {
 //        }
     }
 
-    private fun requestDevDBPermission() {
-        if (BuildConfig.DEV &&
-            !Tool.checkSelfPermission(
-                application, arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            )
-        ) {
-            storePermissionLauncher.launch {
-                if (it)
-                    Snackbar.make(
-                        binding.mainDrawer,
-                        R.string.dev_text_restart,
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+    /** dev 用 *************************************************************************************/
+    private val readStorePermissionLauncher by readStorePermissionLauncher()
+    private val writeStorePermissionLauncher by writeStorePermissionLauncher()
+
+    private lateinit var packer: ZipPacker
+
+    private fun onCreateDev() {
+        lifecycle.addObserver(OverlayTool)
+        OverlayTool.panelAction(this::onDevPanel)
+        OverlayTool.permission(this)?.apply { startActivity(this) }
+
+        packer = ZipPacker(
+            this,
+            activityResultRegistry,
+            RoomData.dbFolder,
+            RoomData.storeFileArray
+        ) { RoomData.storeSaveFileName() }
+    }
+
+    private fun onDevPanel(id: Int) {
+        when (id) {
+            R.id.dev_overlay_db_import -> {
+                //导入，需要读取权限
+                if (Tool.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                } else {
+                    readStorePermissionLauncher.launch {
+
+                    }
+                }
+            }
+            R.id.dev_overlay_db_export -> {
+                //导出，需要写入权限
+                if (Tool.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    packer.pack()
+                } else {
+                    writeStorePermissionLauncher.launch {
+                        if (it) packer.pack() else toast("缺少写入权限")
+                    }
+                }
             }
         }
     }
+
 }

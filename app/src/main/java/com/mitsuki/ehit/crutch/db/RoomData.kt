@@ -1,59 +1,37 @@
 package com.mitsuki.ehit.crutch.db
 
-import android.Manifest
-import android.app.Application
 import android.content.Context
-import android.os.Environment
-import android.util.Log
 import androidx.room.Room
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.dao.SearchDao
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 object RoomData {
     private lateinit var db: AppDatabase
 
-    @Suppress("SpellCheckingInspection")
-    private const val DATABASE_NAME = "ehit"
+    private const val CACHE_DB_NAME = "ehit-cache"
+    private const val STORE_DB_NAME = "ehit"
 
-    //仅供调试用
-    private val mDevDBFile =
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).absolutePath
+    val storeFileArray
+        get() = arrayOf(
+            STORE_DB_NAME,
+            "${STORE_DB_NAME}-shm",
+            "${STORE_DB_NAME}-wal"
+        )
 
-    @Suppress("SpellCheckingInspection")
-    private val dbFolder = "$mDevDBFile/Ehit"
-    private const val dbFile = DATABASE_NAME
-    private const val dbShmFile = "$DATABASE_NAME-shm"
-    private const val dbWalFile = "$DATABASE_NAME-wal"
+    val dbFolder get() = File(AppHolder.cacheDir.parent, "databases")
 
     fun init(context: Context) {
         db = Room
             .databaseBuilder(
                 context,
                 AppDatabase::class.java,
-                DATABASE_NAME
+                STORE_DB_NAME
             )
             .build()
-    }
-
-    fun importAndRebuild(context: Context) {
-        db.close()
-        import()
-        init(context)
-    }
-
-    fun exportAndBuild(context: Context) {
-        db.close()
-        export()
-        init(context)
-    }
-
-    private fun import() {
-
-    }
-
-    private fun export() {
-
     }
 
     val searchDao: SearchDao
@@ -62,5 +40,20 @@ object RoomData {
     val galleryDao: GalleryDao
         get() = db.galleryDao()
 
+    fun close() {
+        db.close()
+    }
 
+    fun rebuild(context: Context) {
+        init(context)
+    }
+
+    fun storeSaveFileName(): String {
+        return "ehit-${
+            SimpleDateFormat(
+                "yyyy-MM-dd-HH-mm-ss",
+                Locale.getDefault()
+            ).format(System.currentTimeMillis())
+        }.zip"
+    }
 }
