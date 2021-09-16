@@ -22,6 +22,7 @@ import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.crutch.zip.ZipPacker
+import com.mitsuki.ehit.crutch.zip.ZipReader
 import com.mitsuki.ehit.dev.overlay.OverlayTool
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.setting.SettingActivity
@@ -137,6 +138,7 @@ class MainActivity : BaseActivity() {
     private val writeStorePermissionLauncher by writeStorePermissionLauncher()
 
     private lateinit var packer: ZipPacker
+    private lateinit var reader: ZipReader
 
     private fun onCreateDev() {
         lifecycle.addObserver(OverlayTool)
@@ -149,6 +151,7 @@ class MainActivity : BaseActivity() {
             RoomData.dbFolder,
             RoomData.storeFileArray
         ) { RoomData.storeSaveFileName() }
+        reader = ZipReader(this, activityResultRegistry, RoomData.dbFolder)
     }
 
     private fun onDevPanel(id: Int) {
@@ -156,11 +159,9 @@ class MainActivity : BaseActivity() {
             R.id.dev_overlay_db_import -> {
                 //导入，需要读取权限
                 if (Tool.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
+                    reader.read()
                 } else {
-                    readStorePermissionLauncher.launch {
-
-                    }
+                    readStorePermissionLauncher.launch { if (it) reader.read() else toast("缺少写入权限") }
                 }
             }
             R.id.dev_overlay_db_export -> {
@@ -168,9 +169,7 @@ class MainActivity : BaseActivity() {
                 if (Tool.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     packer.pack()
                 } else {
-                    writeStorePermissionLauncher.launch {
-                        if (it) packer.pack() else toast("缺少写入权限")
-                    }
+                    writeStorePermissionLauncher.launch { if (it) packer.pack() else toast("缺少写入权限") }
                 }
             }
         }

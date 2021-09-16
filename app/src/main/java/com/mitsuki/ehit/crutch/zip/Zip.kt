@@ -1,10 +1,11 @@
 package com.mitsuki.ehit.crutch.zip
 
-import java.io.File
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+
 
 object Zip {
     /**
@@ -13,18 +14,76 @@ object Zip {
      * folder 需要被压缩的文件目录
      * file 需要被压缩的文件目录下的目标文件，null时全部压缩
      */
-    fun packFile(
+    fun pack(
         outputStream: OutputStream,
         folder: File,
         file: Array<String>? = null
     ) {
         if (!folder.exists()) throw IllegalAccessException("源目录不存在")
+        if (outputStream is BufferedOutputStream) {
+            packWithBufferedStream(outputStream, folder, file)
+        } else {
+            BufferedOutputStream(outputStream).use { bufferedOutputStream ->
+                packWithBufferedStream(bufferedOutputStream, folder, file)
+            }
+        }
+    }
+
+    private fun packWithBufferedStream(
+        outputStream: BufferedOutputStream,
+        folder: File,
+        file: Array<String>? = null
+    ) {
         ZipOutputStream(outputStream).use { zipOutputStream ->
             if (file != null) {
                 if (!folder.isDirectory) throw IllegalAccessException("源目录非文件夹目录")
                 for (name in file) zip(File(folder, name), zipOutputStream)
             } else {
                 zip(folder, zipOutputStream)
+            }
+        }
+    }
+
+    fun unpack(
+        inputStream: InputStream,
+        target: File
+    ) {
+        if (target.exists()) {
+            if (target.isFile) throw IllegalAccessException("目标目录已被占用")
+        } else {
+            target.mkdirs()
+        }
+        if (inputStream is BufferedInputStream) {
+            zipStreamUnpack(inputStream, target)
+        } else {
+            BufferedInputStream(inputStream).use { zipStreamUnpack(it, target) }
+        }
+    }
+
+
+    fun unpack(zip: File, target: File) {
+
+    }
+
+    private fun zipStreamUnpack(inputStream: BufferedInputStream, target: File) {
+        ZipInputStream(inputStream).use { zipInputStream ->
+            var entry: ZipEntry
+            while (zipInputStream.nextEntry.also { entry = it } != null) {
+                if (entry.isDirectory) {
+                    File(target, entry.name).apply {
+                        if (!exists()) mkdirs()
+                    }
+                } else {
+                    File(target, entry.name).apply {
+                        parentFile?.apply { if (!exists()) mkdirs() }
+                            ?: throw IllegalAccessException()
+                        outputStream().use { fileOutputStream ->
+                            BufferedOutputStream(fileOutputStream).use { bufferedOutputStream ->
+                                bufferedOutputStream.write(zipInputStream, 1024)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -46,11 +105,10 @@ object Zip {
         }
     }
 
-    //文件压缩写入
     private fun zipFile(file: File, zipOutputStream: ZipOutputStream) {
         zipOutputStream.putNextEntry(ZipEntry(file.name))
         file.inputStream().use { fileInputStream ->
-            zipOutputStream.write(fileInputStream, 1024)
+            BufferedInputStream(fileInputStream).use { zipOutputStream.write(it, 1024) }
         }
         zipOutputStream.closeEntry()
     }

@@ -11,48 +11,45 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.Exception
+import java.net.URLConnection
 
-/**
- * 想外部存储写入
- */
-class ZipPacker(
+class ZipReader(
     private val lifecycleOwner: LifecycleOwner,
     private val registry: ActivityResultRegistry,
-    private val folder: File,
-    private val files: Array<String>? = null,
-    private val input: () -> String
+    private val targetFolder: File,
 ) : DefaultLifecycleObserver {
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    private lateinit var packerLauncher: ActivityResultLauncher<String>
+    private lateinit var readerLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(owner: LifecycleOwner) {
-        packerLauncher =
-            registry.register("packZip", owner, ActivityResultContracts.CreateDocument()) {
+        readerLauncher =
+            registry.register("readZip", owner, ActivityResultContracts.OpenDocument()) {
                 owner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        AppHolder.contentResolver.openOutputStream(it)?.use {
-                            Zip.pack(it, folder, files)
+                        AppHolder.contentResolver.openInputStream(it)?.use {
+                            Zip.unpack(it, targetFolder)
                         }
-                        withContext(Dispatchers.Main) { AppHolder.toast("保存成功") }
+                        withContext(Dispatchers.Main) { AppHolder.toast("解压成功") }
                     } catch (inner: Exception) {
                         inner.printStackTrace()
-                        withContext(Dispatchers.Main) { AppHolder.toast("保存失败") }
+                        withContext(Dispatchers.Main) { AppHolder.toast("解压失败") }
                     }
                 }
             }
+
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         lifecycleOwner.lifecycle.removeObserver(this)
     }
 
-
-    fun pack() {
-        packerLauncher.launch(input())
+    fun read() {
+        readerLauncher.launch(
+            arrayOf(URLConnection.getFileNameMap().getContentTypeFor("sample.zip"))
+        )
     }
 }
