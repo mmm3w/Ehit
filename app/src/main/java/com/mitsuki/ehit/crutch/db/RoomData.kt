@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object RoomData {
-    private lateinit var db: AppDatabase
+    private lateinit var cacheDB: CacheDatabase
+    private lateinit var storeDB:StoreDatabase
 
     private const val CACHE_DB_NAME = "ehit-cache"
     private const val STORE_DB_NAME = "ehit"
@@ -25,28 +26,28 @@ object RoomData {
     val dbFolder get() = File(AppHolder.cacheDir.parent, "databases")
 
     fun init(context: Context) {
-        db = Room
+        cacheDB = Room
             .databaseBuilder(
                 context,
-                AppDatabase::class.java,
+                CacheDatabase::class.java,
+                CACHE_DB_NAME
+            )
+            .build()
+
+        storeDB = Room
+            .databaseBuilder(
+                context,
+                StoreDatabase::class.java,
                 STORE_DB_NAME
             )
             .build()
     }
 
     val searchDao: SearchDao
-        get() = db.searchDao()
+        get() = storeDB.searchDao()
 
     val galleryDao: GalleryDao
-        get() = db.galleryDao()
-
-    fun close() {
-        db.close()
-    }
-
-    fun rebuild(context: Context) {
-        init(context)
-    }
+        get() = cacheDB.galleryDao()
 
     fun storeSaveFileName(): String {
         return "ehit-${

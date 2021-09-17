@@ -14,13 +14,9 @@ import com.mitsuki.ehit.model.entity.db.*
         GalleryInfoCache::class,
         GalleryPreviewCache::class,
         GalleryTagCache::class,
-        QuickSearch::class,
-        SearchHistory::class
     ], version = 1
 )
 @TypeConverters(GalleryListTypeConverter::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun searchDao(): SearchDao
-
+abstract class CacheDatabase : RoomDatabase() {
     abstract fun galleryDao(): GalleryDao
 }
