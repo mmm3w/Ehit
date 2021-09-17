@@ -108,6 +108,8 @@ class ExampleUnitTest {
             delay(1000L)
             println("Task from coroutine scope") // 这一行会在内嵌 launch 之前输出
         }
+
+        println("--------------------")
         println("Coroutine scope is over") // 这一行在内嵌 launch 执行完毕后才输出
     }
 
@@ -226,8 +228,8 @@ class ExampleUnitTest {
     private fun tryPw(pw: String) {
         val data = HttpRookie.post<String>("http://192.168.0.1/login/Auth") {
             convert = StringConvert()
-            params("username" to "admin")
-            params("password" to md5(pw))
+            params("username" , "admin")
+            params("password" , md5(pw))
         }.execute()
 
         when (data) {

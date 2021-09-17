@@ -2,6 +2,8 @@ package com.mitsuki.ehit.crutch.network
 
 import android.util.Base64
 import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.db.RoomData
+import kotlinx.coroutines.runBlocking
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -16,7 +18,14 @@ class CookieJarImpl(private val cache: ShareData) : CookieJar {
     private val mMemoryCache: MutableMap<String, Cookie> by lazy { hashMapOf() }
 
     init {
-        refresh()
+        //从数据库读取cookie到内存缓存
+        runBlocking {
+            RoomData.cookieDao.clearCookie()
+        }
+    }
+
+    fun saveCookie() {
+        //更新内缓存
     }
 
     fun refresh() {
@@ -28,6 +37,9 @@ class CookieJarImpl(private val cache: ShareData) : CookieJar {
 
     @Synchronized
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        //从内存缓存加载 cookie
+
+
         cache.edit {
             with(mMemoryCache.iterator()) {
                 while (hasNext()) {
@@ -45,6 +57,7 @@ class CookieJarImpl(private val cache: ShareData) : CookieJar {
 
     @Synchronized
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        //更新内存缓存以及数据库缓存
         cache.edit {
             var cookieName = ""
             for (cookie in cookies) {

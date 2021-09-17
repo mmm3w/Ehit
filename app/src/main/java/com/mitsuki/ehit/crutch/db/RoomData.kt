@@ -3,6 +3,7 @@ package com.mitsuki.ehit.crutch.db
 import android.content.Context
 import androidx.room.Room
 import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.model.dao.CookieDao
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.dao.SearchDao
 import java.io.File
@@ -11,7 +12,7 @@ import java.util.*
 
 object RoomData {
     private lateinit var cacheDB: CacheDatabase
-    private lateinit var storeDB:StoreDatabase
+    private lateinit var storeDB: StoreDatabase
 
     private const val CACHE_DB_NAME = "ehit-cache"
     private const val STORE_DB_NAME = "ehit"
@@ -45,6 +46,9 @@ object RoomData {
 
     val searchDao: SearchDao
         get() = storeDB.searchDao()
+
+    val cookieDao: CookieDao
+        get() = storeDB.cookieDao()
 
     val galleryDao: GalleryDao
         get() = cacheDB.galleryDao()

@@ -9,8 +9,10 @@ import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
 import com.mitsuki.armory.systemoverlay.OverlayManager
+import com.mitsuki.ehit.crutch.Log.debug
 import com.mitsuki.ehit.dev.overlay.OverlayTool
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 
@@ -19,12 +21,12 @@ class EhApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         /** 此处的顺序必须固定 **********************************************************************/
         AppHolder.hold(this)
         ShareData.init(this)
         RoomData.init(this)
         OverlayTool.init(this)
+
         /******************************************************************************************/
 
 
