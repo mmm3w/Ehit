@@ -10,6 +10,7 @@ import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
 import com.mitsuki.armory.systemoverlay.OverlayManager
 import com.mitsuki.ehit.crutch.Log.debug
+import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.dev.overlay.OverlayTool
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.*
@@ -26,12 +27,12 @@ class EhApplication : Application() {
         ShareData.init(this)
         RoomData.init(this)
         OverlayTool.init(this)
-
+        CookieManager.init()
         /******************************************************************************************/
 
 
         HttpRookie.configOkHttp = {
-            cookieJar(CookieJarImpl(ShareData))
+            cookieJar(CookieJarImpl())
             addInterceptor(FakeHeader())
             addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
 

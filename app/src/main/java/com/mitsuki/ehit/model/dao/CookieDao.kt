@@ -1,6 +1,8 @@
 package com.mitsuki.ehit.model.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.Cookie
@@ -13,4 +15,7 @@ abstract class CookieDao {
 
     @Query("SELECT * FROM ${DBValue.TABLE_USER_COOKIE} WHERE ${DBValue.TABLE_USER_COOKIE}.domain = :domain")
     abstract suspend fun queryCookie(domain: String): List<Cookie>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertCookies(cookie: List<Cookie>)
 }

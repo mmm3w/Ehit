@@ -30,7 +30,7 @@ object ShareData {
     }
 
     /** Tag ***************************************************************************************/
-    const val SP_COOKIES = "SP_COOKIES"
+//    const val SP_COOKIES = "SP_COOKIES"
     const val SP_SECURITY = "SP_SECURITY"
 
     const val SP_DOMAIN = "SP_DOMAIN"
@@ -41,18 +41,18 @@ object ShareData {
     const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
     const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
 
-    const val SP_COOKIE_IPB_MEMBER_ID = "ipb_member_id"
-    const val SP_COOKIE_IPB_PASS_HASH = "ipb_pass_hash"
-    const val SP_COOKIE_IGNEOUS = "igneous"
+//    const val SP_COOKIE_IPB_MEMBER_ID = "ipb_member_id"
+//    const val SP_COOKIE_IPB_PASS_HASH = "ipb_pass_hash"
+//    const val SP_COOKIE_IGNEOUS = "igneous"
 
     /**********************************************************************************************/
     var spDomain: String
         set(value) = edit { putString(SP_DOMAIN, value) }
         get() = string(SP_DOMAIN, Url.EH)
 
-    var spCookies: String
-        set(value) = edit { putString(SP_COOKIES, value) }
-        get() = string(SP_COOKIES)
+//    var spCookies: String
+//        set(value) = edit { putString(SP_COOKIES, value) }
+//        get() = string(SP_COOKIES)
 
     var spSecurity: Boolean
         set(value) = edit { putBoolean(SP_SECURITY, value) }
@@ -71,33 +71,4 @@ object ShareData {
         get() = boolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE)
 
 
-    fun saveCookie(id: String, hash: String, igneous: String) {
-        edit {
-            putString(
-                SP_COOKIE_IPB_MEMBER_ID,
-                CookieJarImpl.newBase64Cookie(SP_COOKIE_IPB_MEMBER_ID, id)
-            )
-            putString(
-                SP_COOKIE_IPB_PASS_HASH,
-                CookieJarImpl.newBase64Cookie(SP_COOKIE_IPB_PASS_HASH, hash)
-            )
-            putString(
-                SP_COOKIE_IGNEOUS,
-                CookieJarImpl.newBase64Cookie(SP_COOKIE_IGNEOUS, igneous)
-            )
-            putString(
-                SP_COOKIES,
-                "${SP_COOKIE_IPB_MEMBER_ID},${SP_COOKIE_IPB_PASS_HASH},${SP_COOKIE_IGNEOUS}"
-            )
-        }
-    }
-
-    fun clearCookie() {
-        edit {
-            remove(SP_COOKIE_IPB_MEMBER_ID)
-            remove(SP_COOKIE_IPB_PASS_HASH)
-            remove(SP_COOKIE_IGNEOUS)
-            remove(SP_COOKIES)
-        }
-    }
 }

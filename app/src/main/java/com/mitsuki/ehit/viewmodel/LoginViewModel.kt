@@ -8,11 +8,14 @@ import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
+import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.RequestResult
+import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.launch
+import okhttp3.Cookie
 
 class LoginViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
@@ -51,9 +54,28 @@ class LoginViewModel @ViewModelInject constructor(@RemoteRepository var reposito
             toastEvent.postValue("")
             return
         }
-        ShareData.saveCookie(id, hash, igneous)
-        (HttpRookie.client.cookieJar as? CookieJarImpl)?.refresh()
+
+        CookieManager.new(
+            arrayListOf(
+                buildCookie("ipb_member_id", id, Url.EH),
+                buildCookie("ipb_pass_hash", hash, Url.EH),
+                buildCookie("igneous", igneous, Url.EH),
+
+                buildCookie("ipb_member_id", id, Url.EX),
+                buildCookie("ipb_pass_hash", hash, Url.EX),
+                buildCookie("igneous", igneous, Url.EX)
+            )
+        )
+
         nextEvent.postValue(0)
     }
 
+    private fun buildCookie(name: String, value: String, domain: String): Cookie {
+        return Cookie.Builder()
+            .name(name)
+            .value(value)
+            .expiresAt(Long.MAX_VALUE)
+            .domain(domain)
+            .build()
+    }
 }
