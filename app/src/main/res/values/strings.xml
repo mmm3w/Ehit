@@ -63,6 +63,7 @@
     <string name="hint_remove_favorite_failure">Failed to remove from favorites</string>
     <string name="hint_add_favorite_failure">Failed to add to favorites</string>
     <string name="hint_exit_by_next_back">Press again to exit</string>
+    <string name="hint_no_data">No data</string>
 
     <string name="text_test">Test content</string>
     <string name="text_app_waring">The content of this application is from the Internet. Some of it may do physical or mental harm to you.\n You have learnt the risks above and would like to undertake them.</string>
@@ -160,8 +161,6 @@
     <string name="text_info_rating_count">Rating\ncount</string>
     <string name="text_info_rating">Rating</string>
     <string name="text_info_torrents">Torrents</string>
-
-
 
 
 </resources>

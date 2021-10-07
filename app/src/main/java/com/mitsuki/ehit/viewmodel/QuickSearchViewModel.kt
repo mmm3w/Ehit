@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.viewmodel
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class QuickSearchViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
@@ -19,20 +21,25 @@ class QuickSearchViewModel @ViewModelInject constructor(@RemoteRepository var re
     suspend fun quickSearch(): List<QuickSearch> =
         withContext(Dispatchers.IO) { RoomData.searchDao.queryQuick() }
 
+    suspend fun isQuickSave(key: String, type: GalleryPageSource.Type): Boolean =
+        withContext(Dispatchers.IO) {
+            val list = RoomData.searchDao.queryQuick(key, type)
+            list.isNotEmpty()
+        }
 
-    fun saveSearch(name: String, key:String, type: GalleryPageSource.Type) {
-        doInIO { if (name.isNotEmpty()) RoomData.searchDao.saveQuick(name, key, type) }
+    suspend fun saveSearch(name: String, key: String, type: GalleryPageSource.Type) =
+        withContext(Dispatchers.IO) {
+            if (name.isNotEmpty() && key.isNotEmpty())
+                RoomData.searchDao.saveQuick(name, key, type)
+        }
+
+
+    suspend fun delSearch(key: String, type: GalleryPageSource.Type) = withContext(Dispatchers.IO) {
+        RoomData.searchDao.deleteQuick(key, type)
     }
 
-    fun delSearch(key: String, type: GalleryPageSource.Type) {
-        doInIO { RoomData.searchDao.deleteQuick(key, type) }
+    suspend fun swapQuickItem(data: List<QuickSearch>) = withContext(Dispatchers.IO) {
+        RoomData.searchDao.insertQuick(*data.toTypedArray())
     }
 
-    fun swapQuickItem(data: List<QuickSearch>) {
-        doInIO { RoomData.searchDao.insertQuick(*data.toTypedArray()) }
-    }
-
-    private fun doInIO(action: suspend () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) { action() }
-    }
 }

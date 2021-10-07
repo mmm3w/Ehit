@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.QuickSearch
@@ -39,10 +40,13 @@ abstract class SearchDao {
     abstract suspend fun insertQuick(vararg data: QuickSearch)
 
     @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} ORDER BY sort")
-    abstract fun queryQuick(): List<QuickSearch>
+    abstract suspend fun queryQuick(): List<QuickSearch>
 
     @Query("SELECT COUNT(*) FROM ${DBValue.TABLE_QUICK_SEARCH}")
     abstract suspend fun quickCount(): Int
+
+    @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:type")
+    abstract suspend fun queryQuick(key: String, type: GalleryPageSource.Type): List<QuickSearch>
 
     @Query("DELETE FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:type")
     abstract suspend fun deleteQuick(key: String, type: GalleryPageSource.Type)

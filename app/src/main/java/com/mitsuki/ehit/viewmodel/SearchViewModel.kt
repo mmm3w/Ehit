@@ -22,7 +22,7 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
     ViewModel() {
 
     @Suppress("PrivatePropertyName")
-    private val HISTORY_COUNT = 10
+    private val HISTORY_COUNT = 20
     lateinit var pageSource: GalleryPageSource
 
     val searchKey: SearchKey get() = pageSource.searchKeyProvider()

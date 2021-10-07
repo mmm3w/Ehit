@@ -4,45 +4,43 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.adapter.calculateDiff
+import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.Log
-import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ItemSearchQuickBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.QuickSearch
-import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.page.GalleryPageSource
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.*
 
 class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>() {
 
     private val mData: MutableList<QuickSearch> = arrayListOf()
+    private val pendingUpdates: ArrayDeque<NotifyData<QuickSearch>> = ArrayDeque()
 
-    val clickItem by lazy { SingleLiveEvent<Event>() }
-    val sortDragTrigger by lazy { SingleLiveEvent<ViewHolder>() }
+    private val mClickEvent: PublishSubject<Event> = PublishSubject.create()
+    private val mSortDragTriggerEvent: PublishSubject<ViewHolder> = PublishSubject.create()
+
+    val clickItem: Observable<Event> get() = mClickEvent.hide()
+    val sortDragTrigger: Observable<ViewHolder> get() = mSortDragTriggerEvent.hide()
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
         when (view.id) {
-            R.id.quick_search_del -> {
-                clickItem.postValue(Event.Delete(mData.removeAt(position)))
-                notifyItemRemoved(position)
-            }
-            else -> clickItem.postValue(Event.Click(mData[position]))
+            R.id.quick_search_del -> mClickEvent.onNext(Event.Delete(mData[position]))
+            else -> mClickEvent.onNext(Event.Click(mData[position]))
         }
     }
 
     private val mSortTouch = { view: View, event: MotionEvent ->
         if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-            sortDragTrigger.postValue(view.tag as ViewHolder)
+            mSortDragTriggerEvent.onNext(view.tag as ViewHolder)
         }
         false
     }
@@ -65,51 +63,72 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
         holder.binding.quickSearchName.text = mData[position].name
     }
 
-    suspend fun submitData(data: List<QuickSearch>) {
+    /**********************************************************************************************/
+    //协程队列更新
+    private suspend fun postUpdate(data: NotifyData<QuickSearch>) {
+        pendingUpdates.add(data)
+        if (pendingUpdates.size > 1) return
+        updateData(data)
+    }
+
+    private suspend fun updateData(data: NotifyData<QuickSearch>) {
         withContext(Dispatchers.Main) {
-            //请在主线程中操作数据？
-            //否则RV会乱七八糟。。
-            //技术太菜还在寻求方案中
-            if (data.isEmpty() && mData.isEmpty()) return@withContext
-            if (data.isEmpty() && mData.isNotEmpty()) {
-                val size = mData.size
-                mData.clear()
-                notifyItemRangeRemoved(0, size)
-                return@withContext
+            when (data) {
+                is NotifyData.Insert,
+                is NotifyData.RangeInsert,
+                is NotifyData.RemoveAt,
+                is NotifyData.Remove,
+                is NotifyData.Change,
+                is NotifyData.Clear,
+                is NotifyData.Move,
+                is NotifyData.ChangeAt -> applyNotify(data)
+                is NotifyData.RangeRemove,
+                is NotifyData.ChangeIf,
+                is NotifyData.Refresh -> {
+                    withContext(Dispatchers.IO) { data.calculateDiff(mData, Diff.QUICK_SEARCH) }
+                    applyNotify(data)
+                }
             }
-
-            if (data.isNotEmpty() && mData.isEmpty()) {
-                mData.addAll(data)
-                notifyItemRangeInserted(0, mData.size)
-                return@withContext
-            }
-
-            val result =
-                withContext(Dispatchers.IO) { calculateDiff(Diff.QUICK_SEARCH, mData, data) }
-
-            mData.clear()
-            mData.addAll(data)
-            result.dispatchUpdatesTo(this@QuickSearchAdapter)
         }
     }
 
-    fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(mData, i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(mData, i, i - 1)
-            }
+    private suspend fun applyNotify(notifyData: NotifyData<QuickSearch>) {
+        pendingUpdates.remove()
+        notifyData.dispatchUpdates(mData, this)
+        if (pendingUpdates.isNotEmpty()) {
+            pendingUpdates.peek()?.apply { updateData(this) }
         }
-        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    /**********************************************************************************************/
+    //一些快捷更新方法
+    suspend fun submitData(data: List<QuickSearch>) {
+        withContext(Dispatchers.IO) {
+            if (data.isEmpty() && mData.isEmpty()) return@withContext
+            if (data.isEmpty() && mData.isNotEmpty()) {
+                postUpdate(NotifyData.Clear())
+                return@withContext
+            }
+            if (data.isNotEmpty() && mData.isEmpty()) {
+                postUpdate(NotifyData.RangeInsert(data))
+                return@withContext
+            }
+            postUpdate(NotifyData.Refresh(data))
+        }
+    }
+
+    suspend fun addItem(name: String, key: String, type: GalleryPageSource.Type) {
+        if (name.isEmpty() || key.isEmpty()) return
+        postUpdate(NotifyData.Insert(QuickSearch(type, name, key, 0)))
+    }
+
+    suspend fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
+        postUpdate(NotifyData.Move(fromPosition, toPosition))
         return true
     }
 
-    fun addItem(name: String, key: String, type: GalleryPageSource.Type) {
-        mData.add(QuickSearch(type, name, key, 0))
-        notifyItemInserted(mData.size - 1)
+    suspend fun removeItem(item: QuickSearch) {
+        postUpdate(NotifyData.Remove(item))
     }
 
     val newSortData: List<QuickSearch>

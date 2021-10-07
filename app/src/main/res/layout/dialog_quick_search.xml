@@ -33,10 +33,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/quick_search_target"
         android:layout_width="match_parent"
-        android:layout_height="480dp"
-        android:background="#ebebeb"
+        android:minHeight="480dp"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingBottom="@dimen/dp_16" />
+        android:overScrollMode="never" />
 
 </LinearLayout>

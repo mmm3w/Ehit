@@ -6,11 +6,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class QuickSearchItemTouchHelperCallback : ItemTouchHelper.Callback() {
+    private val mSwapEvent: PublishSubject<Pair<Int, Int>> = PublishSubject.create()
+    private val mDataSwap: PublishSubject<Pair<Int, Int>> = PublishSubject.create()
 
-    val swapEvent: SingleLiveEvent<Pair<Int, Int>> by lazy { SingleLiveEvent() }
-    val dataSwap: SingleLiveEvent<Pair<Int, Int>> by lazy { SingleLiveEvent() }
+    val swapEvent: Observable<Pair<Int, Int>> get() =  mSwapEvent.hide()
+    val dataSwap: Observable<Pair<Int, Int>> get() = mDataSwap.hide()
 
     private var lastSwap: Pair<Int, Int>? = null
 
@@ -29,7 +34,7 @@ class QuickSearchItemTouchHelperCallback : ItemTouchHelper.Callback() {
         val fromPosition = viewHolder.bindingAdapterPosition
         val toPosition = target.bindingAdapterPosition
         lastSwap = fromPosition to toPosition
-        swapEvent.postValue(lastSwap)
+        mSwapEvent.onNext(lastSwap)
         return true
     }
 
@@ -51,7 +56,7 @@ class QuickSearchItemTouchHelperCallback : ItemTouchHelper.Callback() {
                 }
             }
             ItemTouchHelper.ACTION_STATE_IDLE -> {
-                lastSwap?.apply { dataSwap.postValue(this) }
+                lastSwap?.apply { mDataSwap.onNext(this) }
                 lastSwap = null
             }
         }
