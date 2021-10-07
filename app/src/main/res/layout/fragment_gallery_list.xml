@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/description_page_jump"
-        android:src="@drawable/ic_baseline_pages_24"
+        android:src="@drawable/ic_round_low_priority_24"
         app:fabSize="mini" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
