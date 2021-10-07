@@ -58,7 +58,6 @@ object OverlayTool : LifecycleObserver {
 
     fun panelAction(action: (Int) -> Unit) {
         actionReference = action
-        Log.d("asdf","asdf")
     }
 
     private fun onPanelControl(view: View) {
@@ -103,7 +102,7 @@ object OverlayTool : LifecycleObserver {
             try {
                 OverlayManager.exit()
             } catch (inner: Throwable) {
-
+                inner.printStackTrace()
             }
         }
     }

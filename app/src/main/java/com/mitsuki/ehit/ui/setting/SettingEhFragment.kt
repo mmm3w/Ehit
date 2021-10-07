@@ -19,7 +19,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("setting_logout")?.setOnPreferenceClickListener { showLogoutDialog() }
 
         findPreference<Preference>("setting_cookie")?.apply {
-            isVisible = ShareData.spCookies.isNotEmpty()
+//            isVisible = ShareData.spCookies.isNotEmpty()
             setOnPreferenceClickListener { showCookieDialog() }
         }
 
@@ -32,9 +32,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
     }
 
     private val allCookieInfo
-        get() = SpannableBuilder()
-            .append(ShareData.spCookies)
-            .build()
+        get() = ""
 
     private fun showLogoutDialog(): Boolean {
         MaterialDialog(requireContext()).show {

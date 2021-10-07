@@ -55,7 +55,7 @@ object CoilProvider {
     private fun buildCoilOkHttpClient(context: Context): OkHttpClient {
         return OkHttpClient.Builder()
             .cache(coilCache(context))
-            .cookieJar(CookieJarImpl(ShareData))
+            .cookieJar(CookieJarImpl())
             .addInterceptor(FakeHeader())
             .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             .addInterceptor(ProgressProvider.imageLoadInterceptor)

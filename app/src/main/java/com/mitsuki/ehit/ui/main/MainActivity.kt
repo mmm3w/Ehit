@@ -93,7 +93,8 @@ class MainActivity : BaseActivity() {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
         }
-
+//        readStorePermissionLauncher.launch {  }
+//        writeStorePermissionLauncher.launch {  }
         onCreateDev()
     }
 
@@ -134,8 +135,8 @@ class MainActivity : BaseActivity() {
     }
 
     /** dev 用 *************************************************************************************/
-    private val readStorePermissionLauncher by readStorePermissionLauncher()
-    private val writeStorePermissionLauncher by writeStorePermissionLauncher()
+    private val readStorePermissionLauncher = readStorePermissionLauncher()
+    private val writeStorePermissionLauncher = writeStorePermissionLauncher()
 
     private lateinit var packer: ZipPacker
     private lateinit var reader: ZipReader

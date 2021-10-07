@@ -28,10 +28,16 @@ class ZipReader(
     override fun onCreate(owner: LifecycleOwner) {
         readerLauncher =
             registry.register("readZip", owner, ActivityResultContracts.OpenDocument()) {
+
+                if (it == null) {
+                    AppHolder.toast("未选择文件")
+                    return@register
+                }
+
                 owner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        AppHolder.contentResolver.openInputStream(it)?.use {
-                            Zip.unpack(it, targetFolder)
+                        AppHolder.contentResolver.openInputStream(it)?.use { inputStream ->
+                            Zip.unpack(inputStream, targetFolder)
                         }
                         withContext(Dispatchers.Main) { AppHolder.toast("解压成功") }
                     } catch (inner: Exception) {

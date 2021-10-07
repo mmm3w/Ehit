@@ -33,10 +33,14 @@ class ZipPacker(
     override fun onCreate(owner: LifecycleOwner) {
         packerLauncher =
             registry.register("packZip", owner, ActivityResultContracts.CreateDocument()) {
+                if (it == null) {
+                    AppHolder.toast("取消保存")
+                    return@register
+                }
                 owner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        AppHolder.contentResolver.openOutputStream(it)?.use {
-                            Zip.pack(it, folder, files)
+                        AppHolder.contentResolver.openOutputStream(it)?.use { outputStream->
+                            Zip.pack(outputStream, folder, files)
                         }
                         withContext(Dispatchers.Main) { AppHolder.toast("保存成功") }
                     } catch (inner: Exception) {
