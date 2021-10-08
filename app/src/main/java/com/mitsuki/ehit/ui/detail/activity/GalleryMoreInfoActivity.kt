@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
@@ -20,11 +21,14 @@ class GalleryMoreInfoActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         controller.window(
-            navigationBarLight = true, statusBarLight = true,
+            navigationBarLight = true,
+            statusBarLight = true,
             navigationBarColor = Color.WHITE,
             statusBarColor = Color.WHITE
         )
 
+        binding.topBar.topBarLayout.elevation = dp2px(4f)
+        binding.topBar.topBarLayout.setBackgroundColor(Color.WHITE)
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
         binding.topBar.topBarText.text = getText(R.string.text_more_information)
 

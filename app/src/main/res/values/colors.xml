@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00e3e9</color>
-    <color name="colorPrimaryDark">#00d2e3</color>
-    <color name="colorPrimaryLight">#aef3f4</color>
-    <color name="colorAccent">#e90800</color>
+    <color name="colorPrimary">#55999999</color>
+    <color name="colorPrimaryDark">#556b6b6b</color>
+    <color name="colorPrimaryLight">#55cfcfcf</color>
+    <color name="colorAccent">#aa999999</color>
 
     <color name="color_doujinshi">#f26f5f</color>
     <color name="color_manga">#fcb417</color>

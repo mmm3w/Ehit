@@ -12,6 +12,9 @@ import coil.size.OriginalSize
 import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.coil.CacheKey
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.diff.Diff
@@ -23,15 +26,14 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 class GalleryDetailPreviewAdapter(
     private val gid: Long,
     private val token: String
-) : PagingDataAdapter<ImageSource, GalleryDetailPreviewAdapter.ViewHolder>(Diff.IMAGE_SOURCE) {
+) : PagingDataAdapter<ImageSource, GalleryDetailPreviewAdapter.ViewHolder>(Diff.IMAGE_SOURCE),
+    EventEmitter {
 
-    private val mSubject: PublishSubject<ImageSource> by lazy { PublishSubject.create() }
-
-    val event get() = mSubject.hideWithMainThread()
+    override val eventEmitter: Emitter = Emitter()
 
     private val mItemClick = { view: View ->
         val holder = view.tag as ViewHolder
-        mSubject.onNext(getItem(holder.bindingAdapterPosition))
+        post("detail", getItem(holder.bindingAdapterPosition))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

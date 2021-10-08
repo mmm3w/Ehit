@@ -10,9 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
-import androidx.fragment.app.createViewModelLazy
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.paging.LoadState
@@ -30,7 +28,6 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.mitsuki.armory.adapter.notify.NotifyItem
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
-import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.armory.base.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
@@ -41,10 +38,9 @@ import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
-import com.mitsuki.ehit.ui.temp.activity.GalleryCommentActivity
+import com.mitsuki.ehit.ui.detail.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
@@ -121,17 +117,17 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         })
 
 
-        mHeader.event.observe(this, this::onHeaderEvent)
-        mOperating.event.observe(this, this::onOperatingEvent)
-        mTag.tagEvent.observe(this, Observer(this::onTagNavigation))
-        mComment.event.observe(this) {
-            //TODO 更多评论
-            requireActivity().apply {
-                startActivity(Intent(this, GalleryCommentActivity::class.java))
-            }
+        mHeader.receiver<String>("header").observe(this, this::onHeaderEvent)
+        mOperating.receiver<String>("operating").observe(this, this::onOperatingEvent)
+        mTag.receiver<Pair<String, String>>("tag").observe(this, this::onTagNavigation)
+        mComment.receiver<String>("comment").observe(this) {
+            startActivity(Intent(requireActivity(), GalleryCommentActivity::class.java).apply {
+                putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
+                putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
+            })
         }
 
-        mPreviewAdapter.event.observe(this, this::onPreviewClick)
+        mPreviewAdapter.receiver<ImageSource>("detail").observe(this, this::onPreviewClick)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -213,29 +209,28 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         }
     }
 
-    private fun onHeaderEvent(event: GalleryDetailHeader.Event) {
+    private fun onHeaderEvent(event: String) {
         when (event) {
-            is GalleryDetailHeader.Event.Uploader -> onUploaderNavigation()
-            is GalleryDetailHeader.Event.Category -> {
+            GalleryDetailHeader.UPLOADER -> onUploaderNavigation()
+            GalleryDetailHeader.CATEGORY -> {
                 //TODO 跳转分类搜索
             }
         }
     }
 
-    private fun onOperatingEvent(event: GalleryDetailOperatingBlock.Event) {
+    private fun onOperatingEvent(event: String) {
         when (event) {
-            GalleryDetailOperatingBlock.Event.Read -> goPreview(0)
-            GalleryDetailOperatingBlock.Event.Download -> {
+            GalleryDetailOperatingBlock.READ -> goPreview(0)
+            GalleryDetailOperatingBlock.DOWNLOAD -> {
                 //TODO 下载
             }
-            GalleryDetailOperatingBlock.Event.Score -> showRatingDialog()
-            GalleryDetailOperatingBlock.Event.SimilaritySearch -> onNameNavigation()
-            GalleryDetailOperatingBlock.Event.MoreInfo -> {
-                Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
+            GalleryDetailOperatingBlock.SCORE -> showRatingDialog()
+            GalleryDetailOperatingBlock.SIMILARITYSEARCH -> onNameNavigation()
+            GalleryDetailOperatingBlock.MOREINFO -> {
+                startActivity(Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
                     putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
                     putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
-                    startActivity(this)
-                }
+                })
             }
         }
     }

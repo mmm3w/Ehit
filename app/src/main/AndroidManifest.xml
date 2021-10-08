@@ -45,7 +45,7 @@
 
         <activity android:name="com.mitsuki.ehit.ui.setting.SettingActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.temp.activity.GalleryCommentActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryCommentActivity" />
 
         <activity android:name="com.mitsuki.ehit.ui.temp.activity.HistoryActivity" />
 

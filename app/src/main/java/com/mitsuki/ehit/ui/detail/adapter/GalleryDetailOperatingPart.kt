@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class GalleryDetailOperatingPart(
-    private val subject: PublishSubject<GalleryDetailOperatingBlock.Event>,
+    private val eventEmitter: EventEmitter,
     var data: GalleryDetailWrap.DetailPart? = null
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -59,9 +61,9 @@ class GalleryDetailOperatingPart(
     private val mItemClick = { view: View ->
         val holder = view.tag as RecyclerView.ViewHolder
         when (holder.bindingAdapterPosition) {
-            0 -> subject.onNext(GalleryDetailOperatingBlock.Event.Score)
-            2 -> subject.onNext(GalleryDetailOperatingBlock.Event.SimilaritySearch)
-            3 -> subject.onNext(GalleryDetailOperatingBlock.Event.MoreInfo)
+            0 -> eventEmitter.post("operating", GalleryDetailOperatingBlock.SCORE)
+            2 -> eventEmitter.post("operating", GalleryDetailOperatingBlock.SIMILARITYSEARCH)
+            3 -> eventEmitter.post("operating", GalleryDetailOperatingBlock.MOREINFO)
         }
     }
 

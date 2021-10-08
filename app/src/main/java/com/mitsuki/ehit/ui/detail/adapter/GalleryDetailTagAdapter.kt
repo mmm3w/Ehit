@@ -10,15 +10,16 @@ import com.mitsuki.armory.base.widget.TagsView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.InitialGate
-import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 
 //详情adapter 03
 class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
-    RecyclerView.Adapter<GalleryDetailTagAdapter.DetailTagViewHolder>() {
+    RecyclerView.Adapter<GalleryDetailTagAdapter.DetailTagViewHolder>(), EventEmitter {
 
-    val tagEvent: SingleLiveEvent<Pair<String, String>> by lazy { SingleLiveEvent() }
-
+    override val eventEmitter: Emitter = Emitter()
     private val mGate = InitialGate()
 
     var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
@@ -57,7 +58,7 @@ class GalleryDetailTagAdapter(private val mData: GalleryDetailWrap) :
                 for (tag in tags) {
                     createItemView(R.layout.item_gallery_detail_tag_item).run {
                         (this as TextView).text = tag
-                        setOnClickListener { tagEvent.postValue(groupName to tag) }
+                        setOnClickListener { post("tag", groupName to tag)}
                         addView(this)
                     }
                 }

@@ -22,6 +22,7 @@ object RequestKey {
     const val GID = "gid"
     const val T = "t"
     const val ACT = "act"
+    const val HC = "hc"
 
     const val FAVORITE_KEY_CAT = "favcat"
     const val FAVORITE_KEY_NOTE = "favnote"

@@ -19,7 +19,11 @@ interface Repository {
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>>
 
-    fun favoriteList(pageIn: FavouritePageIn, dataWrap: FavouriteCountWrap): Flow<PagingData<Gallery>>
+
+    fun favoriteList(
+        pageIn: FavouritePageIn,
+        dataWrap: FavouriteCountWrap
+    ): Flow<PagingData<Gallery>>
 
     suspend fun galleryPreview(gid: Long, token: String, pToken: String, index: Int)
             : RequestResult<GalleryPreview>
@@ -32,4 +36,7 @@ interface Repository {
     suspend fun rating(detail: GalleryDetail, rating: Float): RequestResult<RateBack>
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
+
+    suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
+            : RequestResult<List<Comment>>
 }

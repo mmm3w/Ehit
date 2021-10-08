@@ -18,11 +18,8 @@ import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.VolatileCache
 import com.mitsuki.ehit.crutch.db.RoomData
+import com.mitsuki.ehit.model.convert.*
 import com.mitsuki.ehit.model.page.GalleryListPageIn
-import com.mitsuki.ehit.model.convert.GalleryPreviewConvert
-import com.mitsuki.ehit.model.convert.ImageSourceConvert
-import com.mitsuki.ehit.model.convert.LoginConvert
-import com.mitsuki.ehit.model.convert.RateBackConvert
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.GalleryPreviewCache
@@ -73,6 +70,7 @@ class RepositoryImpl @Inject constructor() : Repository {
             FavoritesSource(pageIn, dataWrap)
         }.flow
     }
+
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun galleryPreview(
@@ -253,6 +251,27 @@ class RepositoryImpl @Inject constructor() : Repository {
             try {
                 when (data) {
                     is Response.Success<String> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Fail<*> -> throw data.throwable
+                }
+            } catch (inner: Throwable) {
+                Log.debug("$inner")
+                RequestResult.FailResult(inner)
+            }
+        }
+    }
+
+    override suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
+            : RequestResult<List<Comment>> {
+        return withContext(Dispatchers.IO) {
+            val data = HttpRookie
+                .get<List<Comment>>(Url.galleryDetail(gid, token)) {
+                    convert = GalleryCommentsConvert()
+                    if (allComment) urlParams(RequestKey.HC, "1")
+                }
+                .execute()
+            try {
+                when (data) {
+                    is Response.Success<List<Comment>> -> RequestResult.SuccessResult(data.requireBody())
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {

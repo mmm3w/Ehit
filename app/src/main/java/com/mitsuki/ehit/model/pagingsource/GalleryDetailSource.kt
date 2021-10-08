@@ -59,10 +59,7 @@ class GalleryDetailSource(
                         val remoteData: Response<Pair<GalleryDetail, PageInfo<ImageSource>>> =
                             HttpRookie
                                 .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
-                                    Url.galleryDetail(
-                                        mGid,
-                                        mToken
-                                    )
+                                    Url.galleryDetail(mGid, mToken)
                                 ) {
                                     convert = mConvert
                                     urlParams(RequestKey.PAGE_DETAIL, page.toString())

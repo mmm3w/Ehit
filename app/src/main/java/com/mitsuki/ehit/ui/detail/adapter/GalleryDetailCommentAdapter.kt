@@ -10,16 +10,21 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), EventEmitter {
 
     companion object {
         private const val TYPE_COMMENT = 0
         private const val TYPE_MORE = 1
     }
+
+    override val eventEmitter: Emitter = Emitter()
 
     private val mGate = InitialGate()
 
@@ -40,16 +45,12 @@ class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
             }
         }
 
-    private val mSubject: PublishSubject<String> by lazy { PublishSubject.create() }
-
-    val event get() = mSubject.hideWithMainThread()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return (when (viewType) {
             TYPE_COMMENT -> DetailCommentViewHolder(parent)
             TYPE_MORE -> MoreCommentViewHolder(parent)
             else -> throw  IllegalStateException()
-        }).apply { itemView.setOnClickListener { mSubject.onNext("More Comment") } }
+        }).apply { itemView.setOnClickListener { post("comment", "More Comment") } }
     }
 
     override fun getItemCount(): Int = if (mGate.ignore()) mData.comment.size + 1 else 0
@@ -68,7 +69,7 @@ class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
                     holder.userName?.text = user
                     holder.commentContent?.also {
                         it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                        it.maxLines = 5
+                        it.maxLines = 3
                     }
                 }
             }

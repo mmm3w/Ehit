@@ -8,18 +8,30 @@ import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.ui.detail.layoutmanager.DetailOperatingLayoutManager
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 02
-class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : SingleItemAdapter(false) {
+class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : SingleItemAdapter(false),
+    EventEmitter {
+
+    companion object {
+        const val SCORE = "Score"
+        const val SIMILARITYSEARCH = "SimilaritySearch"
+        const val MOREINFO = "MoreInfo"
+        const val DOWNLOAD = "Download"
+        const val READ = "Read"
+    }
+
+    override val eventEmitter: Emitter = Emitter()
+
     override val layoutRes: Int = R.layout.item_gallery_detail_operating
 
-    private val mSubject: PublishSubject<Event> by lazy { PublishSubject.create() }
-    val event get() = mSubject.hideWithMainThread()
-
-    private val mOperatingAdapter by lazy { GalleryDetailOperatingPart(mSubject) }
+    private val mOperatingAdapter by lazy { GalleryDetailOperatingPart(this) }
     private val mGate = InitialGate()
 
     var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
@@ -42,10 +54,10 @@ class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : Single
 
     override val onViewHolderCreate: ViewHolder.() -> Unit = {
         detailDownload = view<TextView>(R.id.gallery_detail_download)?.apply {
-            setOnClickListener { mSubject.onNext(Event.Download) }
+            setOnClickListener { post("operating", DOWNLOAD) }
         }
         detailRead = view<TextView>(R.id.gallery_detail_read)?.apply {
-            setOnClickListener { mSubject.onNext(Event.Read) }
+            setOnClickListener { post("operating", READ) }
         }
         detailPart = view<RecyclerView>(R.id.gallery_detail_part)?.apply {
             layoutManager = DetailOperatingLayoutManager(context)
@@ -57,14 +69,6 @@ class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : Single
     override val onViewHolderBind: ViewHolder.() -> Unit = {
         mOperatingAdapter.data = mData.partInfo
         mOperatingAdapter.notifyItemChanged(0)
-    }
-
-    sealed class Event {
-        object Score : Event()
-        object SimilaritySearch : Event()
-        object MoreInfo : Event()
-        object Download : Event()
-        object Read : Event()
     }
 
 }
