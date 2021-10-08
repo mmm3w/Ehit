@@ -27,6 +27,7 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.mitsuki.armory.adapter.notify.NotifyItem
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.armory.base.extend.toast
@@ -35,6 +36,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
@@ -201,13 +203,14 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
 
-        mViewModel.rateNotify.observe(viewLifecycleOwner, { it.dispatch(mOperating) })
-        mViewModel.toastData.observe(viewLifecycleOwner, {
+        mViewModel.receiver<NotifyItem>("rate")
+            .observe(viewLifecycleOwner) { it.dispatch(mOperating) }
+        mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
-        })
-        mViewModel.favNotify.observe(viewLifecycleOwner, {
+        }
+        mViewModel.receiver<String>("fav").observe(viewLifecycleOwner) {
             binding?.topBar?.topTitleFavorite?.isSelected = mViewModel.isFavorited
-        })
+        }
     }
 
     private fun onHeaderEvent(event: GalleryDetailHeader.Event) {

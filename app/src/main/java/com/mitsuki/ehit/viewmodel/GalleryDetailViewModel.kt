@@ -12,8 +12,10 @@ import com.mitsuki.armory.adapter.notify.NotifyItem
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.db.RoomData
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.Gallery
@@ -26,16 +28,14 @@ import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.launch
 
 class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
-    ViewModel() {
+    ViewModel(), EventEmitter {
 
     lateinit var baseInfo: Gallery
     private val mDetailPageIn = GeneralPageIn()
 
-    val infoWrap = GalleryDetailWrap()
+    override val eventEmitter: Emitter = Emitter()
 
-    val toastData: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
-    val rateNotify: SingleLiveEvent<NotifyItem> by lazy { SingleLiveEvent() }
-    val favNotify: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+    val infoWrap = GalleryDetailWrap()
 
     val headerInfo: HeaderInfo get() = HeaderInfo(baseInfo)
     val galleryName: String get() = baseInfo.title
@@ -45,6 +45,7 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
 
     val isFavorited: Boolean
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
+
     val favoriteName: String?
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.favoriteName else null
 
@@ -77,11 +78,10 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
                         infoWrap.partInfo.ratingCount = result.data.count
                         handle = true
                     }
-
-                    toastData.postValue(string(R.string.hint_rate_successfully))
-                    if (handle) rateNotify.postValue(NotifyItem.UpdateData(0))
+                    post("toast", string(R.string.hint_rate_successfully))
+                    if (handle) post("rate", NotifyItem.UpdateData(0))
                 }
-                is RequestResult.FailResult -> toastData.postValue(result.throwable.message)
+                is RequestResult.FailResult -> post("toast", result.throwable.message)
             }
         }
     }
@@ -97,10 +97,11 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
                     RoomData.galleryDao.updateGalleryFavorites(baseInfo.gid, baseInfo.token, name)
                     infoWrap.sourceDetail.favoriteName = name
 
-                    favNotify.postValue(name)
-                    toastData.postValue(string(strRes))
+                    post("fav", name)
+                    post("toast", string(strRes))
                 }
-                is RequestResult.FailResult -> toastData.postValue(
+                is RequestResult.FailResult -> post(
+                    "toast",
                     string(
                         if (cat < 0) R.string.hint_remove_favorite_failure
                         else R.string.hint_add_favorite_failure
@@ -115,4 +116,6 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
             RoomData.galleryDao.deleteGalleryInfo(baseInfo.gid, baseInfo.token)
         }
     }
+
+
 }

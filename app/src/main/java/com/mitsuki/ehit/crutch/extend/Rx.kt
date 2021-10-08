@@ -22,5 +22,5 @@ fun <T : Any> Observable<T>.observeWithCoro(owner: LifecycleOwner, action: suspe
 }
 
 
-inline fun <reified T> Observable<T>.hideWithMainThread(): Observable<T> =
+fun <T> Observable<T>.hideWithMainThread(): Observable<T> =
     hide().observeOn(AndroidSchedulers.mainThread())
