@@ -32,6 +32,8 @@ object AppHolder {
 
     fun string(@StringRes id: Int): String = mApplication.getString(id)
 
+    fun text(@StringRes id:Int):CharSequence = mApplication.getText(id)
+
     fun drawable(@DrawableRes id: Int): Drawable? = AppCompatResources.getDrawable(mApplication, id)
 
     //请少用该方法弹出toast

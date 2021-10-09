@@ -3,11 +3,12 @@ package com.mitsuki.ehit.ui.start.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentDisclaimerBinding
 import com.mitsuki.ehit.ui.main.MainActivity
@@ -26,9 +27,9 @@ class DisclaimerFragment : Fragment(R.layout.fragment_disclaimer) {
             adapter = mAdapter
         }
 
-        mAdapter.onEvent.observe(viewLifecycleOwner, {
+        mAdapter.receiver<Boolean>("disclaimer").observe(viewLifecycleOwner) {
             if (it == true) nextNav() else requireActivity().finish()
-        })
+        }
     }
 
     private fun nextNav() {

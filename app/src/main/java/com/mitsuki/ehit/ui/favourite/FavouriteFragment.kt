@@ -18,6 +18,8 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
@@ -71,7 +73,7 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
                 binding?.favouriteRefresh?.isEnabled = it.prepend.endOfPaginationReached
             }
         }
-        mAdapter.clickEvent.observe(this, this::onDetailNavigation)
+        mAdapter.receiver<GalleryAdapter.GalleryClick>("click").observe(this, ::onDetailNavigation)
         mViewModel.count.observe(this, { favouriteSelectPanel.postCountData(it) })
         mViewModel.favouriteList.observe(this, { mAdapter.submitData(lifecycle, it) })
     }

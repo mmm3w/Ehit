@@ -1,37 +1,43 @@
 package com.mitsuki.ehit.ui.temp.adapter
 
-import android.widget.Button
-import android.widget.EditText
-import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.base.extend.view
+import android.view.View
+import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.databinding.ItemLoginCookieBinding
 
-class LoginCookieAdapter : SingleItemAdapter(false) {
+class LoginCookieAdapter : SingleItemBindingAdapter<ItemLoginCookieBinding>(
+    R.layout.item_login_cookie,
+    ItemLoginCookieBinding::bind,
+    false
+), EventEmitter {
+    override val eventEmitter: Emitter = Emitter()
 
-    private val mLoginEvent: PublishSubject<LoginCookie> = PublishSubject.create()
+    private val mItemClick = { view: View ->
+        val holder = view.tag as ViewHolder<*>
+        (holder.binding as? ItemLoginCookieBinding)?.apply {
+            val member = loginIpbMemberId.text.toString()
+            val pass = loginIpbPassHash.text.toString()
+            val igneous = loginIgneous.text.toString()
 
-    val onLogin: Observable<LoginCookie> get() = mLoginEvent.hideWithMainThread()
-
-    override val layoutRes: Int = R.layout.item_login_cookie
-
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {
-        view<EditText>(R.id.login_ipb_member_id)?.setText(BuildConfig.ipb_member_id)
-        view<EditText>(R.id.login_ipb_pass_hash)?.setText(BuildConfig.ipb_pass_hash)
-        view<EditText>(R.id.login_igneous)?.setText(BuildConfig.igneous)
-
-        view<Button>(R.id.login_login_btn)?.setOnClickListener {
-            val member = view<EditText>(R.id.login_ipb_member_id)?.text.toString()
-            val pass = view<EditText>(R.id.login_ipb_pass_hash)?.text.toString()
-            val igneous = view<EditText>(R.id.login_igneous)?.text.toString()
-            mLoginEvent.onNext(LoginCookie(member, pass, igneous))
+            post("login", LoginCookie(member, pass, igneous))
         }
+        Unit
     }
 
-    override val onViewHolderBind: ViewHolder.() -> Unit = {}
+    override val onViewHolderCreate: ViewHolder<ItemLoginCookieBinding>.() -> Unit = {
+        binding.loginIpbMemberId.setText(BuildConfig.ipb_member_id)
+        binding.loginIpbPassHash.setText(BuildConfig.ipb_pass_hash)
+        binding.loginIgneous.setText(BuildConfig.igneous)
+
+        binding.loginLoginBtn.apply {
+            tag = this
+            setOnClickListener(mItemClick)
+        }
+    }
 
     data class LoginCookie(val memberId: String, val passHash: String, val igneous: String)
 }

@@ -5,8 +5,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.SingleLiveEvent
-import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
 

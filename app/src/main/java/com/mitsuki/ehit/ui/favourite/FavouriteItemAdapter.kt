@@ -3,12 +3,13 @@ package com.mitsuki.ehit.ui.favourite
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.createItemView
 
 import com.mitsuki.ehit.crutch.extend.viewBinding
@@ -16,15 +17,15 @@ import com.mitsuki.ehit.databinding.ItemFavouriteOptionBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 
 class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
-    RecyclerView.Adapter<FavouriteItemAdapter.ViewHolder>() {
+    RecyclerView.Adapter<FavouriteItemAdapter.ViewHolder>(), EventEmitter {
+
+    override val eventEmitter: Emitter = Emitter()
 
     private val notifyQueueData: NotifyQueueData<Pair<String, Int>> by lazy {
         NotifyQueueData(GalleryFavorites.DIFF).apply {
             attachAdapter(this@FavouriteItemAdapter)
         }
     }
-
-    val checkItem: SingleLiveEvent<Int> by lazy { SingleLiveEvent() }
 
     private val mItemCheckChange = { buttonView: CompoundButton, isChecked: Boolean ->
         if (buttonView.isPressed) {
@@ -34,7 +35,7 @@ class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
                 checkedItemIndex = position
                 notifyItemChanged(olderChecked)
                 notifyItemChanged(checkedItemIndex)
-                checkItem.postValue(checkedItemIndex)
+                post("check", checkedItemIndex)
             }
         }
     }
@@ -64,4 +65,5 @@ class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
         RecyclerView.ViewHolder(parent.createItemView(R.layout.item_favourite_option)) {
         val binding by viewBinding(ItemFavouriteOptionBinding::bind)
     }
+
 }

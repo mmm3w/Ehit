@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.coil.CacheKey
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.corners
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.viewBinding
@@ -18,14 +20,14 @@ import com.mitsuki.ehit.model.entity.Gallery
 import java.util.*
 
 class GalleryAdapter :
-    PagingDataAdapter<Gallery, GalleryAdapter.ViewHolder>(Gallery.DIFF_CALLBACK) {
+    PagingDataAdapter<Gallery, GalleryAdapter.ViewHolder>(Gallery.DIFF_CALLBACK), EventEmitter {
 
-    val clickEvent: SingleLiveEvent<GalleryClick> by lazy { SingleLiveEvent() }
+    override val eventEmitter: Emitter = Emitter()
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
         getItem(position)?.apply {
-            clickEvent.postValue(GalleryClick(view, this))
+            post("click", GalleryClick(view, this))
         }
         Unit
     }
@@ -70,4 +72,5 @@ class GalleryAdapter :
 
 
     data class GalleryClick(val target: View, val data: Gallery)
+
 }

@@ -1,23 +1,23 @@
 package com.mitsuki.ehit.ui.detail.adapter
 
-import android.widget.TextView
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.base.extend.view
+import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.databinding.ItemGalleryDetailOperatingBinding
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.ui.detail.layoutmanager.DetailOperatingLayoutManager
-import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 02
-class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : SingleItemAdapter(false),
-    EventEmitter {
+class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) :
+    SingleItemBindingAdapter<ItemGalleryDetailOperatingBinding>(
+        R.layout.item_gallery_detail_operating,
+        ItemGalleryDetailOperatingBinding::bind,
+        false
+    ), EventEmitter {
 
     companion object {
         const val SCORE = "Score"
@@ -28,8 +28,6 @@ class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : Single
     }
 
     override val eventEmitter: Emitter = Emitter()
-
-    override val layoutRes: Int = R.layout.item_gallery_detail_operating
 
     private val mOperatingAdapter by lazy { GalleryDetailOperatingPart(this) }
     private val mGate = InitialGate()
@@ -48,27 +46,18 @@ class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) : Single
             }
         }
 
-    private var detailDownload: TextView? = null
-    private var detailRead: TextView? = null
-    private var detailPart: RecyclerView? = null
-
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {
-        detailDownload = view<TextView>(R.id.gallery_detail_download)?.apply {
-            setOnClickListener { post("operating", DOWNLOAD) }
-        }
-        detailRead = view<TextView>(R.id.gallery_detail_read)?.apply {
-            setOnClickListener { post("operating", READ) }
-        }
-        detailPart = view<RecyclerView>(R.id.gallery_detail_part)?.apply {
+    override val onViewHolderCreate: ViewHolder<ItemGalleryDetailOperatingBinding>.() -> Unit = {
+        binding.galleryDetailDownload.setOnClickListener { post("operating", DOWNLOAD) }
+        binding.galleryDetailRead.setOnClickListener { post("operating", READ) }
+        binding.galleryDetailPart.apply {
             layoutManager = DetailOperatingLayoutManager(context)
             adapter = mOperatingAdapter
             addItemDecoration(mOperatingAdapter.divider)
         }
     }
 
-    override val onViewHolderBind: ViewHolder.() -> Unit = {
+    override val onViewHolderBind: ViewHolder<ItemGalleryDetailOperatingBinding>.() -> Unit = {
         mOperatingAdapter.data = mData.partInfo
         mOperatingAdapter.notifyItemChanged(0)
     }
-
 }

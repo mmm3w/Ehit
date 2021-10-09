@@ -39,7 +39,6 @@ class FragmentViewBindingHolder<VB : ViewBinding>(private val bind: (View) -> VB
     }
 }
 
-
 fun <VB : ViewBinding> RecyclerView.ViewHolder.viewBinding(bind: (View) -> VB) =
     lazy { bind(itemView) }
 

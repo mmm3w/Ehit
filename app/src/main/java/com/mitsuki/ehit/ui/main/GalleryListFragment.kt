@@ -27,6 +27,8 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.ui.common.widget.ListScrollTrigger
 import com.mitsuki.ehit.crutch.extend.string
@@ -88,7 +90,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         super.onCreate(savedInstanceState)
         mViewModel.initData(arguments)
 
-        mAdapter.clickEvent.observe(this, this::onDetailNavigation)
+        mAdapter.receiver<GalleryAdapter.GalleryClick>("click").observe(this, ::onDetailNavigation)
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
                 if (mInitAdapter.isOver) {

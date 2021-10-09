@@ -7,11 +7,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.SingleLiveEvent
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.Gallery
-import com.mitsuki.ehit.model.entity.SearchKey
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository

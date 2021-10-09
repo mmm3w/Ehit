@@ -15,4 +15,6 @@ fun Fragment.getInteger(@IntegerRes id: Int) = resources.getInteger(id)
 
 fun string(@StringRes id: Int): String = AppHolder.string(id)
 
+fun text(@StringRes id: Int): CharSequence = AppHolder.text(id)
+
 fun drawable(@DrawableRes id: Int): Drawable? = AppHolder.drawable(id)

@@ -3,55 +3,54 @@ package com.mitsuki.ehit.viewmodel
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mitsuki.armory.httprookie.HttpRookie
-import com.mitsuki.ehit.crutch.ShareData
-import com.mitsuki.ehit.crutch.SingleLiveEvent
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
-import com.mitsuki.ehit.crutch.network.CookieJarImpl
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.model.repository.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
-import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.launch
 import okhttp3.Cookie
 
 class LoginViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
-    ViewModel() {
+    ViewModel(), EventEmitter {
 
-    val toastEvent: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
-    val nextEvent: SingleLiveEvent<Int> by lazy { SingleLiveEvent() }
+    override val eventEmitter: Emitter = Emitter()
+
+//    val toastEvent: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
+//    val nextEvent: SingleLiveEvent<Int> by lazy { SingleLiveEvent() }
 
     fun login(account: String, password: String) {
         if (account.isEmpty()) {
-            toastEvent.postValue("")
+            post("toast", "")
             return
         }
         if (password.isEmpty()) {
-            toastEvent.postValue("")
+            post("toast", "")
             return
         }
 
         viewModelScope.launch {
             when (val result = repository.login(account, password)) {
-                is RequestResult.SuccessResult -> nextEvent.postValue(0)
-                is RequestResult.FailResult -> toastEvent.postValue(result.throwable.message)
+                is RequestResult.SuccessResult -> post("next", 0)
+                is RequestResult.FailResult -> post("toast", result.throwable.message)
             }
         }
     }
 
     fun login(id: String, hash: String, igneous: String) {
         if (id.isEmpty()) {
-            toastEvent.postValue("")
+            post("toast", "")
             return
         }
         if (hash.isEmpty()) {
-            toastEvent.postValue("")
+            post("toast", "")
             return
         }
         if (igneous.isEmpty()) {
-            toastEvent.postValue("")
+            post("toast", "")
             return
         }
 
@@ -67,7 +66,7 @@ class LoginViewModel @ViewModelInject constructor(@RemoteRepository var reposito
             )
         )
 
-        nextEvent.postValue(0)
+        post("next", 0)
     }
 
     private fun buildCookie(name: String, value: String, domain: String): Cookie {
@@ -78,4 +77,5 @@ class LoginViewModel @ViewModelInject constructor(@RemoteRepository var reposito
             .domain(domain)
             .build()
     }
+
 }

@@ -23,6 +23,8 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
@@ -95,8 +97,8 @@ class SearchActivity : BaseActivity() {
 
         mViewModel.initData(intent)
 
-        mHistoryAdapter.clickItem.observe(this, this::onItemEvent)
-        mAdvancedAdapter.ratingEvent.observe(this, { onRatingEvent() })
+        mHistoryAdapter.receiver<SearchWordEvent>("his").observe(this, this::onItemEvent)
+        mAdvancedAdapter.receiver<Int>("rating").observe(this, { onRatingEvent() })
 
         mViewModel.searchKey.apply { onSearchUpdate(this) }
 
@@ -123,9 +125,10 @@ class SearchActivity : BaseActivity() {
             }
         }
 
-        mModeSwitch.switchEvent.observe(this, Observer(this::onSwitch))
+        mModeSwitch.receiver<Boolean>("switch").observe(this, ::onSwitch)
 
-        mAdvancedSwitch.switchEvent.observe(this, { mAdvancedAdapter.isVisible = it })
+        mAdvancedSwitch.receiver<Boolean>("switch")
+            .observe(this) { mAdvancedAdapter.isVisible = it }
 
         lifecycleScope.launchWhenCreated {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }

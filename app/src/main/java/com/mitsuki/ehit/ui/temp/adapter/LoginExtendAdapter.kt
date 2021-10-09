@@ -1,63 +1,55 @@
 package com.mitsuki.ehit.ui.temp.adapter
 
-import android.widget.Button
-import android.widget.RadioGroup
-import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.base.extend.view
+import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.crutch.extend.text
 import com.mitsuki.ehit.crutch.network.Url
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.subjects.PublishSubject
+import com.mitsuki.ehit.databinding.ItemLoginDomainBinding
+import com.mitsuki.ehit.databinding.ItemLoginExtendBinding
 
-class LoginExtend : SingleItemAdapter(true) {
+class LoginExtend : SingleItemBindingAdapter<ItemLoginExtendBinding>(
+    R.layout.item_login_extend,
+    ItemLoginExtendBinding::bind
+), EventEmitter {
+
+    override val eventEmitter: Emitter = Emitter()
     private var mIsCookieLogin = false
 
-    private val mSwitchEvent: PublishSubject<Boolean> = PublishSubject.create()
-    private val mSkipEvent: PublishSubject<Int> = PublishSubject.create()
+    override val onViewHolderCreate: ViewHolder<ItemLoginExtendBinding>.() -> Unit = {
+        binding.loginExtendSkip.setOnClickListener { post("skip", -1) }
 
-    val onSwitch: Observable<Boolean> get() = mSwitchEvent.hideWithMainThread()
-    val onSkip: Observable<Int> get() = mSkipEvent.hideWithMainThread()
-
-    override val layoutRes: Int = R.layout.item_login_extend
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {
-
-        view<Button>(R.id.login_extend_skip)?.setOnClickListener { mSkipEvent.onNext(-1) }
-
-        view<Button>(R.id.login_extend_switch)?.setOnClickListener {
-            mIsCookieLogin = !mIsCookieLogin
-            (it as? Button)?.apply {
-                text = if (mIsCookieLogin) context.getText(R.string.text_login_by_account)
-                else context.getText(R.string.text_login_by_cookie)
+        binding.loginExtendSwitch.apply {
+            setOnClickListener {
+                mIsCookieLogin = !mIsCookieLogin
+                text =
+                    if (mIsCookieLogin) text(R.string.text_login_by_account) else text(R.string.text_login_by_cookie)
+                post("switch", mIsCookieLogin)
             }
-            mSwitchEvent.onNext(mIsCookieLogin)
         }
     }
-    override val onViewHolderBind: ViewHolder.() -> Unit = {}
 }
 
-class LoginDomain : SingleItemAdapter(true) {
-
-    private var checkRadioGroup: RadioGroup? = null
-
-    override val layoutRes: Int = R.layout.item_login_domain
-
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {
-        checkRadioGroup = itemView.findViewById<RadioGroup>(R.id.domain_check_radio)?.apply {
-            setOnCheckedChangeListener { _, checkedId ->
-                when (checkedId) {
-                    R.id.domain_check_e -> ShareData.spDomain = Url.EH
-                    R.id.domain_check_ex -> ShareData.spDomain = Url.EX
-                }
+class LoginDomain : SingleItemBindingAdapter<ItemLoginDomainBinding>(
+    R.layout.item_login_domain,
+    ItemLoginDomainBinding::bind
+) {
+    override val onViewHolderCreate: ViewHolder<ItemLoginDomainBinding>.() -> Unit = {
+        binding.domainCheckRadio.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.domain_check_e -> ShareData.spDomain = Url.EH
+                R.id.domain_check_ex -> ShareData.spDomain = Url.EX
             }
         }
     }
 
-    override val onViewHolderBind: ViewHolder.() -> Unit = {
+    override val onViewHolderBind: ViewHolder<ItemLoginDomainBinding>.() -> Unit = {
         when {
-            ShareData.spDomain.contains(Url.EH) -> checkRadioGroup?.check(R.id.domain_check_e)
-            ShareData.spDomain.contains(Url.EX) -> checkRadioGroup?.check(R.id.domain_check_ex)
+            ShareData.spDomain.contains(Url.EH) -> binding.domainCheckRadio.check(R.id.domain_check_e)
+            ShareData.spDomain.contains(Url.EX) -> binding.domainCheckRadio.check(R.id.domain_check_ex)
         }
     }
 }

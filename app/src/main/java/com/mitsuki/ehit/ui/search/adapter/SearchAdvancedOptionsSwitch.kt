@@ -1,14 +1,17 @@
 package com.mitsuki.ehit.ui.search.adapter
 
-import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.MutableLiveData
-import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.base.extend.view
+import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.databinding.ItemSearchExpandBinding
 
-class SearchAdvancedOptionsSwitch : SingleItemAdapter(false) {
+class SearchAdvancedOptionsSwitch : SingleItemBindingAdapter<ItemSearchExpandBinding>(
+    R.layout.item_search_expand, ItemSearchExpandBinding::bind, false
+), EventEmitter {
 
-    val switchEvent: MutableLiveData<Boolean> = MutableLiveData()
+    override val eventEmitter: Emitter = Emitter()
 
     var isChecked: Boolean = false
         set(value) {
@@ -18,17 +21,14 @@ class SearchAdvancedOptionsSwitch : SingleItemAdapter(false) {
             }
         }
 
-
-    override val layoutRes: Int = R.layout.item_search_expand
-
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {
-        view<SwitchCompat>(R.id.search_switch)?.setOnCheckedChangeListener { _, state ->
+    override val onViewHolderCreate: ViewHolder<ItemSearchExpandBinding>.() -> Unit = {
+        binding.searchSwitch.setOnCheckedChangeListener { _, state ->
             isChecked = state
-            switchEvent.postValue(isChecked)
+            post("switch", isChecked)
         }
     }
 
-    override val onViewHolderBind: ViewHolder.() -> Unit = {
-        view<SwitchCompat>(R.id.search_switch)?.isChecked = isChecked
+    override val onViewHolderBind: ViewHolder<ItemSearchExpandBinding>.() -> Unit = {
+        binding.searchSwitch.isChecked = isChecked
     }
 }

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.DialogFavouriteSelectBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -19,7 +21,7 @@ class FavouriteSelectPanel : BottomDialogFragment(R.layout.dialog_favourite_sele
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mAdapter.checkItem.observe(this, {
+        mAdapter.receiver<Int>("check").observe(this, {
             onFavouriteSelect?.invoke(it - 1)
             dismiss()
         })

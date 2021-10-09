@@ -1,21 +1,19 @@
 package com.mitsuki.ehit.ui.start.adapter
 
-import android.widget.Button
-import androidx.lifecycle.MutableLiveData
-import com.mitsuki.armory.adapter.SingleItemAdapter
-import com.mitsuki.armory.base.extend.view
+import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.SingleLiveEvent
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.databinding.ItemDisclaimerBinding
 
-class DisclaimerAdapter : SingleItemAdapter(true) {
-
-    val onEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
-
-    override val layoutRes: Int = R.layout.item_disclaimer
-    override val onViewHolderCreate: ViewHolder.() -> Unit = {
-        view<Button>(R.id.disclaimer_yes_btn)?.setOnClickListener { onEvent.postValue(true) }
-        view<Button>(R.id.disclaimer_no_btn)?.setOnClickListener { onEvent.postValue(false) }
-
+class DisclaimerAdapter : SingleItemBindingAdapter<ItemDisclaimerBinding>(
+    R.layout.item_disclaimer,
+    ItemDisclaimerBinding::bind
+), EventEmitter {
+    override val eventEmitter: Emitter = Emitter()
+    override val onViewHolderCreate: ViewHolder<ItemDisclaimerBinding>.() -> Unit = {
+        binding.disclaimerYesBtn.setOnClickListener { post("disclaimer", true) }
+        binding.disclaimerNoBtn.setOnClickListener { post("disclaimer", false) }
     }
-    override val onViewHolderBind: ViewHolder.() -> Unit = {}
 }
