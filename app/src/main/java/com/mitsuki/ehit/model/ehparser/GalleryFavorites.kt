@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.model.ehparser
 
-import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.saveToInt
 import com.mitsuki.ehit.crutch.extend.string
@@ -60,20 +59,5 @@ object GalleryFavorites {
             }
         }
         return Array(11) { if (it == 0) string(R.string.text_all) to total else data[it - 1] }
-    }
-
-    val DIFF = object : DiffUtil.ItemCallback<Pair<String, Int>>() {
-        override fun areItemsTheSame(
-            oldItem: Pair<String, Int>,
-            newItem: Pair<String, Int>
-        ): Boolean = oldItem === newItem
-
-        override fun areContentsTheSame(
-            oldItem: Pair<String, Int>,
-            newItem: Pair<String, Int>
-        ): Boolean {
-            return oldItem.first == newItem.first &&
-                    oldItem.second == newItem.second
-        }
     }
 }

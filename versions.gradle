@@ -4,8 +4,8 @@
  **/
 def build_versions = [:]
 build_versions.min_sdk = 21
-build_versions.compile_sdk = 30
-build_versions.target_sdk = 30
+build_versions.compile_sdk = 31
+build_versions.target_sdk = 31
 build_versions.build_tools = "30.0.2"
 ext.build_versions = build_versions
 
@@ -33,7 +33,7 @@ versions.preference = "1.1.1"
 versions.hilt = '2.28-alpha'
 versions.hilt_ext = '1.0.0-alpha01'
 versions.paging = '3.0.0'
-versions.lifecycle = "2.3.1"
+versions.lifecycle = "2.4.0-rc01"
 versions.navigation = "2.3.5"
 versions.room = "2.4.0-alpha04"
 

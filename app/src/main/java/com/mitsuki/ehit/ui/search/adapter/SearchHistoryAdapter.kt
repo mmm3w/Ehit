@@ -71,9 +71,7 @@ class SearchHistoryAdapter : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolde
             data.isEmpty() && mData.count == 0 -> {
 
             }
-            else -> {
-                mData.postUpdate(NotifyData.Refresh(data))
-            }
+            else -> mData.postUpdate(NotifyData.Refresh(data))
         }
     }
 

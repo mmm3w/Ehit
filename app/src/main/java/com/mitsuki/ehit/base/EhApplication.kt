@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.base
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.coil.CoilProvider
@@ -43,5 +44,6 @@ class EhApplication : Application() {
 
 
         CoilProvider.init(this)
+
     }
 }

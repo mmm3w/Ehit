@@ -45,4 +45,20 @@ class Comment(val id: Int, val time: String, val user: String, val text: String)
 
         private fun String.prefix(): String = String.format(ParseError.GALLERY_COMMENT, this)
     }
+
+    override fun equals(other: Any?): Boolean {
+        return other is Comment &&
+                id == other.id &&
+                time == other.time &&
+                user == other.user &&
+                text == other.text
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + time.hashCode()
+        result = 31 * result + user.hashCode()
+        result = 31 * result + text.hashCode()
+        return result
+    }
 }

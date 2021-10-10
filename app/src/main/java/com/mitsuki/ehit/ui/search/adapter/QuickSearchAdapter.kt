@@ -1,10 +1,12 @@
 package com.mitsuki.ehit.ui.search.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mitsuki.armory.adapter.notify.AttachedAnchor
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
@@ -29,6 +31,8 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
 
     val clickItem: Observable<Event> get() = mClickEvent.hide()
     val sortDragTrigger: Observable<ViewHolder> get() = mSortDragTriggerEvent.hide()
+
+    private var isAttached: Boolean = false
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
@@ -63,9 +67,22 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
         holder.binding.quickSearchName.text = mData[position].name
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        isAttached = true
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        isAttached = false
+    }
+
     /**********************************************************************************************/
     //协程队列更新
     private suspend fun postUpdate(data: NotifyData<QuickSearch>) {
+        if (!isAttached) {
+            data.directUpdate(mData)
+            return
+        }
+
         pendingUpdates.add(data)
         if (pendingUpdates.size > 1) return
         updateData(data)
@@ -147,4 +164,6 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
         class Click(data: QuickSearch) : Event(data)
         class Delete(data: QuickSearch) : Event(data)
     }
+
+
 }

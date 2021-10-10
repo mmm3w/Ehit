@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -30,7 +31,6 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
-import com.mitsuki.ehit.ui.common.widget.ListScrollTrigger
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
@@ -61,15 +61,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             footer.loadState = loadStates.append
         }
         ConcatAdapter(header, mInitAdapter, mAdapter, footer)
-    }
-
-    private val quickSearchPanel by lazy {
-        QuickSearchPanel().apply {
-            onQuickSearch = {
-                mViewModel.galleryListCondition(it)
-                mAdapter.refresh()
-            }
-        }
     }
 
     private val binding by viewBinding(FragmentGalleryListBinding::bind)
@@ -121,10 +112,6 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mConcatAdapter
-            addOnScrollListener(ListScrollTrigger(this) {
-                if (it) binding?.galleryMotionLayout?.transitionToStart()
-                else binding?.galleryMotionLayout?.transitionToEnd()
-            })
 
             binding?.topBar?.topSearchLayout?.apply {
                 addOnScrollListener(ListFloatHeader(this))
@@ -189,7 +176,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     }
 
     private fun showQuickSearchPanel() {
-        quickSearchPanel.show(childFragmentManager, "QuickSearchPanel")
+        QuickSearchPanel().apply {
+            onQuickSearch = {
+                mViewModel.galleryListCondition(it)
+                mAdapter.refresh()
+            }
+        }.show(childFragmentManager, "QuickSearchPanel")
     }
 
 

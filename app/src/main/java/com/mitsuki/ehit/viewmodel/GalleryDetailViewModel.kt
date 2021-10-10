@@ -97,7 +97,7 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
                     RoomData.galleryDao.updateGalleryFavorites(baseInfo.gid, baseInfo.token, name)
                     infoWrap.sourceDetail.favoriteName = name
 
-                    post("fav", name)
+                    post("fav", 0)
                     post("toast", string(strRes))
                 }
                 is RequestResult.FailResult -> post(

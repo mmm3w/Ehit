@@ -5,6 +5,9 @@ import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.dynamic.IFragmentWrapper
+import com.mitsuki.armory.adapter.notify.NotifyData
+import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
@@ -16,11 +19,14 @@ import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.text
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ItemCommentBinding
+import com.mitsuki.ehit.databinding.ItemGalleryBinding
 import com.mitsuki.ehit.databinding.ItemGalleryDetailCommentBinding
+import com.mitsuki.ehit.model.diff.Diff
+import com.mitsuki.ehit.model.entity.Comment
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import io.reactivex.rxjava3.subjects.PublishSubject
 
-class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
+class GalleryCommentAdapter :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), EventEmitter {
 
     companion object {
@@ -30,37 +36,37 @@ class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
 
     override val eventEmitter: Emitter = Emitter()
 
-    private val mGate = InitialGate()
+    private val mData: NotifyQueueData<Comment> = NotifyQueueData(Diff.GALLERY_COMMENT).apply {
+        attachAdapter(this@GalleryCommentAdapter)
+    }
 
-    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
-        set(loadState) {
-            if (mGate.ignore()) return
+    var isShowAll: Boolean = true
+        set(value) {
+            if (value == field) return
 
-            if (field != loadState) {
-                when (loadState) {
-                    is LoadState.Loading -> mGate.prep(true)
-                    is LoadState.Error -> mGate.prep(false)
-                    is LoadState.NotLoading -> mGate.trigger()
-                }
-
-                if (mGate.ignore()) notifyItemRangeInserted(0, mData.comment.size + 1)
-
-                field = loadState
+            when {
+                !value && field -> notifyItemInserted(itemCount)
+                value && !field -> notifyItemRemoved(itemCount - 1)
             }
+            field = value
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return (when (viewType) {
-            TYPE_COMMENT -> DetailCommentViewHolder(parent)
-            TYPE_MORE -> MoreCommentViewHolder(parent)
-            else -> throw  IllegalStateException()
-        }).apply { itemView.setOnClickListener { post("comment", "More Comment") } }
+        return when (viewType) {
+            TYPE_COMMENT -> DetailCommentViewHolder(parent).apply {
+
+            }
+            TYPE_MORE -> MoreCommentViewHolder(parent).apply {
+                itemView.setOnClickListener { post("more", 0) }
+            }
+            else -> throw IllegalStateException()
+        }
     }
 
-    override fun getItemCount(): Int = if (mGate.ignore()) mData.comment.size + 1 else 0
+    override fun getItemCount(): Int = if (isShowAll) mData.count else mData.count + 1
 
     override fun getItemViewType(position: Int): Int {
-        if (position == itemCount - 1)
+        if (!isShowAll && position == itemCount - 1)
             return TYPE_MORE
         return TYPE_COMMENT
     }
@@ -68,34 +74,39 @@ class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is DetailCommentViewHolder -> {
-                with(mData.comment[position]) {
+                with(mData.item(position)) {
                     holder.binding.commentPostTime.text = time
                     holder.binding.commentUserName.text = user
-                    holder.binding.commentContent.also {
-                        it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                        it.maxLines = 3
-                    }
+                    holder.binding.commentContent.text =
+                        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 }
             }
             is MoreCommentViewHolder -> {
-                holder.binding.galleryDetailMore.text = when (mData.commentState) {
-                    GalleryDetailWrap.CommentState.NoComments -> text(R.string.text_no_comments)
-                    GalleryDetailWrap.CommentState.AllLoaded -> text(R.string.text_no_more_comments)
-                    GalleryDetailWrap.CommentState.MoreComments -> text(R.string.text_more_comments)
-                }
+                holder.binding.galleryDetailMore.text = text(R.string.text_more_comments)
             }
+        }
+    }
+
+    suspend fun submitData(data: List<Comment>) {
+        when {
+            data.isEmpty() && mData.count > 0 ->
+                mData.postUpdate(NotifyData.Clear())
+            data.isNotEmpty() && mData.count == 0 ->
+                mData.postUpdate(NotifyData.RangeInsert(data))
+            data.isEmpty() && mData.count == 0 -> {
+
+            }
+            else -> mData.postUpdate(NotifyData.Refresh(data))
         }
     }
 
     class DetailCommentViewHolder(parent: ViewGroup) :
         RecyclerView.ViewHolder(parent.createItemView(R.layout.item_comment)) {
         val binding by viewBinding(ItemCommentBinding::bind)
-
     }
 
     class MoreCommentViewHolder(parent: ViewGroup) :
         RecyclerView.ViewHolder(parent.createItemView(R.layout.item_gallery_detail_comment)) {
         val binding by viewBinding(ItemGalleryDetailCommentBinding::bind)
-
     }
 }

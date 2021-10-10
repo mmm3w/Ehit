@@ -204,7 +204,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         }
-        mViewModel.receiver<String>("fav").observe(viewLifecycleOwner) {
+        mViewModel.receiver<Int>("fav").observe(viewLifecycleOwner) {
             binding?.topBar?.topTitleFavorite?.isSelected = mViewModel.isFavorited
         }
     }

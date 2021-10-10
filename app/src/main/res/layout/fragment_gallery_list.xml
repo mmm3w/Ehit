@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gallery_motion_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    app:layoutDescription="@xml/fragment_gallery_list_scene">
+    android:background="@color/white">
 
     <FrameLayout
         android:id="@+id/gallery_list_container"
@@ -41,18 +40,26 @@
         android:id="@+id/gallery_quick_search_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         android:contentDescription="@string/description_quick_search"
         android:src="@drawable/ic_round_menu_open_24"
-        app:fabSize="mini" />
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/gallery_page_jump"
+        app:layout_constraintEnd_toEndOf="@id/gallery_page_jump"
+        app:layout_constraintStart_toStartOf="@id/gallery_page_jump" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gallery_page_jump"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="80dp"
         android:contentDescription="@string/description_page_jump"
         android:src="@drawable/ic_round_low_priority_24"
-        app:fabSize="mini" />
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

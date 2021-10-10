@@ -39,4 +39,6 @@ interface Repository {
 
     suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
             : RequestResult<List<Comment>>
+
+
 }

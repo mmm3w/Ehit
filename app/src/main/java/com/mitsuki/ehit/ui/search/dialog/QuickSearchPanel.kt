@@ -1,27 +1,22 @@
 package com.mitsuki.ehit.ui.search.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.fragment.app.createViewModelLazy
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.observeWithCoro
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
-import com.mitsuki.ehit.model.entity.SearchKey
-import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.search.QuickSearchItemTouchHelperCallback
 import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
-import com.mitsuki.ehit.ui.search.adapter.QuickSearchEmptyAdapter
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import com.mitsuki.ehit.viewmodel.QuickSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +26,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
 
-    private val mViewModel: QuickSearchViewModel by viewModels()
+    private val mViewModel: QuickSearchViewModel by viewModels({ requireActivity() })
 
     private val mParentViewModel: GalleryListViewModel
             by viewModels(ownerProducer = { requireParentFragment() })
@@ -44,7 +39,7 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             mAdapter.submitData(mViewModel.quickSearch())
         }
 
@@ -80,8 +75,8 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
                     if (mViewModel.isQuickSave(cacheKey, type)) {
                         toast("项目已经存在")
                     } else {
-                        mAdapter.addItem(cacheKey, cacheKey, type)
                         mViewModel.saveSearch(cacheKey, cacheKey, type)
+                        mAdapter.addItem(cacheKey, cacheKey, type)
                     }
                 }
             }
@@ -106,6 +101,8 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
             itemTouchHelper.attachToRecyclerView(this)
+            adapter
         }
     }
+
 }

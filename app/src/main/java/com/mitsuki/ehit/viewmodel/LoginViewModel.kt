@@ -19,9 +19,6 @@ class LoginViewModel @ViewModelInject constructor(@RemoteRepository var reposito
 
     override val eventEmitter: Emitter = Emitter()
 
-//    val toastEvent: SingleLiveEvent<String> by lazy { SingleLiveEvent() }
-//    val nextEvent: SingleLiveEvent<Int> by lazy { SingleLiveEvent() }
-
     fun login(account: String, password: String) {
         if (account.isEmpty()) {
             post("toast", "")

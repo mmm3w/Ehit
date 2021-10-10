@@ -14,6 +14,7 @@ import com.mitsuki.ehit.crutch.extend.createItemView
 
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ItemFavouriteOptionBinding
+import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 
 class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
@@ -22,7 +23,7 @@ class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
     override val eventEmitter: Emitter = Emitter()
 
     private val notifyQueueData: NotifyQueueData<Pair<String, Int>> by lazy {
-        NotifyQueueData(GalleryFavorites.DIFF).apply {
+        NotifyQueueData(Diff.GALLERY_FAVORITES).apply {
             attachAdapter(this@FavouriteItemAdapter)
         }
     }
