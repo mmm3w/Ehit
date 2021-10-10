@@ -1,9 +1,10 @@
-package com.mitsuki.ehit.ui.detail.activity
+package com.mitsuki.ehit.ui.comment.activity
 
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.dp2px
@@ -11,14 +12,12 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
-import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.databinding.ActivityGalleryCommentBinding
-import com.mitsuki.ehit.ui.detail.adapter.GalleryCommentAdapter
+import com.mitsuki.ehit.ui.comment.adapter.CommentLoadAdapter
+import com.mitsuki.ehit.ui.comment.adapter.GalleryCommentAdapter
 import com.mitsuki.ehit.viewmodel.GalleryCommentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GalleryCommentActivity : BaseActivity() {
@@ -29,8 +28,10 @@ class GalleryCommentActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityGalleryCommentBinding::inflate)
 
-    private val mAdapter by lazy { GalleryCommentAdapter() }
-
+    private val mInitAdapter by lazy { CommentLoadAdapter{ mViewModel.loadComment(false) } }
+    private val mMainAdapter by lazy { GalleryCommentAdapter() }
+    //TODO 还缺一个empty adapter
+    private val mAdapter by lazy { ConcatAdapter(mInitAdapter, mMainAdapter) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,23 +50,22 @@ class GalleryCommentActivity : BaseActivity() {
         mViewModel.initData(intent)
 
         lifecycleScope.launchWhenCreated {
-            mViewModel.commentDataFlow.collect {
-                mAdapter.submitData(it)
+            mViewModel.loadStateFlow.collect {
+                if (mInitAdapter.isOver) {
+                    binding.commentRefresh.isRefreshing = it is LoadState.Loading
+                } else {
+                    mInitAdapter.loadState = it
+                }
+                binding.commentRefresh.isEnabled = mInitAdapter.isOver
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            mViewModel.loadStateFlow.collect {
-                binding.commentRefresh.isRefreshing = it
-            }
-        }
-
-        binding.commentSend.setOnClickListener {
-            mViewModel.sendComment(binding.commentInput.text.toString())
+            mViewModel.commentDataFlow.collect { mMainAdapter.submitData(it) }
         }
 
         binding.commentRefresh.setOnRefreshListener {
-            mViewModel.loadComment(true)
+            mViewModel.loadComment(false)
         }
 
         binding.commentList.apply {
@@ -73,6 +73,6 @@ class GalleryCommentActivity : BaseActivity() {
             adapter = mAdapter
         }
 
-        mViewModel.loadComment(true)
+        mViewModel.loadComment(false)
     }
 }

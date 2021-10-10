@@ -1,14 +1,17 @@
 package com.mitsuki.ehit.ui.common.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.mitsuki.ehit.crutch.InitialGate
+import com.mitsuki.ehit.crutch.extend.viewBinding
 
-abstract class InitialLoadStateAdapter :
-    RecyclerView.Adapter<InitialViewHolder>() {
+abstract class InitialLoadStateAdapter<VB : ViewBinding> :
+    RecyclerView.Adapter<InitialViewHolder<VB>>() {
 
     private val mGate = InitialGate()
 
@@ -39,7 +42,7 @@ abstract class InitialLoadStateAdapter :
             }
         }
 
-    override fun onBindViewHolder(holder: InitialViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: InitialViewHolder<VB>, position: Int) {
         holder.bindTo(loadState)
     }
 
@@ -52,9 +55,15 @@ abstract class InitialLoadStateAdapter :
     }
 }
 
-abstract class InitialViewHolder(parent: ViewGroup, @LayoutRes layout: Int) :
+abstract class InitialViewHolder<VB : ViewBinding>(
+    parent: ViewGroup,
+    @LayoutRes layout: Int,
+    bind: (View) -> VB
+) :
     RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(layout, parent, false)
     ) {
+
+    val binding by viewBinding(bind)
     abstract fun bindTo(loadState: LoadState)
 }

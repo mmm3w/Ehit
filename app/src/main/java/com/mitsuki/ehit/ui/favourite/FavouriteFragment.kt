@@ -26,7 +26,7 @@ import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.main.GalleryAdapter
-import com.mitsuki.ehit.ui.temp.adapter.GalleryListLoadStateAdapter
+import com.mitsuki.ehit.ui.main.GalleryListLoadStateAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

@@ -49,6 +49,7 @@ class GalleryAdapter :
 
         init {
             binding.galleryThumb.corners(dp2px(4f))
+            binding.galleryRating.isEnabled = false
         }
 
         fun bind(data: Gallery) {

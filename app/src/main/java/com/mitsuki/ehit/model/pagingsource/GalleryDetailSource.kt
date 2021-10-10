@@ -71,7 +71,7 @@ class GalleryDetailSource(
                                 remoteData.requireBody().also { result ->
                                     result.first.apply {
                                         mDetailSource.partInfo = obtainOperating()
-                                       mDetailSource.comment = obtainComments()
+                                        mDetailSource.comment = obtainComments()
                                         mDetailSource.commentState = obtainCommentState()
                                         mDetailSource.tags = tagGroup
                                         mDetailSource.sourceDetail = this

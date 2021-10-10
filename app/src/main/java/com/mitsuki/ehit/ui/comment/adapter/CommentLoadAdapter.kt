@@ -1,25 +1,28 @@
-package com.mitsuki.ehit.ui.detail.adapter
+package com.mitsuki.ehit.ui.comment.adapter
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.databinding.LoadStateFitBinding
+import com.mitsuki.ehit.databinding.LoadStateFullBinding
 import com.mitsuki.ehit.ui.common.adapter.InitialLoadStateAdapter
 import com.mitsuki.ehit.ui.common.adapter.InitialViewHolder
 
-class GalleryDetailInitialLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
-    InitialLoadStateAdapter<LoadStateFitBinding>() {
+class CommentLoadAdapter(private val retryCallback: () -> Unit) :
+    InitialLoadStateAdapter<LoadStateFullBinding>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(parent) { adapter.retry() }
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): InitialViewHolder<LoadStateFullBinding> =
+        ViewHolder(parent, retryCallback)
 
     class ViewHolder(parent: ViewGroup, private val retryCallback: () -> Unit) :
-        InitialViewHolder<LoadStateFitBinding>(
+        InitialViewHolder<LoadStateFullBinding>(
             parent,
-            R.layout.load_state_fit,
-            LoadStateFitBinding::bind
+            R.layout.load_state_full,
+            LoadStateFullBinding::bind
         ) {
 
         init {
@@ -34,4 +37,5 @@ class GalleryDetailInitialLoadStateAdapter(private val adapter: PagingDataAdapte
             binding.loadStateError.text = (loadState as? LoadState.Error)?.error?.message
         }
     }
+
 }

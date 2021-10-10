@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.LoadState
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
@@ -25,8 +26,9 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
     private val _commentData: MutableStateFlow<List<Comment>> = MutableStateFlow(arrayListOf())
     val commentDataFlow: Flow<List<Comment>> get() = _commentData
 
-    private val _loadState = MutableStateFlow(false)
-    val loadStateFlow: Flow<Boolean> get() = _loadState
+    private val _loadState: MutableStateFlow<LoadState> =
+        MutableStateFlow(LoadState.NotLoading(true))
+    val loadStateFlow: Flow<LoadState> get() = _loadState
 
     private var mGalleryID: Long = -1L
     private lateinit var mGalleryToken: String
@@ -41,30 +43,31 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
 
     fun loadComment(isShowAll: Boolean) {
         viewModelScope.launch {
-            _loadState.value = true
+            _loadState.value = LoadState.Loading
             when (val result =
                 repository.galleryComment(mGalleryID, mGalleryToken, isShowAll)) {
                 is RequestResult.SuccessResult -> {
+                    _loadState.value = LoadState.NotLoading(false)
                     _commentData.value = result.data
                 }
                 is RequestResult.FailResult -> {
+                    _loadState.value = LoadState.Error(result.throwable)
                     post("toast", result.throwable.message)
                 }
             }
-            _loadState.value = false
         }
     }
 
     fun sendComment(text: String) {
         viewModelScope.launch {
-            if (text.isEmpty()){
+            if (text.isEmpty()) {
                 return@launch
             }
 
             when (val result =
                 repository.sendGalleryComment(mGalleryID, mGalleryToken, text)) {
                 is RequestResult.SuccessResult -> {
-                    Log.d("asdf","成功")
+                    Log.d("asdf", "成功")
                 }
                 is RequestResult.FailResult -> {
 //                    Log.d("asdf", "${result.throwable.message}")

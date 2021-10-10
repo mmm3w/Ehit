@@ -40,7 +40,7 @@ import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
-import com.mitsuki.ehit.ui.detail.activity.GalleryCommentActivity
+import com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*

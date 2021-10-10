@@ -2,35 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingStart="@dimen/dp_24"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingEnd="@dimen/dp_24"
-    android:paddingBottom="@dimen/dp_8">
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/horizontal_space"
+    android:paddingVertical="16dp">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/comment_post_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end" />
-
-        <TextView
             android:id="@+id/comment_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:textColor="@color/blue_5F6368" />
+            android:layout_gravity="start|center_vertical"
+            android:textColor="@color/black_20"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/comment_post_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:textColor="@color/black_70"
+            android:textSize="11sp" />
     </FrameLayout>
 
     <TextView
         android:id="@+id/comment_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/blue_5F6368" />
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black_20"
+        android:textSize="14sp" />
+
 </LinearLayout>
