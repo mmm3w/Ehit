@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.model.entity
 
-import coil.memory.MemoryCache
 import com.mitsuki.ehit.crutch.coil.CacheKey
 
 class GalleryDetailWrap {
@@ -11,7 +10,7 @@ class GalleryDetailWrap {
     lateinit var sourceDetail: GalleryDetail
 
     companion object {
-        const val MAX_COMMENT = 5
+        const val MAX_COMMENT = 3
     }
 
 

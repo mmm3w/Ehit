@@ -24,6 +24,8 @@ object RequestKey {
     const val ACT = "act"
     const val HC = "hc"
 
+    const val COMMENT_TEXT = "commenttext_new"
+
     const val FAVORITE_KEY_CAT = "favcat"
     const val FAVORITE_KEY_NOTE = "favnote"
     const val FAVORITE_KEY_APPLY = "apply"

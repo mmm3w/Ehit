@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class GalleryCommentActivity : BaseActivity() {
 
-    private val mViewModel by viewModels<GalleryCommentViewModel>()
+    private val mViewModel: GalleryCommentViewModel by viewModels()
 
     private val controller by windowController()
 
@@ -61,11 +61,11 @@ class GalleryCommentActivity : BaseActivity() {
         }
 
         binding.commentSend.setOnClickListener {
-
+            mViewModel.sendComment(binding.commentInput.text.toString())
         }
 
         binding.commentRefresh.setOnRefreshListener {
-            lifecycleScope.launch { mViewModel.loadComment(false) }
+            mViewModel.loadComment(true)
         }
 
         binding.commentList.apply {
@@ -73,6 +73,6 @@ class GalleryCommentActivity : BaseActivity() {
             adapter = mAdapter
         }
 
-        lifecycleScope.launchWhenCreated { mViewModel.loadComment(false) }
+        mViewModel.loadComment(true)
     }
 }

@@ -40,5 +40,6 @@ interface Repository {
     suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
             : RequestResult<List<Comment>>
 
+    suspend fun sendGalleryComment(gid: Long, token: String, comment: String): RequestResult<Int>
 
 }

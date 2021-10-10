@@ -280,4 +280,32 @@ class RepositoryImpl @Inject constructor() : Repository {
             }
         }
     }
+
+    override suspend fun sendGalleryComment(
+        gid: Long,
+        token: String,
+        comment: String
+    ): RequestResult<Int> = withContext(Dispatchers.IO) {
+
+        val data = HttpRookie
+            .post<Int>(Url.galleryDetail(gid, token)) {
+                convert = SendCommentConvert()
+                urlParams(RequestKey.HC, "1")
+                params(RequestKey.COMMENT_TEXT, comment)
+
+                header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
+                header(RequestKey.HEADER_REFERER, url())
+            }
+            .execute()
+
+        try {
+            when (data) {
+                is Response.Success<Int> -> RequestResult.SuccessResult(0)
+                is Response.Fail<*> -> throw  data.throwable
+            }
+        } catch (inner: Throwable) {
+            RequestResult.FailResult(inner)
+        }
+    }
+
 }
