@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.comment.activity
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
+import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.extend.text
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryCommentBinding
@@ -28,9 +31,10 @@ class GalleryCommentActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityGalleryCommentBinding::inflate)
 
-    private val mInitAdapter by lazy { CommentLoadAdapter{ mViewModel.loadComment(false) } }
+    private val mInitAdapter by lazy { CommentLoadAdapter { mViewModel.loadComment(false) } }
     private val mMainAdapter by lazy { GalleryCommentAdapter() }
-    //TODO 还缺一个empty adapter
+
+    //TODO 还缺一个empty adapter 一个显示全部adapter
     private val mAdapter by lazy { ConcatAdapter(mInitAdapter, mMainAdapter) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +49,12 @@ class GalleryCommentActivity : BaseActivity() {
         binding.topBar.topBarLayout.elevation = dp2px(4f)
         binding.topBar.topBarLayout.setBackgroundColor(Color.WHITE)
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
-        binding.topBar.topBarText.setText(R.string.text_more_comments)
+        binding.topBar.topBarText.apply {
+            text = intent?.getStringExtra(DataKey.GALLERY_NAME) ?: text(R.string.text_more_comments)
+            ellipsize = TextUtils.TruncateAt.END
+            isSingleLine = true
+            setPadding(0, 0, dp2px(16F).toInt(), 0)
+        }
 
         mViewModel.initData(intent)
 

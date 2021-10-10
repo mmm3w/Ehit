@@ -9,22 +9,13 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
-import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.text
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ItemCommentABinding
-import com.mitsuki.ehit.databinding.ItemCommentBinding
-import com.mitsuki.ehit.databinding.ItemGalleryDetailCommentBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Comment
 
 class GalleryCommentAdapter :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(), EventEmitter {
-
-    companion object {
-        private const val TYPE_COMMENT = 0
-        private const val TYPE_MORE = 1
-    }
+    RecyclerView.Adapter<GalleryCommentAdapter.ViewHolder>(), EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()
 
@@ -32,7 +23,7 @@ class GalleryCommentAdapter :
         attachAdapter(this@GalleryCommentAdapter)
     }
 
-    var isShowAll: Boolean = true
+    var isShowAll: Boolean = false
         set(value) {
             if (value == field) return
 
@@ -43,44 +34,24 @@ class GalleryCommentAdapter :
             field = value
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_COMMENT -> DetailCommentViewHolder(parent).apply {
-                binding.commentVoteUp.setOnClickListener {  }
-                binding.commentVoteDown.setOnClickListener {  }
-                binding.commentOption.setOnClickListener {  }
-            }
-            TYPE_MORE -> MoreCommentViewHolder(parent).apply {
-                itemView.setOnClickListener { post("more", 0) }
-            }
-            else -> throw IllegalStateException()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryCommentAdapter.ViewHolder {
+        return ViewHolder(parent).apply {
+            binding.commentVoteUp.setOnClickListener {  }
+            binding.commentVoteDown.setOnClickListener {  }
+            binding.commentOption.setOnClickListener {  }
         }
     }
 
-    override fun getItemCount(): Int = if (isShowAll) mData.count else mData.count + 1
+    override fun getItemCount(): Int = mData.count
 
-    override fun getItemViewType(position: Int): Int {
-        if (!isShowAll && position == itemCount - 1)
-            return TYPE_MORE
-        return TYPE_COMMENT
-    }
+    override fun onBindViewHolder(holder: GalleryCommentAdapter.ViewHolder, position: Int) {
+        with(mData.item(position)) {
+            holder.binding.commentPostTime.text = time
+            holder.binding.commentUserName.text = user
+            holder.binding.commentContent.text =
+                HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is DetailCommentViewHolder -> {
-                with(mData.item(position)) {
-
-                    holder.binding.commentPostTime.text = time
-                    holder.binding.commentUserName.text = user
-                    holder.binding.commentContent.text =
-                        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
-
-                    holder.binding.commentVoteUp.isSelected = true
-                }
-            }
-            is MoreCommentViewHolder -> {
-                holder.binding.galleryDetailMore.text = text(R.string.text_more_comments)
-            }
+            holder.binding.commentVoteUp.isSelected = true
         }
     }
 
@@ -97,13 +68,8 @@ class GalleryCommentAdapter :
         }
     }
 
-    class DetailCommentViewHolder(parent: ViewGroup) :
+    class ViewHolder(parent: ViewGroup) :
         RecyclerView.ViewHolder(parent.createItemView(R.layout.item_comment_a)) {
         val binding by viewBinding(ItemCommentABinding::bind)
-    }
-
-    class MoreCommentViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_gallery_detail_comment)) {
-        val binding by viewBinding(ItemGalleryDetailCommentBinding::bind)
     }
 }
