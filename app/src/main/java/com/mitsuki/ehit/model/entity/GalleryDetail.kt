@@ -61,9 +61,7 @@ data class GalleryDetail(
         }
 
     val commentCache: List<GalleryCommentCache>
-        get() = comments.map {
-            GalleryCommentCache(info.gid, info.token, it.id, it.time, it.user, it.text)
-        }
+        get() = comments.map { it.toGalleryCommentCache(info.gid, info.token) }
 
     companion object {
         @Suppress("MemberVisibilityCanBePrivate")

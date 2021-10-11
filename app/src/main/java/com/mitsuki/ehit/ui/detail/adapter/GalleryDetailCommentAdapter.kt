@@ -69,7 +69,7 @@ class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
         when (holder) {
             is DetailCommentViewHolder -> {
                 with(mData.comment[position]) {
-                    holder.binding.commentPostTime.text = "1995.1.1 00:00"
+                    holder.binding.commentPostTime.text = postTime.toString()
                     holder.binding.commentUserName.text = user
                     holder.binding.commentContent.also {
                         it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)

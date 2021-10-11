@@ -7,7 +7,6 @@ package com.mitsuki.ehit.model.ehparser
 
 import android.text.TextUtils
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
-import java.lang.Exception
 
 /**************************************************************************************************/
 fun String.htmlEscape(): String {

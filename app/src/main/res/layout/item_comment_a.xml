@@ -59,9 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_vote"
+            android:drawablePadding="4dp"
             android:gravity="center"
             android:paddingHorizontal="16dp"
             android:paddingVertical="2dp"
+            android:textSize="12sp"
             app:drawableStartCompat="@drawable/ic_baseline_thumb_up_alt_16" />
 
         <TextView
@@ -72,6 +74,7 @@
             android:background="@drawable/bg_vote"
             android:paddingHorizontal="16dp"
             android:paddingVertical="2dp"
+            android:textSize="12sp"
             app:drawableStartCompat="@drawable/ic_baseline_thumb_down_alt_16" />
 
     </LinearLayout>

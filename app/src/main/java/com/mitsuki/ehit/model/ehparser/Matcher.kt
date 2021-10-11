@@ -1,6 +1,9 @@
 package com.mitsuki.ehit.model.ehparser
 
 import com.mitsuki.ehit.crutch.network.Url
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 
 object Matcher {
@@ -62,5 +65,9 @@ object Matcher {
 
     val PREVIEW_PAGE_TO_TOKEN: Pattern by lazy { Pattern.compile("${Url.currentDomain}/s/([0-9a-f]{10})/(\\d+)-(\\d+)") }
 
+    val WEB_COMMENT_DATE_FORMAT: DateFormat by lazy {
+        SimpleDateFormat("dd MMMMM yyyy, HH:mm", Locale.US)
+            .apply { timeZone = TimeZone.getTimeZone("UTC") }
+    }
 
 }

@@ -33,10 +33,9 @@ class LoginCookieAdapter : SingleItemBindingAdapter<ItemLoginCookieBinding>(
         binding.loginIpbPassHash.setText(BuildConfig.ipb_pass_hash)
         binding.loginIgneous.setText(BuildConfig.igneous)
 
-        binding.loginLoginBtn.apply {
-            tag = this
-            setOnClickListener(mItemClick)
-        }
+        binding.loginLoginBtn.tag = this
+        binding.loginLoginBtn.setOnClickListener(mItemClick)
+
     }
 
     data class LoginCookie(val memberId: String, val passHash: String, val igneous: String)

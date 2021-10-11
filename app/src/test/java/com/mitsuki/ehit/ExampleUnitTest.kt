@@ -9,6 +9,8 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
@@ -260,5 +262,11 @@ class ExampleUnitTest {
             }
             toString()
         }
+    }
+
+    @Test
+    fun format(){
+        val dateFormat =  SimpleDateFormat("dd MMMMM yyyy, HH:mm", Locale.US)
+        val date: Date = dateFormat.parse("2015-8-28 18:8:30")
     }
 }

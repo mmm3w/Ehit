@@ -27,9 +27,8 @@ abstract class GalleryDao {
         val tags = queryGalleryTags(gid, token).groupBy { it.group }.map { map ->
             TagGroup(map.key, map.value.map { it.name }.toTypedArray())
         }.toTypedArray()
-        val comments = queryGalleryComments(gid, token).map { cache ->
-            Comment(cache.cid, cache.time, cache.user, cache.content)
-        }.toTypedArray()
+        val comments =
+            queryGalleryComments(gid, token).map { cache -> cache.toComment() }.toTypedArray()
 
         return GalleryDetail(info, tags, comments)
     }

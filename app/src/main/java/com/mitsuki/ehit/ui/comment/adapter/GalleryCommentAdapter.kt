@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.comment.adapter
 
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
@@ -23,35 +24,29 @@ class GalleryCommentAdapter :
         attachAdapter(this@GalleryCommentAdapter)
     }
 
-    var isShowAll: Boolean = false
-        set(value) {
-            if (value == field) return
-
-            when {
-                !value && field -> notifyItemInserted(itemCount)
-                value && !field -> notifyItemRemoved(itemCount - 1)
-            }
-            field = value
-        }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryCommentAdapter.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewHolder {
         return ViewHolder(parent).apply {
-            binding.commentVoteUp.setOnClickListener {  }
-            binding.commentVoteDown.setOnClickListener {  }
-            binding.commentOption.setOnClickListener {  }
+            binding.commentVoteUp.setOnClickListener { }
+            binding.commentVoteDown.setOnClickListener { }
+            binding.commentOption.setOnClickListener { }
         }
     }
 
     override fun getItemCount(): Int = mData.count
 
-    override fun onBindViewHolder(holder: GalleryCommentAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(mData.item(position)) {
-            holder.binding.commentPostTime.text = time
             holder.binding.commentUserName.text = user
+            holder.binding.commentPostTime.text = postTime.toString()
             holder.binding.commentContent.text =
                 HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
-
-            holder.binding.commentVoteUp.isSelected = true
+            holder.binding.commentVoteLayout.isVisible = voteEnable
+            holder.binding.commentVoteUp.isSelected = voteState > 0
+            holder.binding.commentVoteUp.text = score
+            holder.binding.commentVoteDown.isSelected = voteState < 0
         }
     }
 
