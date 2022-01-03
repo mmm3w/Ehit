@@ -10,6 +10,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.crutch.InitialGate
+import com.mitsuki.ehit.crutch.Tools
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
@@ -69,7 +70,7 @@ class GalleryDetailCommentAdapter(private var mData: GalleryDetailWrap) :
         when (holder) {
             is DetailCommentViewHolder -> {
                 with(mData.comment[position]) {
-                    holder.binding.commentPostTime.text = postTime.toString()
+                    holder.binding.commentPostTime.text = Tools.commentTime(postTime)
                     holder.binding.commentUserName.text = user
                     holder.binding.commentContent.also {
                         it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)

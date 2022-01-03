@@ -23,6 +23,10 @@ import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.GalleryPreviewCache
+import com.mitsuki.ehit.model.entity.reponse.RateBack
+import com.mitsuki.ehit.model.entity.reponse.VoteBack
+import com.mitsuki.ehit.model.entity.request.RequestRateInfo
+import com.mitsuki.ehit.model.entity.request.RequestVoteInfo
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.model.pagingsource.FavoritesSource
@@ -64,6 +68,8 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     override fun favoriteList(
         pageIn: FavouritePageIn,
+
+
         dataWrap: FavouriteCountWrap
     ): Flow<PagingData<Gallery>> {
         return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
@@ -196,18 +202,18 @@ class RepositoryImpl @Inject constructor() : Repository {
                     convert = RateBackConvert()
                     json(
                         RequestRateInfo(
-                            apiUid = detail.info.apiUID,
-                            apiKey = detail.info.apiKey,
-                            galleryID = detail.info.gid.toString(),
-                            token = detail.info.token,
+                            apiUid = detail.apiUID,
+                            apiKey = detail.apiKey,
+                            galleryID = detail.gid.toString(),
+                            token = detail.token,
                             rating = ceil(rating * 2).toInt()
                         ).toJson()
                     )
                     header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
                     header(
                         RequestKey.HEADER_REFERER, Url.galleryDetail(
-                            detail.info.gid,
-                            detail.info.token
+                            detail.gid,
+                            detail.token
                         )
                     )
                 }
@@ -222,8 +228,6 @@ class RepositoryImpl @Inject constructor() : Repository {
                 RequestResult.FailResult(inner)
             }
         }
-
-
     }
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
@@ -286,7 +290,6 @@ class RepositoryImpl @Inject constructor() : Repository {
         token: String,
         comment: String
     ): RequestResult<Int> = withContext(Dispatchers.IO) {
-
         val data = HttpRookie
             .post<Int>(Url.galleryDetail(gid, token)) {
                 convert = SendCommentConvert()
@@ -307,5 +310,42 @@ class RepositoryImpl @Inject constructor() : Repository {
             RequestResult.FailResult(inner)
         }
     }
+
+
+    override suspend fun voteGalleryComment(
+        apiKey: String,
+        apiUid: Long,
+        gid: Long,
+        token: String,
+        cid: Long,
+        vote: Int
+    ): RequestResult<VoteBack> =
+        withContext(Dispatchers.IO) {
+            val data = HttpRookie
+                .post<VoteBack>(Url.api) {
+                    convert = VoteBackConvert()
+                    json(
+                        RequestVoteInfo(
+                            apiUid = apiUid,
+                            apiKey = apiKey,
+                            galleryID = gid,
+                            token = token,
+                            cid = cid,
+                            vote = vote
+                        ).toJson()
+                    )
+                    header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
+                    header(RequestKey.HEADER_REFERER, Url.galleryDetail(gid, token))
+                }
+                .execute()
+            try {
+                when (data) {
+                    is Response.Success<VoteBack> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Fail<*> -> throw data.throwable
+                }
+            } catch (inner: Throwable) {
+                RequestResult.FailResult(inner)
+            }
+        }
 
 }

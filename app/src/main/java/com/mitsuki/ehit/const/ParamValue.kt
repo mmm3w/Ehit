@@ -6,6 +6,7 @@ object ParamValue {
     const val LOGIN_HEADER_REFERER = "https://forums.e-hentai.org/index.php?act=Login&CODE=00"
 
     const val RATE_GALLERY = "rategallery"
+    const val VOTE_COMMENT = "votecomment"
 
     const val FAVORITE_VALUE_NOTE = ""
     const val FAVORITE_VALUE_APPLY_ADD = "Add to Favorites"

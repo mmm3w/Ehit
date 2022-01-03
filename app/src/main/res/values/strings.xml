@@ -34,9 +34,9 @@
     <string name="dev_text_db_import">DB Import</string>
     <string name="dev_text_nsfw_change">NSFW Switch</string>
 
-
-
     <string name="error_parse_throwable_text">Data parse error</string>
+
+    <string name="comment_time_format_pattern">dd MMM yyyy,HH:mm</string>
 
     <string name="description_page_jump">Page jump support</string>
     <string name="description_go_top">Back to top support</string>

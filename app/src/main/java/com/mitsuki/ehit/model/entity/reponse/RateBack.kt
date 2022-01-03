@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.model.entity
+package com.mitsuki.ehit.model.entity.reponse
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

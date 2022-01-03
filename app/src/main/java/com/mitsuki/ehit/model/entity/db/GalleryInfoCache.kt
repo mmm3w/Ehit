@@ -12,7 +12,7 @@ import com.mitsuki.ehit.const.DBValue
 data class GalleryInfoCache(
     @ColumnInfo(name = "gid") val gid: Long,
     @ColumnInfo(name = "token") val token: String,
-    @ColumnInfo(name = "api_uid") val apiUID: String,
+    @ColumnInfo(name = "api_uid") val apiUID: Long,
     @ColumnInfo(name = "api_key") val apiKey: String,
     @ColumnInfo(name = "torrent_url") val torrentUrl: String = "",
     @ColumnInfo(name = "torrent_count") val torrentCount: Int = 0,

@@ -11,7 +11,7 @@ import org.jsoup.select.NodeTraversor
 import org.jsoup.select.NodeVisitor
 
 class Comment(
-    val id: Int,
+    val id: Long,
     val user: String,
     val text: String,
     val postTime: Long,
@@ -41,7 +41,7 @@ class Comment(
 
         private fun parseItem(element: Element): Comment {
             val id =
-                element.previousElementSibling().attr("name").substring(1).toInt()
+                element.previousElementSibling().attr("name").substring(1).toLong()
 
             val c3Node = element.byClassFirst("c3", "c3 node".prefix())
 
@@ -120,7 +120,7 @@ class Comment(
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = id.hashCode()
         result = 31 * result + user.hashCode()
         result = 31 * result + text.hashCode()
         result = 31 * result + postTime.hashCode()

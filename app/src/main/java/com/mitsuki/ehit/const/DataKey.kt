@@ -6,6 +6,9 @@ object DataKey {
     const val GALLERY_ID = "GALLERY_ID"
     const val GALLERY_NAME = "GALLERY_NAME"
     const val GALLERY_TOKEN = "GALLERY_TOKEN"
+    const val GALLERY_API_KEY = "GALLERY_API_KEY"
+    const val GALLERY_API_UID = "GALLERY_API_UID"
+
     const val IMAGE_TOKEN = "IMAGE_TOKEN"
     const val GALLERY_PAGE = "GALLERY_PAGE"
     const val GALLERY_DETAIL = "GALLERY_DETAIL"

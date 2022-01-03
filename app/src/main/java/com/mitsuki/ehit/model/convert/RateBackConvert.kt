@@ -2,7 +2,7 @@ package com.mitsuki.ehit.model.convert
 
 import com.mitsuki.armory.httprookie.convert.Convert
 import com.mitsuki.ehit.crutch.fromJson
-import com.mitsuki.ehit.model.entity.RateBack
+import com.mitsuki.ehit.model.entity.reponse.RateBack
 import okhttp3.Response
 
 class RateBackConvert : Convert<RateBack> {

@@ -9,8 +9,9 @@
     <string name="dev_text_db_import">DB导入</string>
     <string name="dev_text_nsfw_change">NSFW切换</string>
 
-
     <string name="error_parse_throwable_text">数据解析异常</string>
+
+    <string name="comment_time_format_pattern">yyyy-MM-dd HH:mm</string>
 
     <string name="description_page_jump">跳页支持</string>
     <string name="description_go_top">返回顶部支持</string>

@@ -32,12 +32,17 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
 
     private var mGalleryID: Long = -1L
     private lateinit var mGalleryToken: String
+    private var mApiUID: Long = -1L
+    private lateinit var mApiKey: String
 
     fun initData(intent: Intent?) {
         mGalleryID = intent?.getLongExtra(DataKey.GALLERY_ID, -1) ?: throw IllegalStateException()
         if (mGalleryID == -1L) throw  IllegalStateException()
         mGalleryToken =
             intent.getStringExtra(DataKey.GALLERY_TOKEN) ?: throw IllegalStateException()
+        mApiUID = intent.getLongExtra(DataKey.GALLERY_API_UID, -1) ?: throw IllegalStateException()
+        if (mApiUID == -1L) throw  IllegalStateException()
+        mApiKey = intent.getStringExtra(DataKey.GALLERY_API_KEY) ?: throw IllegalStateException()
     }
 
 
@@ -58,6 +63,7 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
         }
     }
 
+
     fun sendComment(text: String) {
         viewModelScope.launch {
             if (text.isEmpty()) {
@@ -72,6 +78,27 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
                 is RequestResult.FailResult -> {
 //                    Log.d("asdf", "${result.throwable.message}")
                     post("toast", result.throwable.message)
+                }
+            }
+        }
+    }
+
+    fun voteCommnet(position: Int, cid: Long, vote: Int) {
+        viewModelScope.launch {
+            when (val result =
+                repository.voteGalleryComment(
+                    mApiKey,
+                    mApiUID,
+                    mGalleryID,
+                    mGalleryToken,
+                    cid,
+                    vote
+                )) {
+                is RequestResult.SuccessResult -> {
+
+                }
+                is RequestResult.FailResult -> {
+
                 }
             }
         }

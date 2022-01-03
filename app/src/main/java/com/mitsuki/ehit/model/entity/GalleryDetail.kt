@@ -71,7 +71,7 @@ data class GalleryDetail(
             val detail = content.parseDetail("detail block".prefix())
             val gid = detail[0].toLong()
             val token = detail[1]
-            val apiUID = detail[2]
+            val apiUID = detail[2].toLong()
             val apiKey = detail[3]
 
             val torrent = content.parseTorrent()
