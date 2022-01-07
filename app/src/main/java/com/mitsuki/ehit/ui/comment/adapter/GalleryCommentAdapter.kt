@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
@@ -29,12 +30,12 @@ class GalleryCommentAdapter :
 
     private val mItemVoteUpClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
-        post("VoteUp", mData.item(position))
+        post("VoteUp", position to mData.item(position))
     }
 
     private val mItemVoteDownClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
-        post("VoteDown", mData.item(position))
+        post("VoteDown", position to mData.item(position))
     }
 
     override fun onCreateViewHolder(
@@ -80,6 +81,10 @@ class GalleryCommentAdapter :
             }
             else -> mData.postUpdate(NotifyData.Refresh(data))
         }
+    }
+
+    fun updateData(lifecycle: Lifecycle, data: NotifyData<Comment>) {
+        mData.postUpdate(lifecycle, data)
     }
 
     class ViewHolder(parent: ViewGroup) :

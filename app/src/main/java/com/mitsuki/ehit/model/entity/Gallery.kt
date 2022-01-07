@@ -41,28 +41,6 @@ data class Gallery(
     val itemTransitionName = "gallery:$gid$token"
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Gallery>() {
-            override fun areItemsTheSame(
-                oldConcert: Gallery,
-                newConcert: Gallery
-            ): Boolean =
-                oldConcert.gid == newConcert.gid
-
-            override fun areContentsTheSame(
-                oldConcert: Gallery,
-                newConcert: Gallery
-            ): Boolean {
-                return oldConcert.token == newConcert.token
-                        && oldConcert.category == newConcert.category
-                        && oldConcert.time == newConcert.time
-                        && oldConcert.title == newConcert.title
-                        && oldConcert.uploader == newConcert.uploader
-                        && oldConcert.thumb == newConcert.thumb
-                        && oldConcert.rating == newConcert.rating
-                        && oldConcert.language == newConcert.language
-            }
-        }
-
         @Suppress("MemberVisibilityCanBePrivate")
         fun parseList(content: String?): ArrayList<Gallery> {
             return content?.run {

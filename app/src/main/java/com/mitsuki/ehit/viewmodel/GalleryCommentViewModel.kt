@@ -6,6 +6,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
+import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
@@ -76,14 +77,13 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
                     Log.d("asdf", "成功")
                 }
                 is RequestResult.FailResult -> {
-//                    Log.d("asdf", "${result.throwable.message}")
                     post("toast", result.throwable.message)
                 }
             }
         }
     }
 
-    fun voteCommnet(position: Int, cid: Long, vote: Int) {
+    fun voteComment(position: Int, comment: Comment, vote: Int) {
         viewModelScope.launch {
             when (val result =
                 repository.voteGalleryComment(
@@ -91,14 +91,18 @@ class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var
                     mApiUID,
                     mGalleryID,
                     mGalleryToken,
-                    cid,
+                    comment.id,
                     vote
                 )) {
                 is RequestResult.SuccessResult -> {
-
+                    //在这里刷新那条数据
+                    post("vote", NotifyData.Change(position, comment.apply {
+                        voteState = result.data.commentVote
+                        score = result.data.toString()
+                    }))
                 }
                 is RequestResult.FailResult -> {
-
+                    post("toast", result.throwable.message)
                 }
             }
         }

@@ -2,15 +2,37 @@ package com.mitsuki.ehit.model.diff
 
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.model.entity.Comment
+import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 
 object Diff {
+    val GALLERY_DIFF_CALLBACK = object : DiffUtil.ItemCallback<Gallery>() {
+        override fun areItemsTheSame(
+            oldConcert: Gallery,
+            newConcert: Gallery
+        ): Boolean = true
+
+        override fun areContentsTheSame(
+            oldConcert: Gallery,
+            newConcert: Gallery
+        ): Boolean {
+            return oldConcert.token == newConcert.token
+                    && oldConcert.category == newConcert.category
+                    && oldConcert.time == newConcert.time
+                    && oldConcert.title == newConcert.title
+                    && oldConcert.uploader == newConcert.uploader
+                    && oldConcert.thumb == newConcert.thumb
+                    && oldConcert.rating == newConcert.rating
+                    && oldConcert.language == newConcert.language
+        }
+    }
+
     val SEARCH_HISTORY by lazy {
         object : DiffUtil.ItemCallback<SearchHistory>() {
             override fun areItemsTheSame(oldItem: SearchHistory, newItem: SearchHistory): Boolean =
-                oldItem === newItem
+                true
 
             override fun areContentsTheSame(
                 oldItem: SearchHistory,
@@ -21,8 +43,7 @@ object Diff {
 
     val QUICK_SEARCH by lazy {
         object : DiffUtil.ItemCallback<QuickSearch>() {
-            override fun areItemsTheSame(oldItem: QuickSearch, newItem: QuickSearch): Boolean =
-                oldItem === newItem
+            override fun areItemsTheSame(oldItem: QuickSearch, newItem: QuickSearch): Boolean = true
 
             override fun areContentsTheSame(
                 oldItem: QuickSearch,
@@ -36,7 +57,7 @@ object Diff {
             override fun areItemsTheSame(
                 oldConcert: ImageSource,
                 newConcert: ImageSource
-            ): Boolean = oldConcert.imageUrl === newConcert.imageUrl
+            ): Boolean = true
 
             override fun areContentsTheSame(
                 oldConcert: ImageSource,
@@ -50,7 +71,7 @@ object Diff {
             override fun areItemsTheSame(
                 oldItem: Pair<String, Int>,
                 newItem: Pair<String, Int>
-            ): Boolean = oldItem === newItem
+            ): Boolean = true
 
             override fun areContentsTheSame(
                 oldItem: Pair<String, Int>,
@@ -65,7 +86,7 @@ object Diff {
     val GALLERY_COMMENT by lazy {
         object : DiffUtil.ItemCallback<Comment>() {
             override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
-                oldItem === newItem
+                true
 
             override fun areContentsTheSame(
                 oldItem: Comment,

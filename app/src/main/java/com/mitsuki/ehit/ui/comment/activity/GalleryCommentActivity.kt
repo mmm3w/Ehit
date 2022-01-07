@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.ehit.R
@@ -64,12 +65,16 @@ class GalleryCommentActivity : BaseActivity() {
         mViewModel.initData(intent)
 
 
-        mMainAdapter.receiver<Comment>("VoteUp").observe(this) {
-            mViewModel.voteCommnet(0, it.id, 1)
+        mMainAdapter.receiver<Pair<Int, Comment>>("VoteUp").observe(this) {
+            mViewModel.voteComment(it.first, it.second, 1)
         }
 
-        mMainAdapter.receiver<Comment>("VoteDown").observe(this) {
-            mViewModel.voteCommnet(0, it.id, -1)
+        mMainAdapter.receiver<Pair<Int, Comment>>("VoteDown").observe(this) {
+            mViewModel.voteComment(it.first, it.second, -1)
+        }
+
+        mViewModel.receiver<NotifyData<Comment>>("vote").observe(this) {
+            mMainAdapter.updateData(lifecycle, it)
         }
 
         lifecycleScope.launchWhenCreated {

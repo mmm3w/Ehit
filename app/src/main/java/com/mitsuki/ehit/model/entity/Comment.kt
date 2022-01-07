@@ -16,10 +16,10 @@ class Comment(
     val text: String,
     val postTime: Long,
     val lastEditedTime: Long,
-    val score: String,
+    var score: String,
     val editable: Boolean,
     val voteEnable: Boolean,
-    val voteState: Int,
+    var voteState: Int,
     val voteInfo: String,
 ) {
     companion object {

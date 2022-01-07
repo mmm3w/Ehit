@@ -16,11 +16,13 @@ import com.mitsuki.ehit.crutch.extend.corners
 import com.mitsuki.ehit.crutch.extend.createItemView
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.ItemGalleryBinding
+import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Gallery
 import java.util.*
 
 class GalleryAdapter :
-    PagingDataAdapter<Gallery, GalleryAdapter.ViewHolder>(Gallery.DIFF_CALLBACK), EventEmitter {
+    PagingDataAdapter<Gallery, GalleryAdapter.ViewHolder>(Diff.GALLERY_DIFF_CALLBACK),
+    EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()
 
