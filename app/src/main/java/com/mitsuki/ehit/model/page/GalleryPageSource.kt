@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.page
 
+import android.net.Uri
 import android.os.Parcelable
 import com.mitsuki.armory.httprookie.request.UrlParams
 import com.mitsuki.ehit.crutch.network.Url

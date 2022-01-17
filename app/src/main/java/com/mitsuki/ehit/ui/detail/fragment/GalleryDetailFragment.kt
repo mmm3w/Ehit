@@ -67,7 +67,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         GalleryDetailInitialLoadStateAdapter(mPreviewAdapter)
     }
     private val mHeader: GalleryDetailHeader by lazy {
-        GalleryDetailHeader(mViewModel.headerInfo)
+        GalleryDetailHeader(mViewModel.infoWrap)
     }
     private val mOperating: GalleryDetailOperatingBlock by lazy {
         GalleryDetailOperatingBlock(mViewModel.infoWrap)
@@ -108,6 +108,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
 
                 if (mInitialLoadState.isOver && loadStates.refresh !is LoadState.Loading) {
                     finishRefreshAnimate()
+                    mHeader.tryRefresh()
                 }
             }
         }
@@ -122,11 +123,11 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         mTag.receiver<Pair<String, String>>("tag").observe(this, this::onTagNavigation)
         mComment.receiver<String>("comment").observe(this) {
             startActivity(Intent(requireActivity(), GalleryCommentActivity::class.java).apply {
-                putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
-                putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
+                putExtra(DataKey.GALLERY_ID, mViewModel.gid)
+                putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
                 putExtra(DataKey.GALLERY_API_KEY, mViewModel.infoWrap.sourceDetail.apiKey)
                 putExtra(DataKey.GALLERY_API_UID, mViewModel.infoWrap.sourceDetail.apiUID)
-                putExtra(DataKey.GALLERY_NAME, mViewModel.baseInfo.title)
+                putExtra(DataKey.GALLERY_NAME, mViewModel.title)
             })
         }
 
@@ -231,8 +232,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             GalleryDetailOperatingBlock.SIMILARITYSEARCH -> onNameNavigation()
             GalleryDetailOperatingBlock.MOREINFO -> {
                 startActivity(Intent(requireActivity(), GalleryMoreInfoActivity::class.java).apply {
-                    putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
-                    putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
+                    putExtra(DataKey.GALLERY_ID, mViewModel.gid)
+                    putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
                 })
             }
         }
@@ -247,8 +248,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         startActivity(Intent(requireActivity(), GalleryActivity::class.java).apply {
             putExtra(DataKey.GALLERY_INDEX, index)
             putExtra(DataKey.GALLERY_PAGE, mViewModel.infoWrap.partInfo.page)
-            putExtra(DataKey.GALLERY_TOKEN, mViewModel.baseInfo.token)
-            putExtra(DataKey.GALLERY_ID, mViewModel.baseInfo.gid)
+            putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
+            putExtra(DataKey.GALLERY_ID, mViewModel.gid)
         })
     }
 

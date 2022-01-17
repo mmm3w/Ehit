@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.detail.adapter
 
+import androidx.core.view.isVisible
 import coil.load
 import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
@@ -7,9 +8,9 @@ import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.databinding.ItemGalleryDetailHeaderBinding
-import com.mitsuki.ehit.model.entity.HeaderInfo
+import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 
-class GalleryDetailHeader(private val info: HeaderInfo) :
+class GalleryDetailHeader(private val mData: GalleryDetailWrap) :
     SingleItemBindingAdapter<ItemGalleryDetailHeaderBinding>(
         R.layout.item_gallery_detail_header, ItemGalleryDetailHeaderBinding::bind
     ), EventEmitter {
@@ -27,12 +28,34 @@ class GalleryDetailHeader(private val info: HeaderInfo) :
     }
 
     override val onViewHolderBind: ViewHolder<ItemGalleryDetailHeaderBinding>.() -> Unit = {
-        with(binding) {
-            galleryDetailThumb.load(info.thumb) { placeholderMemoryCacheKey(info.cacheKey) }
-            galleryDetailTitle.text = info.title
-            galleryDetailUploader.text = info.uploader
-            galleryDetailCategory.text = info.category
-            galleryDetailCategory.setCategoryColor(info.categoryColor)
+        mData.headerInfo.also { info ->
+            with(binding) {
+                galleryDetailThumb.apply {
+                    if (info.thumb.isNotEmpty())
+                        load(info.thumb) { placeholderMemoryCacheKey(info.cacheKey) }
+                    isVisible = info.thumb.isNotEmpty()
+                }
+                galleryDetailTitle.apply {
+                    isVisible = info.title.isNotEmpty()
+                    text = info.title
+                }
+                galleryDetailUploader.apply {
+                    isVisible = info.uploader.isNotEmpty()
+                    text = info.uploader
+                }
+                galleryDetailCategory.apply {
+                    isVisible = info.category.isNotEmpty()
+                    text = info.category
+                    setCategoryColor(info.categoryColor)
+                }
+            }
+        }
+    }
+
+    fun tryRefresh() {
+        if (mData.isHeaderUpdate) {
+            notifyItemChanged(0)
+            mData.isHeaderUpdate = false
         }
     }
 }

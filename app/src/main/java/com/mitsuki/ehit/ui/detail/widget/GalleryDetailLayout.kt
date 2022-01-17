@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.view.*
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.R
@@ -47,6 +48,7 @@ class GalleryDetailLayout @JvmOverloads constructor(
             }
         })
     }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         mInfoView.measure(

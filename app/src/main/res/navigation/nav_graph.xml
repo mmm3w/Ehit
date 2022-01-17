@@ -7,4 +7,5 @@
     <include app:graph="@navigation/nav_stack_favourite" />
     <include app:graph="@navigation/nav_stack_open_gate" />
     <include app:graph="@navigation/nav_stack_authority" />
+    <include app:graph="@navigation/nav_stack_gallery" />
 </navigation>

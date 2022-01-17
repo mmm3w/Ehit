@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.model.entity
 
 import com.mitsuki.ehit.const.ParseError
+import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
 import com.mitsuki.ehit.model.entity.db.GalleryCommentCache
@@ -239,6 +240,18 @@ data class GalleryDetail(
             else -> GalleryDetailWrap.CommentState.MoreComments
         }
     }
+
+    fun obtainHeaderInfo(): GalleryDetailWrap.HeaderInfo {
+        return GalleryDetailWrap.HeaderInfo(
+            detailThumb,
+            title,
+            uploader,
+            category,
+            CacheKey.thumbKey(gid, token)
+        )
+    }
+
+
 }
 
 

@@ -21,7 +21,7 @@ import com.mitsuki.ehit.model.entity.Comment
 class GalleryCommentCache(
     @ColumnInfo(name = "gid") val gid: Long,
     @ColumnInfo(name = "token") val token: String,
-    @ColumnInfo(name = "cid") val cid: Int,
+    @ColumnInfo(name = "cid") val cid: Long,
     @ColumnInfo(name = "user") val user: String,
     @ColumnInfo(name = "content") val content: String,
     @ColumnInfo(name = "post_time") val postTime: Long,

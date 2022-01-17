@@ -20,7 +20,6 @@ import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
-import com.mitsuki.ehit.model.entity.HeaderInfo
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.model.repository.RemoteRepository
@@ -30,18 +29,22 @@ import kotlinx.coroutines.launch
 class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
     ViewModel(), EventEmitter {
 
-    lateinit var baseInfo: Gallery
-    private val mDetailPageIn = GeneralPageIn()
+    var gid: Long = -1L
+        private set
+    var token: String = ""
+        private set
+
+    val itemTransitionName: String
+        get() = "gallery:$gid$token"
 
     override val eventEmitter: Emitter = Emitter()
 
     val infoWrap = GalleryDetailWrap()
+    private val mDetailPageIn = GeneralPageIn()
 
-    val headerInfo: HeaderInfo get() = HeaderInfo(baseInfo)
-    val galleryName: String get() = baseInfo.title
-    val uploader: String get() = baseInfo.uploader
-    val gid: Long get() = baseInfo.gid
-    val token: String get() = baseInfo.token
+    val title: String get() = infoWrap.headerInfo.title
+    val galleryName: String get() = infoWrap.headerInfo.title
+    val uploader: String get() = infoWrap.headerInfo.uploader
 
     val isFavorited: Boolean
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
@@ -49,19 +52,23 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
     val favoriteName: String?
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.favoriteName else null
 
-    fun initData(bundle: Bundle?) {
-        if (bundle == null) throw IllegalStateException()
-        baseInfo = bundle.getParcelable(DataKey.GALLERY_INFO)
-            ?: throw IllegalStateException()
-    }
-
-    val itemTransitionName: String
-        get() = baseInfo.itemTransitionName
-
     val galleryDetail: LiveData<PagingData<ImageSource>>
-        get() = repository.galleryDetail(baseInfo.gid, baseInfo.token, mDetailPageIn, infoWrap)
+        get() = repository.galleryDetail(gid, token, mDetailPageIn, infoWrap)
             .cachedIn(viewModelScope)
             .asLiveData()
+
+    fun initData(bundle: Bundle?) {
+        if (bundle == null) throw IllegalStateException()
+        //通过url打开仅有token和gid，通过点击Item打开拥有全部数据
+        val info: Gallery =
+            bundle.getParcelable(DataKey.GALLERY_INFO) ?: throw IllegalStateException()
+
+        this.gid = info.gid
+        this.token = info.token
+        if (gid == -1L || token.isEmpty()) throw IllegalStateException()
+
+        infoWrap.headerInfo = GalleryDetailWrap.HeaderInfo(info)
+    }
 
     fun submitRating(rating: Float) {
         viewModelScope.launch {
@@ -88,13 +95,13 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
 
     fun submitFavorites(cat: Int) {
         viewModelScope.launch {
-            when (repository.favorites(baseInfo.gid, baseInfo.token, cat)) {
+            when (repository.favorites(gid, token, cat)) {
                 is RequestResult.SuccessResult -> {
                     val strRes =
                         if (cat < 0) R.string.hint_remove_favorite_success else R.string.hint_add_favorite_success
 
                     val name = GalleryFavorites.findName(cat)
-                    RoomData.galleryDao.updateGalleryFavorites(baseInfo.gid, baseInfo.token, name)
+                    RoomData.galleryDao.updateGalleryFavorites(gid, token, name)
                     infoWrap.sourceDetail.favoriteName = name
 
                     post("fav", 0)
@@ -113,7 +120,7 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
 
     fun clearCache() {
         viewModelScope.launch {
-            RoomData.galleryDao.deleteGalleryInfo(baseInfo.gid, baseInfo.token)
+            RoomData.galleryDao.deleteGalleryInfo(gid, token)
         }
     }
 

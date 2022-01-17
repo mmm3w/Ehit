@@ -8,7 +8,7 @@
 
     <application
         android:name="com.mitsuki.ehit.base.EhApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
         android:largeHeap="true"
@@ -18,6 +18,7 @@
 
         <activity
             android:name="com.mitsuki.ehit.ui.main.MainActivity"
+            android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,10 +32,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:pathPrefix="/g" />
                 <data android:host="e-hentai.org" />
                 <data android:host="exhentai.org" />
             </intent-filter>
+
         </activity>
 
         <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />

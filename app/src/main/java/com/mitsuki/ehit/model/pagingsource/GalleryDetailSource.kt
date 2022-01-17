@@ -44,6 +44,7 @@ class GalleryDetailSource(
                         reObtain = true
                     } else {
                         cacheData.apply {
+                            mDetailSource.headerInfo = obtainHeaderInfo()
                             mDetailSource.partInfo = obtainOperating()
                             mDetailSource.comment = obtainComments()
                             mDetailSource.commentState = obtainCommentState()

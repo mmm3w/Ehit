@@ -106,6 +106,7 @@ dependencies {
     implementation deps.coroutines.android
 
     testImplementation deps.junit
+    androidTestImplementation deps.atsl.core
     androidTestImplementation deps.atsl.ext_junit
     androidTestImplementation deps.espresso.core
     //----------------------------------------------------------------------------------------------

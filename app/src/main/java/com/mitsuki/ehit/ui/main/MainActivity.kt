@@ -17,6 +17,7 @@ import com.mitsuki.armory.base.permission.writeStorePermissionLauncher
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
@@ -49,6 +50,7 @@ class MainActivity : BaseActivity() {
             addTarget(android.R.id.content)
         }
         super.onCreate(savedInstanceState)
+
 
         controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
         //NavigationUI提供的setup方法无法满足需求
@@ -89,9 +91,26 @@ class MainActivity : BaseActivity() {
 
         navController.setGraph(R.navigation.nav_graph)
 
+        val uri = intent?.data
         when {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
+            uri != null -> {
+                when {
+                    uri.path?.contains("/g") == true -> {
+                        //直接打开画廊
+                        navDestination(
+                            R.id.nav_stack_gallery,
+                            bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_NORMAL)
+                        )
+
+
+                    }
+                    uri.query?.contains(RequestKey.SEARCH_KEY_WORD) == true -> {
+                        //包含搜索key
+                    }
+                }
+            }
         }
         onCreateDev()
     }

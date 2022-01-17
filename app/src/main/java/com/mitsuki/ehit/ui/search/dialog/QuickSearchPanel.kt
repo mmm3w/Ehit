@@ -52,8 +52,9 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
                         GalleryPageSource.Type.TAG -> GalleryPageSource.Tag(it.data.key)
                         GalleryPageSource.Type.SUBSCRIPTION -> GalleryPageSource.Subscription(it.data.key)
                         GalleryPageSource.Type.WHATS_HOT -> GalleryPageSource.POPULAR
+                        else -> null
                     }
-                    onQuickSearch?.invoke(data)
+                    data?.apply { onQuickSearch?.invoke(this) }
                     dismiss()
                 }
                 is QuickSearchAdapter.Event.Delete -> {

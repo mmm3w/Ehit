@@ -33,7 +33,7 @@ class SearchViewModel @ViewModelInject constructor(@RemoteRepository var reposit
             is GalleryPageSource.Uploader,
             is GalleryPageSource.Tag -> GalleryPageSource.Normal(searchKey)
             is GalleryPageSource.Subscription -> GalleryPageSource.Subscription(searchKey)
-            is GalleryPageSource.Popular -> throw IllegalStateException()
+            else -> throw IllegalStateException() //TODO 有额外的一个类型需要处理
         }
     }
 
