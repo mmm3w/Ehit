@@ -17,7 +17,6 @@ import com.mitsuki.armory.base.permission.writeStorePermissionLauncher
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
@@ -29,20 +28,18 @@ import com.mitsuki.ehit.dev.overlay.OverlayTool
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.setting.SettingActivity
-import com.mitsuki.ehit.ui.temp.activity.DownloadActivity
+import com.mitsuki.ehit.ui.download.activity.DownloadActivity
 import com.mitsuki.ehit.ui.temp.activity.HistoryActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
-
     //在使用FragmentContainerView作为容器的情况下需要以下面的形式来获取NavController实例
     private val navController: NavController by lazy {
         (supportFragmentManager.findFragmentById(R.id.main_nav_fragment) as NavHostFragment).navController
     }
     private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -92,7 +89,7 @@ class MainActivity : BaseActivity() {
         }
 
         navController.setGraph(R.navigation.nav_graph)
-
+        //TODO 还要做内部打开跳转相关的处理
         //针对url隐式意图打开的处理
         val uri = intent?.data
         when {

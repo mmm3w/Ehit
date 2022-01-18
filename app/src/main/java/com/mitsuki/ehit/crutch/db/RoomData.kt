@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.model.dao.CookieDao
+import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.dao.SearchDao
 import java.io.File
@@ -52,6 +53,9 @@ object RoomData {
 
     val galleryDao: GalleryDao
         get() = cacheDB.galleryDao()
+
+    val downloadDao: DownloadDao
+        get() = cacheDB.downloadDao()
 
     fun storeSaveFileName(): String {
         return "ehit-${

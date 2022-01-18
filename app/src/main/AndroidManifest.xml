@@ -18,8 +18,7 @@
 
         <activity
             android:name="com.mitsuki.ehit.ui.main.MainActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -50,7 +49,7 @@
 
         <activity android:name="com.mitsuki.ehit.ui.temp.activity.HistoryActivity" />
 
-        <activity android:name="com.mitsuki.ehit.ui.temp.activity.DownloadActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.download.activity.DownloadActivity" />
 
     </application>
 
