@@ -26,6 +26,9 @@ data class Gallery(
     val categoryColor: Int = Category.getColor(category)
 ) : Parcelable {
 
+    constructor(gid: Long, token: String) :
+            this(gid, token, "", "", "", "", "", emptyArray(), 0F)
+
     @IgnoredOnParcel
     val language: String
         get() = (tag.isNotEmpty() && tag[0].contains("language")).run {

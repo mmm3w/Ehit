@@ -107,9 +107,9 @@ class SearchAdvancedAdapter :
         binding.searchAdvancedBetweenPage.setOnCheckedChangeListener { _, isChecked ->
             mBetweenPages =
                 if (isChecked) {
-                    val start = binding.searchAdvancedStartPage.text.toString().toIntOrNull()
-                    val end = binding.searchAdvancedEndPage.text.toString().toIntOrNull()
-                    if (start != null && end != null && start <= end) start to end else null
+                    val start = binding.searchAdvancedStartPage.text.toString().toIntOrNull() ?: -1
+                    val end = binding.searchAdvancedEndPage.text.toString().toIntOrNull() ?: -1
+                    if (start <= end && !(start == -1 && end == -1)) start to end else null
                 } else null
         }
 
@@ -150,9 +150,6 @@ class SearchAdvancedAdapter :
 
 
     fun getOptions(searchKey: SearchKey) {
-        //TODO 修改为监听每个view来存储数据，这里再最后获取
-
-
         with(searchKey) {
             isSearchGalleryName = isGalleryNameChecked
             isSearchGalleryTags = isGalleryTagsChecked

@@ -11,11 +11,28 @@ object Url {
 
     var domain: Array<String> = arrayOf(EH, EX)
 
-    var currentDomain: String
-        get() = "https://${ShareData.spDomain}"
-        set(value) {
-            ShareData.spDomain = value
+    //由link跳转进来应该需要按link的domain调整整体的domain
+
+    var proxyDomain: String? = null
+
+    private var domainCache: String = ""
+
+    val currentDomain: String
+        get() {
+            if (proxyDomain != null && proxyDomain?.isNotEmpty() == true) {
+                return "https://${proxyDomain}"
+            }
+
+            if (domainCache.isEmpty()) {
+                domainCache = ShareData.spDomain
+            }
+            return "https://${domainCache}"
         }
+
+    fun setCurrentDomain(value: String) {
+        ShareData.spDomain = value
+        domainCache = value
+    }
 
     val login: String get() = "https://forums.e-hentai.org/index.php?act=Login&CODE=01"
 
@@ -41,4 +58,6 @@ object Url {
     val favorites: String get() = "$currentDomain/gallerypopups.php"
 
     val favoriteList: String get() = "$currentDomain/favorites.php"
+
+
 }

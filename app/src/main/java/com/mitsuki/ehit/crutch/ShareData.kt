@@ -30,7 +30,6 @@ object ShareData {
     }
 
     /** Tag ***************************************************************************************/
-//    const val SP_COOKIES = "SP_COOKIES"
     const val SP_SECURITY = "SP_SECURITY"
 
     const val SP_DOMAIN = "SP_DOMAIN"
@@ -41,18 +40,10 @@ object ShareData {
     const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
     const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
 
-//    const val SP_COOKIE_IPB_MEMBER_ID = "ipb_member_id"
-//    const val SP_COOKIE_IPB_PASS_HASH = "ipb_pass_hash"
-//    const val SP_COOKIE_IGNEOUS = "igneous"
-
     /**********************************************************************************************/
     var spDomain: String
         set(value) = edit { putString(SP_DOMAIN, value) }
         get() = string(SP_DOMAIN, Url.EH)
-
-//    var spCookies: String
-//        set(value) = edit { putString(SP_COOKIES, value) }
-//        get() = string(SP_COOKIES)
 
     var spSecurity: Boolean
         set(value) = edit { putBoolean(SP_SECURITY, value) }
@@ -69,6 +60,5 @@ object ShareData {
     var spSaveSomeDataInPublicStorage: Boolean
         set(value) = edit { putBoolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE, value) }
         get() = boolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE)
-
 
 }

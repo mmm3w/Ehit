@@ -21,10 +21,12 @@ import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.crutch.zip.ZipPacker
 import com.mitsuki.ehit.crutch.zip.ZipReader
 import com.mitsuki.ehit.dev.overlay.OverlayTool
+import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.setting.SettingActivity
 import com.mitsuki.ehit.ui.temp.activity.DownloadActivity
@@ -51,10 +53,10 @@ class MainActivity : BaseActivity() {
         }
         super.onCreate(savedInstanceState)
 
-
         controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
         //NavigationUI提供的setup方法无法满足需求
         binding.mainNavigation.setNavigationItemSelectedListener {
+            Url.proxyDomain = null //清除由link跳转进来附带的domain
             var handle = true
             when (it.itemId) {
                 R.id.nav_home -> navDestination(
@@ -91,24 +93,18 @@ class MainActivity : BaseActivity() {
 
         navController.setGraph(R.navigation.nav_graph)
 
+        //针对url隐式意图打开的处理
         val uri = intent?.data
         when {
             OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
             uri != null -> {
+                Url.proxyDomain = uri.host
                 when {
-                    uri.path?.contains("/g") == true -> {
-                        //直接打开画廊
-                        navDestination(
-                            R.id.nav_stack_gallery,
-                            bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_NORMAL)
-                        )
-
-
-                    }
-                    uri.query?.contains(RequestKey.SEARCH_KEY_WORD) == true -> {
-                        //包含搜索key
-                    }
+                    //画廊详情跳转
+                    uri.path?.startsWith("/g") == true -> uri.path?.apply { onGalleryLink(this) }
+                    //其他的一些列表跳转，依赖url中参数解析
+                    else -> GalleryPageSource.createByUri(uri)?.apply { onListLink(this) }
                 }
             }
         }
@@ -135,20 +131,22 @@ class MainActivity : BaseActivity() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
-    private val lastPressedTime: Long = 0
+    private fun onGalleryLink(path: String) {
+        //按/切割并获取对应位置参数
+        path.split("/").apply {
+            if (size >= 4) {
+                navDestination(
+                    R.id.nav_stack_gallery,
+                    bundleOf(
+                        DataKey.GALLERY_INFO to Gallery(this[2].toLongOrNull() ?: 0L, this[3])
+                    )
+                )
+            }
+        }
+    }
 
-    override fun onBackPressed() {
-        Log.debug("${onBackPressedDispatcher.hasEnabledCallbacks()}")
-        super.onBackPressed()
-//        if (System.currentTimeMillis() - lastPressedTime < 2000) {
-//            ActivityKeep.out()
-//        } else {
-//        Snackbar.make(
-//            binding.mainDrawer,
-//            R.string.hint_exit_by_next_back,
-//            Snackbar.LENGTH_SHORT
-//        ).show()
-//        }
+    private fun onListLink(source: GalleryPageSource) {
+        navDestination(R.id.nav_stack_main, bundleOf(DataKey.GALLERY_PAGE_SOURCE to source))
     }
 
     /** dev 用 *************************************************************************************/

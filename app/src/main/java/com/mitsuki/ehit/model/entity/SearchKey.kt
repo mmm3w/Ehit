@@ -9,8 +9,6 @@ import com.mitsuki.ehit.model.ehparser.Category
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import kotlinx.parcelize.Parcelize
 
-//import kotlinx.parcelize.Parcelize
-
 @Parcelize
 data class SearchKey(
     @Key(RequestKey.SEARCH_KEY_WORD)
@@ -52,6 +50,59 @@ data class SearchKey(
 ) : Parcelable {
     companion object {
         val DEFAULT = SearchKey()
+
+        fun createByQuery(query: String): SearchKey {
+            //反向解析
+            val key = SearchKey()
+            var pageStart = -1
+            var pageEnd = -1
+            query.split("&").forEach {
+                it.split("=").apply {
+                    if (size > 1) {
+                        when {
+                            this[0] == RequestKey.SEARCH_KEY_WORD -> key.key = this[1]
+                            this[0] == RequestKey.SEARCH_KEY_CATEGORY ->
+                                key.category = (this[1].toIntOrNull() ?: 0).inv()
+                            this[0] == RequestKey.SEARCH_KEY_ADVSEARCH ->
+                                key.isAdvancedEnable = this[1] == "1"
+                            this[0] == RequestKey.SEARCH_KEY_GALLERY_NAME ->
+                                key.isSearchGalleryName = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_TAGS ->
+                                key.isSearchGalleryTags = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_DESCRIPTION ->
+                                key.isSearchGalleryDescription = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_TORRENT_FILE_NAMES ->
+                                key.isSearchTorrentFilenames = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_ONLY_TORRENTS ->
+                                key.isOnlyShowGalleriesWithTorrents = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_LOW_POWER_TAGS ->
+                                key.isSearchLowPowerTags = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_DOWNVOTED_TAGS ->
+                                key.isSearchDownvotedTags = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_SHOW_EXPUNGED ->
+                                key.isShowExpungedGalleries = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_DISABLE_LANGUAGE ->
+                                key.isDisableLanguageFilter = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_DISABLE_UPLOADER ->
+                                key.isDisableUploaderFilter = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_DISABLE_TAGS ->
+                                key.isDisableTagsFilter = this[1] == "on"
+                            this[0] == RequestKey.SEARCH_KEY_RATING ->
+                                key.minimumRating = this[1].toIntOrNull()
+                            this[0] == RequestKey.SEARCH_KEY_BETWEEN_PAGES_START ->
+                                pageStart = this[0].toIntOrNull() ?: -1
+                            this[0] == RequestKey.SEARCH_KEY_BETWEEN_PAGES_END ->
+                                pageEnd = this[0].toIntOrNull() ?: -1
+                        }
+                    }
+                }
+            }
+
+            key.betweenPages =
+                if (pageStart <= pageEnd && !(pageStart == -1 && pageEnd == -1)) pageStart to pageEnd else null
+
+            return key
+        }
     }
 
     val showContent: String
@@ -64,12 +115,18 @@ data class SearchKey(
             return ""
         }
 
+    //00000000101
+    //11111111010
+    //11111111010
     private val categoryForSearch: String
         get() = (category.inv() and Category.ALL_CATEGORY).toString()
 
     fun addParams(source: UrlParams) {
         source.urlParams(RequestKey.SEARCH_KEY_WORD, key)
-        if (category != Category.ALL_CATEGORY) source.urlParams(RequestKey.SEARCH_KEY_CATEGORY, categoryForSearch)
+        if (category != Category.ALL_CATEGORY) source.urlParams(
+            RequestKey.SEARCH_KEY_CATEGORY,
+            categoryForSearch
+        )
         if (isAdvancedEnable) {
             source.urlParams(RequestKey.SEARCH_KEY_ADVSEARCH, "1")
             if (isSearchGalleryName)
@@ -102,8 +159,10 @@ data class SearchKey(
 
             betweenPages?.apply {
                 source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES, "on")
-                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_START, first.toString())
-                source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_END, second.toString())
+                if (first >= 0)
+                    source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_START, first.toString())
+                if (second >= 0)
+                    source.urlParams(RequestKey.SEARCH_KEY_BETWEEN_PAGES_END, second.toString())
             }
         }
     }
