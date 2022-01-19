@@ -10,6 +10,7 @@ object DBValue {
     const val TABLE_GALLERY_PREVIEW = "gallery_preview"
     const val TABLE_USER_COOKIE = "user_cookie"
     const val TABLE_DOWNLOAD_NODE = "download_node"
+    const val TABLE_DOWNLOAD_INFO = "download_info"
 
     const val INFO_CACHE_DURATION = 12 * 3600 * 1000 /*ms*/
     const val IMAGE_SROUCE_CACHE_DURATION = 12 * 3600 * 1000

@@ -1,19 +1,20 @@
 package com.mitsuki.ehit.model.entity.db
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 
-@Entity(tableName = DBValue.TABLE_DOWNLOAD_NODE)
+@Entity(tableName = DBValue.TABLE_DOWNLOAD_NODE,
+    foreignKeys = [ForeignKey(
+        entity = DownloadInfo::class,
+        parentColumns = ["gid", "token"],
+        childColumns = ["gid", "token"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index(value = ["gid", "token"])],)
 data class DownloadNode(
     @ColumnInfo(name = "gid") val gid: Long,
     @ColumnInfo(name = "token") val token: String,
-    @ColumnInfo(name = "thumb") val thumb: String,
-    @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "start_page") val start: Int,
-    @ColumnInfo(name = "end_page") val end: Int,
-    @ColumnInfo(name = "total") val total: Int,
+    @ColumnInfo(name = "page") val page: String,
     @ColumnInfo(name = "is_complete") val isComplete: Boolean,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id") val _id: Long = 0,

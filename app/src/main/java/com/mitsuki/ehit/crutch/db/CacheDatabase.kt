@@ -16,6 +16,7 @@ import com.mitsuki.ehit.model.entity.db.*
         GalleryPreviewCache::class,
         GalleryTagCache::class,
         DownloadNode::class,
+        DownloadInfo::class,
     ], version = 1
 )
 @TypeConverters(GalleryListTypeConverter::class)
