@@ -31,7 +31,7 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.armory.base.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.observer.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extend.viewBinding

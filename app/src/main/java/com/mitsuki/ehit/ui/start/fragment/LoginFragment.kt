@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -12,7 +11,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.observer.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentLoginBinding
 import com.mitsuki.ehit.ui.main.MainActivity

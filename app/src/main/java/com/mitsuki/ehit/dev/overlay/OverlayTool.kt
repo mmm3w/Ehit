@@ -9,16 +9,14 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import com.mitsuki.armory.systemoverlay.*
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.dev.DevEnv
 
-object OverlayTool : LifecycleObserver {
+object OverlayTool : DefaultLifecycleObserver {
 
     private lateinit var triggerButton: OverlayView
     private lateinit var controlPanel: OverlayView
@@ -74,7 +72,19 @@ object OverlayTool : LifecycleObserver {
     val triggerX: Int get() = triggerButton.layoutParams().x
     val triggerY: Int get() = triggerButton.layoutParams().y
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+
+    override fun onResume(owner: LifecycleOwner) {
+        showOverlay()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        hideOverlay()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        exit()
+    }
+
     fun showOverlay() {
         if (BuildConfig.DEV) {
             try {
@@ -85,7 +95,6 @@ object OverlayTool : LifecycleObserver {
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun hideOverlay() {
         if (BuildConfig.DEV) {
             try {
@@ -96,7 +105,6 @@ object OverlayTool : LifecycleObserver {
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun exit() {
         if (BuildConfig.DEV) {
             try {

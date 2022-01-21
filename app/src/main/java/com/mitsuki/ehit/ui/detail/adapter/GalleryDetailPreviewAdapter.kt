@@ -16,11 +16,9 @@ import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.ui.common.widget.PreviewTransformation
-import io.reactivex.rxjava3.subjects.PublishSubject
 
 //详情adapter 05
 class GalleryDetailPreviewAdapter(

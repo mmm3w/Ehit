@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.ui.search.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -9,8 +8,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.observe
-import com.mitsuki.ehit.crutch.extend.observeWithCoro
+import com.mitsuki.ehit.crutch.observer.observe
+import com.mitsuki.ehit.crutch.observer.observeWithCoro
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource

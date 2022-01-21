@@ -9,8 +9,6 @@ import android.view.Window
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,7 +22,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.observer.observe
 import com.mitsuki.ehit.crutch.extend.string
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController

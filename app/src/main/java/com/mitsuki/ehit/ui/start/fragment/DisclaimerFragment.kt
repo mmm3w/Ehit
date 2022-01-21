@@ -8,7 +8,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.observer.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.FragmentDisclaimerBinding
 import com.mitsuki.ehit.ui.main.MainActivity

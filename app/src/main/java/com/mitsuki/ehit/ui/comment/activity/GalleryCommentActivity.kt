@@ -3,7 +3,6 @@ package com.mitsuki.ehit.ui.comment.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -11,12 +10,11 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.base.extend.dp2px
-import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.observer.observe
 import com.mitsuki.ehit.crutch.extend.text
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.crutch.windowController

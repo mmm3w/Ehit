@@ -4,9 +4,7 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
@@ -27,11 +25,10 @@ class FragmentViewBindingHolder<VB : ViewBinding>(private val bind: (View) -> VB
         if (binding == null) {
             binding = thisRef.view?.run { bind(this) }
             if (binding != null) thisRef.viewLifecycleOwner.lifecycle.addObserver(object :
-                LifecycleObserver {
-                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                fun onLifeDestroy() {
+                DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
                     binding = null
-                    thisRef.viewLifecycleOwner.lifecycle.removeObserver(this)
+                    owner.lifecycle.removeObserver(this)
                 }
             })
         }
