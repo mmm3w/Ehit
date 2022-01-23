@@ -41,7 +41,7 @@ class DownloadService : Service() {
             (downloadPriority[task.key] ?: DownloadNode(task.gid, task.token).also { node ->
                 downloadPriority[task.key] = node
             }).also { node ->
-                node.append()
+//                node.append()
 
             }
 

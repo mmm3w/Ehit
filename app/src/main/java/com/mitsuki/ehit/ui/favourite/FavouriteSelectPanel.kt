@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.observer.observe
+import com.mitsuki.ehit.crutch.extend.observe
 import com.mitsuki.ehit.crutch.extend.viewBinding
 import com.mitsuki.ehit.databinding.DialogFavouriteSelectBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
