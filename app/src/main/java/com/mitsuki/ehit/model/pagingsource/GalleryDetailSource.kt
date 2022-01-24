@@ -11,6 +11,7 @@ import com.mitsuki.ehit.crutch.VolatileCache
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.convert.GalleryDetailConvert
 import com.mitsuki.ehit.model.convert.ImageSourceConvert
+import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GeneralPageIn
@@ -21,7 +22,8 @@ class GalleryDetailSource(
     private val mGid: Long,
     private val mToken: String,
     private val mPageIn: GeneralPageIn,
-    private val mDetailSource: GalleryDetailWrap
+    private val mDetailSource: GalleryDetailWrap,
+    private val galleryDao: GalleryDao
 ) : PagingSource<Int, ImageSource>() {
 
     private val mConvert by lazy { GalleryDetailConvert() }
@@ -39,7 +41,7 @@ class GalleryDetailSource(
             withContext(Dispatchers.IO) {
                 if (page == GeneralPageIn.START) {
                     var reObtain = false
-                    val cacheData = RoomData.galleryDao.queryGalleryDetail(mGid, mToken)
+                    val cacheData = galleryDao.queryGalleryDetail(mGid, mToken)
                     if (cacheData == null) {
                         reObtain = true
                     } else {
@@ -53,7 +55,7 @@ class GalleryDetailSource(
                         }
                     }
 
-                    var images = RoomData.galleryDao.queryGalleryImageSource(mGid, mToken, page)
+                    var images = galleryDao.queryGalleryImageSource(mGid, mToken, page)
                     if (images.isEmpty) reObtain = true
 
                     if (reObtain) {
@@ -79,8 +81,8 @@ class GalleryDetailSource(
                                     }
                                     images = result.second
 
-                                    RoomData.galleryDao.insertGalleryDetail(result.first)
-                                    RoomData.galleryDao
+                                    galleryDao.insertGalleryDetail(result.first)
+                                    galleryDao
                                         .insertGalleryImageSource(mGid, mToken, result.second)
                                 }
                             }
@@ -96,7 +98,7 @@ class GalleryDetailSource(
                 } else {
                     //只解析图片
 
-                    var images = RoomData.galleryDao.queryGalleryImageSource(mGid, mToken, page)
+                    var images = galleryDao.queryGalleryImageSource(mGid, mToken, page)
                     if (images.isEmpty) {
                         val remoteData: Response<PageInfo<ImageSource>> =
                             HttpRookie
@@ -115,7 +117,7 @@ class GalleryDetailSource(
                             is Response.Success<PageInfo<ImageSource>> -> {
                                 remoteData.requireBody().also { result ->
                                     images = result
-                                    RoomData.galleryDao
+                                    galleryDao
                                         .insertGalleryImageSource(mGid, mToken, result)
                                 }
                             }

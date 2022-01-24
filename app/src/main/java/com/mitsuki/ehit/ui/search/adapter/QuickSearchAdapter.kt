@@ -1,16 +1,14 @@
 package com.mitsuki.ehit.ui.search.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.adapter.notify.AttachedAnchor
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.createItemView
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemSearchQuickBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.QuickSearch

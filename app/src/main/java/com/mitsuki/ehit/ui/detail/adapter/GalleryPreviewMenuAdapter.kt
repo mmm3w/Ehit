@@ -3,9 +3,9 @@ package com.mitsuki.ehit.ui.detail.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.string
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.createItemView
+import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemGalleryPreviewMenuOptionBinding
 
 class GalleryPreviewMenuAdapter : RecyclerView.Adapter<GalleryPreviewMenuAdapter.ViewHolder>() {

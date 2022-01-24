@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.crutch.event
 
-import com.mitsuki.ehit.crutch.extend.hideWithMainThread
+import com.mitsuki.ehit.crutch.extensions.hideWithMainThread
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
 

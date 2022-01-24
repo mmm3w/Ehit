@@ -3,14 +3,23 @@ package com.mitsuki.ehit.ui.download.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.entity.DownloadPriority
 import com.mitsuki.ehit.model.entity.DownloadTask
+import com.mitsuki.ehit.model.repository.Repository
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DownloadService : Service() {
 
     companion object {
         const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
     }
+
+
+    @RemoteRepository
+    @Inject lateinit var repository: Repository
 
 
     //    如果service被干掉，所有的下载任务会停止，这里只记录下载中的
@@ -41,16 +50,16 @@ class DownloadService : Service() {
                 downloadPriority[task.key] = node
             }).also { node ->
 
+
                 //接收到数据后首先更新数据库，
-
-
 
 
                 //在更新数据库之后，开始下载，同时要更新内存中的优先级队列
 
 
-
 //                node.append()
+
+
 
             }
 

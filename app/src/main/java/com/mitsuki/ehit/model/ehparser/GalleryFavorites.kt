@@ -1,8 +1,8 @@
 package com.mitsuki.ehit.model.ehparser
 
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.saveToInt
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.saveToInt
+import com.mitsuki.ehit.crutch.extensions.string
 import org.jsoup.Jsoup
 
 object GalleryFavorites {

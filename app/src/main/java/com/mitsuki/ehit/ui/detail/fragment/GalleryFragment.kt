@@ -15,8 +15,8 @@ import com.mitsuki.armory.loadprogress.Progress
 import com.mitsuki.armory.loadprogress.ProgressProvider
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.crutch.extend.observe
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.detail.dialog.GalleryPreviewMenu
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture

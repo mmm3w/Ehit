@@ -14,9 +14,9 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
-import com.mitsuki.ehit.crutch.extend.text
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.text
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryCommentBinding
 import com.mitsuki.ehit.model.entity.Comment
@@ -24,7 +24,6 @@ import com.mitsuki.ehit.ui.comment.adapter.CommentLoadAdapter
 import com.mitsuki.ehit.ui.comment.adapter.GalleryCommentAdapter
 import com.mitsuki.ehit.viewmodel.GalleryCommentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class GalleryCommentActivity : BaseActivity() {

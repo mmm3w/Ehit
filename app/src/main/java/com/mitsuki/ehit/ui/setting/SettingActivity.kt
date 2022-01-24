@@ -7,10 +7,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivitySettingBinding
-import com.mitsuki.ehit.ui.setting.SettingRootFragment
 
 class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 

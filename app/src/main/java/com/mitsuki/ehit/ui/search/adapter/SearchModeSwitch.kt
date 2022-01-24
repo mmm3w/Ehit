@@ -7,7 +7,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.databinding.ItemSearchBinding
 
 class SearchModeSwitch :

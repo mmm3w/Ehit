@@ -19,7 +19,7 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.db.RoomData
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.crutch.zip.ZipPacker
@@ -31,6 +31,7 @@ import com.mitsuki.ehit.ui.setting.SettingActivity
 import com.mitsuki.ehit.ui.download.activity.DownloadActivity
 import com.mitsuki.ehit.ui.temp.activity.HistoryActivity
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -40,6 +41,10 @@ class MainActivity : BaseActivity() {
     }
     private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
+    @Inject
+    lateinit var shareData: ShareData
+    @Inject
+    lateinit var openGate:OpenGate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -93,8 +98,8 @@ class MainActivity : BaseActivity() {
         //针对url隐式意图打开的处理
         val uri = intent?.data
         when {
-            OpenGate.open -> navDestination(R.id.nav_stack_open_gate, null)
-            ShareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
+            openGate.open -> navDestination(R.id.nav_stack_open_gate, null)
+            shareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
             uri != null -> {
                 Url.proxyDomain = uri.host
                 when {

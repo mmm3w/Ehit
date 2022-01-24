@@ -15,24 +15,17 @@ object Url {
 
     var proxyDomain: String? = null
 
-    private var domainCache: String = ""
+    var domainCache: String = ""
 
     val currentDomain: String
         get() {
             if (proxyDomain != null && proxyDomain?.isNotEmpty() == true) {
                 return "https://${proxyDomain}"
             }
-
-            if (domainCache.isEmpty()) {
-                domainCache = ShareData.spDomain
-            }
             return "https://${domainCache}"
         }
 
-    fun setCurrentDomain(value: String) {
-        ShareData.spDomain = value
-        domainCache = value
-    }
+
 
     val login: String get() = "https://forums.e-hentai.org/index.php?act=Login&CODE=01"
 

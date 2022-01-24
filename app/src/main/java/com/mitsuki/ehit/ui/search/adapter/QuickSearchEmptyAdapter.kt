@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.empty.EmptyAdapter
 import com.mitsuki.armory.adapter.empty.EmptyState
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extensions.createItemView
 
 class QuickSearchEmptyAdapter : EmptyAdapter<QuickSearchEmptyAdapter.ViewHolder>() {
 

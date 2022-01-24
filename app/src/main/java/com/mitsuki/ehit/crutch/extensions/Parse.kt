@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.extend
+package com.mitsuki.ehit.crutch.extensions
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Any.safeAs(action: T.() -> Unit) {

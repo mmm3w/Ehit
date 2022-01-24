@@ -1,20 +1,21 @@
 package com.mitsuki.ehit.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.FavouriteCountWrap
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.FavouritePageIn
-import com.mitsuki.ehit.model.page.GeneralPageIn
-import com.mitsuki.ehit.model.repository.RemoteRepository
+import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.R
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class FavouriteViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
+@HiltViewModel
+class FavouriteViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
     private val mListPageIn: FavouritePageIn by lazy { FavouritePageIn() }

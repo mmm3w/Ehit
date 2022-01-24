@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogGalleryPreviewMenuBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.detail.adapter.GalleryPreviewMenuAdapter

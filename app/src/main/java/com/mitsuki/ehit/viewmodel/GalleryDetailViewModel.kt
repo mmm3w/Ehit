@@ -1,7 +1,7 @@
 package com.mitsuki.ehit.viewmodel
 
 import android.os.Bundle
-import androidx.hilt.lifecycle.ViewModelInject
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -16,17 +16,25 @@ import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GeneralPageIn
-import com.mitsuki.ehit.model.repository.RemoteRepository
+import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.model.dao.GalleryDao
+import com.mitsuki.ehit.model.dao.SearchDao
 import com.mitsuki.ehit.model.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
+@HiltViewModel
+class GalleryDetailViewModel @Inject constructor(
+    @RemoteRepository var repository: Repository,
+    val galleryDao: GalleryDao
+) :
     ViewModel(), EventEmitter {
 
     var gid: Long = -1L
@@ -101,7 +109,7 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
                         if (cat < 0) R.string.hint_remove_favorite_success else R.string.hint_add_favorite_success
 
                     val name = GalleryFavorites.findName(cat)
-                    RoomData.galleryDao.updateGalleryFavorites(gid, token, name)
+                    galleryDao.updateGalleryFavorites(gid, token, name)
                     infoWrap.sourceDetail.favoriteName = name
 
                     post("fav", 0)
@@ -120,7 +128,7 @@ class GalleryDetailViewModel @ViewModelInject constructor(@RemoteRepository var 
 
     fun clearCache() {
         viewModelScope.launch {
-            RoomData.galleryDao.deleteGalleryInfo(gid, token)
+            galleryDao.deleteGalleryInfo(gid, token)
         }
     }
 

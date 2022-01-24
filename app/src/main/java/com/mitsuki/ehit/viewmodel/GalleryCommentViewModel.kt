@@ -2,7 +2,7 @@ package com.mitsuki.ehit.viewmodel
 
 import android.content.Intent
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
@@ -13,13 +13,16 @@ import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.entity.Comment
-import com.mitsuki.ehit.model.repository.RemoteRepository
+import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GalleryCommentViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
+@HiltViewModel
+class GalleryCommentViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
     ViewModel(), EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()

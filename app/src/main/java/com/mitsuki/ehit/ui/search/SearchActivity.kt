@@ -22,9 +22,9 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
-import com.mitsuki.ehit.crutch.extend.string
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivitySearchBinding
 import com.mitsuki.ehit.model.ehparser.GalleryRating
@@ -34,7 +34,6 @@ import com.mitsuki.ehit.ui.temp.adapter.*
 import com.mitsuki.ehit.ui.search.adapter.*
 import com.mitsuki.ehit.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

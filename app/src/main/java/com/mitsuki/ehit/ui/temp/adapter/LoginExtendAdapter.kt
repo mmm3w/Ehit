@@ -6,7 +6,7 @@ import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.text
+import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.databinding.ItemLoginDomainBinding
 import com.mitsuki.ehit.databinding.ItemLoginExtendBinding
@@ -33,23 +33,23 @@ class LoginExtend : SingleItemBindingAdapter<ItemLoginExtendBinding>(
     }
 }
 
-class LoginDomain : SingleItemBindingAdapter<ItemLoginDomainBinding>(
+class LoginDomain(val shareData: ShareData) : SingleItemBindingAdapter<ItemLoginDomainBinding>(
     R.layout.item_login_domain,
     ItemLoginDomainBinding::bind
 ) {
     override val onViewHolderCreate: ViewHolder<ItemLoginDomainBinding>.() -> Unit = {
         binding.domainCheckRadio.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.domain_check_e -> ShareData.spDomain = Url.EH
-                R.id.domain_check_ex -> ShareData.spDomain = Url.EX
+                R.id.domain_check_e -> shareData.spDomain = Url.EH
+                R.id.domain_check_ex -> shareData.spDomain = Url.EX
             }
         }
     }
 
     override val onViewHolderBind: ViewHolder<ItemLoginDomainBinding>.() -> Unit = {
         when {
-            ShareData.spDomain.contains(Url.EH) -> binding.domainCheckRadio.check(R.id.domain_check_e)
-            ShareData.spDomain.contains(Url.EX) -> binding.domainCheckRadio.check(R.id.domain_check_ex)
+            shareData.spDomain.contains(Url.EH) -> binding.domainCheckRadio.check(R.id.domain_check_e)
+            shareData.spDomain.contains(Url.EX) -> binding.domainCheckRadio.check(R.id.domain_check_ex)
         }
     }
 }

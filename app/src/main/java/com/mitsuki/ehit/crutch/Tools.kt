@@ -1,8 +1,7 @@
 package com.mitsuki.ehit.crutch
 
-import android.annotation.SuppressLint
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.string
 import java.text.SimpleDateFormat
 import java.util.*
 

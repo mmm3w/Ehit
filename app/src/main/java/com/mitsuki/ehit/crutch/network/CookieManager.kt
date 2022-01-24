@@ -2,21 +2,22 @@ package com.mitsuki.ehit.crutch.network
 
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.db.RoomData
+import com.mitsuki.ehit.model.dao.CookieDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Cookie
 import okhttp3.internal.filterList
+import javax.inject.Inject
 
-object CookieManager {
+class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
 
     private val mMemoryCache: MutableMap<String, Cookie> by lazy { hashMapOf() }
 
-    fun init() {
-        //初始化，从数据库中读取到内存
+    init {
         runBlocking {
-            RoomData.cookieDao.queryCookie(ShareData.spDomain).forEach {
+            cookieDao.queryCookie(shareData.spDomain).forEach {
                 mMemoryCache[it.flag] = it.buildCookie()
             }
         }
@@ -29,7 +30,7 @@ object CookieManager {
             mMemoryCache[cookie.toString()] = cookie
         }
         CoroutineScope(Dispatchers.Default).launch {
-            with(RoomData.cookieDao) {
+            with(cookieDao) {
                 clearCookie()
                 insertCookies(cookies.map { it.c2c() })
             }
@@ -41,7 +42,7 @@ object CookieManager {
         mMemoryCache.clear()
         // 清除数据库缓存
         CoroutineScope(Dispatchers.Default).launch {
-            RoomData.cookieDao.clearCookie()
+            cookieDao.clearCookie()
         }
     }
 
@@ -52,7 +53,7 @@ object CookieManager {
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            RoomData.cookieDao.insertCookies(cookies.map { it.c2c() })
+            cookieDao.insertCookies(cookies.map { it.c2c() })
         }
     }
 

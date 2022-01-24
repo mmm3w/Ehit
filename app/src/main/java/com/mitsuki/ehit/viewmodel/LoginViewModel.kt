@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.ehit.crutch.event.Emitter
@@ -9,12 +9,15 @@ import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Url
-import com.mitsuki.ehit.model.repository.RemoteRepository
+import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.Cookie
+import javax.inject.Inject
 
-class LoginViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
+@HiltViewModel
+class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
     ViewModel(), EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()
@@ -51,17 +54,17 @@ class LoginViewModel @ViewModelInject constructor(@RemoteRepository var reposito
             return
         }
 
-        CookieManager.new(
-            arrayListOf(
-                buildCookie("ipb_member_id", id, Url.EH),
-                buildCookie("ipb_pass_hash", hash, Url.EH),
-                buildCookie("igneous", igneous, Url.EH),
-
-                buildCookie("ipb_member_id", id, Url.EX),
-                buildCookie("ipb_pass_hash", hash, Url.EX),
-                buildCookie("igneous", igneous, Url.EX)
-            )
-        )
+//        CookieManager.new(
+//            arrayListOf(
+//                buildCookie("ipb_member_id", id, Url.EH),
+//                buildCookie("ipb_pass_hash", hash, Url.EH),
+//                buildCookie("igneous", igneous, Url.EH),
+//
+//                buildCookie("ipb_member_id", id, Url.EX),
+//                buildCookie("ipb_pass_hash", hash, Url.EX),
+//                buildCookie("igneous", igneous, Url.EX)
+//            )
+//        )
 
         post("next", 0)
     }

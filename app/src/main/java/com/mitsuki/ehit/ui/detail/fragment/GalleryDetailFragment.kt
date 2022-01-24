@@ -31,10 +31,10 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.armory.base.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource

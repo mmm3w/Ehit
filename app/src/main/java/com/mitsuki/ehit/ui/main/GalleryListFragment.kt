@@ -28,10 +28,10 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
+import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
-import com.mitsuki.ehit.crutch.extend.string
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity

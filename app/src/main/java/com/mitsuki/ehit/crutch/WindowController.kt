@@ -3,13 +3,12 @@ package com.mitsuki.ehit.crutch
 import android.app.Activity
 import android.view.View
 import android.view.Window
-import android.view.WindowInsets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
-import com.mitsuki.ehit.crutch.extend.requireWindow
+import com.mitsuki.ehit.crutch.extensions.requireWindow
 
 class WindowController(view: View, private val windowProvider: () -> Window?) {
 

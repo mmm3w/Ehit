@@ -2,13 +2,11 @@ package com.mitsuki.ehit.ui.download.activity
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityDownloadBinding
-import com.mitsuki.ehit.databinding.ActivityMoreInfoBinding
 
 class DownloadActivity : BaseActivity() {
 

@@ -5,14 +5,27 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.Url
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-@Suppress("MemberVisibilityCanBePrivate")
-object ShareData {
+class ShareData(context: Context) {
+    private val mDefaultSP: SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
-    private lateinit var mDefaultSP: SharedPreferences
+    init {
+        Url.domainCache = spDomain
+    }
 
-    fun init(context: Context) {
-        mDefaultSP = PreferenceManager.getDefaultSharedPreferences(context)
+    companion object {
+        const val SP_SECURITY = "SP_SECURITY"
+
+        const val SP_DOMAIN = "SP_DOMAIN"
+        const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
+        const val SAVE_SOME_DATA_IN_PUBLIC_STORAGE = "SAVE_SOME_DATA_IN_PUBLIC_STORAGE"
+
+
+        const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
+        const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
     }
 
     fun string(key: String, default: String = ""): String =
@@ -28,17 +41,6 @@ object ShareData {
     fun remove(key: String) {
         edit { remove(key) }
     }
-
-    /** Tag ***************************************************************************************/
-    const val SP_SECURITY = "SP_SECURITY"
-
-    const val SP_DOMAIN = "SP_DOMAIN"
-    const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
-    const val SAVE_SOME_DATA_IN_PUBLIC_STORAGE = "SAVE_SOME_DATA_IN_PUBLIC_STORAGE"
-
-
-    const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
-    const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
 
     /**********************************************************************************************/
     var spDomain: String

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.extend.copying2Clipboard
-import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
+import com.mitsuki.ehit.crutch.extensions.createItemView
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.model.entity.GalleryDetail
 

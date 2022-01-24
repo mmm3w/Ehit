@@ -5,8 +5,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.extend.string
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter

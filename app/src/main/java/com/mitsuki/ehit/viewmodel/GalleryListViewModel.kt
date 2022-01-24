@@ -1,20 +1,23 @@
 package com.mitsuki.ehit.viewmodel
 
 import android.os.Bundle
-import androidx.hilt.lifecycle.ViewModelInject
+
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
-import com.mitsuki.ehit.model.repository.RemoteRepository
+import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class GalleryListViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
+@HiltViewModel
+class GalleryListViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
     private lateinit var mListPageIn: GalleryListPageIn

@@ -1,9 +1,6 @@
 package com.mitsuki.ehit.model.entity
 
 import android.os.Parcelable
-import androidx.recyclerview.widget.DiffUtil
-import coil.memory.MemoryCache
-import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
 import kotlinx.parcelize.IgnoredOnParcel
@@ -56,7 +53,7 @@ data class Gallery(
                             try {
                                 add(parse(element))
                             } catch (inner: Throwable) {
-                                Log.debug("${inner.message}\n$element")
+                                inner.printStackTrace()
                             }
                         }
                     }

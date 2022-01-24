@@ -15,9 +15,8 @@ import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap
-import io.reactivex.rxjava3.subjects.PublishSubject
 
 class GalleryDetailOperatingPart(
     private val eventEmitter: EventEmitter,

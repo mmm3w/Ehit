@@ -5,14 +5,14 @@ import androidx.core.text.HtmlCompat
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.InitialGate
 import com.mitsuki.ehit.crutch.Tools
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.text
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.text
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemCommentBinding
 import com.mitsuki.ehit.databinding.ItemGalleryDetailCommentBinding
 import com.mitsuki.ehit.model.entity.GalleryDetailWrap

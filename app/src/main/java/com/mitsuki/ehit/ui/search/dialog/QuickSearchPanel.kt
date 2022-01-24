@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.observe
-import com.mitsuki.ehit.crutch.extend.observeWithCoro
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.observeWithCoro
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment

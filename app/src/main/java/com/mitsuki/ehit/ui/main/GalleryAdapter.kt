@@ -12,9 +12,9 @@ import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.corners
-import com.mitsuki.ehit.crutch.extend.createItemView
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.corners
+import com.mitsuki.ehit.crutch.extensions.createItemView
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemGalleryBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Gallery

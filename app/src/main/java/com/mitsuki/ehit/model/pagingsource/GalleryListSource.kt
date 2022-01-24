@@ -13,7 +13,7 @@ import com.mitsuki.ehit.model.page.GeneralPageIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GalleryListSource constructor(private val pageIn: GalleryListPageIn) :
+class GalleryListSource constructor(private val pageIn: GalleryListPageIn,) :
     PagingSource<Int, Gallery>() {
 
     private val mConvert by lazy { GalleryListConvert() }

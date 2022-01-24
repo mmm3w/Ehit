@@ -1,21 +1,24 @@
 package com.mitsuki.ehit.viewmodel
 
 import android.os.Bundle
-import androidx.hilt.lifecycle.ViewModelInject
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.armory.loadprogress.addFeature
-import com.mitsuki.ehit.crutch.extend.postNext
+import com.mitsuki.ehit.crutch.extensions.postNext
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.coil.CacheKey
-import com.mitsuki.ehit.model.repository.RemoteRepository
+import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GalleryViewModel @ViewModelInject constructor(@RemoteRepository var repository: Repository) :
+@HiltViewModel
+class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
     ViewModel() {
 
     var index: Int = 0

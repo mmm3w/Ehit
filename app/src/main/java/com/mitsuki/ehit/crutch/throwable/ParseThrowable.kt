@@ -2,8 +2,7 @@ package com.mitsuki.ehit.crutch.throwable
 
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.extend.string
+import com.mitsuki.ehit.crutch.extensions.string
 
 @Suppress("MemberVisibilityCanBePrivate")
 class ParseThrowable(val debugMsg: String) :

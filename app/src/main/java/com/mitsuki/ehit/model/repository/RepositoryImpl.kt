@@ -15,10 +15,9 @@ import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamValue
 import com.mitsuki.ehit.const.RequestKey
-import com.mitsuki.ehit.crutch.Log
 import com.mitsuki.ehit.crutch.VolatileCache
-import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.model.convert.*
+import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -29,16 +28,17 @@ import com.mitsuki.ehit.model.entity.request.RequestRateInfo
 import com.mitsuki.ehit.model.entity.request.RequestVoteInfo
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
-import com.mitsuki.ehit.model.pagingsource.FavoritesSource
-import com.mitsuki.ehit.model.pagingsource.GalleryDetailSource
-import com.mitsuki.ehit.model.pagingsource.GalleryListSource
+import com.mitsuki.ehit.model.pagingsource.PagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.ceil
 
-class RepositoryImpl @Inject constructor() : Repository {
+class RepositoryImpl @Inject constructor(
+    val galleryDao: GalleryDao,
+    val pagingProvider: PagingSource
+) : Repository {
 
     private val mListPagingConfig =
         PagingConfig(pageSize = 25)
@@ -51,7 +51,7 @@ class RepositoryImpl @Inject constructor() : Repository {
 
     override fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>> {
         return Pager(mListPagingConfig, initialKey = GeneralPageIn.START) {
-            GalleryListSource(pageIn)
+            pagingProvider.galleryListSource(pageIn)
         }.flow
     }
 
@@ -62,7 +62,7 @@ class RepositoryImpl @Inject constructor() : Repository {
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>> {
         return Pager(mDetailPagingConfig, initialKey = GeneralPageIn.START) {
-            GalleryDetailSource(gid, token, pageIn, detailSource)
+            pagingProvider.galleryDetailSource(gid, token, pageIn, detailSource)
         }.flow
     }
 
@@ -73,7 +73,7 @@ class RepositoryImpl @Inject constructor() : Repository {
         dataWrap: FavouriteCountWrap
     ): Flow<PagingData<Gallery>> {
         return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
-            FavoritesSource(pageIn, dataWrap)
+            pagingProvider.favoritesSource(pageIn, dataWrap)
         }.flow
     }
 
@@ -86,7 +86,7 @@ class RepositoryImpl @Inject constructor() : Repository {
         index: Int
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
-            val data = RoomData.galleryDao.queryGalleryPreview(gid, token, index)
+            val data = galleryDao.queryGalleryPreview(gid, token, index)
             if (data != null) {
                 RequestResult.SuccessResult(GalleryPreview(data))
             } else {
@@ -101,7 +101,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                         is Response.Success<GalleryPreview> -> RequestResult.SuccessResult(
                             remoteData.requireBody()
                                 .apply {
-                                    RoomData.galleryDao.insertGalleryPreview(
+                                    galleryDao.insertGalleryPreview(
                                         GalleryPreviewCache(gid, token, index, this)
                                     )
                                 }
@@ -109,7 +109,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                         is Response.Fail<*> -> throw remoteData.throwable
                     }
                 } catch (inner: Throwable) {
-                    Log.debug("$inner")
+
                     RequestResult.FailResult(inner)
                 }
             }
@@ -124,7 +124,7 @@ class RepositoryImpl @Inject constructor() : Repository {
     ): RequestResult<String> {
         return withContext(Dispatchers.IO) {
             val cache =
-                RoomData.galleryDao.querySingleGalleryImageCache(gid, token, index)
+                galleryDao.querySingleGalleryImageCache(gid, token, index)
             if (cache == null || cache.pToken.isEmpty()) {
                 val webIndex =
                     if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
@@ -140,11 +140,11 @@ class RepositoryImpl @Inject constructor() : Repository {
                         is Response.Success<PageInfo<ImageSource>> -> {
                             remoteData.requireBody().also {
                                 VolatileCache.galleryPageSize = it.data.size
-                                RoomData.galleryDao.insertGalleryImageSource(gid, token, it)
+                                galleryDao.insertGalleryImageSource(gid, token, it)
                             }
 
                             val pToken =
-                                RoomData.galleryDao.querySingleGalleryImageCache(
+                                galleryDao.querySingleGalleryImageCache(
                                     gid,
                                     token,
                                     index
@@ -157,7 +157,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                         is Response.Fail<*> -> throw remoteData.throwable
                     }
                 } catch (inner: Throwable) {
-                    Log.debug("$inner")
+
                     RequestResult.FailResult(inner)
                 }
             } else RequestResult.SuccessResult(cache.pToken)
@@ -188,7 +188,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw loginData.throwable
                 }
             } catch (inner: Throwable) {
-                Log.debug("$inner")
+
                 RequestResult.FailResult(inner)
             }
         }
@@ -224,7 +224,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
-                Log.debug("$inner")
+
                 RequestResult.FailResult(inner)
             }
         }
@@ -258,7 +258,7 @@ class RepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
-                Log.debug("$inner")
+
                 RequestResult.FailResult(inner)
             }
         }
@@ -279,7 +279,6 @@ class RepositoryImpl @Inject constructor() : Repository {
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
-                Log.debug("$inner")
                 RequestResult.FailResult(inner)
             }
         }

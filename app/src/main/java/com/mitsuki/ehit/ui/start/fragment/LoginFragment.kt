@@ -11,13 +11,14 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extend.observe
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentLoginBinding
 import com.mitsuki.ehit.ui.main.MainActivity
 import com.mitsuki.ehit.ui.temp.adapter.*
 import com.mitsuki.ehit.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * 登录
@@ -32,7 +33,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private val mAccountAdapter by lazy { LoginAccountAdapter() }
     private val mCookieAdapter by lazy { LoginCookieAdapter() }
-    private val mDomain by lazy { LoginDomain() }
+    private val mDomain by lazy { LoginDomain(shareData) }
     private val mExtend by lazy { LoginExtend() }
 
     private val mAdapter by lazy {
@@ -45,6 +46,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private val binding by viewBinding(FragmentLoginBinding::bind)
+    @Inject
+    lateinit var openGate:OpenGate
+    @Inject
+    lateinit var shareData: ShareData
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding?.loginUi?.apply {
@@ -73,8 +78,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun nextNav() {
-        ShareData.spLoginShowed = true
-        with(OpenGate.nextNav) {
+        shareData.spLoginShowed = true
+        with(openGate.nextNav) {
             if (this == -1) {
                 (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
             } else {

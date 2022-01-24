@@ -8,7 +8,7 @@ import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.view
 import com.mitsuki.armory.base.widget.TagsView
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.InitialGate
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter

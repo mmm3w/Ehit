@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.extend
+package com.mitsuki.ehit.crutch.extensions
 
 import android.content.Context
 import android.graphics.drawable.Drawable

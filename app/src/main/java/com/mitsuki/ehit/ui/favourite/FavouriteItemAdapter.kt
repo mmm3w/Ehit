@@ -10,12 +10,11 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extend.createItemView
+import com.mitsuki.ehit.crutch.extensions.createItemView
 
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemFavouriteOptionBinding
 import com.mitsuki.ehit.model.diff.Diff
-import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 
 class FavouriteItemAdapter(var checkedItemIndex: Int = 0) :
     RecyclerView.Adapter<FavouriteItemAdapter.ViewHolder>(), EventEmitter {

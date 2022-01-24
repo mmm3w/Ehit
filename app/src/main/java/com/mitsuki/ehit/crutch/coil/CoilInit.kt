@@ -14,7 +14,7 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-object CoilProvider {
+object CoilInit {
     private const val RETRY_TIMES = 3
     private const val CACHE_DIRECTORY_NAME = "image_cache"
 
@@ -30,9 +30,9 @@ object CoilProvider {
 
 
     @Suppress("EXPERIMENTAL_API_USAGE")
-    fun init(context: Context) {
+    fun init(context: Context, cookieJar: CookieJar) {
         Coil.setImageLoader(ImageLoader.Builder(context)
-            .okHttpClient(buildCoilOkHttpClient(context))
+            .okHttpClient(buildCoilOkHttpClient(context, cookieJar))
             .availableMemoryPercentage(0.9)
             .crossfade(true)
             .componentRegistry {
@@ -52,10 +52,10 @@ object CoilProvider {
         return Cache(cacheDirectory, cacheSize)
     }
 
-    private fun buildCoilOkHttpClient(context: Context): OkHttpClient {
+    private fun buildCoilOkHttpClient(context: Context, cookieJar: CookieJar): OkHttpClient {
         return OkHttpClient.Builder()
             .cache(coilCache(context))
-            .cookieJar(CookieJarImpl())
+            .cookieJar(cookieJar)
             .addInterceptor(FakeHeader())
             .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             .addInterceptor(ProgressProvider.imageLoadInterceptor)

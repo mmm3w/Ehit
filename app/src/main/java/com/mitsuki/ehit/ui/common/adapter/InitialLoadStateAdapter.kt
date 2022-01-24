@@ -8,7 +8,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.mitsuki.ehit.crutch.InitialGate
-import com.mitsuki.ehit.crutch.extend.viewBinding
+import com.mitsuki.ehit.crutch.extensions.viewBinding
 
 abstract class InitialLoadStateAdapter<VB : ViewBinding> :
     RecyclerView.Adapter<InitialViewHolder<VB>>() {
