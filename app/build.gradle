@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
@@ -11,13 +12,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion build_versions.compile_sdk
-    buildToolsVersion build_versions.build_tools
+    compileSdkVersion 31
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.mitsuki.ehit"
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
+        minSdkVersion 21
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0.0"
 
@@ -34,7 +35,7 @@ android {
     }
 
     buildTypes {
-        //temp
+        //debug info
         def properties = new Properties()
         def inputStream = project.rootProject.file('local.properties').newDataInputStream()
         properties.load(inputStream)
@@ -48,7 +49,7 @@ android {
         }
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -60,7 +61,7 @@ android {
             applicationIdSuffix '.dev'
             dimension "version"
             manifestPlaceholders = [
-                    appName: "Ehit-Dev",
+                    appName: "Ehit.",
             ]
             buildConfigField "Boolean", "DEV", "true"
         }
@@ -80,12 +81,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
-        }
-    }
-
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
@@ -93,85 +88,87 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    packagingOptions {
+        /**
+         * The kotlinx-coroutines-core artifact contains a resource file that is not required for the coroutines to operate normally and is only used by the debugger.
+         */
+        resources.excludes += "DebugProbesKt.bin"
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //----------------------------------------------------------------------------------------------
-    implementation deps.kotlin.stdlib
-    implementation deps.core_ktx
-    //协程
-    implementation deps.coroutines.core
-    implementation deps.coroutines.android
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0' //协程
 
-    testImplementation deps.junit
-    androidTestImplementation deps.atsl.core
-    androidTestImplementation deps.atsl.ext_junit
-    androidTestImplementation deps.espresso.core
+    //noinspection GradleDynamicVersion
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
     //----------------------------------------------------------------------------------------------
-    implementation deps.fragment
-    implementation deps.appcompat
-    implementation deps.constraintlayout
-    implementation deps.material
-    implementation deps.swiperefreshlayout
-    implementation deps.preference
-    implementation deps.recyclerview
-    implementation deps.activity
+    implementation 'androidx.fragment:fragment-ktx:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+    implementation 'com.google.android.material:material:1.5.0'
 
     //----------------------------------------------------------------------------------------------
     //paging3
-    implementation deps.paging
+    implementation 'androidx.paging:paging-runtime-ktx:3.1.0'
     //hilt
-    implementation deps.hilt.android
-    kapt deps.hilt.android_compiler
-    implementation deps.hilt.lifecycle_viewmodel
-    kapt deps.hilt.compiler
+    implementation("com.google.dagger:hilt-android:2.38.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
+
     //viewmodel
-    implementation deps.lifecycle.viewmodel_ktx
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
     //LiveData
-    implementation deps.lifecycle.livedata_ktx
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
     //navigation
-    implementation deps.navigation.fragment
-    implementation deps.navigation.ui
+    implementation "androidx.navigation:navigation-fragment-ktx:2.4.0-rc01"
+    implementation "androidx.navigation:navigation-ui-ktx:2.4.0-rc01"
     //room
-    implementation deps.room.runtime
-    kapt deps.room.compiler
-    implementation deps.room.ktx
+    implementation "androidx.room:room-runtime:2.4.1"
+    kapt "androidx.room:room-compiler:2.4.1"
+    implementation "androidx.room:room-ktx:2.4.1"
 
     //----------------------------------------------------------------------------------------------
-    implementation deps.material_dialogs.core
-    implementation deps.material_dialogs.input
-    implementation deps.material_dialogs.bottomsheets
-    implementation deps.material_dialogs.lifecycle
+    def material_dialogs_version = "3.3.0"
+    implementation "com.afollestad.material-dialogs:core:$material_dialogs_version"
+    implementation "com.afollestad.material-dialogs:input:$material_dialogs_version"
+    implementation "com.afollestad.material-dialogs:bottomsheets:$material_dialogs_version"
+    implementation "com.afollestad.material-dialogs:lifecycle:$material_dialogs_version"
 
-    implementation deps.jsoup
+    implementation 'org.jsoup:jsoup:1.13.1'
 
-    implementation deps.okhttp
-    implementation deps.okhttplogger
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
 
-    implementation deps.coil
+    implementation "io.coil-kt:coil:1.2.1"
 
-    implementation deps.moshi.runtime
-    kapt deps.moshi.compiler
+    implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.12.0"
 
-    implementation deps.reactivex.rxkotlin
-    implementation deps.reactivex.rxandroid
+    implementation "io.reactivex.rxjava3:rxkotlin:3.0.1"
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
 
     //----------------------------------------------------------------------------------------------
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
-    //----------------------------------------------------------------------------------------------
-    implementation 'com.mitsuki.armory:base:1.0.1'
-    implementation 'com.mitsuki.armory:httprookie:1.0.0'
-    implementation 'com.mitsuki.armory:loadprogress:1.0.0'
-    implementation 'com.mitsuki.armory:adapter:1.0.2'
-    implementation 'com.mitsuki.armory:imagegesture:1.0.0'
-    implementation 'com.mitsuki.armory:systemoverlay:1.0.1'
-}
 
-repositories {
-    mavenCentral()
+    //----------------------------------------------------------------------------------------------
+    implementation "com.mitsuki.armory:base:1.0.1"
+    implementation "com.mitsuki.armory:httprookie:1.0.0"
+    implementation "com.mitsuki.armory:loadprogress:1.0.0"
+    implementation "com.mitsuki.armory:adapter:1.0.2"
+    implementation "com.mitsuki.armory:imagegesture:1.0.0"
+    implementation "com.mitsuki.armory:systemoverlay:1.0.1"
 }

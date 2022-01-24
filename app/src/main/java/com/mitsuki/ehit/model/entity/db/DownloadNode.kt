@@ -14,7 +14,7 @@ import com.mitsuki.ehit.const.DBValue
 data class DownloadNode(
     @ColumnInfo(name = "gid") val gid: Long,
     @ColumnInfo(name = "token") val token: String,
-    @ColumnInfo(name = "page") val page: String,
+    @ColumnInfo(name = "page") val page: Int,
     @ColumnInfo(name = "is_complete") val isComplete: Boolean,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id") val _id: Long = 0,

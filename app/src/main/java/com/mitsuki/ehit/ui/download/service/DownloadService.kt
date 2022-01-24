@@ -3,9 +3,8 @@ package com.mitsuki.ehit.ui.download.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.mitsuki.ehit.model.entity.DownloadNode
+import com.mitsuki.ehit.model.entity.DownloadPriority
 import com.mitsuki.ehit.model.entity.DownloadTask
-import java.util.concurrent.*
 
 class DownloadService : Service() {
 
@@ -15,7 +14,7 @@ class DownloadService : Service() {
 
 
     //    如果service被干掉，所有的下载任务会停止，这里只记录下载中的
-    private val downloadPriority: MutableMap<String, DownloadNode> by lazy { hashMapOf() }
+    private val downloadPriority: MutableMap<String, DownloadPriority> by lazy { hashMapOf() }
 
 
 //    private val downloadPool :ExecutorService by lazy {
@@ -38,9 +37,19 @@ class DownloadService : Service() {
 
         intent?.getParcelableExtra<DownloadTask>(DOWNLOAD_TASK)?.also { task ->
 
-            (downloadPriority[task.key] ?: DownloadNode(task.gid, task.token).also { node ->
+            (downloadPriority[task.key] ?: DownloadPriority(task.gid, task.token).also { node ->
                 downloadPriority[task.key] = node
             }).also { node ->
+
+                //接收到数据后首先更新数据库，
+
+
+
+
+                //在更新数据库之后，开始下载，同时要更新内存中的优先级队列
+
+
+
 //                node.append()
 
             }
