@@ -17,7 +17,7 @@ class DownloadCache {
                 schedule[data.key] = node
             }).let { node ->
                 newNode.map { DownloadPriority(it.gid, it.token, it.page, node.priority) }
-                    .run { node.append(this) } //最后将差分任务投入线程池
+                    .apply { node.append(this) } //最后将差分任务投入线程池
             }
         }
     }

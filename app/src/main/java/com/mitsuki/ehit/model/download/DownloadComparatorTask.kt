@@ -35,7 +35,9 @@ class DownloadComparatorTask(repository: Repository, priority: DownloadPriority)
             Log.d("Download", "$priority")
             Thread.sleep(3000)
             //下载完成后 发送对应广播
-            AppHolder.localBroadcastManager().sendBroadcast(Intent())
+            AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
+                action = "DOWNLOAD"
+            })
         }
     }
 }
