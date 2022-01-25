@@ -36,6 +36,7 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
+import com.mitsuki.ehit.model.download.startGalleyDownload
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -225,9 +226,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private fun onOperatingEvent(event: String) {
         when (event) {
             GalleryDetailOperatingBlock.READ -> goPreview(0)
-            GalleryDetailOperatingBlock.DOWNLOAD -> {
-                //TODO 下载
-            }
+            GalleryDetailOperatingBlock.DOWNLOAD -> requireActivity().startGalleyDownload(mViewModel.tempDownloadTask)
             GalleryDetailOperatingBlock.SCORE -> showRatingDialog()
             GalleryDetailOperatingBlock.SIMILARITYSEARCH -> onNameNavigation()
             GalleryDetailOperatingBlock.MOREINFO -> {

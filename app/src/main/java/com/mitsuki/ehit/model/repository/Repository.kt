@@ -45,12 +45,13 @@ interface Repository {
     suspend fun sendGalleryComment(gid: Long, token: String, comment: String): RequestResult<Int>
 
     suspend fun voteGalleryComment(
-        apiKey:String,
-        apiUid:Long,
-        gid:Long,
-        token:String,
+        apiKey: String,
+        apiUid: Long,
+        gid: Long,
+        token: String,
         cid: Long,
         vote: Int
     ): RequestResult<VoteBack>
 
+    suspend fun downloadPage(): RequestResult<String>
 }

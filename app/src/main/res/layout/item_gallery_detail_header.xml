@@ -7,8 +7,7 @@
     android:paddingStart="@dimen/dp_24"
     android:paddingTop="@dimen/dp_8"
     android:paddingEnd="@dimen/dp_24"
-    android:paddingBottom="@dimen/dp_8"
-    android:visibility="gone">
+    android:paddingBottom="@dimen/dp_8">
 
     <ImageView
         android:id="@+id/gallery_detail_thumb"

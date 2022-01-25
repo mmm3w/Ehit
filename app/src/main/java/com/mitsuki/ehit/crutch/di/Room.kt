@@ -52,28 +52,23 @@ object Room {
             .build()
     }
 
-    @Singleton
     @Provides
     fun searchDao(db: StoreDatabase): SearchDao {
         return db.searchDao()
     }
 
-    @Singleton
     @Provides
     fun cookieDao(db: StoreDatabase): CookieDao {
         return db.cookieDao()
     }
 
-    @Singleton
     @Provides
     fun galleryDao(db: CacheDatabase): GalleryDao {
         return db.galleryDao()
     }
 
-    @Singleton
     @Provides
     fun downloadDao(db: CacheDatabase): DownloadDao {
         return db.downloadDao()
     }
-
 }

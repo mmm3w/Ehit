@@ -18,6 +18,10 @@ class GalleryDetailWrap {
     lateinit var commentState: CommentState
     lateinit var sourceDetail: GalleryDetail
 
+    val title get() = headerInfo.title
+    val thumb get() = headerInfo.thumb
+    val page get() = partInfo.page
+
     companion object {
         const val MAX_COMMENT = 3
     }

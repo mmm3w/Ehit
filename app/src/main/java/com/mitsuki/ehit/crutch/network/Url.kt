@@ -25,8 +25,6 @@ object Url {
             return "https://${domainCache}"
         }
 
-
-
     val login: String get() = "https://forums.e-hentai.org/index.php?act=Login&CODE=01"
 
     val galleryList: String get() = "$currentDomain/"

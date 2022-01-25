@@ -1,6 +1,9 @@
 package com.mitsuki.ehit.crutch.extensions
 
 import android.content.ClipData
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import com.mitsuki.ehit.R

@@ -37,6 +37,10 @@
 
         </activity>
 
+        <service
+            android:name=".ui.download.service.DownloadService"
+            android:foregroundServiceType="dataSync" />
+
         <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />
 
         <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity" />

@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.widget.Toast
 import androidx.annotation.*
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.ehit.R
 import java.io.File
 
@@ -18,6 +19,10 @@ object AppHolder {
 
     fun hold(application: Application) {
         mApplication = application
+    }
+
+    fun localBroadcastManager(): LocalBroadcastManager {
+        return LocalBroadcastManager.getInstance(mApplication)
     }
 
     val fileDir: File get() = mApplication.filesDir
@@ -32,7 +37,7 @@ object AppHolder {
 
     fun string(@StringRes id: Int): String = mApplication.getString(id)
 
-    fun text(@StringRes id:Int):CharSequence = mApplication.getText(id)
+    fun text(@StringRes id: Int): CharSequence = mApplication.getText(id)
 
     fun drawable(@DrawableRes id: Int): Drawable? = AppCompatResources.getDrawable(mApplication, id)
 

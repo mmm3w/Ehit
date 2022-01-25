@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.model.repository
+package com.mitsuki.ehit.model.repository.impl
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -29,6 +29,7 @@ import com.mitsuki.ehit.model.entity.request.RequestVoteInfo
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.model.pagingsource.PagingSource
+import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -346,5 +347,9 @@ class RepositoryImpl @Inject constructor(
                 RequestResult.FailResult(inner)
             }
         }
+
+    override suspend fun downloadPage(): RequestResult<String> {
+        return RequestResult.FailResult(IllegalAccessException())
+    }
 
 }

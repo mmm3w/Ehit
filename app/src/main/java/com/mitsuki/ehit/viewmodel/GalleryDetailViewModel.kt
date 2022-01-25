@@ -25,6 +25,7 @@ import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.dao.SearchDao
+import com.mitsuki.ehit.model.entity.DownloadTask
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -53,6 +54,9 @@ class GalleryDetailViewModel @Inject constructor(
     val title: String get() = infoWrap.headerInfo.title
     val galleryName: String get() = infoWrap.headerInfo.title
     val uploader: String get() = infoWrap.headerInfo.uploader
+
+    val tempDownloadTask: DownloadTask
+        get() = DownloadTask(gid, token, 1, infoWrap.page, infoWrap.thumb, infoWrap.title)
 
     val isFavorited: Boolean
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
