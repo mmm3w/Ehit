@@ -17,7 +17,7 @@ import okhttp3.Cookie
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
+class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repository, val cookieManager: CookieManager) :
     ViewModel(), EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()
@@ -54,17 +54,17 @@ class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repos
             return
         }
 
-//        CookieManager.new(
-//            arrayListOf(
-//                buildCookie("ipb_member_id", id, Url.EH),
-//                buildCookie("ipb_pass_hash", hash, Url.EH),
-//                buildCookie("igneous", igneous, Url.EH),
-//
-//                buildCookie("ipb_member_id", id, Url.EX),
-//                buildCookie("ipb_pass_hash", hash, Url.EX),
-//                buildCookie("igneous", igneous, Url.EX)
-//            )
-//        )
+        cookieManager.new(
+            arrayListOf(
+                buildCookie("ipb_member_id", id, Url.EH),
+                buildCookie("ipb_pass_hash", hash, Url.EH),
+                buildCookie("igneous", igneous, Url.EH),
+
+                buildCookie("ipb_member_id", id, Url.EX),
+                buildCookie("ipb_pass_hash", hash, Url.EX),
+                buildCookie("igneous", igneous, Url.EX)
+            )
+        )
 
         post("next", 0)
     }
