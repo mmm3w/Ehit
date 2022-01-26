@@ -21,7 +21,6 @@ interface Repository {
         detailSource: GalleryDetailWrap
     ): Flow<PagingData<ImageSource>>
 
-
     fun favoriteList(
         pageIn: FavouritePageIn,
         dataWrap: FavouriteCountWrap

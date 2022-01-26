@@ -8,15 +8,19 @@ import android.content.IntentFilter
 import android.os.IBinder
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.mitsuki.armory.base.NotificationHelper
+import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.download.DownloadCache
 import com.mitsuki.ehit.model.download.submitDownload
 import com.mitsuki.ehit.model.entity.DownloadTask
+import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
+import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.PriorityBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -30,6 +34,15 @@ class DownloadService : Service() {
         const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
         const val STOP_ALL = "STOP_ALL"
         const val START_ALL = "START_ALL"
+        const val RESTART_TARGET = "RESTART_TARGET"
+        const val STOP_TARGET = "STOP_TARGET"
+
+        const val FINISH_NODE = "FINISH_NODE"
+
+        const val NOTIFICATION_CHANNEL = "DOWNLOAD"
+        const val BROADCAST_ACTION = "DOWNLOAD_ACTION"
+
+        const val NOTIFICATION_ID = 10002
     }
 
     @RemoteRepository
@@ -38,6 +51,9 @@ class DownloadService : Service() {
 
     @Inject
     lateinit var downloadDao: DownloadDao
+
+    @Inject
+    lateinit var helper: NotificationHelper
 
     private val workQueue: PriorityBlockingQueue<Runnable> by lazy { PriorityBlockingQueue(64) }
 
@@ -55,9 +71,12 @@ class DownloadService : Service() {
     override fun onCreate() {
         super.onCreate()
         LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mReceiver, IntentFilter("DOWNLOAD"))
-        //尽量使用前台服务打开service
-        //首先需要在这里响应通知栏
+            .registerReceiver(mReceiver, IntentFilter(BROADCAST_ACTION))
+        //响应前台通知
+        helper.startForeground(this, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
+            it.setSmallIcon(R.mipmap.ic_launcher_round)
+            it.setContentTitle("下载列表")
+        }
     }
 
     override fun onDestroy() {
@@ -66,15 +85,20 @@ class DownloadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //在此处接收DownloadTask
-        //接收到后需要进一步处理，可能还需要为此更新通知栏
         val stopAll = intent?.getBooleanExtra(STOP_ALL, false) ?: false
         val startAll = intent?.getBooleanExtra(START_ALL, false) ?: false
         val task = intent?.getParcelableExtra<DownloadTask>(DOWNLOAD_TASK)
+        val restart: Pair<*, *>? =
+            intent?.getSerializableExtra(RESTART_TARGET) as? Pair<*, *>
+        val stop: Pair<*, *>? =
+            intent?.getSerializableExtra(STOP_TARGET) as? Pair<*, *>
+
         when {
             stopAll -> stopAll()
             startAll -> startAll()
             task != null -> postTask(task)
+            restart != null -> restart(restart.first as Long, restart.second as String)
+            stop != null -> stop(stop.first as Long, stop.second as String)
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -90,28 +114,55 @@ class DownloadService : Service() {
     private fun startAll() {
         //从数据库中查询出所有需要下载的任务
         //插入新任务需要统计差分
-        runBlocking(Dispatchers.Default) {
+        CoroutineScope(Dispatchers.Default).launch {
             val infoList = downloadDao.queryALlDownloadInfo()
             infoList.forEach {
 
 
             }
+
+            withContext(Dispatchers.Main) {
+                //显示通知
+            }
         }
     }
 
     private fun postTask(task: DownloadTask) {
-        runBlocking(Dispatchers.Default) {
+        CoroutineScope(Dispatchers.Default).launch {
             val newNode = downloadDao.updateDownloadList(task) //通过数据库对比获取差分数据
             downloadSchedule.append(task, newNode) //再和内存的数据做对比获取需要放入线程池下载的查分数据
                 .forEach { downloadPool.submitDownload(repository, it) }
             //在获取差分数据的过程中均会更新相应数据
+
+            withContext(Dispatchers.Main) {
+                //更新通知
+            }
         }
+    }
+
+    private fun restart(gid: Long, token: String) {
+
+
+    }
+
+    private fun stop(gid: Long, token: String) {
+
+
     }
 
     private inner class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             //处理下载完成的广播
             Log.d("Download", "广播")
+            CoroutineScope(Dispatchers.Default).launch {
+                intent?.getParcelableExtra<DownloadNode>(FINISH_NODE)?.apply {
+                    downloadDao.updateDownloadNodeState(this)
+                }
+                //更新数据
+                withContext(Dispatchers.Main) {
+                    //更新通知
+                }
+            }
         }
     }
 }

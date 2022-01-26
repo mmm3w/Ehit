@@ -1,7 +1,10 @@
 package com.mitsuki.ehit.crutch.di
 
 import android.content.Context
+import androidx.core.app.NotificationCompat
+import com.mitsuki.armory.base.NotificationHelper
 import com.mitsuki.armory.httprookie.HttpRookie
+import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.model.dao.CookieDao
@@ -9,6 +12,7 @@ import com.mitsuki.ehit.model.pagingsource.PagingSource
 import com.mitsuki.ehit.model.pagingsource.PagingSourceImpl
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.model.repository.impl.RepositoryImpl
+import com.mitsuki.ehit.ui.download.service.DownloadService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -51,5 +55,18 @@ object ApplicationProviders {
     @Provides
     fun shareData(@ApplicationContext context: Context): ShareData {
         return ShareData(context)
+    }
+
+    @Singleton
+    @Provides
+    fun notificationHelper(@ApplicationContext context: Context): NotificationHelper {
+        return NotificationHelper(context) {
+            channel(
+                DownloadService.NOTIFICATION_CHANNEL,
+                context.getString(R.string.description_download_notification_name),
+                context.getString(R.string.description_download_notification),
+                NotificationCompat.PRIORITY_DEFAULT
+            )
+        }
     }
 }

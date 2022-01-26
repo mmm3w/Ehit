@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mitsuki.armory.base.extend.toast
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.observeWithCoro
@@ -73,7 +72,6 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
             mParentViewModel.pageSource.apply {
                 lifecycleScope.launch {
                     if (mViewModel.isQuickSave(cacheKey, type)) {
-                        toast("项目已经存在")
                     } else {
                         mViewModel.saveSearch(cacheKey, cacheKey, type)
                         mAdapter.addItem(cacheKey, cacheKey, type)

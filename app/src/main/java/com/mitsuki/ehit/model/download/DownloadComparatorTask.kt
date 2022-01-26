@@ -8,8 +8,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.model.entity.DownloadPriority
 import com.mitsuki.ehit.model.entity.DownloadTask
+import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.ui.download.service.DownloadService
+import com.mitsuki.ehit.ui.download.service.DownloadService.Companion.FINISH_NODE
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 
@@ -36,7 +38,8 @@ class DownloadComparatorTask(repository: Repository, priority: DownloadPriority)
             Thread.sleep(3000)
             //下载完成后 发送对应广播
             AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
-                action = "DOWNLOAD"
+                putExtra(FINISH_NODE, DownloadNode(priority.gid, priority.token, priority.page))
+                action = DownloadService.BROADCAST_ACTION
             })
         }
     }

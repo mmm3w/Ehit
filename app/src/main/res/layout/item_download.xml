@@ -4,25 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
     <ImageView
-        android:id="@+id/gallery_thumb"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="120dp"
+        android:id="@+id/download_gallery_thumb"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_72"
         android:layout_margin="@dimen/dp_16"
         android:background="@drawable/bg_gallery_thumb"
-        android:elevation="@dimen/dp_4"
+        android:elevation="2dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/download_option"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_margin="@dimen/dp_16"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/download_gallery_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:gravity="start"
+        android:maxLines="2"
+        app:layout_constraintEnd_toStartOf="@+id/download_option"
+        app:layout_constraintStart_toEndOf="@id/download_gallery_thumb"
+        app:layout_constraintTop_toTopOf="@id/download_gallery_thumb" />
+
+    <ProgressBar
+        android:id="@+id/download_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="@id/download_gallery_thumb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/download_gallery_thumb" />
 
 
-
-
-
-
+    <TextView
+        android:id="@+id/download_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/download_progress"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

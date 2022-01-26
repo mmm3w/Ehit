@@ -166,7 +166,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf-ktx'
 
     //----------------------------------------------------------------------------------------------
-    implementation "com.mitsuki.armory:base:1.0.1"
+    implementation "com.mitsuki.armory:base:1.0.2"
     implementation "com.mitsuki.armory:httprookie:1.0.0"
     implementation "com.mitsuki.armory:loadprogress:1.0.0"
     implementation "com.mitsuki.armory:adapter:1.0.2"

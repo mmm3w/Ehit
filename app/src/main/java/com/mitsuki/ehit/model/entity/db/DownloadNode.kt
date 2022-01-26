@@ -1,8 +1,11 @@
 package com.mitsuki.ehit.model.entity.db
 
+import android.os.Parcelable
 import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(
     tableName = DBValue.TABLE_DOWNLOAD_NODE,
     primaryKeys = ["page", "gid", "token"],
@@ -23,4 +26,6 @@ data class DownloadNode(
     @ColumnInfo(name = "page") val page: Int,
     @ColumnInfo(name = "is_complete") val isComplete: Boolean,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
-)
+) : Parcelable {
+    constructor(gid: Long, token: String, page: Int) : this(gid, token, page, true)
+}

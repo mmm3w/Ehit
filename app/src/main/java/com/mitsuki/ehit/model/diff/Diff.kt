@@ -2,8 +2,10 @@ package com.mitsuki.ehit.model.diff
 
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.model.entity.Comment
+import com.mitsuki.ehit.model.entity.DownloadListInfo
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.ImageSource
+import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 
@@ -91,6 +93,18 @@ object Diff {
             override fun areContentsTheSame(
                 oldItem: Comment,
                 newItem: Comment
+            ): Boolean = oldItem == newItem
+        }
+    }
+
+    val DOWNLOAD_LIST_INFO by lazy {
+        object : DiffUtil.ItemCallback<DownloadListInfo>() {
+            override fun areItemsTheSame(oldItem: DownloadListInfo, newItem: DownloadListInfo): Boolean =
+                true
+
+            override fun areContentsTheSame(
+                oldItem: DownloadListInfo,
+                newItem: DownloadListInfo
             ): Boolean = oldItem == newItem
         }
     }

@@ -18,6 +18,8 @@
     <string name="description_refresh">刷新支持</string>
     <string name="description_search">搜索支持</string>
     <string name="description_quick_search">快速搜索支持</string>
+    <string name="description_download_notification_name">下载服务通知</string>
+    <string name="description_download_notification">通知下载进度、下载状态等信息</string>
 
     <string name="title_page_go_to">跳转</string>
     <string name="title_sign_out">退出登录</string>
