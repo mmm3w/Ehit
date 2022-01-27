@@ -5,6 +5,9 @@ import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 import kotlinx.parcelize.Parcelize
 
+/**
+ * 单个下载节点的信息
+ */
 @Parcelize
 @Entity(
     tableName = DBValue.TABLE_DOWNLOAD_NODE,

@@ -1,10 +1,12 @@
 package com.mitsuki.ehit.ui.detail.adapter
 
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.setPrimaryClip
 import com.mitsuki.ehit.databinding.LoadStateFitBinding
 import com.mitsuki.ehit.ui.common.adapter.InitialLoadStateAdapter
 import com.mitsuki.ehit.ui.common.adapter.InitialViewHolder
@@ -29,9 +31,15 @@ class GalleryDetailInitialLoadStateAdapter(private val adapter: PagingDataAdapte
         override fun bindTo(loadState: LoadState) {
             binding.loadStateProgress.isVisible = loadState is LoadState.Loading
             binding.loadStateRetry.isVisible = loadState is LoadState.Error
-            binding.loadStateError.isVisible =
-                !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
-            binding.loadStateError.text = (loadState as? LoadState.Error)?.error?.message
+            binding.loadStateError.apply {
+                isVisible =
+                    !(loadState as? LoadState.Error)?.error?.cause?.message.isNullOrBlank()
+                text = (loadState as? LoadState.Error)?.error?.cause?.message
+                (loadState as? LoadState.Error)?.error?.message?.apply {
+                    context.setPrimaryClip(this)
+                    Toast.makeText(context, "已复制", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

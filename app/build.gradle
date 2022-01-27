@@ -121,7 +121,8 @@ dependencies {
 
     //----------------------------------------------------------------------------------------------
     //paging3
-    implementation 'androidx.paging:paging-runtime-ktx:3.1.0'
+    //TODO 3.1.0存在部分行为上的变更导致部分功能出现bug，目前包含的一些新特性有利于解决一些问题，应尽快适配升级
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.0'
     //hilt
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
@@ -169,7 +170,7 @@ dependencies {
     implementation "com.mitsuki.armory:base:1.0.2"
     implementation "com.mitsuki.armory:httprookie:1.0.0"
     implementation "com.mitsuki.armory:loadprogress:1.0.0"
-    implementation "com.mitsuki.armory:adapter:1.0.2"
+    implementation "com.mitsuki.armory:adapter:1.0.3"
     implementation "com.mitsuki.armory:imagegesture:1.0.0"
     implementation "com.mitsuki.armory:systemoverlay:1.0.1"
 }

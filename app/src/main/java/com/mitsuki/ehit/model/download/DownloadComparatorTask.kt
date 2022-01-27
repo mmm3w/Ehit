@@ -4,10 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.model.entity.DownloadPriority
 import com.mitsuki.ehit.model.entity.DownloadTask
+import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.ui.download.service.DownloadService
@@ -15,11 +14,11 @@ import com.mitsuki.ehit.ui.download.service.DownloadService.Companion.FINISH_NOD
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 
-class DownloadComparatorTask(repository: Repository, priority: DownloadPriority) :
-    FutureTask<Any>(DownloadRunnable(priority, repository), null),
+class DownloadComparatorTask(repository: Repository, task: DownloadTask) :
+    FutureTask<Any>(DownloadRunnable(task, repository), null),
     Comparable<DownloadComparatorTask> {
 
-    private val priority: Long = priority.priority
+    private val priority: Long = task.priority
 
     override fun compareTo(other: DownloadComparatorTask): Int {
         return when {
@@ -30,15 +29,15 @@ class DownloadComparatorTask(repository: Repository, priority: DownloadPriority)
     }
 
     class DownloadRunnable(
-        private val priority: DownloadPriority,
+        private val task: DownloadTask,
         private val repository: Repository
     ) : Runnable {
         override fun run() {
-            Log.d("Download", "$priority")
+            Log.d("Download", "$task")
             Thread.sleep(3000)
             //下载完成后 发送对应广播
             AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
-                putExtra(FINISH_NODE, DownloadNode(priority.gid, priority.token, priority.page))
+                putExtra(FINISH_NODE, DownloadNode(task.gid, task.token, task.page))
                 action = DownloadService.BROADCAST_ACTION
             })
         }
@@ -47,14 +46,14 @@ class DownloadComparatorTask(repository: Repository, priority: DownloadPriority)
 
 
 //通过扩展方法添加任务
-fun ExecutorService.submitDownload(repository: Repository, priority: DownloadPriority) {
-    execute(DownloadComparatorTask(repository, priority))
+fun ExecutorService.submitDownload(repository: Repository, task: DownloadTask) {
+    execute(DownloadComparatorTask(repository, task))
 }
 
 
-fun Context.startGalleyDownload(task: DownloadTask) {
+fun Context.startGalleyDownload(message: DownloadMessage) {
     Intent(this, DownloadService::class.java).apply {
-        putExtra(DownloadService.DOWNLOAD_TASK, task)
+        putExtra(DownloadService.DOWNLOAD_TASK, message)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startService(this)
         } else {

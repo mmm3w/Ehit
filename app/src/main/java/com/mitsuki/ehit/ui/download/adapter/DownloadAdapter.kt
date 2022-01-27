@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.ui.download.adapter
 
-import android.annotation.SuppressLint
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.notify.NotifyData
@@ -11,11 +11,13 @@ import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemDownloadBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.DownloadListInfo
-import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
-import com.mitsuki.ehit.model.entity.db.SearchHistory
 import kotlin.math.roundToInt
 
 class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
+
+    companion object {
+        const val PAYLOAD_PROGRESS_UPDATE = "PAYLOAD_PROGRESS_UPDATE"
+    }
 
     private val mData: NotifyQueueData<DownloadListInfo> =
         NotifyQueueData(Diff.DOWNLOAD_LIST_INFO).apply {
@@ -26,13 +28,22 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
         return ViewHolder(parent)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(mData.item(position)) {
-            holder.binding.downloadGalleryTitle.text = title
-            holder.binding.downloadProgressText.text = "${completed}/${total}"
-            holder.binding.downloadProgress.progress =
-                (completed.toFloat() / total.toFloat() * 100).roundToInt()
+        holder.bind(mData.item(position))
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            payloads.forEach {
+                if (it is String && it == PAYLOAD_PROGRESS_UPDATE) {
+                    Log.d("asdf", "payloads refresh")
+                    holder.updateProgress(mData.item(position))
+                } else {
+                    super.onBindViewHolder(holder, position, payloads)
+                }
+            }
         }
     }
 
@@ -43,6 +54,23 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
     class ViewHolder(parent: ViewGroup) :
         RecyclerView.ViewHolder(parent.createItemView(R.layout.item_download)) {
         val binding by viewBinding(ItemDownloadBinding::bind)
+
+        fun bind(info: DownloadListInfo) {
+            with(info) {
+                binding.downloadGalleryTitle.text = title
+                binding.downloadProgressText.text = "${completed}/${total}"
+                binding.downloadProgress.progress =
+                    (completed.toFloat() / total.toFloat() * 100).roundToInt()
+            }
+        }
+
+        fun updateProgress(info: DownloadListInfo) {
+            with(info) {
+                binding.downloadProgressText.text = "${completed}/${total}"
+                binding.downloadProgress.progress =
+                    (completed.toFloat() / total.toFloat() * 100).roundToInt()
+            }
+        }
     }
 
     suspend fun submitData(data: List<DownloadListInfo>) {
@@ -57,4 +85,6 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
             else -> mData.postUpdate(NotifyData.Refresh(data))
         }
     }
+
+
 }

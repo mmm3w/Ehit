@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.diff
 
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.model.entity.Comment
 import com.mitsuki.ehit.model.entity.DownloadListInfo
@@ -8,6 +9,7 @@ import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
+import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
 
 object Diff {
     val GALLERY_DIFF_CALLBACK = object : DiffUtil.ItemCallback<Gallery>() {
@@ -99,13 +101,35 @@ object Diff {
 
     val DOWNLOAD_LIST_INFO by lazy {
         object : DiffUtil.ItemCallback<DownloadListInfo>() {
-            override fun areItemsTheSame(oldItem: DownloadListInfo, newItem: DownloadListInfo): Boolean =
-                true
+            override fun areItemsTheSame(
+                oldItem: DownloadListInfo,
+                newItem: DownloadListInfo
+            ): Boolean =
+                oldItem.gid == newItem.gid && oldItem.token == newItem.token
 
             override fun areContentsTheSame(
                 oldItem: DownloadListInfo,
                 newItem: DownloadListInfo
             ): Boolean = oldItem == newItem
+
+            override fun getChangePayload(
+                oldItem: DownloadListInfo,
+                newItem: DownloadListInfo
+            ): Any? {
+                Log.d("asdf", "getChangePayload oldItem: $oldItem")
+                Log.d("asdf", "getChangePayload newItem: $newItem")
+                return if (oldItem.gid == newItem.gid &&
+                    oldItem.token == newItem.token &&
+                    oldItem.thumb == newItem.thumb &&
+                    oldItem.title == newItem.title &&
+                    oldItem.total == newItem.total &&
+                    oldItem.completed != newItem.completed
+                ) {
+                    DownloadAdapter.PAYLOAD_PROGRESS_UPDATE
+                } else {
+                    null
+                }
+            }
         }
     }
 }

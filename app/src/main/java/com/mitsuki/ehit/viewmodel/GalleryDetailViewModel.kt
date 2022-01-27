@@ -8,12 +8,10 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.mitsuki.armory.adapter.notify.NotifyItem
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.Emitter
-import com.mitsuki.ehit.crutch.db.RoomData
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extensions.string
@@ -24,8 +22,7 @@ import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.GalleryDao
-import com.mitsuki.ehit.model.dao.SearchDao
-import com.mitsuki.ehit.model.entity.DownloadTask
+import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -55,8 +52,8 @@ class GalleryDetailViewModel @Inject constructor(
     val galleryName: String get() = infoWrap.headerInfo.title
     val uploader: String get() = infoWrap.headerInfo.uploader
 
-    val tempDownloadTask: DownloadTask
-        get() = DownloadTask(gid, token, 1, infoWrap.page, infoWrap.thumb, infoWrap.title)
+    val tempDownloadMessage: DownloadMessage
+        get() = DownloadMessage(gid, token, 1, infoWrap.page, infoWrap.thumb, infoWrap.title)
 
     val isFavorited: Boolean
         get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
@@ -98,7 +95,7 @@ class GalleryDetailViewModel @Inject constructor(
                         handle = true
                     }
                     post("toast", string(R.string.hint_rate_successfully))
-                    if (handle) post("rate", NotifyItem.UpdateData(0))
+                    if (handle) post("rate", "")
                 }
                 is RequestResult.FailResult -> post("toast", result.throwable.message)
             }

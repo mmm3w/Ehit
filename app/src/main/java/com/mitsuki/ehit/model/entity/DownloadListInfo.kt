@@ -5,7 +5,6 @@ data class DownloadListInfo(
     val token: String,
     val thumb: String,
     val title: String,
-//    val timestamp: Long,
     val total: Int,
     val completed:Int
 ) {
@@ -15,8 +14,8 @@ data class DownloadListInfo(
                 other.token == token &&
                 other.thumb == thumb &&
                 other.title == title &&
-//                other.timestamp == timestamp &&
-                other.total == total
+                other.total == total &&
+                other.completed == completed
     }
 
     override fun hashCode(): Int {
@@ -24,8 +23,8 @@ data class DownloadListInfo(
         result = 31 * result + token.hashCode()
         result = 31 * result + thumb.hashCode()
         result = 31 * result + title.hashCode()
-//        result = 31 * result + timestamp.hashCode()
         result = 31 * result + total
+        result = 31 * result + completed
         return result
     }
 }

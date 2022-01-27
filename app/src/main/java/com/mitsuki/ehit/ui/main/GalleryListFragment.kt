@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -88,6 +89,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                 } else {
                     mInitAdapter.loadState = it.refresh
                 }
+                //TODO https://developer.android.com/jetpack/androidx/releases/paging#3.1.0  3.1.0 api变更
                 binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
             }
         }

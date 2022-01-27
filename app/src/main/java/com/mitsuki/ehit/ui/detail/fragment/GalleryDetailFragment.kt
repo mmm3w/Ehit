@@ -25,7 +25,7 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import com.mitsuki.armory.adapter.notify.NotifyItem
+import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.armory.base.widget.RatingView
@@ -204,8 +204,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
 
-        mViewModel.receiver<NotifyItem>("rate")
-            .observe(viewLifecycleOwner) { it.dispatch(mOperating) }
+        mViewModel.receiver<String>("rate")
+            .observe(viewLifecycleOwner) { mOperating.notifyItemChanged(0) }
         mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         }
@@ -226,7 +226,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private fun onOperatingEvent(event: String) {
         when (event) {
             GalleryDetailOperatingBlock.READ -> goPreview(0)
-            GalleryDetailOperatingBlock.DOWNLOAD -> requireActivity().startGalleyDownload(mViewModel.tempDownloadTask)
+            GalleryDetailOperatingBlock.DOWNLOAD -> requireActivity().startGalleyDownload(mViewModel.tempDownloadMessage)
             GalleryDetailOperatingBlock.SCORE -> showRatingDialog()
             GalleryDetailOperatingBlock.SIMILARITYSEARCH -> onNameNavigation()
             GalleryDetailOperatingBlock.MOREINFO -> {

@@ -47,6 +47,10 @@ class DownloadActivity : BaseActivity() {
         lifecycleScope.launchWhenCreated {
             mViewModel.downloadList().collect { mMainAdapter.submitData(it) }
         }
+
+
+        //数据库中两种形式
+        //下载
     }
 
 

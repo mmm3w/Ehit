@@ -14,8 +14,7 @@ import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.download.DownloadCache
 import com.mitsuki.ehit.model.download.submitDownload
-import com.mitsuki.ehit.model.entity.DownloadTask
-import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
+import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,7 +86,7 @@ class DownloadService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val stopAll = intent?.getBooleanExtra(STOP_ALL, false) ?: false
         val startAll = intent?.getBooleanExtra(START_ALL, false) ?: false
-        val task = intent?.getParcelableExtra<DownloadTask>(DOWNLOAD_TASK)
+        val task = intent?.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)
         val restart: Pair<*, *>? =
             intent?.getSerializableExtra(RESTART_TARGET) as? Pair<*, *>
         val stop: Pair<*, *>? =
@@ -127,10 +126,10 @@ class DownloadService : Service() {
         }
     }
 
-    private fun postTask(task: DownloadTask) {
+    private fun postTask(message: DownloadMessage) {
         CoroutineScope(Dispatchers.Default).launch {
-            val newNode = downloadDao.updateDownloadList(task) //通过数据库对比获取差分数据
-            downloadSchedule.append(task, newNode) //再和内存的数据做对比获取需要放入线程池下载的查分数据
+            val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
+            downloadSchedule.append(message, newNode) //再和内存的数据做对比获取需要放入线程池下载的查分数据
                 .forEach { downloadPool.submitDownload(repository, it) }
             //在获取差分数据的过程中均会更新相应数据
 
@@ -156,7 +155,7 @@ class DownloadService : Service() {
             Log.d("Download", "广播")
             CoroutineScope(Dispatchers.Default).launch {
                 intent?.getParcelableExtra<DownloadNode>(FINISH_NODE)?.apply {
-                    downloadDao.updateDownloadNodeState(this)
+                    downloadDao.updateDownloadNode(this)
                 }
                 //更新数据
                 withContext(Dispatchers.Main) {

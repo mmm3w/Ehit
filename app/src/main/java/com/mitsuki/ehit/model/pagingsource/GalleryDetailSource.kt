@@ -134,7 +134,7 @@ class GalleryDetailSource(
             }
         } catch (inner: Throwable) {
             // 捕获异常，返回一个Error
-            LoadResult.Error(inner)
+            LoadResult.Error(Throwable("gallery: $mGid-$mToken", inner))
         }
     }
 
