@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/download_gallery_thumb"
         android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_72"
+        android:layout_height="68dp"
         android:layout_margin="@dimen/dp_16"
         android:background="@drawable/bg_gallery_thumb"
         android:elevation="2dp"
@@ -25,14 +25,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/download_trigger"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_margin="@dimen/dp_16"
+        android:src="@drawable/ic_round_download_24"
+        app:layout_constraintEnd_toStartOf="@id/download_option"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/download_gallery_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
+        android:ellipsize="end"
         android:gravity="start"
         android:maxLines="2"
-        app:layout_constraintEnd_toStartOf="@+id/download_option"
+        app:layout_constraintEnd_toStartOf="@+id/download_trigger"
         app:layout_constraintStart_toEndOf="@id/download_gallery_thumb"
         app:layout_constraintTop_toTopOf="@id/download_gallery_thumb" />
 
@@ -45,7 +55,6 @@
         app:layout_constraintBottom_toBottomOf="@id/download_gallery_thumb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/download_gallery_thumb" />
-
 
     <TextView
         android:id="@+id/download_progress_text"

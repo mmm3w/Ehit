@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.model.entity
 
 import android.os.Parcelable
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
 import kotlinx.parcelize.IgnoredOnParcel

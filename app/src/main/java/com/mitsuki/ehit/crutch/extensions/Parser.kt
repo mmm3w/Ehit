@@ -3,10 +3,11 @@
     "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
 )
 
-package com.mitsuki.ehit.model.ehparser
+package com.mitsuki.ehit.crutch.extensions
 
 import android.text.TextUtils
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
+import com.mitsuki.ehit.model.ehparser.Matcher
 
 /**************************************************************************************************/
 fun String.htmlEscape(): String {

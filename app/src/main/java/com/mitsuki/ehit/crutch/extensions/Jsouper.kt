@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.model.ehparser
+package com.mitsuki.ehit.crutch.extensions
 
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import org.jsoup.nodes.Element

@@ -3,6 +3,7 @@ package com.mitsuki.ehit.crutch.extensions
 import android.graphics.Outline
 import android.view.*
 import androidx.annotation.LayoutRes
+import androidx.core.view.ViewPropertyAnimatorCompat
 import androidx.fragment.app.DialogFragment
 
 fun ViewGroup.createItemView(@LayoutRes layout: Int): View =
@@ -31,3 +32,4 @@ fun View.corners(radius: Float) {
     }
     clipToOutline = true
 }
+

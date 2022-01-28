@@ -37,7 +37,7 @@ object CoilInit {
             .crossfade(true)
             .componentRegistry {
                 add(RetryInterceptor(RETRY_TIMES))
-                if (BuildConfig.DEV) {
+                if (BuildConfig.SAVE_MODE) {
                     //DEV下默认进行NSFW内容遮蔽
                     add(LoadBreakInterceptor())
                 }

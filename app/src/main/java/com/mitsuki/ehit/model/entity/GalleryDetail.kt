@@ -2,6 +2,7 @@ package com.mitsuki.ehit.model.entity
 
 import com.mitsuki.ehit.const.ParseError
 import com.mitsuki.ehit.crutch.coil.CacheKey
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.*
 import com.mitsuki.ehit.model.entity.db.GalleryCommentCache

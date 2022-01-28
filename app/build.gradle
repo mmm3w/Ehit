@@ -13,7 +13,7 @@ plugins {
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.mitsuki.ehit"
@@ -64,6 +64,7 @@ android {
                     appName: "Ehit.",
             ]
             buildConfigField "Boolean", "DEV", "true"
+            buildConfigField "Boolean", "SAVE_MODE", "false"
         }
 
         official {
@@ -72,6 +73,7 @@ android {
                     appName: "Ehit",
             ]
             buildConfigField "Boolean", "DEV", "false"
+            buildConfigField "Boolean", "SAVE_MODE", "false"
         }
 
     }

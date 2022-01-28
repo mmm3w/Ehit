@@ -3,8 +3,8 @@ package com.mitsuki.ehit.model.entity
 import com.mitsuki.ehit.const.ParseError
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.Matcher
-import com.mitsuki.ehit.model.ehparser.byClassFirst
-import com.mitsuki.ehit.model.ehparser.byClassFirstIgnoreError
+import com.mitsuki.ehit.crutch.extensions.byClassFirst
+import com.mitsuki.ehit.crutch.extensions.byClassFirstIgnoreError
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.select.NodeTraversor

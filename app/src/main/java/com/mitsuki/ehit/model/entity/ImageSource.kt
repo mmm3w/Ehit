@@ -2,7 +2,7 @@ package com.mitsuki.ehit.model.entity
 
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.Matcher
-import com.mitsuki.ehit.model.ehparser.htmlEscape
+import com.mitsuki.ehit.crutch.extensions.htmlEscape
 import com.mitsuki.ehit.model.entity.db.GalleryImageSourceCache
 
 data class ImageSource(
