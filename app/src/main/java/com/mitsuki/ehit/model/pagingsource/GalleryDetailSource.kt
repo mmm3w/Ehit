@@ -15,19 +15,19 @@ import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GeneralPageIn
+import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GalleryDetailSource(
+    private val repository: Repository,
+    private val galleryDao: GalleryDao,
     private val mGid: Long,
     private val mToken: String,
     private val mPageIn: GeneralPageIn,
-    private val mDetailSource: GalleryDetailWrap,
-    private val galleryDao: GalleryDao
+    private val mDetailSource: GalleryDetailWrap
 ) : PagingSource<Int, ImageSource>() {
 
-    private val mConvert by lazy { GalleryDetailConvert() }
-    private val mJustImageConvert by lazy { ImageSourceConvert() }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageSource> {
@@ -60,14 +60,7 @@ class GalleryDetailSource(
 
                     if (reObtain) {
                         val remoteData: Response<Pair<GalleryDetail, PageInfo<ImageSource>>> =
-                            HttpRookie
-                                .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
-                                    Url.galleryDetail(mGid, mToken)
-                                ) {
-                                    convert = mConvert
-                                    urlParams(RequestKey.PAGE_DETAIL, page.toString())
-                                }
-                                .execute()
+                            repository.galleryDetailSource(mGid, mToken, page)
 
                         when (remoteData) {
                             is Response.Success<Pair<GalleryDetail, PageInfo<ImageSource>>> -> {
@@ -101,17 +94,7 @@ class GalleryDetailSource(
                     var images = galleryDao.queryGalleryImageSource(mGid, mToken, page)
                     if (images.isEmpty) {
                         val remoteData: Response<PageInfo<ImageSource>> =
-                            HttpRookie
-                                .get<PageInfo<ImageSource>>(
-                                    Url.galleryDetail(
-                                        mGid,
-                                        mToken
-                                    )
-                                ) {
-                                    convert = mJustImageConvert
-                                    urlParams(RequestKey.PAGE_DETAIL, page.toString())
-                                }
-                                .execute()
+                            repository.imageSource(mGid, mToken, page)
 
                         when (remoteData) {
                             is Response.Success<PageInfo<ImageSource>> -> {

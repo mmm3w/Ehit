@@ -13,10 +13,12 @@ import com.mitsuki.ehit.model.entity.FavouriteCountWrap
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
+import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FavoritesSource(
+    private val repository: Repository,
     private val pageIn: FavouritePageIn,
     private val dataWrap: FavouriteCountWrap
 ) :
@@ -28,15 +30,8 @@ class FavoritesSource(
         val page = params.key ?: GeneralPageIn.START
         return try {
             withContext(Dispatchers.IO) {
-                val data: Response<Pair<ArrayList<Gallery>, Array<Int>>> = HttpRookie
-                    .get<Pair<ArrayList<Gallery>, Array<Int>>>(Url.favoriteList) {
-                        convert = mConvert
-                        urlParams(RequestKey.PAGE, page.toString())
-                        pageIn.setGroup(this)
-                    }
-                    .execute()
-
-                when (data) {
+                when (val data: Response<Pair<ArrayList<Gallery>, Array<Int>>> =
+                    repository.favoritesSource(pageIn, page)) {
                     is Response.Success<Pair<ArrayList<Gallery>, Array<Int>>> -> {
                         val dataPair: Pair<ArrayList<Gallery>, Array<Int>> = data.requireBody()
                         val list = dataPair.first

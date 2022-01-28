@@ -30,11 +30,14 @@ import javax.inject.Inject
 class DownloadService : Service() {
 
     companion object {
+        const val ACTION_START_ALL = "START_ALL"
+        const val ACTION_STOP_ALL = "STOP_ALL"
+        const val ACTION_DOWNLOAD = "DOWNLOAD"
+        const val ACTION_RESTART = "RESTART"
+        const val ACTION_STOP = "STOP"
+
         const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
-        const val STOP_ALL = "STOP_ALL"
-        const val START_ALL = "START_ALL"
-        const val RESTART_TARGET = "RESTART_TARGET"
-        const val STOP_TARGET = "STOP_TARGET"
+        const val TARGET = "TARGET"
 
         const val FINISH_NODE = "FINISH_NODE"
 
@@ -84,23 +87,19 @@ class DownloadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val stopAll = intent?.getBooleanExtra(STOP_ALL, false) ?: false
-        val startAll = intent?.getBooleanExtra(START_ALL, false) ?: false
-        val task = intent?.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)
-        val restart: Pair<*, *>? =
-            intent?.getSerializableExtra(RESTART_TARGET) as? Pair<*, *>
-        val stop: Pair<*, *>? =
-            intent?.getSerializableExtra(STOP_TARGET) as? Pair<*, *>
-
-        when {
-            stopAll -> stopAll()
-            startAll -> startAll()
-            task != null -> postTask(task)
-            restart != null -> restart(restart.first as Long, restart.second as String)
-            stop != null -> stop(stop.first as Long, stop.second as String)
+        when (intent?.action) {
+            ACTION_START_ALL -> startAll()
+            ACTION_STOP_ALL -> stopAll()
+            ACTION_DOWNLOAD ->
+                intent.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)?.apply { postTask(this) }
+            ACTION_RESTART -> (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
+                restart(first as Long, second as String)
+            }
+            ACTION_STOP -> (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
+                stop(first as Long, second as String)
+            }
         }
-
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
 
@@ -152,7 +151,6 @@ class DownloadService : Service() {
     private inner class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             //处理下载完成的广播
-            Log.d("Download", "广播")
             CoroutineScope(Dispatchers.Default).launch {
                 intent?.getParcelableExtra<DownloadNode>(FINISH_NODE)?.apply {
                     downloadDao.updateDownloadNode(this)

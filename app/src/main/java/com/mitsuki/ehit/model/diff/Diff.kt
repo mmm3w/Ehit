@@ -90,7 +90,7 @@ object Diff {
     val GALLERY_COMMENT by lazy {
         object : DiffUtil.ItemCallback<Comment>() {
             override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
-                true
+                oldItem.id == newItem.id
 
             override fun areContentsTheSame(
                 oldItem: Comment,
@@ -116,8 +116,6 @@ object Diff {
                 oldItem: DownloadListInfo,
                 newItem: DownloadListInfo
             ): Any? {
-                Log.d("asdf", "getChangePayload oldItem: $oldItem")
-                Log.d("asdf", "getChangePayload newItem: $newItem")
                 return if (oldItem.gid == newItem.gid &&
                     oldItem.token == newItem.token &&
                     oldItem.thumb == newItem.thumb &&

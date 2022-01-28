@@ -38,7 +38,6 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
         } else {
             payloads.forEach {
                 if (it is String && it == PAYLOAD_PROGRESS_UPDATE) {
-                    Log.d("asdf", "payloads refresh")
                     holder.updateProgress(mData.item(position))
                 } else {
                     super.onBindViewHolder(holder, position, payloads)

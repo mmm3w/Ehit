@@ -10,6 +10,9 @@ annotation class RemoteRepository
 @Retention(AnnotationRetention.BINARY)
 annotation class ApiClient
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CoilClient
 
 
 

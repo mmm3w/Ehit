@@ -10,10 +10,15 @@ import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.convert.GalleryListConvert
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GeneralPageIn
+import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GalleryListSource constructor(private val pageIn: GalleryListPageIn,) :
+class GalleryListSource(
+    private val repository: Repository,
+    private val pageIn: GalleryListPageIn,
+) :
     PagingSource<Int, Gallery>() {
 
     private val mConvert by lazy { GalleryListConvert() }
@@ -27,14 +32,7 @@ class GalleryListSource constructor(private val pageIn: GalleryListPageIn,) :
             // 需要注意的是，如果是第一页，prevKey就传null，如果是最后一页那么nextKey也传null
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.IO) {
-                val data: Response<ArrayList<Gallery>> =
-                    HttpRookie
-                        .get<ArrayList<Gallery>>(pageIn.targetUrl) {
-                            convert = mConvert
-                            pageIn.addPage(this, page)
-                            pageIn.addSearchKey(this)
-                        }
-                        .execute()
+                val data: Response<ArrayList<Gallery>> = repository.galleryListSource(pageIn, page)
                 when (data) {
                     is Response.Success<ArrayList<Gallery>> -> {
                         val list: ArrayList<Gallery> = data.requireBody()

@@ -20,14 +20,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object Room {
-
-    @Singleton
-    @Provides
-    fun okhttpClient(): OkHttpClient {
-        return HttpRookie.client
-    }
-
+object RoomDi {
     @Singleton
     @Provides
     fun cacheDB(@ApplicationContext context: Context): CacheDatabase {

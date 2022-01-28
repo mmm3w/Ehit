@@ -6,7 +6,9 @@ import com.mitsuki.armory.base.NotificationHelper
 import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.CookieManager
+import com.mitsuki.ehit.crutch.network.FakeHeader
 import com.mitsuki.ehit.model.dao.CookieDao
 import com.mitsuki.ehit.model.pagingsource.PagingSource
 import com.mitsuki.ehit.model.pagingsource.PagingSourceImpl
@@ -19,7 +21,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.CookieJar
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -32,6 +37,10 @@ abstract class ApplicationBinds {
 
     @Binds
     abstract fun pagingSourceProvider(impl: PagingSourceImpl): PagingSource
+
+    @Singleton
+    @Binds
+    abstract fun cookieJar(impl: CookieJarImpl): CookieJar
 }
 
 @Module
@@ -41,8 +50,15 @@ object ApplicationProviders {
     @ApiClient
     @Singleton
     @Provides
-    fun okhttpClient(): OkHttpClient {
-        return HttpRookie.client
+    fun apiClient(cookieJar: CookieJar): OkHttpClient {
+        return OkHttpClient.Builder()
+            .cookieJar(cookieJar)
+            .addInterceptor(FakeHeader())
+            .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .build()
     }
 
     @Singleton

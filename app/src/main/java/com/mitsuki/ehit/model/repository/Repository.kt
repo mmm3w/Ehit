@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.model.repository
 
 import androidx.paging.PagingData
+import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
@@ -53,4 +54,26 @@ interface Repository {
     ): RequestResult<VoteBack>
 
     suspend fun downloadPage(): RequestResult<String>
+
+    suspend fun favoritesSource(
+        pageIn: FavouritePageIn,
+        page: Int
+    ): Response<Pair<ArrayList<Gallery>, Array<Int>>>
+
+    suspend fun galleryDetailSource(
+        mGid: Long,
+        mToken: String,
+        page: Int
+    ): Response<Pair<GalleryDetail, PageInfo<ImageSource>>>
+
+    suspend fun imageSource(
+        mGid: Long,
+        mToken: String,
+        page: Int
+    ): Response<PageInfo<ImageSource>>
+
+    suspend fun galleryListSource(
+        pageIn: GalleryListPageIn,
+        page: Int
+    ): Response<ArrayList<Gallery>>
 }

@@ -33,7 +33,6 @@ class DownloadComparatorTask(repository: Repository, task: DownloadTask) :
         private val repository: Repository
     ) : Runnable {
         override fun run() {
-            Log.d("Download", "$task")
             Thread.sleep(3000)
             //下载完成后 发送对应广播
             AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
@@ -53,9 +52,10 @@ fun ExecutorService.submitDownload(repository: Repository, task: DownloadTask) {
 
 fun Context.startGalleyDownload(message: DownloadMessage) {
     Intent(this, DownloadService::class.java).apply {
+        action = DownloadService.ACTION_DOWNLOAD
         putExtra(DownloadService.DOWNLOAD_TASK, message)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startService(this)
+            startForegroundService(this)
         } else {
             startService(this)
         }
@@ -64,9 +64,9 @@ fun Context.startGalleyDownload(message: DownloadMessage) {
 
 fun Context.startAllGalleryDownload() {
     Intent(this, DownloadService::class.java).apply {
-        putExtra(DownloadService.START_ALL, true)
+        action = DownloadService.ACTION_START_ALL
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startService(this)
+            startForegroundService(this)
         } else {
             startService(this)
         }
@@ -75,9 +75,9 @@ fun Context.startAllGalleryDownload() {
 
 fun Context.stopAllGalleryDownload() {
     Intent(this, DownloadService::class.java).apply {
-        putExtra(DownloadService.STOP_ALL, true)
+        action = DownloadService.ACTION_STOP_ALL
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startService(this)
+            startForegroundService(this)
         } else {
             startService(this)
         }
