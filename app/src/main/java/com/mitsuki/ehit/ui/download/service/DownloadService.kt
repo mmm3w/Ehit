@@ -76,7 +76,7 @@ class DownloadService : Service() {
             .registerReceiver(mReceiver, IntentFilter(BROADCAST_ACTION))
         //响应前台通知
         helper.startForeground(this, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
-            it.setSmallIcon(R.mipmap.ic_launcher_round)
+            it.setSmallIcon(android.R.drawable.stat_sys_download)
             it.setContentTitle("下载列表")
         }
     }

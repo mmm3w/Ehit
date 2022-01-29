@@ -62,22 +62,14 @@ class DownloadActivity : BaseActivity() {
             controlAnimate.trigger(it)
         }
 
-        binding.downloadControl.downloadControlCompleted.apply {
-            setOnClickListener {
-                if (isSelected) {
-                    isSelected = false
-                    binding.downloadControl.downloadControlWaiting.isVisible = true
-//                    ViewCompat.animate(binding.downloadControl.downloadControlWaiting)
-//                        .scaleX(1f)
-//                        .start()
-                } else {
-                    isSelected = true
-                    binding.downloadControl.downloadControlWaiting.isVisible = false
-//                    ViewCompat.animate(binding.downloadControl.downloadControlWaiting)
-//                        .scaleX(0f)
-//                        .start()
-                }
-            }
+        binding.downloadControl.downloadControlCompleted.setOnClickListener {
+            controlAnimate.trigger(it)
+        }
+        binding.downloadControl.downloadControlCompletedS.setOnClickListener {
+            controlAnimate.trigger(it)
+        }
+        binding.downloadControl.downloadControlCompletedSd.setOnClickListener {
+            controlAnimate.trigger(it)
         }
     }
 

@@ -114,9 +114,9 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
 
-        mViewModel.galleryDetail.observe(this, {
+        mViewModel.galleryDetail.observe(this) {
             mPreviewAdapter.submitData(lifecycle, it)
-        })
+        }
 
 
         mHeader.receiver<String>("header").observe(this, this::onHeaderEvent)

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.animation.addListener
 import androidx.core.view.children
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 
 class ControlAnimate {
@@ -16,39 +15,32 @@ class ControlAnimate {
     private var parentWidth = 0
     private var lastAnimator: AnimatorSet? = null
 
-    fun trigger(view: View) {
+    fun trigger(view: View):Boolean {
+        if (lastAnimator?.isStarted == true && lastAnimator?.isRunning == true) return false
+
         if (view.isSelected) {
             view.isSelected = false
-            //展开
-            cancelAnimate()
-        } else {
-            view.isSelected = true
-            //收缩
-            //先是其他View全部Invisible
             val parent = view.parent as? ViewGroup
-            parent?.apply {
-                children.forEach { if (it != view) it.isInvisible = true }
-                parentWidth = measuredWidth
-            }
-            //然后强制移动view，以及改变父View的宽度
-            lastLeft = view.left
-
-            cancelAnimate()
-
             lastAnimator = AnimatorSet().apply {
-                duration = 3000
+                duration = 600
                 addListener(
                     onEnd = {
                         parent?.apply {
                             children.forEach {
-                                if (it != view) it.isVisible = false
+                                if (it != view) it.isVisible = true
+                                view.translationX = 0F
                             }
                         }
                     }
                 )
                 playTogether(
-                    ObjectAnimator.ofFloat(view, "translationX", 0f, 0f - lastLeft),
-                    ValueAnimator.ofInt(parent?.measuredWidth ?: 0, view.measuredWidth).apply {
+                    ObjectAnimator.ofFloat(
+                        view,
+                        "translationX",
+                        view.translationX,
+                        lastLeft.toFloat()
+                    ),
+                    ValueAnimator.ofInt(parent?.width ?: 0, parentWidth).apply {
                         addUpdateListener {
                             (it.animatedValue as Int).apply {
                                 val lp = parent?.layoutParams
@@ -58,13 +50,54 @@ class ControlAnimate {
                         }
                     }
                 )
+                start()
             }
-        }
-    }
+            return true
+        } else {
+            view.isSelected = true
+            //收缩
+            //先是其他View全部Invisible
+            val parent = view.parent as? ViewGroup
+            parent?.apply {
+                parentWidth = measuredWidth
+                //先配置定值
+                val lp = parent.layoutParams
+                lp?.width = width
+                parent.layoutParams = lp
+                //然后直接隐藏其他View
+                children.forEach { if (it != view) it.isVisible = false }
+            }
 
-    private fun cancelAnimate() {
-        if (lastAnimator?.isStarted == true && lastAnimator?.isRunning == true) {
-            lastAnimator?.cancel()
+            lastLeft = view.left
+            view.translationX = view.left.toFloat()
+
+            lastAnimator = AnimatorSet().apply {
+                duration = 600
+                addListener(
+                    onEnd = {
+                        parent?.apply {
+                            children.forEach {
+                                if (it != view) it.isVisible = false
+                                view.translationX = 0F
+                            }
+                        }
+                    }
+                )
+                playTogether(
+                    ObjectAnimator.ofFloat(view, "translationX", view.translationX, 0f),
+                    ValueAnimator.ofInt(parent?.width ?: 0, view.width).apply {
+                        addUpdateListener {
+                            (it.animatedValue as Int).apply {
+                                val lp = parent?.layoutParams
+                                lp?.width = this
+                                parent?.layoutParams = lp
+                            }
+                        }
+                    }
+                )
+                start()
+            }
+            return true
         }
     }
 }
