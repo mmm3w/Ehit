@@ -11,22 +11,14 @@ class GalleryListPageIn(var pageSource: GalleryPageSource) : GeneralPageIn() {
     val showContent: String get() = pageSource.showContent
     val type: GalleryPageSource.Type get() = pageSource.type
 
-    fun addPage(source: UrlParams, index: Int) {
-        if (index == START || !pageSource.hasPaging) return
+    var maxPage: Int = 0
+
+    fun attachPage(source: UrlParams, index: Int) {
+        if (index == START) return
         source.urlParams(RequestKey.PAGE, index.toString())
     }
 
-    fun addSearchKey(source: UrlParams) {
+    fun attachSearchKey(source: UrlParams) {
         pageSource.applyKey(source)
-    }
-
-    fun docerPrevKey(key: Int?): Int? {
-        if (!pageSource.hasPaging) return null
-        return key
-    }
-
-    fun docerNextKey(key: Int?): Int? {
-        if (!pageSource.hasPaging) return null
-        return key
     }
 }

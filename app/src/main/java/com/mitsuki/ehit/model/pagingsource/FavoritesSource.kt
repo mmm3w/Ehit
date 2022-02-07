@@ -11,6 +11,7 @@ import com.mitsuki.ehit.model.convert.GalleryListWithFavoriteCountConvert
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.FavouriteCountWrap
 import com.mitsuki.ehit.model.entity.Gallery
+import com.mitsuki.ehit.model.entity.PageInfo
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.model.repository.Repository
@@ -24,17 +25,15 @@ class FavoritesSource(
 ) :
     PagingSource<Int, Gallery>() {
 
-    private val mConvert by lazy { GalleryListWithFavoriteCountConvert() }
-
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gallery> {
         val page = params.key ?: GeneralPageIn.START
         return try {
             withContext(Dispatchers.IO) {
-                when (val data: Response<Pair<ArrayList<Gallery>, Array<Int>>> =
+                when (val data: Response<Pair<PageInfo<Gallery>, Array<Int>>> =
                     repository.favoritesSource(pageIn, page)) {
-                    is Response.Success<Pair<ArrayList<Gallery>, Array<Int>>> -> {
-                        val dataPair: Pair<ArrayList<Gallery>, Array<Int>> = data.requireBody()
-                        val list = dataPair.first
+                    is Response.Success<Pair<PageInfo<Gallery>, Array<Int>>> -> {
+                        val dataPair: Pair<PageInfo<Gallery>, Array<Int>> = data.requireBody()
+                        val list = dataPair.first.data
                         val countData = dataPair.second
                         dataWrap.postData(GalleryFavorites.attachName(countData))
                         LoadResult.Page(

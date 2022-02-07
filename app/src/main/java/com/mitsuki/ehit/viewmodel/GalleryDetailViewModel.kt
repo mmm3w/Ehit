@@ -1,28 +1,22 @@
 package com.mitsuki.ehit.viewmodel
 
 import android.os.Bundle
-
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
-import com.mitsuki.ehit.model.entity.Gallery
-import com.mitsuki.ehit.model.entity.GalleryDetailWrap
-import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.dao.GalleryDao
-import com.mitsuki.ehit.model.entity.DownloadMessage
+import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -32,37 +26,38 @@ import javax.inject.Inject
 class GalleryDetailViewModel @Inject constructor(
     @RemoteRepository var repository: Repository,
     val galleryDao: GalleryDao
-) :
-    ViewModel(), EventEmitter {
+) : ViewModel(), EventEmitter {
 
+    override val eventEmitter: Emitter = Emitter()
+
+    private lateinit var galleryDetail: GalleryDetail
     var gid: Long = -1L
         private set
     var token: String = ""
         private set
 
-    val itemTransitionName: String
-        get() = "gallery:$gid$token"
+    val headerInfo: MutableLiveData<HeaderInfo> by lazy { MutableLiveData() }
+    val detailInfo: MutableLiveData<GalleryDetail> by lazy { MutableLiveData() }
+    val initLoading: MutableLiveData<Pair<Boolean, Throwable?>> by lazy { MutableLiveData((true to null)) }
+    val favorite: MutableLiveData<Boolean?> by lazy { MutableLiveData(null) }
+    val loadSign: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
+    val detailPart: MutableLiveData<DetailPart?> by lazy { MutableLiveData(null) }
 
-    override val eventEmitter: Emitter = Emitter()
-
-    val infoWrap = GalleryDetailWrap()
     private val mDetailPageIn = GeneralPageIn()
 
-    val title: String get() = infoWrap.headerInfo.title
-    val galleryName: String get() = infoWrap.headerInfo.title
-    val uploader: String get() = infoWrap.headerInfo.uploader
+    val title: String get() = galleryDetail.title
+    val galleryName: String get() = galleryDetail.title
+    val uploader: String get() = galleryDetail.uploader
+    val favoriteName: String? get() = galleryDetail.favoriteName
+    val apiKey get() = galleryDetail.apiKey
+    val apiUID get() = galleryDetail.apiUID
+    val rating get() = galleryDetail.rating
+    val page get() = galleryDetail.pages
 
-    val tempDownloadMessage: DownloadMessage
-        get() = DownloadMessage(gid, token, 1, infoWrap.page, infoWrap.thumb, infoWrap.title)
+    val itemTransitionName: String get() = "gallery:$gid$token"
 
-    val isFavorited: Boolean
-        get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.isFavorited else false
-
-    val favoriteName: String?
-        get() = if (infoWrap.isSourceInitialized) infoWrap.sourceDetail.favoriteName else null
-
-    val galleryDetail: LiveData<PagingData<ImageSource>>
-        get() = repository.galleryDetail(gid, token, mDetailPageIn, infoWrap)
+    val detailImage: LiveData<PagingData<ImageSource>>
+        get() = repository.detailImage(gid, token, mDetailPageIn)
             .cachedIn(viewModelScope)
             .asLiveData()
 
@@ -76,28 +71,38 @@ class GalleryDetailViewModel @Inject constructor(
         this.token = info.token
         if (gid == -1L || token.isEmpty()) throw IllegalStateException()
 
-        infoWrap.headerInfo = GalleryDetailWrap.HeaderInfo(info)
+        headerInfo.postValue(HeaderInfo(info))
     }
 
-    fun submitRating(rating: Float) {
+    fun loadInfo() {
         viewModelScope.launch {
-            when (val result = repository.rating(infoWrap.sourceDetail, rating)) {
-                is RequestResult.SuccessResult -> {
-                    var handle = false
-
-                    if (infoWrap.partInfo.rating != result.data.avg.toFloat()) {
-                        infoWrap.partInfo.rating = result.data.avg.toFloat()
-                        handle = true
-                    }
-
-                    if (infoWrap.partInfo.ratingCount != result.data.count) {
-                        infoWrap.partInfo.ratingCount = result.data.count
-                        handle = true
-                    }
-                    post("toast", string(R.string.hint_rate_successfully))
-                    if (handle) post("rate", "")
+            when (val result = repository.galleryDetailInfo(gid, token)) {
+                is RequestResult.Success<GalleryDetail> -> {
+                    galleryDetail = result.data
+                    headerInfo.postValue(result.data.obtainHeaderInfo())
+                    initLoading.postValue(false to null)
+                    detailInfo.postValue(result.data)
+                    favorite.postValue(result.data.isFavorited)
+                    loadSign.postValue(true)
+                    detailPart.postValue(result.data.obtainOperating())
                 }
-                is RequestResult.FailResult -> post("toast", result.throwable.message)
+                is RequestResult.Fail -> {
+                    initLoading.postValue(true to result.throwable)
+                }
+            }
+        }
+    }
+
+    fun submitRating(r: Float) {
+        viewModelScope.launch {
+            when (val result = repository.rating(gid, token, apiUID, apiKey, r)) {
+                is RequestResult.Success -> {
+                    post("toast", string(R.string.hint_rate_successfully))
+                    detailPart.postValue(
+                        DetailPart(result.data.avg.toFloat(), result.data.count, page)
+                    )
+                }
+                is RequestResult.Fail -> post("toast", result.throwable.message)
             }
         }
     }
@@ -105,18 +110,17 @@ class GalleryDetailViewModel @Inject constructor(
     fun submitFavorites(cat: Int) {
         viewModelScope.launch {
             when (repository.favorites(gid, token, cat)) {
-                is RequestResult.SuccessResult -> {
+                is RequestResult.Success -> {
                     val strRes =
                         if (cat < 0) R.string.hint_remove_favorite_success else R.string.hint_add_favorite_success
 
                     val name = GalleryFavorites.findName(cat)
                     galleryDao.updateGalleryFavorites(gid, token, name)
-                    infoWrap.sourceDetail.favoriteName = name
 
                     post("fav", 0)
                     post("toast", string(strRes))
                 }
-                is RequestResult.FailResult -> post(
+                is RequestResult.Fail -> post(
                     "toast",
                     string(
                         if (cat < 0) R.string.hint_remove_favorite_failure

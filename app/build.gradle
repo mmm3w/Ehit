@@ -112,30 +112,28 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //----------------------------------------------------------------------------------------------
-    implementation 'androidx.fragment:fragment-ktx:1.4.0'
+    implementation 'androidx.fragment:fragment-ktx:1.4.1'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'com.google.android.material:material:1.5.0'
 
     //----------------------------------------------------------------------------------------------
-    //paging3
-    //TODO 3.1.0存在部分行为上的变更导致部分功能出现bug，目前包含的一些新特性有利于解决一些问题，应尽快适配升级
-    implementation 'androidx.paging:paging-runtime-ktx:3.0.0'
     //hilt
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-
     //viewmodel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
     //LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+    //paging3
+    implementation 'androidx.paging:paging-runtime-ktx:3.1.0'
     //navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.0-rc01"
-    implementation "androidx.navigation:navigation-ui-ktx:2.4.0-rc01"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.4.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.4.0"
     //room
     implementation "androidx.room:room-runtime:2.4.1"
     kapt "androidx.room:room-compiler:2.4.1"

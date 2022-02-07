@@ -22,9 +22,15 @@ class GalleryListViewModel @Inject constructor(@RemoteRepository var repository:
 
     private lateinit var mListPageIn: GalleryListPageIn
 
+    //navigation不支持保存fragment的状态，迟早干掉navigation这个库
+    var refreshEnable = false
+    var refreshing = false
+    var searchBarTranslationY: Float = 0F
+
     val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
     val searchBarHint: MutableLiveData<String> by lazy { MutableLiveData() }
     val pageSource: GalleryPageSource get() = mListPageIn.pageSource
+    val maxPage get() = mListPageIn.maxPage
 
     val galleryList: LiveData<PagingData<Gallery>> by lazy {
         repository.galleryList(mListPageIn)
@@ -49,7 +55,7 @@ class GalleryListViewModel @Inject constructor(@RemoteRepository var repository:
     }
 
     fun galleryListPage(page: Int) {
-        mListPageIn.targetPage = page.coerceAtLeast(1)
+        mListPageIn.targetPage = page
     }
 
     fun galleryListCondition(source: GalleryPageSource) {

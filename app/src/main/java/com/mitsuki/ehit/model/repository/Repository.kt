@@ -13,14 +13,39 @@ import com.mitsuki.ehit.model.page.GeneralPageIn
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
+
     fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>>
 
-    fun galleryDetail(
+    fun detailImage(
         gid: Long,
         token: String,
-        pageIn: GeneralPageIn,
-        detailSource: GalleryDetailWrap
+        pageIn: GeneralPageIn
     ): Flow<PagingData<ImageSource>>
+
+
+    suspend fun login(account: String, password: String): RequestResult<String>
+
+    suspend fun galleryListSource(
+        pageIn: GalleryListPageIn,
+        page: Int
+    ): RequestResult<PageInfo<Gallery>>
+
+    suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail>
+
+    suspend fun galleryImageSrouce(
+        gid: Long,
+        token: String,
+        page: Int
+    ): RequestResult<PageInfo<ImageSource>>
+
+    suspend fun rating(
+        gid: Long,
+        token: String,
+        apiUid: Long,
+        apiKey: String,
+        rating: Float
+    ): RequestResult<RateBack>
+
 
     fun favoriteList(
         pageIn: FavouritePageIn,
@@ -30,12 +55,8 @@ interface Repository {
     suspend fun galleryPreview(gid: Long, token: String, pToken: String, index: Int)
             : RequestResult<GalleryPreview>
 
-    suspend fun galleryDetailWithPToken(gid: Long, token: String, index: Int)
+    suspend fun getGalleryPagePToke(gid: Long, token: String, index: Int)
             : RequestResult<String>
-
-    suspend fun login(account: String, password: String): RequestResult<String>
-
-    suspend fun rating(detail: GalleryDetail, rating: Float): RequestResult<RateBack>
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
 
@@ -53,12 +74,12 @@ interface Repository {
         vote: Int
     ): RequestResult<VoteBack>
 
-    suspend fun downloadPage(): RequestResult<String>
+    suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<String>
 
     suspend fun favoritesSource(
         pageIn: FavouritePageIn,
         page: Int
-    ): Response<Pair<ArrayList<Gallery>, Array<Int>>>
+    ): Response<Pair<PageInfo<Gallery>, Array<Int>>>
 
     suspend fun galleryDetailSource(
         mGid: Long,
@@ -66,14 +87,4 @@ interface Repository {
         page: Int
     ): Response<Pair<GalleryDetail, PageInfo<ImageSource>>>
 
-    suspend fun imageSource(
-        mGid: Long,
-        mToken: String,
-        page: Int
-    ): Response<PageInfo<ImageSource>>
-
-    suspend fun galleryListSource(
-        pageIn: GalleryListPageIn,
-        page: Int
-    ): Response<ArrayList<Gallery>>
 }

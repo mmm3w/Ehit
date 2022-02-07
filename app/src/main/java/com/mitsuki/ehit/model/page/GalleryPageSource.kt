@@ -49,8 +49,6 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
 
     abstract fun searchKeyProvider(): SearchKey
 
-    open val hasPaging: Boolean = true
-
     open fun applyKey(source: UrlParams) {}
 
     @Parcelize
@@ -168,10 +166,6 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
         override fun searchKeyProvider(): SearchKey {
             throw IllegalStateException("Popular can not do search")
         }
-
-        @IgnoredOnParcel
-        override val hasPaging: Boolean
-            get() = false
     }
 
     @Parcelize

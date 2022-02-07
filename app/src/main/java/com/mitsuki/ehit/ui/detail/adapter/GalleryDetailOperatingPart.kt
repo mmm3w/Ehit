@@ -16,13 +16,19 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extensions.createItemView
-import com.mitsuki.ehit.model.entity.GalleryDetailWrap
+import com.mitsuki.ehit.model.entity.DetailPart
 
 class GalleryDetailOperatingPart(
-    private val eventEmitter: EventEmitter,
-    var data: GalleryDetailWrap.DetailPart? = null
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val eventEmitter: EventEmitter
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var data: DetailPart? = null
+        set(value) {
+            if (value != field) {
+                field = value
+                notifyItemChanged(0)
+            }
+        }
 
     val divider = object : RecyclerView.ItemDecoration() {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

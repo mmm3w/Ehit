@@ -7,6 +7,7 @@ import java.lang.Exception
 
 class LoginConvert : Convert<String> {
     override fun convertResponse(response: Response): String {
+        //TODO o mark
         val str = response.body?.string() ?: ""
         response.close()
         val m = Matcher.LOGIN_INFO.matcher(str)

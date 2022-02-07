@@ -41,6 +41,11 @@ object Matcher {
     val PAGER_INDEX: Pattern by lazy {
         Pattern.compile("<td class=\"ptds\"><a.*?>(\\d+)</a></td>") //当前页码
     }
+
+    val LIST_TOTAL_COUNT: Pattern by lazy {
+        Pattern.compile("<p class=\"ip\">Showing (.*?) results</p>")
+    }
+
     val PAGER_TOTAL_SIZE: Pattern by lazy {
         Pattern.compile("<tr><td.*?>Length:</td><td.*?>(\\d+) pages</td></tr>") //总数
     }

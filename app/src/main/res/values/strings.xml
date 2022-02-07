@@ -129,6 +129,10 @@
     <string name="text_more_comments">More comments</string>
     <string name="text_quick_search">Quick search</string>
     <string name="text_advanced_search">Advanced search</string>
+    <string name="text_completed">Completed</string>
+    <string name="text_uncompleted">Uncompleted</string>
+    <string name="text_page_front">Page:</string>
+    <string name="text_page_back" />
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>

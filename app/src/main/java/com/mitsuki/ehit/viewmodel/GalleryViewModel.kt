@@ -8,10 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.armory.loadprogress.addFeature
 import com.mitsuki.ehit.crutch.extensions.postNext
-import com.mitsuki.ehit.crutch.network.RequestResult
+
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.coil.CacheKey
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -48,10 +49,10 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
 
             val pToken: String
 
-            with(repository.galleryDetailWithPToken(mId, galleryToken, index)) {
+            with(repository.getGalleryPagePToke(mId, galleryToken, index)) {
                 when (this) {
-                    is RequestResult.SuccessResult -> pToken = data
-                    is RequestResult.FailResult -> {
+                    is RequestResult.Success -> pToken = data
+                    is RequestResult.Fail -> {
                         mState.postNext { it.copy(loading = false, error = throwable.message) }
                         return@launch
                     }
@@ -61,8 +62,8 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
             var error: String? = null
             with(repository.galleryPreview(mId, galleryToken, pToken, index)) {
                 when (this) {
-                    is RequestResult.SuccessResult -> mData.postValue(data.imageUrl.addFeature(tag))
-                    is RequestResult.FailResult -> error = throwable.message
+                    is RequestResult.Success -> mData.postValue(data.imageUrl.addFeature(tag))
+                    is RequestResult.Fail -> error = throwable.message
                 }
             }
             mState.postNext { it.copy(loading = error == null, error = error) }

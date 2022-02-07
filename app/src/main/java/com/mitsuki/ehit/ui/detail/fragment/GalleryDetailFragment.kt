@@ -3,6 +3,7 @@ package com.mitsuki.ehit.ui.detail.fragment
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -25,7 +26,6 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.armory.base.widget.RatingView
@@ -36,7 +36,6 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
-import com.mitsuki.ehit.model.download.startGalleyDownload
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -64,23 +63,18 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         )
     }
 
-    private val mInitialLoadState: GalleryDetailInitialLoadStateAdapter by lazy {
-        GalleryDetailInitialLoadStateAdapter(mPreviewAdapter)
+    private val mInitialLoadState: GalleryDetailInitialAdapter by lazy {
+        GalleryDetailInitialAdapter { mViewModel.loadInfo() }
     }
-    private val mHeader: GalleryDetailHeader by lazy {
-        GalleryDetailHeader(mViewModel.infoWrap)
-    }
-    private val mOperating: GalleryDetailOperatingBlock by lazy {
-        GalleryDetailOperatingBlock(mViewModel.infoWrap)
-    }
-    private val mTag: GalleryDetailTagAdapter by lazy {
-        GalleryDetailTagAdapter(mViewModel.infoWrap)
-    }
-    private val mComment: GalleryDetailCommentAdapter by lazy {
-        GalleryDetailCommentAdapter(mViewModel.infoWrap)
-    }
+
+    private val mHeader: GalleryDetailHeader by lazy { GalleryDetailHeader() }
+    private val mOperating: GalleryDetailOperatingBlock by lazy { GalleryDetailOperatingBlock() }
+    private val mTag: GalleryDetailTagAdapter by lazy { GalleryDetailTagAdapter() }
+    private val mComment: GalleryDetailCommentAdapter by lazy { GalleryDetailCommentAdapter() }
+    private val mCommentHint: GalleryDetailCommentHintAdapter by lazy { GalleryDetailCommentHintAdapter() }
+
     private val mConcatAdapter: ConcatAdapter by lazy {
-        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment)
+        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment, mCommentHint)
     }
 
     private val binding by viewBinding(FragmentGalleryDetailBinding::bind)
@@ -93,46 +87,28 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
         }
 
         mViewModel.initData(arguments)
-        lifecycleScope.launchWhenCreated {
-            mPreviewAdapter.loadStateFlow.collectLatest { loadStates ->
-                mInitialLoadState.loadState = loadStates.refresh
-                mOperating.loadState = loadStates.refresh
-                mTag.loadState = loadStates.refresh
-                mComment.loadState = loadStates.refresh
 
-                binding?.topBar?.topTitleFavorite?.apply {
-                    isVisible = mInitialLoadState.isOver
-                    if (loadStates.refresh is LoadState.NotLoading) {
-                        isSelected = mViewModel.isFavorited
-                    }
-                }
-
-                if (mInitialLoadState.isOver && loadStates.refresh !is LoadState.Loading) {
-                    finishRefreshAnimate()
-                    mHeader.tryRefresh()
-                }
-            }
+        mViewModel.initLoading.observe(this) {
+            mInitialLoadState.isEnable = it.first
+            mInitialLoadState.errorMsg = it.second
         }
-
-        mViewModel.galleryDetail.observe(this) {
-            mPreviewAdapter.submitData(lifecycle, it)
+        mViewModel.headerInfo.observe(this) { mHeader.postData(it) }
+        mViewModel.detailPart.observe(this) { mOperating.data = it }
+        mViewModel.detailInfo.observe(this) {
+            mTag.postData(it.tagGroup.toList())
+            mComment.postData(it.comments.toList().subList(0, it.comments.size.coerceAtMost(3)))
+            mCommentHint.commentState = it.obtainCommentState()
+            finishRefreshAnimate()
         }
-
 
         mHeader.receiver<String>("header").observe(this, this::onHeaderEvent)
         mOperating.receiver<String>("operating").observe(this, this::onOperatingEvent)
         mTag.receiver<Pair<String, String>>("tag").observe(this, this::onTagNavigation)
-        mComment.receiver<String>("comment").observe(this) {
-            startActivity(Intent(requireActivity(), GalleryCommentActivity::class.java).apply {
-                putExtra(DataKey.GALLERY_ID, mViewModel.gid)
-                putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
-                putExtra(DataKey.GALLERY_API_KEY, mViewModel.infoWrap.sourceDetail.apiKey)
-                putExtra(DataKey.GALLERY_API_UID, mViewModel.infoWrap.sourceDetail.apiUID)
-                putExtra(DataKey.GALLERY_NAME, mViewModel.title)
-            })
-        }
-
+        mComment.receiver<String>("comment").observe(this) { goComment() }
+        mCommentHint.receiver<String>("comment").observe(this) { goComment() }
         mPreviewAdapter.receiver<ImageSource>("detail").observe(this, this::onPreviewClick)
+
+        mViewModel.loadInfo()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -163,7 +139,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             setOnClickListener {
                 startRefreshAnimate()
                 mViewModel.clearCache()
-                mPreviewAdapter.refresh()
+                mViewModel.loadInfo()
             }
         }
         binding?.topBar?.topTitleFavorite?.apply {
@@ -204,13 +180,25 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
 
+        mViewModel.favorite.observe(viewLifecycleOwner) {
+            binding?.topBar?.topTitleRefresh?.isVisible = it != null
+            binding?.topBar?.topTitleFavorite?.apply {
+                isVisible = it != null
+                isSelected = it == true
+            }
+        }
+
         mViewModel.receiver<String>("rate")
             .observe(viewLifecycleOwner) { mOperating.notifyItemChanged(0) }
         mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         }
-        mViewModel.receiver<Int>("fav").observe(viewLifecycleOwner) {
-            binding?.topBar?.topTitleFavorite?.isSelected = mViewModel.isFavorited
+        mViewModel.loadSign.observe(viewLifecycleOwner) {
+            if (it) {
+                mViewModel.detailImage.observe(viewLifecycleOwner) { pagingData ->
+                    mPreviewAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
+                }
+            }
         }
     }
 
@@ -226,7 +214,9 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private fun onOperatingEvent(event: String) {
         when (event) {
             GalleryDetailOperatingBlock.READ -> goPreview(0)
-            GalleryDetailOperatingBlock.DOWNLOAD -> requireActivity().startGalleyDownload(mViewModel.tempDownloadMessage)
+            GalleryDetailOperatingBlock.DOWNLOAD -> {
+
+            }
             GalleryDetailOperatingBlock.SCORE -> showRatingDialog()
             GalleryDetailOperatingBlock.SIMILARITYSEARCH -> onNameNavigation()
             GalleryDetailOperatingBlock.MOREINFO -> {
@@ -246,9 +236,19 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private fun goPreview(index: Int) {
         startActivity(Intent(requireActivity(), GalleryActivity::class.java).apply {
             putExtra(DataKey.GALLERY_INDEX, index)
-            putExtra(DataKey.GALLERY_PAGE, mViewModel.infoWrap.partInfo.page)
+            putExtra(DataKey.GALLERY_PAGE, mViewModel.page)
             putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
             putExtra(DataKey.GALLERY_ID, mViewModel.gid)
+        })
+    }
+
+    private fun goComment() {
+        startActivity(Intent(requireActivity(), GalleryCommentActivity::class.java).apply {
+            putExtra(DataKey.GALLERY_ID, mViewModel.gid)
+            putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
+            putExtra(DataKey.GALLERY_API_KEY, mViewModel.apiKey)
+            putExtra(DataKey.GALLERY_API_UID, mViewModel.apiUID)
+            putExtra(DataKey.GALLERY_NAME, mViewModel.title)
         })
     }
 
@@ -302,7 +302,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             title(res = R.string.text_rate)
             customView(viewRes = R.layout.dialog_rating)
             getCustomView().findViewById<RatingView>(R.id.rating_target)?.rating =
-                mViewModel.infoWrap.partInfo.rating
+                mViewModel.rating
             positiveButton(res = R.string.text_confirm) {
                 it.getCustomView()
                     .findViewById<RatingView>(R.id.rating_target)?.rating?.apply {

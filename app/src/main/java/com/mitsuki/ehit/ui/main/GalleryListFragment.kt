@@ -17,6 +17,7 @@ import androidx.fragment.app.createViewModelLazy
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -75,6 +76,20 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             }
         }
 
+    private val mLoadStateListener: (CombinedLoadStates) -> Unit = {
+        mInitAdapter.loadState = it.refresh
+        if (mInitAdapter.isOver) {
+            //TODO 表现有异常，在刷新的时候会额外发送一次noloading
+            binding?.galleryListRefresh?.isRefreshing = it.refresh is LoadState.Loading
+            mViewModel.refreshing = it.refresh is LoadState.Loading
+        }
+
+        if (it.refresh !is LoadState.Loading) {
+            binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
+            mViewModel.refreshEnable = it.prepend.endOfPaginationReached
+        }
+    }
+
 
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,32 +97,27 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         mViewModel.initData(arguments)
 
         mAdapter.receiver<GalleryAdapter.GalleryClick>("click").observe(this, ::onDetailNavigation)
-        lifecycleScope.launchWhenCreated {
-            mAdapter.loadStateFlow.collectLatest {
-                if (mInitAdapter.isOver) {
-                    binding?.galleryListRefresh?.isRefreshing = it.refresh is LoadState.Loading
-                } else {
-                    mInitAdapter.loadState = it.refresh
-                }
-                //TODO https://developer.android.com/jetpack/androidx/releases/paging#3.1.0  3.1.0 api变更
-                binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
-            }
-        }
+        mAdapter.addLoadStateListener(mLoadStateListener)
+        mViewModel.galleryList.observe(this) { mAdapter.submitData(lifecycle, it) }
 
-        mViewModel.galleryList.observe(this, { mAdapter.submitData(lifecycle, it) })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mAdapter.removeLoadStateListener(mLoadStateListener)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        mViewModel.searchBarText.observe(viewLifecycleOwner, {
+        mViewModel.searchBarText.observe(viewLifecycleOwner) {
             binding?.topBar?.topSearchText?.text = it
-        })
+        }
 
-        mViewModel.searchBarHint.observe(viewLifecycleOwner, {
+        mViewModel.searchBarHint.observe(viewLifecycleOwner) {
             binding?.topBar?.topSearchText?.hint = it
-        })
+        }
 
         binding?.galleryList?.apply {
             setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
@@ -115,7 +125,10 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             adapter = mConcatAdapter
 
             binding?.topBar?.topSearchLayout?.apply {
-                addOnScrollListener(ListFloatHeader(this))
+                translationY = mViewModel.searchBarTranslationY
+                addOnScrollListener(ListFloatHeader(this) {
+                    mViewModel.searchBarTranslationY = it
+                })
             }
         }
 
@@ -146,8 +159,13 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         binding?.galleryPageJump?.setOnClickListener { showPageJumpDialog() }
 
         binding?.galleryListRefresh?.apply {
+            isEnabled = mViewModel.refreshEnable
+            isRefreshing = mViewModel.refreshing
             setProgressViewOffset(false, dp2px(8f).toInt(), dp2px(120f).toInt())
-            setOnRefreshListener { mAdapter.refresh() }
+            setOnRefreshListener {
+                mViewModel.galleryListPage(1)
+                mAdapter.refresh()
+            }
         }
     }
 
@@ -164,26 +182,17 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     }
 
     private fun showPageJumpDialog() {
-        MaterialDialog(requireContext()).show {
-            input(inputType = InputType.TYPE_CLASS_NUMBER) { _, text ->
-                mViewModel.galleryListPage(text.toString().toIntOrNull() ?: 1)
-                mAdapter.refresh()
-            }
-
-            title(R.string.title_page_go_to)
-            positiveButton(R.string.text_confirm)
-            lifecycleOwner(this@GalleryListFragment)
-        }
+        PageDialog(mViewModel.maxPage) {
+            Log.d("asdf", "$it")
+            mViewModel.galleryListPage(it)
+            mAdapter.refresh()
+        }.show(childFragmentManager, "page")
     }
 
     private fun showQuickSearchPanel() {
-        QuickSearchPanel().apply {
-            onQuickSearch = {
-                mViewModel.galleryListCondition(it)
-                mAdapter.refresh()
-            }
+        QuickSearchPanel {
+            mViewModel.galleryListCondition(it)
+            mAdapter.refresh()
         }.show(childFragmentManager, "QuickSearchPanel")
     }
-
-
 }

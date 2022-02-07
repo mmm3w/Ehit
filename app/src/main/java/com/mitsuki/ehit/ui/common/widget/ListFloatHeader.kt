@@ -5,7 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.base.extend.marginVertical
 import com.mitsuki.armory.base.extend.paddingVertical
 
-class ListFloatHeader(private val mView: View) : RecyclerView.OnScrollListener() {
+class ListFloatHeader(private val mView: View, private val stateBack: (Float) -> Unit) :
+    RecyclerView.OnScrollListener() {
 
     private var mOffsetLimit: Float = -1f
 
@@ -29,6 +30,7 @@ class ListFloatHeader(private val mView: View) : RecyclerView.OnScrollListener()
                 } else {
                     mView.translationY -= dy
                 }
+                stateBack(mView.translationY)
             }
         }
 
@@ -39,6 +41,7 @@ class ListFloatHeader(private val mView: View) : RecyclerView.OnScrollListener()
                 } else {
                     mView.translationY -= dy
                 }
+                stateBack(mView.translationY)
             }
         }
     }

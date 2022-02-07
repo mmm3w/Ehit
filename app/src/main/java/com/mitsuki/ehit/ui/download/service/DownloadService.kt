@@ -84,6 +84,7 @@ class DownloadService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver)
+        downloadPool.shutdownNow()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

@@ -6,7 +6,7 @@ import com.mitsuki.ehit.model.entity.PageInfo
 import com.mitsuki.ehit.model.entity.ImageSource
 import okhttp3.Response
 
-class GalleryDetailConvert : Convert<Pair<GalleryDetail, PageInfo<ImageSource>>> {
+class GalleryDetailImageConvert : Convert<Pair<GalleryDetail, PageInfo<ImageSource>>> {
     override fun convertResponse(response: Response): Pair<GalleryDetail, PageInfo<ImageSource>> {
         val webStr = response.body?.string()
         response.close()

@@ -1,18 +1,15 @@
 package com.mitsuki.ehit.ui.detail.adapter
 
-import androidx.paging.LoadState
 import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.InitialGate
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.databinding.ItemGalleryDetailOperatingBinding
-import com.mitsuki.ehit.model.entity.GalleryDetailWrap
+import com.mitsuki.ehit.model.entity.DetailPart
 import com.mitsuki.ehit.ui.detail.layoutmanager.DetailOperatingLayoutManager
 
-//详情adapter 02
-class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) :
+class GalleryDetailOperatingBlock :
     SingleItemBindingAdapter<ItemGalleryDetailOperatingBinding>(
         R.layout.item_gallery_detail_operating,
         ItemGalleryDetailOperatingBinding::bind,
@@ -29,22 +26,19 @@ class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) :
 
     override val eventEmitter: Emitter = Emitter()
 
-    private val mOperatingAdapter by lazy { GalleryDetailOperatingPart(this) }
-    private val mGate = InitialGate()
-
-    var loadState: LoadState = LoadState.NotLoading(endOfPaginationReached = false)
-        set(loadState) {
-            if (mGate.ignore()) return
-            if (field != loadState) {
-                when (loadState) {
-                    is LoadState.Loading -> mGate.prep(true)
-                    is LoadState.Error -> mGate.prep(false)
-                    is LoadState.NotLoading -> mGate.trigger()
+    var data: DetailPart? = null
+        set(value) {
+            if (value != field) {
+                when {
+                    isEnable && value == null -> isEnable = false
+                    !isEnable && value != null -> isEnable = true
+                    isEnable && value != null -> notifyItemChanged(0)
                 }
-                if (mGate.ignore()) isEnable = true
-                field = loadState
+                field = value
             }
         }
+
+    private val mOperatingAdapter by lazy { GalleryDetailOperatingPart(this) }
 
     override val onViewHolderCreate: ViewHolder<ItemGalleryDetailOperatingBinding>.() -> Unit = {
         binding.galleryDetailDownload.setOnClickListener { post("operating", DOWNLOAD) }
@@ -57,7 +51,6 @@ class GalleryDetailOperatingBlock(private val mData: GalleryDetailWrap) :
     }
 
     override val onViewHolderBind: ViewHolder<ItemGalleryDetailOperatingBinding>.() -> Unit = {
-        mOperatingAdapter.data = mData.partInfo
-        mOperatingAdapter.notifyItemChanged(0)
+        mOperatingAdapter.data = data
     }
 }

@@ -3,7 +3,6 @@ package com.mitsuki.ehit.model.repository.impl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.mitsuki.armory.httprookie.HttpRookie
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.get
 import com.mitsuki.armory.httprookie.post
@@ -46,20 +45,17 @@ class RepositoryImpl @Inject constructor(
     @ApiClient val client: OkHttpClient
 ) : Repository {
 
-    private val mListPagingConfig =
-        PagingConfig(pageSize = 25)
+    //pageconfig
+    private val mListPagingConfig by lazy { PagingConfig(pageSize = 25) }
+    private val mDetailPagingConfig by lazy { PagingConfig(pageSize = 40) }
+    private val mFavoritePagingConfig by lazy { PagingConfig(pageSize = 50) }
 
-    private val mDetailPagingConfig =
-        PagingConfig(pageSize = 40)
-
-    private val mFavoritePagingConfig =
-        PagingConfig(pageSize = 50)
+    //convert
+    private val mGalleryListConvert by lazy { GalleryListConvert() }
+    private val mGalleryDetailImageConvert by lazy { GalleryDetailImageConvert() }
+    private val mJustImageConvert by lazy { ImageSourceConvert() }
 
     private val mFavoritesSourceConvert by lazy { GalleryListWithFavoriteCountConvert() }
-    private val mGalleryDetailConvert by lazy { GalleryDetailConvert() }
-    private val mJustImageConvert by lazy { ImageSourceConvert() }
-    private val mGalleryListConvert by lazy { GalleryListConvert() }
-
 
     override fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>> {
         return Pager(mListPagingConfig, initialKey = GeneralPageIn.START) {
@@ -67,28 +63,169 @@ class RepositoryImpl @Inject constructor(
         }.flow
     }
 
-    override fun galleryDetail(
+    override fun detailImage(
         gid: Long,
         token: String,
-        pageIn: GeneralPageIn,
-        detailSource: GalleryDetailWrap
+        pageIn: GeneralPageIn
     ): Flow<PagingData<ImageSource>> {
         return Pager(mDetailPagingConfig, initialKey = GeneralPageIn.START) {
-            pagingProvider.galleryDetailSource(this, gid, token, pageIn, detailSource)
+            pagingProvider.detailImageSource(this, gid, token, pageIn)
         }.flow
     }
 
+
+    override suspend fun login(account: String, password: String): RequestResult<String> {
+        return withContext(Dispatchers.IO) {
+            val data = client
+                .post<String>(Url.login) {
+                    convert = LoginConvert()
+                    params(RequestKey.REFERER, ParamValue.LOGIN_REFERER)
+                    params(RequestKey.B, "")
+                    params(RequestKey.BT, "")
+
+                    params(RequestKey.USER_NAME, account)
+                    params(RequestKey.PASS_WORD, password)
+                    params(RequestKey.COOKIE_DATE, "1")
+                    //params(RequestKey.PRIVACY to "1")
+
+                    header(RequestKey.HEADER_ORIGIN, ParamValue.LOGIN_HEADER_ORIGIN)
+                    header(RequestKey.HEADER_REFERER, ParamValue.LOGIN_HEADER_REFERER)
+                }
+                .execute()
+
+            when (data) {
+                is Response.Success<String> -> RequestResult.Success(data.requireBody())
+                is Response.Fail<*> -> RequestResult.Fail(data.throwable)
+            }
+        }
+    }
+
+    override suspend fun galleryListSource(
+        pageIn: GalleryListPageIn,
+        page: Int
+    ): RequestResult<PageInfo<Gallery>> {
+        return withContext(Dispatchers.IO) {
+            val data = client
+                .get<PageInfo<Gallery>>(pageIn.targetUrl) {
+                    convert = mGalleryListConvert
+                    pageIn.attachPage(this, page)
+                    pageIn.attachSearchKey(this)
+                }
+                .execute()
+
+            when (data) {
+                is Response.Success<PageInfo<Gallery>> -> RequestResult.Success(data.requireBody())
+                is Response.Fail<*> -> RequestResult.Fail(data.throwable)
+            }
+        }
+    }
+
+    override suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail> {
+        return withContext(Dispatchers.IO) {
+            //首先从数据库缓存中读取相关数据
+            val cacheData = galleryDao.queryGalleryDetail(gid, token)
+            if (cacheData != null) {
+                RequestResult.Success(cacheData)
+            } else {
+                val data = client
+                    .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
+                        Url.galleryDetail(gid, token)
+                    ) {
+                        convert = mGalleryDetailImageConvert
+                    }
+                    .execute()
+                when (data) {
+                    is Response.Success<Pair<GalleryDetail, PageInfo<ImageSource>>> -> {
+                        val result = data.requireBody()
+                        galleryDao.insertGalleryDetail(result.first)
+                        galleryDao
+                            .insertGalleryImageSource(gid, token, result.second)
+                        VolatileCache.galleryPageSize = result.second.data.size
+                        RequestResult.Success(result.first)
+                    }
+                    is Response.Fail<*> -> RequestResult.Fail(data.throwable)
+                }
+            }
+        }
+    }
+
+    override suspend fun galleryImageSrouce(
+        gid: Long,
+        token: String,
+        page: Int
+    ): RequestResult<PageInfo<ImageSource>> {
+        return withContext(Dispatchers.IO) {
+            val images = galleryDao.queryGalleryImageSource(gid, token, page)
+            if (images.isEmpty) {
+                val remoteData: Response<PageInfo<ImageSource>> =
+                    client
+                        .get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
+                            convert = mJustImageConvert
+                            urlParams(RequestKey.PAGE_DETAIL, page.toString())
+                        }
+                        .execute()
+                when (remoteData) {
+                    is Response.Success<PageInfo<ImageSource>> -> {
+                        remoteData.requireBody().run {
+                            VolatileCache.galleryPageSize = data.size
+                            galleryDao.insertGalleryImageSource(gid, token, this)
+                            RequestResult.Success(this)
+                        }
+                    }
+                    is Response.Fail<*> -> RequestResult.Fail(remoteData.throwable)
+                }
+            } else {
+                VolatileCache.galleryPageSize = images.data.size
+                RequestResult.Success(images)
+            }
+        }
+    }
+
+    override suspend fun rating(
+        gid: Long,
+        token: String,
+        apiUid: Long,
+        apiKey: String, rating: Float
+    ): RequestResult<RateBack> {
+        return withContext(Dispatchers.IO) {
+            val data = client.post<RateBack>(Url.api) {
+                convert = RateBackConvert()
+                json(
+                    RequestRateInfo(
+                        apiUid = apiUid,
+                        apiKey = apiKey,
+                        galleryID = gid.toString(),
+                        token = token,
+                        rating = ceil(rating * 2).toInt()
+                    ).toJson()
+                )
+                header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
+                header(
+                    RequestKey.HEADER_REFERER, Url.galleryDetail(gid, token)
+                )
+            }
+                .execute()
+            try {
+                when (data) {
+                    is Response.Success<RateBack> -> RequestResult.Success(data.requireBody())
+                    is Response.Fail<*> -> throw data.throwable
+                }
+            } catch (inner: Throwable) {
+
+                RequestResult.Fail(inner)
+            }
+        }
+    }
+
+
     override fun favoriteList(
         pageIn: FavouritePageIn,
-
-
         dataWrap: FavouriteCountWrap
     ): Flow<PagingData<Gallery>> {
         return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
             pagingProvider.favoritesSource(this, pageIn, dataWrap)
         }.flow
     }
-
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun galleryPreview(
@@ -100,17 +237,16 @@ class RepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             val data = galleryDao.queryGalleryPreview(gid, token, index)
             if (data != null) {
-                RequestResult.SuccessResult(GalleryPreview(data))
+                RequestResult.Success(GalleryPreview(data))
             } else {
                 val remoteData: Response<GalleryPreview> =
                     client.get<GalleryPreview>(Url.galleryPreviewDetail(gid, pToken, index)) {
                         convert = GalleryPreviewConvert()
-                    }
-                        .execute()
+                    }.execute()
 
                 try {
                     when (remoteData) {
-                        is Response.Success<GalleryPreview> -> RequestResult.SuccessResult(
+                        is Response.Success<GalleryPreview> -> RequestResult.Success(
                             remoteData.requireBody()
                                 .apply {
                                     galleryDao.insertGalleryPreview(
@@ -122,14 +258,13 @@ class RepositoryImpl @Inject constructor(
                     }
                 } catch (inner: Throwable) {
 
-                    RequestResult.FailResult(inner)
+                    RequestResult.Fail(inner)
                 }
             }
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun galleryDetailWithPToken(
+    override suspend fun getGalleryPagePToke(
         gid: Long,
         token: String,
         index: Int
@@ -163,81 +298,18 @@ class RepositoryImpl @Inject constructor(
                                     ?.pToken
 
                             if (pToken.isNullOrEmpty()) throw IllegalStateException("not found pToken")
-                            RequestResult.SuccessResult(pToken)
+                            RequestResult.Success(pToken)
                         }
                         is Response.Fail<*> -> throw remoteData.throwable
                     }
                 } catch (inner: Throwable) {
 
-                    RequestResult.FailResult(inner)
+                    RequestResult.Fail(inner)
                 }
-            } else RequestResult.SuccessResult(cache.pToken)
+            } else RequestResult.Success(cache.pToken)
         }
     }
 
-    override suspend fun login(account: String, password: String): RequestResult<String> {
-        return withContext(Dispatchers.IO) {
-            val loginData = client.post<String>(Url.login) {
-                convert = LoginConvert()
-                params(RequestKey.REFERER, ParamValue.LOGIN_REFERER)
-                params(RequestKey.B, "")
-                params(RequestKey.BT, "")
-
-                params(RequestKey.USER_NAME, account)
-                params(RequestKey.PASS_WORD, password)
-                params(RequestKey.COOKIE_DATE, "1")
-                //params(RequestKey.PRIVACY to "1")
-
-                header(RequestKey.HEADER_ORIGIN, ParamValue.LOGIN_HEADER_ORIGIN)
-                header(RequestKey.HEADER_REFERER, ParamValue.LOGIN_HEADER_REFERER)
-            }
-                .execute()
-            try {
-                when (loginData) {
-                    is Response.Success<String> -> RequestResult.SuccessResult(loginData.requireBody())
-                    is Response.Fail<*> -> throw loginData.throwable
-                }
-            } catch (inner: Throwable) {
-
-                RequestResult.FailResult(inner)
-            }
-        }
-    }
-
-
-    override suspend fun rating(detail: GalleryDetail, rating: Float): RequestResult<RateBack> {
-        return withContext(Dispatchers.IO) {
-            val data = client.post<RateBack>(Url.api) {
-                convert = RateBackConvert()
-                json(
-                    RequestRateInfo(
-                        apiUid = detail.apiUID,
-                        apiKey = detail.apiKey,
-                        galleryID = detail.gid.toString(),
-                        token = detail.token,
-                        rating = ceil(rating * 2).toInt()
-                    ).toJson()
-                )
-                header(RequestKey.HEADER_ORIGIN, Url.currentDomain)
-                header(
-                    RequestKey.HEADER_REFERER, Url.galleryDetail(
-                        detail.gid,
-                        detail.token
-                    )
-                )
-            }
-                .execute()
-            try {
-                when (data) {
-                    is Response.Success<RateBack> -> RequestResult.SuccessResult(data.requireBody())
-                    is Response.Fail<*> -> throw data.throwable
-                }
-            } catch (inner: Throwable) {
-
-                RequestResult.FailResult(inner)
-            }
-        }
-    }
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
         return withContext(Dispatchers.IO) {
@@ -262,12 +334,12 @@ class RepositoryImpl @Inject constructor(
 
             try {
                 when (data) {
-                    is Response.Success<String> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Success<String> -> RequestResult.Success(data.requireBody())
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
 
-                RequestResult.FailResult(inner)
+                RequestResult.Fail(inner)
             }
         }
     }
@@ -282,11 +354,11 @@ class RepositoryImpl @Inject constructor(
                 .execute()
             try {
                 when (data) {
-                    is Response.Success<List<Comment>> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Success<List<Comment>> -> RequestResult.Success(data.requireBody())
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
-                RequestResult.FailResult(inner)
+                RequestResult.Fail(inner)
             }
         }
     }
@@ -308,11 +380,11 @@ class RepositoryImpl @Inject constructor(
 
         try {
             when (data) {
-                is Response.Success<Int> -> RequestResult.SuccessResult(0)
+                is Response.Success<Int> -> RequestResult.Success(0)
                 is Response.Fail<*> -> throw  data.throwable
             }
         } catch (inner: Throwable) {
-            RequestResult.FailResult(inner)
+            RequestResult.Fail(inner)
         }
     }
 
@@ -344,24 +416,27 @@ class RepositoryImpl @Inject constructor(
                 .execute()
             try {
                 when (data) {
-                    is Response.Success<VoteBack> -> RequestResult.SuccessResult(data.requireBody())
+                    is Response.Success<VoteBack> -> RequestResult.Success(data.requireBody())
                     is Response.Fail<*> -> throw data.throwable
                 }
             } catch (inner: Throwable) {
-                RequestResult.FailResult(inner)
+                RequestResult.Fail(inner)
             }
         }
 
-    override suspend fun downloadPage(): RequestResult<String> {
-        return RequestResult.FailResult(IllegalAccessException())
+    override suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<String> {
+        //先获取ptoken
+
+
+        return RequestResult.Fail(IllegalAccessException())
     }
 
     override suspend fun favoritesSource(
         pageIn: FavouritePageIn,
         page: Int
-    ): Response<Pair<ArrayList<Gallery>, Array<Int>>> {
+    ): Response<Pair<PageInfo<Gallery>, Array<Int>>> {
         return client
-            .get<Pair<ArrayList<Gallery>, Array<Int>>>(Url.favoriteList) {
+            .get<Pair<PageInfo<Gallery>, Array<Int>>>(Url.favoriteList) {
                 convert = mFavoritesSourceConvert
                 urlParams(RequestKey.PAGE, page.toString())
                 pageIn.setGroup(this)
@@ -376,34 +451,8 @@ class RepositoryImpl @Inject constructor(
     ): Response<Pair<GalleryDetail, PageInfo<ImageSource>>> {
         return client
             .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(Url.galleryDetail(mGid, mToken)) {
-                convert = mGalleryDetailConvert
+                convert = mGalleryDetailImageConvert
                 urlParams(RequestKey.PAGE_DETAIL, page.toString())
-            }
-            .execute()
-    }
-
-    override suspend fun imageSource(
-        mGid: Long,
-        mToken: String,
-        page: Int
-    ): Response<PageInfo<ImageSource>> {
-        return client
-            .get<PageInfo<ImageSource>>(Url.galleryDetail(mGid, mToken)) {
-                convert = mJustImageConvert
-                urlParams(RequestKey.PAGE_DETAIL, page.toString())
-            }
-            .execute()
-    }
-
-    override suspend fun galleryListSource(
-        pageIn: GalleryListPageIn,
-        page: Int
-    ): Response<ArrayList<Gallery>> {
-        return client
-            .get<ArrayList<Gallery>>(pageIn.targetUrl) {
-                convert = mGalleryListConvert
-                pageIn.addPage(this, page)
-                pageIn.addSearchKey(this)
             }
             .execute()
     }

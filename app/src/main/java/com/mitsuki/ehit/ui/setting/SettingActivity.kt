@@ -34,7 +34,7 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
     ): Boolean {
         supportFragmentManager.commit {
             val fragment =
-                supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+                supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment ?: "")
             fragment.arguments = pref.extras
             replace(R.id.settings_container, fragment)
             setCustomAnimations(

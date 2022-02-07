@@ -3,13 +3,14 @@ package com.mitsuki.ehit.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.network.CookieManager
-import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -34,8 +35,8 @@ class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repos
 
         viewModelScope.launch {
             when (val result = repository.login(account, password)) {
-                is RequestResult.SuccessResult -> post("next", 0)
-                is RequestResult.FailResult -> post("toast", result.throwable.message)
+                is RequestResult.Success<String> -> post("next", 0)
+                is RequestResult.Fail<*> -> post("toast", result.throwable.message)
             }
         }
     }

@@ -11,7 +11,7 @@
 
     <application
         android:name="com.mitsuki.ehit.base.EhApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
         android:largeHeap="true"

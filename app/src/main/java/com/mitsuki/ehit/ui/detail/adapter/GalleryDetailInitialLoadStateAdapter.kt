@@ -11,11 +11,11 @@ import com.mitsuki.ehit.databinding.LoadStateFitBinding
 import com.mitsuki.ehit.ui.common.adapter.InitialLoadStateAdapter
 import com.mitsuki.ehit.ui.common.adapter.InitialViewHolder
 
-class GalleryDetailInitialLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
+class GalleryDetailInitialLoadStateAdapter(private val retryAction: ()->Unit) :
     InitialLoadStateAdapter<LoadStateFitBinding>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(parent) { adapter.retry() }
+        ViewHolder(parent) { retryAction() }
 
     class ViewHolder(parent: ViewGroup, private val retryCallback: () -> Unit) :
         InitialViewHolder<LoadStateFitBinding>(

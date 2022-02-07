@@ -7,46 +7,34 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#00ff00"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/download_control_waiting"
+            android:id="@+id/download_control_uncompleted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#ff0000"
             android:lines="1"
-            android:padding="@dimen/dp_16"
-            android:text="未完成" />
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_4"
+            android:text="@string/text_uncompleted" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center"
+            android:background="#ebebeb" />
 
         <TextView
             android:id="@+id/download_control_completed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#0000ff"
             android:lines="1"
-            android:padding="@dimen/dp_16"
-            android:text="已完成" />
-
-        <TextView
-            android:id="@+id/download_control_completed_S"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00ffff"
-            android:lines="1"
-            android:padding="@dimen/dp_16"
-            android:text="测试" />
-        <TextView
-            android:id="@+id/download_control_completed_Sd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#ff0fff"
-            android:lines="1"
-            android:padding="@dimen/dp_16"
-            android:text="测试2" />
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_4"
+            android:text="@string/text_completed" />
     </LinearLayout>
 
     <TextView

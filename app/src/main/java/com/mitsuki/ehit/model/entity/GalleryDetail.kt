@@ -226,24 +226,20 @@ data class GalleryDetail(
     }
 
 
-    fun obtainOperating(): GalleryDetailWrap.DetailPart {
-        return GalleryDetailWrap.DetailPart(info.rating, info.ratingCount, pages)
+    fun obtainOperating(): DetailPart {
+        return DetailPart(info.rating, info.ratingCount, pages)
     }
 
-    fun obtainComments(): Array<Comment> {
-        return Array(GalleryDetailWrap.MAX_COMMENT.coerceAtMost(comments.size)) { index -> comments[index] }
-    }
-
-    fun obtainCommentState(): GalleryDetailWrap.CommentState {
+    fun obtainCommentState(): CommentState {
         return when (comments.size) {
-            0 -> GalleryDetailWrap.CommentState.NoComments
-            in 1..GalleryDetailWrap.MAX_COMMENT -> GalleryDetailWrap.CommentState.AllLoaded
-            else -> GalleryDetailWrap.CommentState.MoreComments
+            0 -> CommentState.NoComments
+            in 1..3 -> CommentState.AllLoaded
+            else -> CommentState.MoreComments
         }
     }
 
-    fun obtainHeaderInfo(): GalleryDetailWrap.HeaderInfo {
-        return GalleryDetailWrap.HeaderInfo(
+    fun obtainHeaderInfo(): HeaderInfo {
+        return HeaderInfo(
             detailThumb,
             title,
             uploader,

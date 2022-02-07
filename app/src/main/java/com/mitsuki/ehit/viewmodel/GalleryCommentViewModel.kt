@@ -11,9 +11,10 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.network.RequestResult
+
 import com.mitsuki.ehit.model.entity.Comment
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -44,22 +45,21 @@ class GalleryCommentViewModel @Inject constructor(@RemoteRepository var reposito
         if (mGalleryID == -1L) throw  IllegalStateException()
         mGalleryToken =
             intent.getStringExtra(DataKey.GALLERY_TOKEN) ?: throw IllegalStateException()
-        mApiUID = intent.getLongExtra(DataKey.GALLERY_API_UID, -1) ?: throw IllegalStateException()
+        mApiUID = intent.getLongExtra(DataKey.GALLERY_API_UID, -1)
         if (mApiUID == -1L) throw  IllegalStateException()
         mApiKey = intent.getStringExtra(DataKey.GALLERY_API_KEY) ?: throw IllegalStateException()
     }
-
 
     fun loadComment(isShowAll: Boolean) {
         viewModelScope.launch {
             _loadState.value = LoadState.Loading
             when (val result =
                 repository.galleryComment(mGalleryID, mGalleryToken, isShowAll)) {
-                is RequestResult.SuccessResult -> {
+                is RequestResult.Success -> {
                     _loadState.value = LoadState.NotLoading(false)
                     _commentData.value = result.data
                 }
-                is RequestResult.FailResult -> {
+                is RequestResult.Fail -> {
                     _loadState.value = LoadState.Error(result.throwable)
                     post("toast", result.throwable.message)
                 }
@@ -76,10 +76,10 @@ class GalleryCommentViewModel @Inject constructor(@RemoteRepository var reposito
 
             when (val result =
                 repository.sendGalleryComment(mGalleryID, mGalleryToken, text)) {
-                is RequestResult.SuccessResult -> {
+                is RequestResult.Success -> {
                     Log.d("asdf", "成功")
                 }
-                is RequestResult.FailResult -> {
+                is RequestResult.Fail -> {
                     post("toast", result.throwable.message)
                 }
             }
@@ -97,14 +97,14 @@ class GalleryCommentViewModel @Inject constructor(@RemoteRepository var reposito
                     comment.id,
                     vote
                 )) {
-                is RequestResult.SuccessResult -> {
+                is RequestResult.Success -> {
                     //在这里刷新那条数据
                     post("vote", NotifyData.Change(position, comment.apply {
                         voteState = result.data.commentVote
                         score = result.data.toString()
                     }))
                 }
-                is RequestResult.FailResult -> {
+                is RequestResult.Fail -> {
                     post("toast", result.throwable.message)
                 }
             }

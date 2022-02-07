@@ -11,6 +11,7 @@ import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.ui.download.service.DownloadService
 import com.mitsuki.ehit.ui.download.service.DownloadService.Companion.FINISH_NODE
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 
@@ -33,12 +34,14 @@ class DownloadComparatorTask(repository: Repository, task: DownloadTask) :
         private val repository: Repository
     ) : Runnable {
         override fun run() {
-            Thread.sleep(3000)
-            //下载完成后 发送对应广播
-            AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
-                putExtra(FINISH_NODE, DownloadNode(task.gid, task.token, task.page))
-                action = DownloadService.BROADCAST_ACTION
-            })
+            runBlocking {
+//                repository.downloadPage()
+                //下载完成后 发送对应广播
+                AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
+                    putExtra(FINISH_NODE, DownloadNode(task.gid, task.token, task.page))
+                    action = DownloadService.BROADCAST_ACTION
+                })
+            }
         }
     }
 }

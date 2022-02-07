@@ -58,19 +58,7 @@ class DownloadActivity : BaseActivity() {
 
 
     private fun controlAnimate() {
-        binding.downloadControl.downloadControlWaiting.setOnClickListener {
-            controlAnimate.trigger(it)
-        }
 
-        binding.downloadControl.downloadControlCompleted.setOnClickListener {
-            controlAnimate.trigger(it)
-        }
-        binding.downloadControl.downloadControlCompletedS.setOnClickListener {
-            controlAnimate.trigger(it)
-        }
-        binding.downloadControl.downloadControlCompletedSd.setOnClickListener {
-            controlAnimate.trigger(it)
-        }
     }
 
 }

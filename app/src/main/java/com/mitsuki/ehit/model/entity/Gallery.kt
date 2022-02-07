@@ -43,23 +43,60 @@ data class Gallery(
 
     companion object {
         @Suppress("MemberVisibilityCanBePrivate")
-        fun parseList(content: String?): ArrayList<Gallery> {
-            return content?.run {
-                ArrayList<Gallery>().apply {
-                    val doc = Jsoup.parse(content)
-                    doc.getElementsByClass("itg").first()?.getElementsByTag("tr")?.let {
-                        for (element in it) {
-                            if (element.getElementsByTag("th").size > 0)
-                                continue
-                            try {
-                                add(parse(element))
-                            } catch (inner: Throwable) {
-                                inner.printStackTrace()
-                            }
+        fun parseList(content: String?): PageInfo<Gallery> {
+            if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
+
+            val doc = Jsoup.parse(content)
+
+            val listData = ArrayList<Gallery>().apply {
+                doc.getElementsByClass("itg").first()?.getElementsByTag("tr")?.let {
+                    for (element in it) {
+                        if (element.getElementsByTag("th").size > 0)
+                            continue
+                        try {
+                            add(parse(element))
+                        } catch (inner: Throwable) {
+                            inner.printStackTrace()
                         }
                     }
                 }
-            } ?: ArrayList()
+            }
+
+            val ptt: Element = doc.byClassFirst("ptt", "page node".prefix())
+            val es = ptt.child(0).child(0).children()
+            val totalPage = es[es.size - 2].text().trim().toInt()
+
+            val totalCount = Matcher.LIST_TOTAL_COUNT.matcher(content).run {
+                if (find()) {
+                    group(1)
+                        ?.split(",")
+                        ?.joinToString(separator = "")
+                        ?.toIntOrNull()
+                        ?: throw ParseThrowable("total count parse error")
+                } else throw ParseThrowable("lost total count")
+            }
+
+            var prevKey: Int? = null
+            var nextKey: Int? = null
+            var index: Int = -1
+
+            Matcher.PAGER_INFO.matcher(content).also {
+                if (it.find()) {
+                    prevKey = (it.group(1) ?: "").toIntOrNull()
+                    nextKey = (it.group(6) ?: "").toIntOrNull()
+                    index = (it.group(3) ?: throw  ParseThrowable("未找到当前页码")).toIntOrNull()
+                        ?: throw ParseThrowable("当前页码格式转换失败")
+                } else throw ParseThrowable("未找到页码信息")
+            }
+
+            return PageInfo(
+                listData,
+                index.dec(),
+                totalCount,
+                totalPage,
+                prevKey?.dec(),
+                nextKey?.dec()
+            )
         }
 
         @Suppress("MemberVisibilityCanBePrivate")

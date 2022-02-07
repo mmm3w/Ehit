@@ -20,10 +20,10 @@ class FavouriteSelectPanel : BottomDialogFragment(R.layout.dialog_favourite_sele
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mAdapter.receiver<Int>("check").observe(this, {
+        mAdapter.receiver<Int>("check").observe(this) {
             onFavouriteSelect?.invoke(it - 1)
             dismiss()
-        })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

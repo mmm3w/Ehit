@@ -2,10 +2,7 @@ package com.mitsuki.ehit.model.diff
 
 import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
-import com.mitsuki.ehit.model.entity.Comment
-import com.mitsuki.ehit.model.entity.DownloadListInfo
-import com.mitsuki.ehit.model.entity.Gallery
-import com.mitsuki.ehit.model.entity.ImageSource
+import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
@@ -16,7 +13,8 @@ object Diff {
         override fun areItemsTheSame(
             oldConcert: Gallery,
             newConcert: Gallery
-        ): Boolean = true
+        ): Boolean = oldConcert.gid == newConcert.gid &&
+                oldConcert.token == newConcert.token
 
         override fun areContentsTheSame(
             oldConcert: Gallery,
@@ -128,6 +126,20 @@ object Diff {
                     null
                 }
             }
+        }
+    }
+
+    val GALLERY_DETAIL_TAG by lazy {
+        object : DiffUtil.ItemCallback<TagGroup>() {
+            override fun areItemsTheSame(
+                oldItem: TagGroup,
+                newItem: TagGroup
+            ): Boolean = oldItem.groupName == newItem.groupName
+
+            override fun areContentsTheSame(
+                oldItem: TagGroup,
+                newItem: TagGroup
+            ): Boolean = oldItem == newItem
         }
     }
 }

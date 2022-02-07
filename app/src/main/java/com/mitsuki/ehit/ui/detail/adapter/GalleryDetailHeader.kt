@@ -8,9 +8,9 @@ import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.databinding.ItemGalleryDetailHeaderBinding
-import com.mitsuki.ehit.model.entity.GalleryDetailWrap
+import com.mitsuki.ehit.model.entity.HeaderInfo
 
-class GalleryDetailHeader(private val mData: GalleryDetailWrap) :
+class GalleryDetailHeader(private var mData: HeaderInfo = HeaderInfo.DEFAULT) :
     SingleItemBindingAdapter<ItemGalleryDetailHeaderBinding>(
         R.layout.item_gallery_detail_header, ItemGalleryDetailHeaderBinding::bind
     ), EventEmitter {
@@ -28,7 +28,7 @@ class GalleryDetailHeader(private val mData: GalleryDetailWrap) :
     }
 
     override val onViewHolderBind: ViewHolder<ItemGalleryDetailHeaderBinding>.() -> Unit = {
-        mData.headerInfo.also { info ->
+        mData.also { info ->
             with(binding) {
                 galleryDetailThumb.apply {
                     if (info.thumb.isNotEmpty())
@@ -52,10 +52,10 @@ class GalleryDetailHeader(private val mData: GalleryDetailWrap) :
         }
     }
 
-    fun tryRefresh() {
-        if (mData.isHeaderUpdate) {
+    fun postData(data: HeaderInfo) {
+        if (mData != data) {
+            mData = data
             notifyItemChanged(0)
-            mData.isHeaderUpdate = false
         }
     }
 }

@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
+class QuickSearchPanel(val onQuickSearch: ((GalleryPageSource) -> Unit)) :
+    BottomDialogFragment(R.layout.dialog_quick_search) {
 
     private val mViewModel: QuickSearchViewModel by viewModels({ requireActivity() })
 
@@ -32,8 +33,6 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
     private val binding by viewBinding(DialogQuickSearchBinding::bind)
 
     private val mAdapter by lazy { QuickSearchAdapter() }
-
-    var onQuickSearch: ((GalleryPageSource) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +49,8 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
                         GalleryPageSource.Type.TAG -> GalleryPageSource.Tag(it.data.key)
                         GalleryPageSource.Type.SUBSCRIPTION -> GalleryPageSource.Subscription(it.data.key)
                         GalleryPageSource.Type.WHATS_HOT -> GalleryPageSource.POPULAR
-                        else -> null
                     }
-                    data?.apply { onQuickSearch?.invoke(this) }
+                    data.apply { onQuickSearch.invoke(this) }
                     dismiss()
                 }
                 is QuickSearchAdapter.Event.Delete -> {
@@ -71,8 +69,7 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
         binding?.quickSearchAdd?.setOnClickListener {
             mParentViewModel.pageSource.apply {
                 lifecycleScope.launch {
-                    if (mViewModel.isQuickSave(cacheKey, type)) {
-                    } else {
+                    if (!mViewModel.isQuickSave(cacheKey, type)) {
                         mViewModel.saveSearch(cacheKey, cacheKey, type)
                         mAdapter.addItem(cacheKey, cacheKey, type)
                     }
@@ -84,12 +81,12 @@ class QuickSearchPanel : BottomDialogFragment(R.layout.dialog_quick_search) {
         val itemTouchHelper = ItemTouchHelper(touchCallBack)
 
         //涉及数据交换，无法直接使用封装好的队列更新数据类
-        touchCallBack.swapEvent.observeWithCoro(viewLifecycleOwner, {
+        touchCallBack.swapEvent.observeWithCoro(viewLifecycleOwner) {
             mAdapter.onItemMove(it.first, it.second)
-        })
-        touchCallBack.dataSwap.observeWithCoro(viewLifecycleOwner, {
+        }
+        touchCallBack.dataSwap.observeWithCoro(viewLifecycleOwner) {
             mViewModel.swapQuickItem(mAdapter.newSortData)
-        })
+        }
         //内部View的事件带出来
         mAdapter.sortDragTrigger.observe(viewLifecycleOwner) {
             itemTouchHelper.startDrag(it)

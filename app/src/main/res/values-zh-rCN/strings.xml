@@ -104,6 +104,10 @@
     <string name="text_more_comments">更多评论</string>
     <string name="text_quick_search">快速搜索</string>
     <string name="text_advanced_search">高级搜索</string>
+    <string name="text_completed">已完成</string>
+    <string name="text_uncompleted">未完成</string>
+    <string name="text_page_front">第</string>
+    <string name="text_page_back">页</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>

@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.model.pagingsource
 
 import com.mitsuki.ehit.model.entity.FavouriteCountWrap
-import com.mitsuki.ehit.model.entity.GalleryDetailWrap
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
@@ -15,13 +14,12 @@ interface PagingSource {
         dataWrap: FavouriteCountWrap
     ): FavoritesSource
 
-    fun galleryDetailSource(
+    fun detailImageSource(
         repository: Repository,
         gid: Long,
         token: String,
-        pageIn: GeneralPageIn,
-        detailSource: GalleryDetailWrap
-    ): GalleryDetailSource
+        pageIn: GeneralPageIn
+    ): GalleryDetailImageSource
 
     fun galleryListSource(repository: Repository, pageIn: GalleryListPageIn): GalleryListSource
 

@@ -87,7 +87,7 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
             setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mConcatAdapter
-            binding?.topBar?.topSearchLayout?.apply { addOnScrollListener(ListFloatHeader(this)) }
+            binding?.topBar?.topSearchLayout?.apply { addOnScrollListener(ListFloatHeader(this) {}) }
         }
 
         binding?.topBar?.topSearchLayout?.apply {
@@ -101,9 +101,9 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
             }
         }
 
-        mViewModel.searchBarHint.observe(viewLifecycleOwner, {
+        mViewModel.searchBarHint.observe(viewLifecycleOwner) {
             binding?.topBar?.topSearchText?.hint = it
-        })
+        }
 
         binding?.favouriteCate?.setOnClickListener { showFavouriteSelectPanel() }
 

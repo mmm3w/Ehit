@@ -7,6 +7,7 @@ import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import com.mitsuki.armory.loadprogress.ProgressProvider
 import com.mitsuki.ehit.BuildConfig
+import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.CookieJarImpl
 import com.mitsuki.ehit.crutch.network.FakeHeader
@@ -35,12 +36,10 @@ object CoilInit {
             .okHttpClient(buildCoilOkHttpClient(context, cookieJar))
             .availableMemoryPercentage(0.9)
             .crossfade(true)
+            .error(R.drawable.ic_baseline_broken_image_24)
             .componentRegistry {
                 add(RetryInterceptor(RETRY_TIMES))
-                if (BuildConfig.SAVE_MODE) {
-                    //DEV下默认进行NSFW内容遮蔽
-                    add(LoadBreakInterceptor())
-                }
+                if (BuildConfig.SAVE_MODE) add(LoadBreakInterceptor())
             }
             .build())
     }
