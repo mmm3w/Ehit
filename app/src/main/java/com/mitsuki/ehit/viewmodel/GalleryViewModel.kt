@@ -46,21 +46,8 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
     fun obtainData() {
         viewModelScope.launch {
             mState.postNext { it.copy(loading = true) }
-
-            val pToken: String
-
-            with(repository.getGalleryPagePToke(mId, galleryToken, index)) {
-                when (this) {
-                    is RequestResult.Success -> pToken = data
-                    is RequestResult.Fail -> {
-                        mState.postNext { it.copy(loading = false, error = throwable.message) }
-                        return@launch
-                    }
-                }
-            }
-
             var error: String? = null
-            with(repository.galleryPreview(mId, galleryToken, pToken, index)) {
+            with(repository.galleryPreview(mId, galleryToken, index)) {
                 when (this) {
                     is RequestResult.Success -> mData.postValue(data.imageUrl.addFeature(tag))
                     is RequestResult.Fail -> error = throwable.message

@@ -1,10 +1,12 @@
 package com.mitsuki.ehit.ui.detail.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import coil.clear
 import coil.load
 import coil.request.ImageRequest
 import coil.request.ImageResult
@@ -38,6 +40,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         mViewModel.initData(arguments)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mImageGesture =
             binding?.galleryImage?.run {
@@ -67,14 +70,17 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onLoadImage(url: String) {
-        binding?.galleryImage?.load(url) {
-            memoryCacheKey(mViewModel.largeCacheTag)
-            size(OriginalSize)
-            transformations(OriginalTransformation())
-            listener(
-                onError = { _: ImageRequest, throwable: Throwable -> onLoadError(throwable) },
-                onSuccess = { _: ImageRequest, _: ImageResult.Metadata -> onLoadSuccess() }
-            )
+        binding?.galleryImage?.apply {
+            clear()
+            load(url) {
+                memoryCacheKey(mViewModel.largeCacheTag)
+                size(OriginalSize)
+                transformations(OriginalTransformation())
+                listener(
+                    onError = { _: ImageRequest, throwable: Throwable -> onLoadError(throwable) },
+                    onSuccess = { _: ImageRequest, _: ImageResult.Metadata -> onLoadSuccess() }
+                )
+            }
         }
     }
 

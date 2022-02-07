@@ -152,10 +152,15 @@ class RepositoryImpl @Inject constructor(
     override suspend fun galleryImageSrouce(
         gid: Long,
         token: String,
-        page: Int
+        page: Int,
+        ignoreCache: Boolean
     ): RequestResult<PageInfo<ImageSource>> {
         return withContext(Dispatchers.IO) {
-            val images = galleryDao.queryGalleryImageSource(gid, token, page)
+            val images = if (ignoreCache)
+                PageInfo.emtpy()
+            else
+                galleryDao.queryGalleryImageSource(gid, token, page)
+
             if (images.isEmpty) {
                 val remoteData: Response<PageInfo<ImageSource>> =
                     client
@@ -217,34 +222,41 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-
-    override fun favoriteList(
-        pageIn: FavouritePageIn,
-        dataWrap: FavouriteCountWrap
-    ): Flow<PagingData<Gallery>> {
-        return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
-            pagingProvider.favoritesSource(this, pageIn, dataWrap)
-        }.flow
-    }
-
-    @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun galleryPreview(
         gid: Long,
         token: String,
-        pToken: String,
         index: Int
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
-            val data = galleryDao.queryGalleryPreview(gid, token, index)
-            if (data != null) {
-                RequestResult.Success(GalleryPreview(data))
-            } else {
-                val remoteData: Response<GalleryPreview> =
-                    client.get<GalleryPreview>(Url.galleryPreviewDetail(gid, pToken, index)) {
-                        convert = GalleryPreviewConvert()
-                    }.execute()
+            try {
+                val cache =
+                    galleryDao.querySingleGalleryImageCache(gid, token, index)
+                val pToken = if (cache == null || cache.pToken.isEmpty()) {
+                    val webIndex =
+                        if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
 
-                try {
+                    val images = galleryImageSrouce(gid, token, webIndex, true)
+                    if (images is RequestResult.Fail<*>) {
+                        throw images.throwable
+                    }
+
+                    galleryDao.querySingleGalleryImageCache(gid, token, index)?.pToken?.apply {
+                        if (isEmpty()) throw IllegalStateException("request pToken error")
+                    }
+                        ?: throw IllegalStateException("request pToken error")
+                } else {
+                    cache.pToken
+                }
+
+                val data = galleryDao.queryGalleryPreview(gid, token, index)
+                if (data != null) {
+                    RequestResult.Success(GalleryPreview(data))
+                } else {
+                    val remoteData: Response<GalleryPreview> =
+                        client.get<GalleryPreview>(Url.galleryPreviewDetail(gid, pToken, index)) {
+                            convert = GalleryPreviewConvert()
+                        }.execute()
+
                     when (remoteData) {
                         is Response.Success<GalleryPreview> -> RequestResult.Success(
                             remoteData.requireBody()
@@ -256,59 +268,69 @@ class RepositoryImpl @Inject constructor(
                         )
                         is Response.Fail<*> -> throw remoteData.throwable
                     }
-                } catch (inner: Throwable) {
-
-                    RequestResult.Fail(inner)
                 }
+
+            } catch (inner: Throwable) {
+                RequestResult.Fail(inner)
             }
         }
     }
 
-    override suspend fun getGalleryPagePToke(
-        gid: Long,
-        token: String,
-        index: Int
-    ): RequestResult<String> {
-        return withContext(Dispatchers.IO) {
-            val cache =
-                galleryDao.querySingleGalleryImageCache(gid, token, index)
-            if (cache == null || cache.pToken.isEmpty()) {
-                val webIndex =
-                    if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
 
-                val remoteData = client.get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
-                    convert = ImageSourceConvert()
-                    urlParams(RequestKey.PAGE_DETAIL, webIndex.toString())
-                }
-                    .execute()
-                try {
-                    when (remoteData) {
-                        is Response.Success<PageInfo<ImageSource>> -> {
-                            remoteData.requireBody().also {
-                                VolatileCache.galleryPageSize = it.data.size
-                                galleryDao.insertGalleryImageSource(gid, token, it)
-                            }
-
-                            val pToken =
-                                galleryDao.querySingleGalleryImageCache(
-                                    gid,
-                                    token,
-                                    index
-                                )
-                                    ?.pToken
-
-                            if (pToken.isNullOrEmpty()) throw IllegalStateException("not found pToken")
-                            RequestResult.Success(pToken)
-                        }
-                        is Response.Fail<*> -> throw remoteData.throwable
-                    }
-                } catch (inner: Throwable) {
-
-                    RequestResult.Fail(inner)
-                }
-            } else RequestResult.Success(cache.pToken)
-        }
+    override fun favoriteList(
+        pageIn: FavouritePageIn,
+        dataWrap: FavouriteCountWrap
+    ): Flow<PagingData<Gallery>> {
+        return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
+            pagingProvider.favoritesSource(this, pageIn, dataWrap)
+        }.flow
     }
+
+//    override suspend fun getGalleryPagePToke(
+//        gid: Long,
+//        token: String,
+//        index: Int
+//    ): RequestResult<String> {
+//        return withContext(Dispatchers.IO) {
+//            val cache =
+//                galleryDao.querySingleGalleryImageCache(gid, token, index)
+//            if (cache == null || cache.pToken.isEmpty()) {
+//                val webIndex =
+//                    if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
+//
+//                val remoteData = client.get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
+//                    convert = ImageSourceConvert()
+//                    urlParams(RequestKey.PAGE_DETAIL, webIndex.toString())
+//                }
+//                    .execute()
+//                try {
+//                    when (remoteData) {
+//                        is Response.Success<PageInfo<ImageSource>> -> {
+//                            remoteData.requireBody().also {
+//                                VolatileCache.galleryPageSize = it.data.size
+//                                galleryDao.insertGalleryImageSource(gid, token, it)
+//                            }
+//
+//                            val pToken =
+//                                galleryDao.querySingleGalleryImageCache(
+//                                    gid,
+//                                    token,
+//                                    index
+//                                )
+//                                    ?.pToken
+//
+//                            if (pToken.isNullOrEmpty()) throw IllegalStateException("not found pToken")
+//                            RequestResult.Success(pToken)
+//                        }
+//                        is Response.Fail<*> -> throw remoteData.throwable
+//                    }
+//                } catch (inner: Throwable) {
+//
+//                    RequestResult.Fail(inner)
+//                }
+//            } else RequestResult.Success(cache.pToken)
+//        }
+//    }
 
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {

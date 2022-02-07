@@ -46,7 +46,6 @@ import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
@@ -227,7 +226,6 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
             }
         }
     }
-
 
     private fun onPreviewClick(item: ImageSource) {
         goPreview(item.index)

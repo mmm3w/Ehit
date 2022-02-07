@@ -35,7 +35,8 @@ interface Repository {
     suspend fun galleryImageSrouce(
         gid: Long,
         token: String,
-        page: Int
+        page: Int,
+        ignoreCache:Boolean = false
     ): RequestResult<PageInfo<ImageSource>>
 
     suspend fun rating(
@@ -46,17 +47,17 @@ interface Repository {
         rating: Float
     ): RequestResult<RateBack>
 
+    suspend fun galleryPreview(gid: Long, token: String, index: Int)
+            : RequestResult<GalleryPreview>
+
 
     fun favoriteList(
         pageIn: FavouritePageIn,
         dataWrap: FavouriteCountWrap
     ): Flow<PagingData<Gallery>>
 
-    suspend fun galleryPreview(gid: Long, token: String, pToken: String, index: Int)
-            : RequestResult<GalleryPreview>
-
-    suspend fun getGalleryPagePToke(gid: Long, token: String, index: Int)
-            : RequestResult<String>
+//    suspend fun getGalleryPagePToke(gid: Long, token: String, index: Int)
+//            : RequestResult<String>
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
 

@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.detail.adapter
 
+import android.annotation.SuppressLint
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -16,6 +17,7 @@ class GalleryFragmentAdapter(
 ) : FragmentStateAdapter(activity) {
 
     var isReverse = isReverse
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             if (value != field){
                 notifyDataSetChanged()
