@@ -30,5 +30,17 @@ data class DownloadNode(
     @ColumnInfo(name = "is_complete") val isComplete: Boolean,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 ) : Parcelable {
-    constructor(gid: Long, token: String, page: Int) : this(gid, token, page, true)
+    override fun equals(other: Any?): Boolean {
+        return other is DownloadNode &&
+                gid == other.gid &&
+                token == other.token &&
+                page == other.page
+    }
+
+    override fun hashCode(): Int {
+        var result = gid.hashCode()
+        result = 31 * result + token.hashCode()
+        result = 31 * result + page
+        return result
+    }
 }

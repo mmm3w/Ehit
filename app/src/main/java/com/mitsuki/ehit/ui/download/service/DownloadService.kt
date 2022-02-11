@@ -6,24 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.armory.base.NotificationHelper
-import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
-import com.mitsuki.ehit.model.download.DownloadCache
-import com.mitsuki.ehit.model.download.submitDownload
+import com.mitsuki.ehit.model.download.DownloadScheduler
 import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import java.lang.Runnable
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.PriorityBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,14 +49,9 @@ class DownloadService : Service() {
     @Inject
     lateinit var helper: NotificationHelper
 
-    private val workQueue: PriorityBlockingQueue<Runnable> by lazy { PriorityBlockingQueue(64) }
-
-    private val downloadSchedule by lazy { DownloadCache() }
+    private val downloadSchedule by lazy { DownloadScheduler() }
 
     private val mReceiver by lazy { MyBroadcastReceiver() }
-
-    private var downloadPool: ExecutorService =
-        ThreadPoolExecutor(3, 3, 0L, TimeUnit.MINUTES, workQueue)
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -79,12 +66,14 @@ class DownloadService : Service() {
             it.setSmallIcon(android.R.drawable.stat_sys_download)
             it.setContentTitle("下载列表")
         }
+
+        downloadSchedule.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver)
-        downloadPool.shutdownNow()
+        downloadSchedule.stop()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -105,9 +94,9 @@ class DownloadService : Service() {
 
 
     private fun stopAll() {
-        workQueue.clear()
-        downloadSchedule.clear()
-        //最后再弹个通知
+        CoroutineScope(Dispatchers.Default).launch {
+            downloadSchedule.cancelAll()
+        }
     }
 
     private fun startAll() {
@@ -115,11 +104,16 @@ class DownloadService : Service() {
         //插入新任务需要统计差分
         CoroutineScope(Dispatchers.Default).launch {
             val infoList = downloadDao.queryALlDownloadInfo()
+            val result = ArrayList<Pair<String, List<DownloadNode>>>()
             infoList.forEach {
-
-
+                result.add(
+                    DownloadMessage.key(
+                        it.gid,
+                        it.token
+                    ) to downloadDao.queryDownloadNode(it.gid, it.token)
+                )
             }
-
+            downloadSchedule.append(result)
             withContext(Dispatchers.Main) {
                 //显示通知
             }
@@ -129,10 +123,7 @@ class DownloadService : Service() {
     private fun postTask(message: DownloadMessage) {
         CoroutineScope(Dispatchers.Default).launch {
             val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
-            downloadSchedule.append(message, newNode) //再和内存的数据做对比获取需要放入线程池下载的查分数据
-                .forEach { downloadPool.submitDownload(repository, it) }
-            //在获取差分数据的过程中均会更新相应数据
-
+            downloadSchedule.append(message.key, newNode)
             withContext(Dispatchers.Main) {
                 //更新通知
             }
@@ -140,19 +131,26 @@ class DownloadService : Service() {
     }
 
     private fun restart(gid: Long, token: String) {
-
-
+        //查询数据重新插入
+        CoroutineScope(Dispatchers.Default).launch {
+            downloadSchedule.append(
+                DownloadMessage.key(gid, token),
+                downloadDao.queryDownloadNode(gid, token)
+            )
+        }
     }
 
     private fun stop(gid: Long, token: String) {
-
-
+        CoroutineScope(Dispatchers.Default).launch {
+            downloadSchedule.cancel(DownloadMessage.key(gid, token))
+        }
     }
 
     private inner class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             //处理下载完成的广播
             CoroutineScope(Dispatchers.Default).launch {
+                downloadSchedule.idle()
                 intent?.getParcelableExtra<DownloadNode>(FINISH_NODE)?.apply {
                     downloadDao.updateDownloadNode(this)
                 }

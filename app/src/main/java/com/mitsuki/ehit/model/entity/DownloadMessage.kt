@@ -13,5 +13,9 @@ data class DownloadMessage(
     val title: String,
 ) : Parcelable {
     val total: Int get() = end - start + 1
-    val key: String get() = "g:$gid-$token"
+    val key: String get() = key(gid, token)
+
+    companion object {
+        fun key(g: Long, t: String) = "g:$g-$t"
+    }
 }
