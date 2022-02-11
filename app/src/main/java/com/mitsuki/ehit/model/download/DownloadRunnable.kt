@@ -14,10 +14,11 @@ class DownloadRunnable(private val node: DownloadNode) : Runnable {
             AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
                 putExtra(
                     DownloadService.FINISH_NODE,
-                    DownloadNode(node.gid, node.token, node.page, true)
+                    DownloadNode(node.gid, node.token, node.page, 1)
                 )
                 action = DownloadService.BROADCAST_ACTION
             })
+
         }
     }
 }

@@ -27,9 +27,10 @@ data class DownloadNode(
     @ColumnInfo(name = "gid") val gid: Long,
     @ColumnInfo(name = "token") val token: String,
     @ColumnInfo(name = "page") val page: Int,
-    @ColumnInfo(name = "is_complete") val isComplete: Boolean,
+    @ColumnInfo(name = "download_state") val downloadState: Int = 0, //0未开始，1完成，2异常
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 ) : Parcelable {
+
     override fun equals(other: Any?): Boolean {
         return other is DownloadNode &&
                 gid == other.gid &&

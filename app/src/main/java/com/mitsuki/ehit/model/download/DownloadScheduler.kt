@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.model.download
 
-import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
