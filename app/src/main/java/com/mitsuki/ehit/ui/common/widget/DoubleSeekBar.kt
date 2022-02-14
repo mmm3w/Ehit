@@ -1,35 +1,64 @@
 package com.mitsuki.ehit.ui.common.widget
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.animation.addListener
 import kotlin.math.roundToInt
 
 class DoubleSeekBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private var thumbSize = 40f
+    private var thumbScale = 2f
+    private var thumbColor: Int = 0xffff0000.toInt()
+    private var progressColor: Int = 0xffebebeb.toInt()
+    private var selectedColor: Int = 0xFFff0000.toInt()
+    private var progressWidth = 10f
 
-    val thumbSize = 80F
-    val progressHeight = 10F
+    private var max = 300
+    private var min = 0
+    private var start = 0
+    private var end = 300
 
-    val paint = Paint()
+    private val mPaint = Paint()
+    private var mActivePointerId: Int = -1
 
-    val min = 0
-    val max = 100
-    var start = 10
-    var end = 90
+    private val mProgressRect = RectF()
+    private val mSelectedRect = RectF()
+    private val mStartTouchRect = RectF()
+    private val mEndTouchRect = RectF()
+    private var mTouchX: Float = 0f
+    private var mTouchCheck: Int = -1
 
-    var touchCheck: Int = -1
-
-    var downX: Float = 0f
+    private var mDownAnimation: ValueAnimator? = null
+    private var mUpAnimation: ValueAnimator? = null
+    private var mHasAnimation: Boolean = false
+    private var mAnimaValue: Float = 0F
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+        val heightResult = when (heightMode) {
+            MeasureSpec.EXACTLY -> heightSize
+            MeasureSpec.UNSPECIFIED,
+            MeasureSpec.AT_MOST ->
+                ((thumbScale * thumbSize).coerceAtLeast(progressWidth) + paddingBottom + paddingTop).toInt()
+            else -> throw IllegalAccessException()
+        }
+
+        setMeasuredDimension(widthSize, heightResult)
     }
 
 
@@ -37,101 +66,245 @@ class DoubleSeekBar @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
 
-        when (event.action) {
+        val action: Int = event.actionMasked
+        val pointerIndex: Int
+
+        //多点触控处理
+        when (action) {
             MotionEvent.ACTION_DOWN -> {
-                //判断命中哪个点
-                val x = event.x
-                val y = event.y
-                downX = x
-                val ts = isTabInStart(x, y)
-                val te = isTabInEnd(x, y)
-                touchCheck = if (te && ts) {
+                if (mUpAnimation.isRunning()) return false
+                mActivePointerId = event.getPointerId(0)
+                pointerIndex = event.findPointerIndex(mActivePointerId)
+                if (pointerIndex < 0) {
+                    return false
+                }
+
+                val x = event.getX(pointerIndex)
+                val y = event.getY(pointerIndex)
+                mTouchX = x
+                val ts = isTabStart(x, y)
+                val te = isTabEnd(x, y)
+                mTouchCheck = if (te && ts) {
                     2
                 } else if (te) {
+                    startDownAnimation()
                     1
                 } else if (ts) {
+                    startDownAnimation()
                     0
                 } else {
                     -1
                 }
+
+                parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
-                val ppx = event.x - downX
-                downX = event.x
-                if (touchCheck == 2) {
-                    touchCheck = if (ppx <= 0) 0 else 1
+                if (mActivePointerId == -1) return false;
+                pointerIndex = event.findPointerIndex(mActivePointerId)
+                if (pointerIndex < 0) {
+                    return false
                 }
 
-                when (touchCheck) {
+                val x = event.getX(pointerIndex)
+                val ppx = x - mTouchX
+                var isHandler = false
+
+                //根据方向选择实际的点
+                if (mTouchCheck == 2) {
+                    if (ppx < 0) {
+                        mTouchCheck = 0
+                    } else if (ppx > 0) {
+                        mTouchCheck = 1
+                    }
+                    if (mTouchCheck != 2) startDownAnimation()
+                }
+
+                when (mTouchCheck) {
                     0 -> {
-                        start += (ppx / (measuredWidth - thumbSize) * (max - min)).roundToInt()
-                        start = start.coerceIn(min, end)
-                        invalidate()
+                        val ns =
+                            ((x - mProgressRect.left) / mProgressRect.width() * (max - min) + min).roundToInt()
+                        if (ns in min..end) {
+                            isHandler = true
+                            start = ns
+                            requestInvalidate()
+                        } else {
+                            if (ns < min && start != min) {
+                                isHandler = true
+                                start = min
+                                requestInvalidate()
+                            } else if (ns > end && start != end) {
+                                isHandler = true
+                                start = end
+                                requestInvalidate()
+                            }
+                        }
                     }
                     1 -> {
-                        end += (ppx / (measuredWidth - thumbSize) * (max - min)).roundToInt()
-                        end = end.coerceIn(start, max)
-                        invalidate()
+                        val ne =
+                            ((x - mProgressRect.left) / mProgressRect.width() * (max - min) + min).roundToInt()
+                        if (ne in start..max) {
+                            isHandler = true
+                            end = ne
+                            requestInvalidate()
+                        } else {
+                            if (ne < start && end != start) {
+                                isHandler = true
+                                end = start
+                                requestInvalidate()
+                            } else if (ne > max && end != max) {
+                                isHandler = true
+                                end = max
+                                requestInvalidate()
+                            }
+                        }
                     }
+                }
+
+                if (isHandler) {
+                    mTouchX = x
                 }
             }
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_UP -> {
-                touchCheck = -1
+                mActivePointerId = -1
+                mTouchCheck = -1
+                parent?.requestDisallowInterceptTouchEvent(false)
             }
         }
         return true
     }
 
-    private fun isTabInStart(x: Float, y: Float): Boolean {
-        return x >= measuredWidth * (start - min).toFloat() / (max - min) &&
-                x <= measuredWidth * (start - min).toFloat() / (max - min) + thumbSize &&
-                y >= measuredHeight / 2 - thumbSize / 2 &&
-                y <= measuredHeight / 2 + thumbSize / 2
+    private fun isTabStart(x: Float, y: Float): Boolean {
+        return x >= mStartTouchRect.left &&
+                x <= mStartTouchRect.right &&
+                y >= mStartTouchRect.top &&
+                y <= mStartTouchRect.bottom
     }
 
-    private fun isTabInEnd(x: Float, y: Float): Boolean {
-        return x >= measuredWidth - measuredWidth * (max - end).toFloat() / (max - min) - thumbSize &&
-                x <= measuredWidth - measuredWidth * (max - end).toFloat() / (max - min) &&
-                y >= measuredHeight / 2 - thumbSize / 2 &&
-                y <= measuredHeight / 2 + thumbSize / 2
+    private fun isTabEnd(x: Float, y: Float): Boolean {
+        return x >= mEndTouchRect.left &&
+                x <= mEndTouchRect.right &&
+                y >= mEndTouchRect.top &&
+                y <= mEndTouchRect.bottom
+    }
+
+    private fun requestInvalidate() {
+        if (!mHasAnimation) invalidate()
+    }
+
+    private fun startDownAnimation() {
+        mDownAnimation?.cancel()
+        mDownAnimation = ValueAnimator.ofFloat(0f, 1f)
+        mDownAnimation?.duration = 300
+        mDownAnimation?.addUpdateListener {
+            mAnimaValue = it?.animatedValue as Float
+            postInvalidateOnAnimation()
+        }
+        mDownAnimation?.addListener(
+            onStart = { mHasAnimation = true },
+            onCancel = { mHasAnimation = false },
+            onEnd = {
+                mHasAnimation = false
+                mAnimaValue = 1f
+            }
+
+        )
+        mDownAnimation?.start()
+    }
+
+    private fun startUpAnimation() {
+
+    }
+
+    private fun ValueAnimator?.isRunning(): Boolean {
+        return this != null && isStarted && isRunning
     }
 
     override fun onDraw(canvas: Canvas?) {
-        paint.reset()
-        paint.color = 0xFF00ff00.toInt()
-        canvas?.drawRect(
-            thumbSize / 2,
-            measuredHeight / 2 - progressHeight / 2,
-            measuredWidth - thumbSize / 2,
-            measuredHeight / 2 + progressHeight / 2,
-            paint
+        mPaint.reset()
+        mPaint.isAntiAlias = true
+
+        val centerX = measuredWidth / 2
+        val centerY = measuredHeight / 2
+
+        //绘制整条进度
+        val progressLength = measuredWidth - paddingStart - paddingEnd - thumbSize * thumbScale
+        val pl = centerX - progressLength / 2
+        val pr = centerX + progressLength / 2
+        val pt = centerY - progressWidth / 2
+        val pb = centerY + progressWidth / 2
+        mProgressRect.set(pl, pt, pr, pb)
+        mPaint.color = progressColor
+        canvas?.drawRect(mProgressRect, mPaint)
+
+        //绘制选中进度
+        mPaint.color = selectedColor
+        val lp = (start - min) / (max - min).toFloat()
+        val rp = (end - min) / (max - min).toFloat()
+        val spl = pl + lp * progressLength
+        val spr = pl + rp * progressLength
+        mSelectedRect.set(spl, pt, spr, pb)
+        canvas?.drawRect(mSelectedRect, mPaint)
+
+        //绘制两端控制点
+        val ss = if (mTouchCheck == 0) thumbSize / 2 * mAnimaValue * thumbScale else 0F
+        mPaint.color = thumbColor
+        val sl = spl - thumbSize / 2
+        val sr = spl + thumbSize / 2
+        val st = centerY - thumbSize / 2
+        val sb = centerY + thumbSize / 2
+        mStartTouchRect.set(
+            sl - thumbScale * thumbSize / 2,
+            st - thumbScale * thumbSize / 2,
+            sr + thumbScale * thumbSize / 2,
+            sb + thumbScale * thumbSize / 2
+        )
+        canvas?.drawOval(
+            sl - ss,
+            st - ss,
+            sr + ss,
+            sb + ss,
+            mPaint
         )
 
-        paint.color = 0xFFff0000.toInt()
-        canvas?.drawRect(
-            thumbSize / 2 + measuredWidth * (start - min).toFloat() / (max - min),
-            measuredHeight / 2 - progressHeight / 2,
-            measuredWidth - measuredWidth * (max - end).toFloat() / (max - min) - thumbSize / 2,
-            measuredHeight / 2 + progressHeight / 2,
-            paint
+
+        val es = if (mTouchCheck == 1) thumbSize / 2 * mAnimaValue * thumbScale else 0F
+        val el = spr - thumbSize / 2
+        val er = spr + thumbSize / 2
+        val et = centerY - thumbSize / 2
+        val eb = centerY + thumbSize / 2
+        mEndTouchRect.set(
+            el - thumbScale * thumbSize / 2,
+            et - thumbScale * thumbSize / 2,
+            er + thumbScale * thumbSize / 2,
+            eb + thumbScale * thumbSize / 2
         )
-        paint.color = 0x440000ff.toInt()
         canvas?.drawOval(
-            measuredWidth * (start - min).toFloat() / (max - min),
-            measuredHeight / 2 - thumbSize / 2,
-            measuredWidth * (start - min).toFloat() / (max - min) + thumbSize,
-            measuredHeight / 2 + thumbSize / 2,
-            paint
+            el - es,
+            et - es,
+            er + es,
+            eb + es,
+            mPaint
         )
-        paint.color = 0x4400fff.toInt()
-        canvas?.drawOval(
-            measuredWidth - measuredWidth * (max - end).toFloat() / (max - min) - thumbSize,
-            measuredHeight / 2 - thumbSize / 2,
-            measuredWidth - measuredWidth * (max - end).toFloat() / (max - min),
-            measuredHeight / 2 + thumbSize / 2,
-            paint
-        )
+
+
+//        if (mTouchCheck == 0) {
+//            mPaint.color = thumbColor / 2
+//            val ecl = spl - (thumbSize * mAnimaValue * thumbScale) / 2
+//            val ecr = spl + (thumbSize * mAnimaValue * thumbScale) / 2
+//            val ect = centerY - (thumbSize * mAnimaValue * thumbScale) / 2
+//            val ecb = centerY + (thumbSize * mAnimaValue * thumbScale) / 2
+//            canvas?.drawOval(ecl, ect, ecr, ecb, mPaint)
+//        } else if (mTouchCheck == 1) {
+//            mPaint.color = thumbColor / 2
+//            val ecl = spr - (thumbSize * mAnimaValue * thumbScale) / 2
+//            val ecr = spr + (thumbSize * mAnimaValue * thumbScale) / 2
+//            val ect = centerY - (thumbSize * mAnimaValue * thumbScale) / 2
+//            val ecb = centerY + (thumbSize * mAnimaValue * thumbScale) / 2
+//            canvas?.drawOval(ecl, ect, ecr, ecb, mPaint)
+//        }
+
+
     }
 
 }
