@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_download"
+        android:textSize="@dimen/sp_22"
+        android:textStyle="bold" />
+
+    <com.mitsuki.ehit.ui.common.widget.DoubleSeekBar
+        android:id="@+id/dialog_download_range"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16" />
+
+    <TextView
+        android:id="@+id/dialog_download_range_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_16" />
+
+    <TextView
+        android:id="@+id/dialog_download_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingHorizontal="@dimen/dp_20"
+        android:paddingVertical="@dimen/dp_8"
+        android:text="@string/text_confirm"
+        android:textSize="@dimen/sp_16" />
+
+</LinearLayout>

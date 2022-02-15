@@ -44,6 +44,7 @@ import com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
+import com.mitsuki.ehit.ui.download.dialog.DownloadRangeDialog
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -213,9 +214,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private fun onOperatingEvent(event: String) {
         when (event) {
             GalleryDetailOperatingBlock.READ -> goPreview(0)
-            GalleryDetailOperatingBlock.DOWNLOAD -> {
-
-            }
+            GalleryDetailOperatingBlock.DOWNLOAD -> showDownloadDialog()
             GalleryDetailOperatingBlock.SCORE -> showRatingDialog()
             GalleryDetailOperatingBlock.SIMILARITYSEARCH -> onNameNavigation()
             GalleryDetailOperatingBlock.MOREINFO -> {
@@ -293,6 +292,11 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 null,
                 null
             )
+    }
+
+    private fun showDownloadDialog() {
+        DownloadRangeDialog(mViewModel.page)
+            .show(childFragmentManager, "download")
     }
 
     private fun showRatingDialog() {

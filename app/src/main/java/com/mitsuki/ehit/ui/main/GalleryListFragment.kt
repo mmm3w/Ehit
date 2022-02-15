@@ -182,6 +182,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     }
 
     private fun showPageJumpDialog() {
+        if (mViewModel.maxPage <= 1) return
         PageDialog(mViewModel.maxPage) {
             Log.d("asdf", "$it")
             mViewModel.galleryListPage(it)

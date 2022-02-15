@@ -73,10 +73,14 @@ class DoubleSeekBar @JvmOverloads constructor(
             }
         }
 
-    private var max = 100
-    private var min = 0
-    private var end = 100
-    private var start = 0
+    var max = 100
+        private set
+    var min = 0
+        private set
+    var end = 100
+        private set
+    var start = 0
+        private set
 
     private val mPaint = Paint()
     private var mActivePointerId: Int = -1
