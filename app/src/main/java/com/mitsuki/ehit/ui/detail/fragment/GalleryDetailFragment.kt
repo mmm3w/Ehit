@@ -45,6 +45,7 @@ import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.ui.download.dialog.DownloadRangeDialog
+import com.mitsuki.ehit.ui.download.service.DownloadService
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -295,8 +296,12 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     }
 
     private fun showDownloadDialog() {
-        DownloadRangeDialog(mViewModel.page)
-            .show(childFragmentManager, "download")
+        DownloadRangeDialog(mViewModel.page) { s, e ->
+            DownloadService.startDownload(
+                requireContext(),
+                mViewModel.obtainDownloadMessage(s, e)
+            )
+        }.show(childFragmentManager, "download")
     }
 
     private fun showRatingDialog() {

@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.download
 
+import android.util.Log
 import androidx.collection.ArraySet
 import androidx.collection.arraySetOf
 import com.mitsuki.ehit.model.entity.db.DownloadNode
@@ -65,7 +66,7 @@ class DownloadQueue(private var maxCount: Int) {
             }
 
             var data: DownloadNode?
-            while (obtain().apply { data = this } == null) {
+            while (obtain(count).apply { data = this } == null) {
                 notEmpty.await()
             }
 
@@ -110,6 +111,8 @@ class DownloadQueue(private var maxCount: Int) {
         try {
             c = count.getAndDecrement()
             if (c - 1 < maxCount) overDelivery.signal()
+
+
         } finally {
             lock.unlock()
         }
@@ -128,13 +131,17 @@ class DownloadQueue(private var maxCount: Int) {
         }
     }
 
-    private fun obtain(): DownloadNode? {
+    private fun obtain(c: AtomicInteger): DownloadNode? {
+        if (currentTask == null) {
+            currentTask = tagList.firstOrNull()
+        }
         while (currentTask != null) {
             val data =
                 nodeMap[currentTask]?.firstOrNull()?.apply { nodeMap[currentTask]?.remove(this) }
             if (data != null) {
                 return data
             } else {
+                if (c.get() > 0) return null
                 nodeMap.remove(currentTask)
                 currentTask = tagList.firstOrNull()
             }

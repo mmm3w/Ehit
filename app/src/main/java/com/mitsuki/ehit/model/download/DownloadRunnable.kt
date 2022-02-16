@@ -10,15 +10,18 @@ class DownloadRunnable(private val node: DownloadNode) : Runnable {
     override fun run() {
         runBlocking {
             Thread.sleep(3000)
-            //下载完成后 发送对应广播
-            AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
-                putExtra(
-                    DownloadService.FINISH_NODE,
-                    DownloadNode(node.gid, node.token, node.page, 1)
-                )
-                action = DownloadService.BROADCAST_ACTION
-            })
-
+            sendFinishEvent()
         }
+    }
+
+
+    private fun sendFinishEvent() {
+        AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
+            putExtra(
+                DownloadService.FINISH_NODE,
+                DownloadNode(node.gid, node.token, node.page, 1)
+            )
+            action = DownloadService.BROADCAST_ACTION
+        })
     }
 }

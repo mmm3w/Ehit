@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.armory.base.NotificationHelper
 import com.mitsuki.ehit.crutch.di.RemoteRepository
@@ -37,6 +39,50 @@ class DownloadService : Service() {
         const val BROADCAST_ACTION = "DOWNLOAD_ACTION"
 
         const val NOTIFICATION_ID = 10002
+
+        fun startDownload(context: Context, msg: DownloadMessage) {
+            Intent(context, DownloadService::class.java).apply {
+                action = ACTION_DOWNLOAD
+                putExtra(DOWNLOAD_TASK, msg)
+                startService(context, this)
+            }
+        }
+
+        fun stopDownload(context: Context, gid: Long, token: String) {
+            Intent(context, DownloadService::class.java).apply {
+                action = ACTION_STOP
+                putExtra(TARGET, gid to token)
+                startService(context, this)
+            }
+        }
+
+        fun restartDownload(context: Context, gid: Long, token: String) {
+            Intent(context, DownloadService::class.java).apply {
+                action = ACTION_RESTART
+                putExtra(TARGET, gid to token)
+                startService(context, this)
+            }
+        }
+
+        fun startAllDownload(context: Context) {
+            startService(context, Intent(context, DownloadService::class.java).apply {
+                action = ACTION_START_ALL
+            })
+        }
+
+        fun stopAllDownload(context: Context) {
+            startService(context, Intent(context, DownloadService::class.java).apply {
+                action = ACTION_STOP_ALL
+            })
+        }
+
+        private fun startService(context: Context, intent: Intent) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
+        }
     }
 
     @RemoteRepository

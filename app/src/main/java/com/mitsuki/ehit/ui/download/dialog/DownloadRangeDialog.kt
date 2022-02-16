@@ -26,6 +26,8 @@ class DownloadRangeDialog(
             setStartValue(1)
             setEndValue(range)
             thumbSize = dp2px(14f)
+            callback = { s, e -> setTextHint(s, e) }
+            setTextHint(start, end)
         }
 
         binding?.dialogDownloadConfirm?.setOnClickListener {
@@ -34,6 +36,10 @@ class DownloadRangeDialog(
             }
             dismiss()
         }
+    }
+
+    private fun setTextHint(start: Int, end: Int) {
+        binding?.dialogDownloadRangeHint?.text = "$start to $end"
     }
 
 }

@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.download
 
+import android.util.Log
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors

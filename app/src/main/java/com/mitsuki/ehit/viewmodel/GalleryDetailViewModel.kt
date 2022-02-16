@@ -53,6 +53,7 @@ class GalleryDetailViewModel @Inject constructor(
     val apiUID get() = galleryDetail.apiUID
     val rating get() = galleryDetail.rating
     val page get() = galleryDetail.pages
+    val thumb get() = galleryDetail.detailThumb
 
     val itemTransitionName: String get() = "gallery:$gid$token"
 
@@ -135,6 +136,10 @@ class GalleryDetailViewModel @Inject constructor(
         viewModelScope.launch {
             galleryDao.deleteGalleryInfo(gid, token)
         }
+    }
+
+    fun obtainDownloadMessage(start: Int, end: Int): DownloadMessage {
+        return DownloadMessage(gid, token, start, end, thumb, title)
     }
 
 
