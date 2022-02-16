@@ -18,6 +18,7 @@ import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityDownloadBinding
 import com.mitsuki.ehit.ui.download.ControlAnimate
 import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
+import com.mitsuki.ehit.ui.download.service.DownloadService
 import com.mitsuki.ehit.viewmodel.DownloadViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,6 +44,14 @@ class DownloadActivity : BaseActivity() {
         )
         binding.topBar.topBarText.text = getText(R.string.text_download)
 
+        binding.downloadControl.downloadControlStart.setOnClickListener {
+            DownloadService.startAllDownload(this)
+        }
+
+        binding.downloadControl.downloadControlStop.setOnClickListener {
+            DownloadService.stopAllDownload(this)
+        }
+
         controlAnimate()
 
         lifecycleScope.launchWhenCreated {
@@ -55,6 +64,7 @@ class DownloadActivity : BaseActivity() {
         lifecycleScope.launchWhenCreated {
             mViewModel.downloadList().collect { mMainAdapter.submitData(it) }
         }
+
     }
 
 
