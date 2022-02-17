@@ -4,7 +4,8 @@ import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.DownloadListInfo
 import com.mitsuki.ehit.model.entity.DownloadMessage
-import com.mitsuki.ehit.model.entity.db.*
+import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
+import com.mitsuki.ehit.model.entity.db.DownloadNode
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -61,6 +62,9 @@ abstract class DownloadDao {
         token: String,
         state: Int = 0
     ): List<DownloadNode>
+
+    @Query("DELETE FROM ${DBValue.TABLE_DOWNLOAD_INFO} WHERE ${DBValue.TABLE_DOWNLOAD_INFO}.gid = :gid AND ${DBValue.TABLE_DOWNLOAD_INFO}.token = :token")
+    abstract fun deleteDownloadInfo(gid: Long, token: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertDownloadInfo(info: DownloadBaseInfo)

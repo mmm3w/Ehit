@@ -29,6 +29,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
             attachAdapter(this@DownloadAdapter)
         }
 
+    fun item(index: Int) = mData.item(index)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent).apply {
             binding.root.setOnClickListener {

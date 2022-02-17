@@ -22,7 +22,7 @@ class ControlAnimate {
             view.isSelected = false
             val parent = view.parent as? ViewGroup
             lastAnimator = AnimatorSet().apply {
-                duration = 600
+                duration = 300
                 addListener(
                     onEnd = {
                         parent?.apply {
@@ -72,7 +72,7 @@ class ControlAnimate {
             view.translationX = view.left.toFloat()
 
             lastAnimator = AnimatorSet().apply {
-                duration = 600
+                duration = 300
                 addListener(
                     onEnd = {
                         parent?.apply {
