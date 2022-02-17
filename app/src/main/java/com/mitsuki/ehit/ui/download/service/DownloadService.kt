@@ -152,12 +152,13 @@ class DownloadService : Service() {
             val infoList = downloadDao.queryALlDownloadInfo()
             val result = ArrayList<Pair<String, List<DownloadNode>>>()
             infoList.forEach {
-                result.add(
-                    DownloadMessage.key(
-                        it.gid,
-                        it.token
-                    ) to downloadDao.queryDownloadNode(it.gid, it.token)
-                )
+                downloadDao.queryDownloadNode(it.gid, it.token).apply {
+                    if (isNotEmpty()) {
+                        result.add(
+                            DownloadMessage.key(it.gid, it.token) to this
+                        )
+                    }
+                }
             }
             downloadSchedule.append(result)
             withContext(Dispatchers.Main) {

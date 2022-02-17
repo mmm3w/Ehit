@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class DownloadScheduler {
-    private val queue = DownloadQueue(3)
+    private val queue = DownloadQueue<DownloadNode>(3)
     private val threadPool: ExecutorService = Executors.newCachedThreadPool()
     private var loopThread: Thread? = null
 

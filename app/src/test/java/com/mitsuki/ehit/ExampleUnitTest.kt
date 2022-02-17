@@ -228,24 +228,24 @@ class ExampleUnitTest {
 
 
     private fun tryPw(pw: String) {
-        val data = HttpRookie.post<String>("http://192.168.0.1/login/Auth") {
-            convert = StringConvert()
-            params("username" , "admin")
-            params("password" , md5(pw))
-        }.execute()
-
-        when (data) {
-            is Response.Success -> {
-                if (data.body != "1") {
-                    println("success---> $pw")
-                } else {
-                    println("fail---> $pw")
-                }
-            }
-            is Response.Fail -> {
-                println("${data.throwable}")
-            }
-        }
+//        val data = HttpRookie.post<String>("http://192.168.0.1/login/Auth") {
+//            convert = StringConvert()
+//            params("username" , "admin")
+//            params("password" , md5(pw))
+//        }.execute()
+//
+//        when (data) {
+//            is Response.Success -> {
+//                if (data.body != "1") {
+//                    println("success---> $pw")
+//                } else {
+//                    println("fail---> $pw")
+//                }
+//            }
+//            is Response.Fail -> {
+//                println("${data.throwable}")
+//            }
+//        }
     }
 
     private fun md5(source: String): String {

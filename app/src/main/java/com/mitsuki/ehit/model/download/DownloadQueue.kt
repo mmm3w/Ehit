@@ -1,18 +1,16 @@
 package com.mitsuki.ehit.model.download
 
-import android.util.Log
 import androidx.collection.ArraySet
 import androidx.collection.arraySetOf
-import com.mitsuki.ehit.model.entity.db.DownloadNode
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 
-class DownloadQueue(private var maxCount: Int) {
+class DownloadQueue<T>(private var maxCount: Int) {
 
     private var currentTask: String? = null
 
     private val tagList: MutableSet<String> = arraySetOf()
-    private val nodeMap: MutableMap<String, MutableSet<DownloadNode>> = hashMapOf()
+    private val nodeMap: MutableMap<String, MutableSet<T>> = hashMapOf()
 
     private val lock: ReentrantLock = ReentrantLock()
     private val notEmpty = lock.newCondition()
@@ -20,7 +18,8 @@ class DownloadQueue(private var maxCount: Int) {
 
     private var count = AtomicInteger(0)
 
-    fun put(tag: String, data: List<DownloadNode>) {
+    fun put(tag: String, data: List<T>) {
+        if (data.isEmpty()) return
         val lock = this.lock
         lock.lockInterruptibly()
         try {
@@ -36,16 +35,19 @@ class DownloadQueue(private var maxCount: Int) {
         }
     }
 
-    fun put(data: List<Pair<String, List<DownloadNode>>>) {
+    fun put(data: List<Pair<String, List<T>>>) {
+        if (data.isEmpty()) return
         val lock = this.lock
         lock.lockInterruptibly()
         try {
             data.forEach {
-                if (currentTask == it.first) {
-                    nodeMap[currentTask]?.addAll(it.second)
-                } else {
-                    tagList.add(it.first)
-                    nodeMap[it.first] = ArraySet(it.second)
+                if (it.second.isNotEmpty()) {
+                    if (currentTask == it.first) {
+                        nodeMap[currentTask]?.addAll(it.second)
+                    } else {
+                        tagList.add(it.first)
+                        nodeMap[it.first] = ArraySet(it.second)
+                    }
                 }
             }
             notEmpty.signal()
@@ -54,25 +56,23 @@ class DownloadQueue(private var maxCount: Int) {
         }
     }
 
-    fun take(): DownloadNode {
+    fun take(): T {
         val lock = this.lock
         val count: AtomicInteger = count
         val c: Int
         lock.lockInterruptibly()
         try {
-
             while (count.get() >= maxCount) {
                 overDelivery.await()
             }
 
-            var data: DownloadNode?
+            var data: T?
             while (obtain(count).apply { data = this } == null) {
                 notEmpty.await()
             }
 
             c = count.getAndIncrement()
             if (c + 1 < maxCount) overDelivery.signal()
-
             return data ?: throw IllegalAccessError()
         } finally {
             lock.unlock()
@@ -106,13 +106,18 @@ class DownloadQueue(private var maxCount: Int) {
     fun idle() {
         val lock = this.lock
         val count: AtomicInteger = count
+        if (count.get() <= 0) return
         val c: Int
         lock.lockInterruptibly()
         try {
             c = count.getAndDecrement()
             if (c - 1 < maxCount) overDelivery.signal()
 
-
+            if (isTargetEmpty(currentTask)) {
+                currentTask = null
+                nodeMap.remove(currentTask)
+                notEmpty.signal()
+            }
         } finally {
             lock.unlock()
         }
@@ -131,9 +136,14 @@ class DownloadQueue(private var maxCount: Int) {
         }
     }
 
-    private fun obtain(c: AtomicInteger): DownloadNode? {
-        if (currentTask == null) {
-            currentTask = tagList.firstOrNull()
+    private fun isTargetEmpty(target: String?): Boolean {
+        if (target == null) return true
+        return nodeMap[target]?.isEmpty() ?: true
+    }
+
+    private fun obtain(c: AtomicInteger): T? {
+        if (currentTask == null && c.get() <= 0) {
+            currentTask = tagList.firstOrNull()?.apply { tagList.remove(this) }
         }
         while (currentTask != null) {
             val data =
@@ -143,7 +153,7 @@ class DownloadQueue(private var maxCount: Int) {
             } else {
                 if (c.get() > 0) return null
                 nodeMap.remove(currentTask)
-                currentTask = tagList.firstOrNull()
+                currentTask = tagList.firstOrNull()?.apply { tagList.remove(this) }
             }
         }
         return null
