@@ -36,7 +36,8 @@ class DownloadService : Service() {
         const val FINISH_NODE = "FINISH_NODE"
 
         const val NOTIFICATION_CHANNEL = "DOWNLOAD"
-        const val BROADCAST_ACTION = "DOWNLOAD_ACTION"
+        const val DOWNLOAD_BROADCAST_PAGE = "DOWNLOAD_PAGE_ACTION"
+        const val DOWNLOAD_BROADCAST_THUMB = "DOWNLOAD_THUMB_ACTION"
 
         const val NOTIFICATION_ID = 10002
 
@@ -95,7 +96,7 @@ class DownloadService : Service() {
     @Inject
     lateinit var helper: NotificationHelper
 
-    private val downloadSchedule by lazy { DownloadScheduler() }
+    private val downloadSchedule by lazy { DownloadScheduler(repository) }
 
     private val mReceiver by lazy { MyBroadcastReceiver() }
 
@@ -106,7 +107,10 @@ class DownloadService : Service() {
     override fun onCreate() {
         super.onCreate()
         LocalBroadcastManager.getInstance(this)
-            .registerReceiver(mReceiver, IntentFilter(BROADCAST_ACTION))
+            .registerReceiver(mReceiver, IntentFilter().apply {
+                addAction(DOWNLOAD_BROADCAST_PAGE)
+                addAction(DOWNLOAD_BROADCAST_THUMB)
+            })
         //响应前台通知
         helper.startForeground(this, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
             it.setSmallIcon(android.R.drawable.stat_sys_download)
@@ -138,6 +142,17 @@ class DownloadService : Service() {
         return START_STICKY
     }
 
+    private fun postTask(message: DownloadMessage) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
+            downloadSchedule.thumb(message.gid, message.token)
+            downloadSchedule.append(message.key, newNode)
+            withContext(Dispatchers.Main) {
+                //更新通知
+            }
+        }
+    }
+
 
     private fun stopAll() {
         CoroutineScope(Dispatchers.Default).launch {
@@ -152,6 +167,9 @@ class DownloadService : Service() {
             val infoList = downloadDao.queryALlDownloadInfo()
             val result = ArrayList<Pair<String, List<DownloadNode>>>()
             infoList.forEach {
+                if (it.localThumb.isEmpty()) {
+                    downloadSchedule.thumb(it.gid, it.token)
+                }
                 downloadDao.queryDownloadNode(it.gid, it.token).apply {
                     if (isNotEmpty()) {
                         result.add(
@@ -167,19 +185,11 @@ class DownloadService : Service() {
         }
     }
 
-    private fun postTask(message: DownloadMessage) {
-        CoroutineScope(Dispatchers.Default).launch {
-            val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
-            downloadSchedule.append(message.key, newNode)
-            withContext(Dispatchers.Main) {
-                //更新通知
-            }
-        }
-    }
 
     private fun restart(gid: Long, token: String) {
         //查询数据重新插入
         CoroutineScope(Dispatchers.Default).launch {
+            downloadSchedule.thumb(gid, token)
             downloadSchedule.append(
                 DownloadMessage.key(gid, token),
                 downloadDao.queryDownloadNode(gid, token)

@@ -44,16 +44,14 @@ class DownloadActivity : BaseActivity() {
             statusBarColor = Color.WHITE
         )
         binding.topBar.topBarText.text = getText(R.string.text_download)
-
-        binding.downloadControl.downloadControlStart.setOnClickListener {
+        binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
+        binding.topBar.topBarStart.setOnClickListener {
             DownloadService.startAllDownload(this)
         }
-
-        binding.downloadControl.downloadControlStop.setOnClickListener {
+        binding.topBar.topBarPause.setOnClickListener {
             DownloadService.stopAllDownload(this)
         }
 
-        controlAnimate()
 
         ItemTouchHelper(ListItemTouchCallback {
             mMainAdapter.item(it).apply {
@@ -73,16 +71,6 @@ class DownloadActivity : BaseActivity() {
             mViewModel.downloadList().collect { mMainAdapter.submitData(it) }
         }
 
-    }
-
-
-    private fun controlAnimate() {
-        binding.downloadControl.downloadControlCompleted.setOnClickListener {
-            controlAnimate.trigger(it)
-        }
-        binding.downloadControl.downloadControlUncompleted.setOnClickListener {
-            controlAnimate.trigger(it)
-        }
     }
 
 }

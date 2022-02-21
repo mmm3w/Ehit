@@ -6,11 +6,8 @@
 
     <include
         android:id="@+id/top_bar"
-        layout="@layout/top_bar_normal_ver" />
+        layout="@layout/top_bar_download" />
 
-    <include
-        android:id="@+id/download_control"
-        layout="@layout/item_download_control" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/download_list"

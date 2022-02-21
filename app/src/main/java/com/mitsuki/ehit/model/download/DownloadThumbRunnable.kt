@@ -9,11 +9,15 @@ import com.mitsuki.ehit.ui.download.service.DownloadService
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-class DownloadRunnable(private val node: DownloadNode, private val repository: Repository) :
+class DownloadThumbRunnable(
+    private val gid: Long,
+    private val token: String,
+    private val repository: Repository
+) :
     Runnable {
     override fun run() {
         runBlocking {
-            when (val result = repository.downloadPage(node.gid, node.token, node.page)) {
+            when (val result = repository.downloadThumb(gid, token)) {
                 is RequestResult.Success<File> -> {
                     sendFinishEvent(result.data)
                 }
@@ -27,17 +31,8 @@ class DownloadRunnable(private val node: DownloadNode, private val repository: R
 
     private fun sendFinishEvent(file: File?) {
         AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
-            putExtra(
-                DownloadService.FINISH_NODE,
-                DownloadNode(
-                    node.gid,
-                    node.token,
-                    node.page,
-                    if (file != null) 1 else 2,
-                    file?.absolutePath ?: ""
-                )
-            )
-            action = DownloadService.DOWNLOAD_BROADCAST_PAGE
+            //TODO 添加数据回调
+            action = DownloadService.DOWNLOAD_BROADCAST_THUMB
         })
     }
 }

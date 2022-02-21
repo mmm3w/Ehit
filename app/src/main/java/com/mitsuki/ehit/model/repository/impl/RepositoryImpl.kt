@@ -1,8 +1,10 @@
 package com.mitsuki.ehit.model.repository.impl
 
+import android.webkit.MimeTypeMap
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.mitsuki.armory.httprookie.convert.FileConvert
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.get
 import com.mitsuki.armory.httprookie.post
@@ -16,9 +18,11 @@ import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamValue
 import com.mitsuki.ehit.const.RequestKey
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.VolatileCache
 import com.mitsuki.ehit.crutch.di.ApiClient
 import com.mitsuki.ehit.model.convert.*
+import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
@@ -36,11 +40,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import java.io.File
 import javax.inject.Inject
 import kotlin.math.ceil
 
 class RepositoryImpl @Inject constructor(
     val galleryDao: GalleryDao,
+    val downloadDao: DownloadDao,
     val pagingProvider: PagingSource,
     @ApiClient val client: OkHttpClient
 ) : Repository {
@@ -149,7 +155,7 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun galleryImageSrouce(
+    override suspend fun galleryImageSource(
         gid: Long,
         token: String,
         page: Int,
@@ -235,7 +241,7 @@ class RepositoryImpl @Inject constructor(
                     val webIndex =
                         if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
 
-                    val images = galleryImageSrouce(gid, token, webIndex, true)
+                    val images = galleryImageSource(gid, token, webIndex, true)
                     if (images is RequestResult.Fail<*>) {
                         throw images.throwable
                     }
@@ -285,52 +291,6 @@ class RepositoryImpl @Inject constructor(
             pagingProvider.favoritesSource(this, pageIn, dataWrap)
         }.flow
     }
-
-//    override suspend fun getGalleryPagePToke(
-//        gid: Long,
-//        token: String,
-//        index: Int
-//    ): RequestResult<String> {
-//        return withContext(Dispatchers.IO) {
-//            val cache =
-//                galleryDao.querySingleGalleryImageCache(gid, token, index)
-//            if (cache == null || cache.pToken.isEmpty()) {
-//                val webIndex =
-//                    if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
-//
-//                val remoteData = client.get<PageInfo<ImageSource>>(Url.galleryDetail(gid, token)) {
-//                    convert = ImageSourceConvert()
-//                    urlParams(RequestKey.PAGE_DETAIL, webIndex.toString())
-//                }
-//                    .execute()
-//                try {
-//                    when (remoteData) {
-//                        is Response.Success<PageInfo<ImageSource>> -> {
-//                            remoteData.requireBody().also {
-//                                VolatileCache.galleryPageSize = it.data.size
-//                                galleryDao.insertGalleryImageSource(gid, token, it)
-//                            }
-//
-//                            val pToken =
-//                                galleryDao.querySingleGalleryImageCache(
-//                                    gid,
-//                                    token,
-//                                    index
-//                                )
-//                                    ?.pToken
-//
-//                            if (pToken.isNullOrEmpty()) throw IllegalStateException("not found pToken")
-//                            RequestResult.Success(pToken)
-//                        }
-//                        is Response.Fail<*> -> throw remoteData.throwable
-//                    }
-//                } catch (inner: Throwable) {
-//
-//                    RequestResult.Fail(inner)
-//                }
-//            } else RequestResult.Success(cache.pToken)
-//        }
-//    }
 
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
@@ -446,12 +406,66 @@ class RepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<String> {
-        //先获取ptoken
+    override suspend fun downloadThumb(gid: Long, token: String): RequestResult<File> =
+        withContext(Dispatchers.IO) {
+            downloadDao.queryDownloadInfo(gid, token)?.run {
+                val downloadUrl = thumb
+                val folder = AppHolder.cacheDir("thumb")
+                val name = "thumb_${gid}_$token${MimeTypeMap.getFileExtensionFromUrl(downloadUrl)}"
+                val thumbFile = File(folder, name)
+                if (thumbFile.exists()) {
+                    RequestResult.Success(thumbFile)
+                } else {
+                    downloadFile(downloadUrl, folder, name)
+                }
+            } ?: RequestResult.Fail(IllegalAccessException("not found info"))
+        }
+
+    override suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<File> =
+        withContext(Dispatchers.IO) {
+            when (val info: RequestResult<GalleryPreview> = galleryPreview(gid, token, index)) {
+                is RequestResult.Success<GalleryPreview> -> {
+                    val cacheFolder = AppHolder.cacheDir("download/$gid-$token")
+                    val fileName = String.format("%09d", index) +
+                            MimeTypeMap.getFileExtensionFromUrl(info.data.imageUrl)
+                    val imageFile = File(cacheFolder, fileName)
+                    if (imageFile.exists()) {
+                        RequestResult.Success(imageFile)
+                    } else {
+                        downloadFile(info.data.imageUrl, cacheFolder, fileName)
+                    }
+                }
+                is RequestResult.Fail<*> -> {
+                    RequestResult.Fail(info.throwable)
+                }
+            }
+        }
 
 
-        return RequestResult.Fail(IllegalAccessException())
+    override suspend fun downloadFile(
+        url: String,
+        folder: File,
+        name: String
+    ): RequestResult<File> = withContext(Dispatchers.IO) {
+        if (folder.exists() && folder.isFile) {
+            RequestResult.Fail(IllegalAccessException("can not create folder"))
+        } else {
+            if (!folder.exists()) folder.mkdirs()
+            val result = client.get<File>(url) {
+                convert = FileConvert(folder.absolutePath, name)
+            }.execute()
+
+            try {
+                when (result) {
+                    is Response.Success<File> -> RequestResult.Success(result.requireBody())
+                    is Response.Fail<*> -> throw result.throwable
+                }
+            } catch (inner: Throwable) {
+                RequestResult.Fail(inner)
+            }
+        }
     }
+
 
     override suspend fun favoritesSource(
         pageIn: FavouritePageIn,
@@ -478,5 +492,6 @@ class RepositoryImpl @Inject constructor(
             }
             .execute()
     }
+
 
 }

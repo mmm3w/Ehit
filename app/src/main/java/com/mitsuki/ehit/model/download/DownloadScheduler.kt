@@ -1,11 +1,11 @@
 package com.mitsuki.ehit.model.download
 
-import android.util.Log
 import com.mitsuki.ehit.model.entity.db.DownloadNode
+import com.mitsuki.ehit.model.repository.Repository
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class DownloadScheduler {
+class DownloadScheduler(private val repository: Repository) {
     private val queue = DownloadQueue<DownloadNode>(3)
     private val threadPool: ExecutorService = Executors.newCachedThreadPool()
     private var loopThread: Thread? = null
@@ -15,7 +15,7 @@ class DownloadScheduler {
         loopThread = Thread {
             while (!Thread.currentThread().isInterrupted) {
                 try {
-                    threadPool.submit(DownloadRunnable(queue.take()))
+                    threadPool.submit(DownloadRunnable(queue.take(), repository))
                 } catch (inner: InterruptedException) {
                     inner.printStackTrace()
                 }
@@ -29,7 +29,15 @@ class DownloadScheduler {
         threadPool.shutdown()
     }
 
-    fun append(tag:String, newNode: List<DownloadNode>) {
+    fun thumb(gid: Long, token: String) {
+        try {
+            threadPool.submit(DownloadThumbRunnable(gid, token, repository))
+        } catch (inner: InterruptedException) {
+            inner.printStackTrace()
+        }
+    }
+
+    fun append(tag: String, newNode: List<DownloadNode>) {
         queue.put(tag, newNode)
     }
 

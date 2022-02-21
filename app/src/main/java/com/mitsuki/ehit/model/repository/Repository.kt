@@ -11,6 +11,7 @@ import com.mitsuki.ehit.model.entity.reponse.VoteBack
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface Repository {
 
@@ -32,11 +33,11 @@ interface Repository {
 
     suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail>
 
-    suspend fun galleryImageSrouce(
+    suspend fun galleryImageSource(
         gid: Long,
         token: String,
         page: Int,
-        ignoreCache:Boolean = false
+        ignoreCache: Boolean = false
     ): RequestResult<PageInfo<ImageSource>>
 
     suspend fun rating(
@@ -56,8 +57,6 @@ interface Repository {
         dataWrap: FavouriteCountWrap
     ): Flow<PagingData<Gallery>>
 
-//    suspend fun getGalleryPagePToke(gid: Long, token: String, index: Int)
-//            : RequestResult<String>
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
 
@@ -75,7 +74,6 @@ interface Repository {
         vote: Int
     ): RequestResult<VoteBack>
 
-    suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<String>
 
     suspend fun favoritesSource(
         pageIn: FavouritePageIn,
@@ -88,4 +86,9 @@ interface Repository {
         page: Int
     ): Response<Pair<GalleryDetail, PageInfo<ImageSource>>>
 
+    suspend fun downloadThumb(gid: Long, token: String): RequestResult<File>
+
+    suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<File>
+
+    suspend fun downloadFile(url: String, folder: File, name: String): RequestResult<File>
 }

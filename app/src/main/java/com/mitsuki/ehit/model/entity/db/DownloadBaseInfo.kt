@@ -17,7 +17,8 @@ data class DownloadBaseInfo(
     @ColumnInfo(name = "token") val token: String,
     @ColumnInfo(name = "thumb") val thumb: String,
     @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "timestamp") var timestamp: Long = System.currentTimeMillis()
+    @ColumnInfo(name = "timestamp") var timestamp: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "local_thumb") val localThumb: String = "",
 ) {
     constructor(message: DownloadMessage) : this(
         message.gid,
@@ -31,7 +32,8 @@ data class DownloadBaseInfo(
                 other.gid == gid &&
                 other.token == token &&
                 other.thumb == thumb &&
-                other.title == title
+                other.title == title &&
+                other.localThumb == localThumb
     }
 
     override fun hashCode(): Int {
@@ -40,6 +42,7 @@ data class DownloadBaseInfo(
         result = 31 * result + thumb.hashCode()
         result = 31 * result + title.hashCode()
         result = 31 * result + timestamp.hashCode()
+        result = 31 * result + localThumb.hashCode()
         return result
     }
 }
