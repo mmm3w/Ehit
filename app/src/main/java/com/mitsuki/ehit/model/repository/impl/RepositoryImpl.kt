@@ -411,7 +411,7 @@ class RepositoryImpl @Inject constructor(
             downloadDao.queryDownloadInfo(gid, token)?.run {
                 val downloadUrl = thumb
                 val folder = AppHolder.cacheDir("thumb")
-                val name = "thumb_${gid}_$token${MimeTypeMap.getFileExtensionFromUrl(downloadUrl)}"
+                val name = "thumb_${gid}_$token.${MimeTypeMap.getFileExtensionFromUrl(downloadUrl)}"
                 val thumbFile = File(folder, name)
                 if (thumbFile.exists()) {
                     RequestResult.Success(thumbFile)
@@ -426,7 +426,7 @@ class RepositoryImpl @Inject constructor(
             when (val info: RequestResult<GalleryPreview> = galleryPreview(gid, token, index)) {
                 is RequestResult.Success<GalleryPreview> -> {
                     val cacheFolder = AppHolder.cacheDir("download/$gid-$token")
-                    val fileName = String.format("%09d", index) +
+                    val fileName = String.format("%09d", index) + "." +
                             MimeTypeMap.getFileExtensionFromUrl(info.data.imageUrl)
                     val imageFile = File(cacheFolder, fileName)
                     if (imageFile.exists()) {
