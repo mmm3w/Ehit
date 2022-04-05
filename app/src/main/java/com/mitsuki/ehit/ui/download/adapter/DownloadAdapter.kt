@@ -77,7 +77,7 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
 
         fun bind(info: DownloadListInfo) {
             with(info) {
-                binding.downloadGalleryThumb.load(thumb) {
+                binding.downloadGalleryThumb.load(local_thumb.ifEmpty { thumb }) {
                     memoryCacheKey(CacheKey.thumbKey(gid, token))
                 }
                 binding.downloadGalleryTitle.text = title

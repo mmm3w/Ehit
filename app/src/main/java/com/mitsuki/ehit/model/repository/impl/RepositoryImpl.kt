@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.repository.impl
 
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -19,7 +20,7 @@ import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamValue
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.VolatileCache
+import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.di.ApiClient
 import com.mitsuki.ehit.model.convert.*
 import com.mitsuki.ehit.model.dao.DownloadDao
@@ -48,8 +49,19 @@ class RepositoryImpl @Inject constructor(
     val galleryDao: GalleryDao,
     val downloadDao: DownloadDao,
     val pagingProvider: PagingSource,
-    @ApiClient val client: OkHttpClient
+    @ApiClient val client: OkHttpClient,
+    val shareData: ShareData
 ) : Repository {
+
+    private var galleryPageSize: Int = shareData.spGalleryPageSize
+        set(value) {
+            if (value != field) {
+                Log.d("asdf", "-=-=-=-=-= $field")
+
+                shareData.spGalleryPageSize = value
+                field = value
+            }
+        }
 
     //pageconfig
     private val mListPagingConfig by lazy { PagingConfig(pageSize = 25) }
@@ -146,7 +158,7 @@ class RepositoryImpl @Inject constructor(
                         galleryDao.insertGalleryDetail(result.first)
                         galleryDao
                             .insertGalleryImageSource(gid, token, result.second)
-                        VolatileCache.galleryPageSize = result.second.data.size
+                        galleryPageSize = result.second.data.size
                         RequestResult.Success(result.first)
                     }
                     is Response.Fail<*> -> RequestResult.Fail(data.throwable)
@@ -178,7 +190,7 @@ class RepositoryImpl @Inject constructor(
                 when (remoteData) {
                     is Response.Success<PageInfo<ImageSource>> -> {
                         remoteData.requireBody().run {
-                            VolatileCache.galleryPageSize = data.size
+                            galleryPageSize = data.size
                             galleryDao.insertGalleryImageSource(gid, token, this)
                             RequestResult.Success(this)
                         }
@@ -186,7 +198,7 @@ class RepositoryImpl @Inject constructor(
                     is Response.Fail<*> -> RequestResult.Fail(remoteData.throwable)
                 }
             } else {
-                VolatileCache.galleryPageSize = images.data.size
+                galleryPageSize = images.data.size
                 RequestResult.Success(images)
             }
         }
@@ -228,6 +240,45 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun gallertImagePToken(
+        gid: Long,
+        token: String,
+        index: Int
+    ): RequestResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                //先尝试从缓存中读取
+                val cache =
+                    galleryDao.querySingleGalleryImageCache(gid, token, index)
+                val pToken = if (cache == null || cache.pToken.isEmpty()) {
+                    //缓存中没有时请求网络
+                    if (galleryPageSize == 0) {
+                        galleryImageSource(gid, token, 0, true)
+                    }
+                    galleryDao.querySingleGalleryImageCache(gid, token, index)?.pToken ?: let {
+                        if (galleryPageSize == 0) throw IllegalStateException("request page size error")
+                        val webIndex = index / galleryPageSize
+
+                        val images = galleryImageSource(gid, token, webIndex, true)
+                        if (images is RequestResult.Fail<*>) {
+                            throw images.throwable
+                        }
+
+                        galleryDao.querySingleGalleryImageCache(gid, token, index)?.pToken?.apply {
+                            if (isEmpty()) throw IllegalStateException("request pToken error")
+                        } ?: throw IllegalStateException("request pToken error")
+                    }
+
+                } else {
+                    cache.pToken
+                }
+                RequestResult.Success(pToken)
+            } catch (inner: Throwable) {
+                RequestResult.Fail(inner)
+            }
+        }
+    }
+
     override suspend fun galleryPreview(
         gid: Long,
         token: String,
@@ -235,23 +286,11 @@ class RepositoryImpl @Inject constructor(
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
             try {
-                val cache =
-                    galleryDao.querySingleGalleryImageCache(gid, token, index)
-                val pToken = if (cache == null || cache.pToken.isEmpty()) {
-                    val webIndex =
-                        if (VolatileCache.galleryPageSize == 0) index else index / VolatileCache.galleryPageSize
-
-                    val images = galleryImageSource(gid, token, webIndex, true)
-                    if (images is RequestResult.Fail<*>) {
-                        throw images.throwable
+                val pToken = gallertImagePToken(gid, token, index).let {
+                    when (it) {
+                        is RequestResult.Success<String> -> it.data
+                        is RequestResult.Fail<*> -> throw it.throwable
                     }
-
-                    galleryDao.querySingleGalleryImageCache(gid, token, index)?.pToken?.apply {
-                        if (isEmpty()) throw IllegalStateException("request pToken error")
-                    }
-                        ?: throw IllegalStateException("request pToken error")
-                } else {
-                    cache.pToken
                 }
 
                 val data = galleryDao.queryGalleryPreview(gid, token, index)
@@ -408,15 +447,19 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun downloadThumb(gid: Long, token: String): RequestResult<File> =
         withContext(Dispatchers.IO) {
-            downloadDao.queryDownloadInfo(gid, token)?.run {
-                val downloadUrl = thumb
+            downloadDao.queryDownloadInfo(gid, token)?.let { baseInfo ->
+                val downloadUrl = baseInfo.thumb
                 val folder = AppHolder.cacheDir("thumb")
                 val name = "thumb_${gid}_$token.${MimeTypeMap.getFileExtensionFromUrl(downloadUrl)}"
                 val thumbFile = File(folder, name)
                 if (thumbFile.exists()) {
                     RequestResult.Success(thumbFile)
                 } else {
-                    downloadFile(downloadUrl, folder, name)
+                    downloadFile(downloadUrl, folder, name).also {
+                        if (it is RequestResult.Success<File>) {
+                            downloadDao.updateDownloadInfo(baseInfo.copy(localThumb = it.data.absolutePath))
+                        }
+                    }
                 }
             } ?: RequestResult.Fail(IllegalAccessException("not found info"))
         }

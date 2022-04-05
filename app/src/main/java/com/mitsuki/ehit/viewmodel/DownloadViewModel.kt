@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.ehit.model.dao.DownloadDao
@@ -15,7 +16,9 @@ import javax.inject.Inject
 class DownloadViewModel @Inject constructor(val downloadDao: DownloadDao) : ViewModel() {
 
     suspend fun downloadList(): Flow<List<DownloadListInfo>> =
-        withContext(Dispatchers.IO) { downloadDao.queryDownloadList() }
+        withContext(Dispatchers.IO) {
+            downloadDao.queryDownloadList()
+        }
 
 
     fun deleteDownload(gid: Long, token: String) {

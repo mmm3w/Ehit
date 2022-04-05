@@ -1,19 +1,13 @@
 package com.mitsuki.ehit.model.download
 
-import android.content.Intent
 import android.util.Log
-import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.ui.download.service.DownloadBroadcast
-import com.mitsuki.ehit.ui.download.service.DownloadService
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingDeque
 
 class DownloadScheduler(private val repository: Repository) {
     private val mData: MutableMap<String, DownloadWork<DownloadNode>> = hashMapOf()
@@ -79,36 +73,24 @@ class DownloadScheduler(private val repository: Repository) {
         } ?: false
     }
 
-    /**********************************************************************************************/
-
-    private suspend fun downloadPage(node: DownloadNode, total: Int, over: Int) {
-
-
-        DownloadBroadcast.sendStart(node.gid.toString(), total, over)
-
-//            when (val result = repository.downloadPage(node.gid, node.token, node.page)) {
-//                is RequestResult.Success<File> -> {
-//                    sendFinishEvent(result.data)
-//                }
-//                is RequestResult.Fail<*> -> {
-//                    sendFinishEvent(null)
-//                }
-//            }
-
-        delay((1000L..5000L).random())
-        DownloadBroadcast.sendFinish(node)
+    suspend fun thumb(gid: Long, token: String) {
+        repository.downloadThumb(gid, token)
     }
 
-    private fun downloadThumb() {
-//        when (val result = repository.downloadThumb(gid, token)) {
-//            is RequestResult.Success<File> -> {
-//                sendFinishEvent(result.data)
-//            }
-//            is RequestResult.Fail<*> -> {
-//                sendFinishEvent(null)
-//            }
-//        }
+    /**********************************************************************************************/
 
-        DownloadBroadcast.sendThumbFinish()
+    private suspend fun downloadPage(
+        node: DownloadNode,
+        total: Int,
+        data: DownloadWork<DownloadNode>
+    ) {
+        when (val result = repository.downloadPage(node.gid, node.token, node.page)) {
+            is RequestResult.Success<File> -> {
+                DownloadBroadcast.sendFinish(node, node.gid.toString(), 1, total, data.down)
+            }
+            is RequestResult.Fail<*> -> {
+                DownloadBroadcast.sendFinish(node, node.gid.toString(), 2, total, data.down)
+            }
+        }
     }
 }

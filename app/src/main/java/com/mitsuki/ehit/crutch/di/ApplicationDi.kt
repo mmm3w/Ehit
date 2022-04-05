@@ -80,7 +80,7 @@ object ApplicationProviders {
                 DownloadNotify.NOTIFICATION_CHANNEL,
                 context.getString(R.string.description_download_notification_name),
                 context.getString(R.string.description_download_notification),
-                NotificationCompat.PRIORITY_DEFAULT
+                NotificationCompat.PRIORITY_LOW
             )
         }
     }

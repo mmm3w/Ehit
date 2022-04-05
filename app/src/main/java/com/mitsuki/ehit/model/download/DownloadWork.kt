@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.download
 
+import com.mitsuki.ehit.crutch.uils.tryUnlock
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.sync.Mutex
@@ -12,20 +13,19 @@ import kotlin.collections.ArrayList
 import kotlin.math.max
 
 
-/**
- * 单个下载任务
- * 尝试使用协程去处理
- *
- * 首先处理并发数
- */
 class DownloadWork<T>(
     private val maxCount: Int,
     list: List<T> = emptyList(),
-    val action: suspend (T, Int, Int) -> Unit
+    val action: suspend (T, Int, DownloadWork<T>) -> Unit
 ) {
-    private val mData: LinkedList<T> = LinkedList(list)
     private var mTotal = list.size
+    private val mData: LinkedList<T> = LinkedList(list)
     private val mDataLock = Mutex()
+
+    var down = 0
+        private set
+    private val downLock = Mutex()
+
     private var count = AtomicInteger(0)
     private val mBlockLock = Mutex()
     private val mChannel = Channel<T>()
@@ -41,12 +41,10 @@ class DownloadWork<T>(
         runBlocking {
             for (item in mChannel) {
                 launch(Dispatchers.IO) {
-                    action(item, mTotal, mData.size)
+                    action(item, mTotal, this@DownloadWork)
+                    downLock.withLock { down++ }
                     count.getAndDecrement()
-                    try {
-                        mBlockLock.unlock()
-                    } catch (err: IllegalStateException) {
-                    }
+                    mBlockLock.tryUnlock()
                 }
             }
         }
@@ -74,10 +72,7 @@ class DownloadWork<T>(
         }
         count.set(0)
         //释放锁 结束loop 结束exec
-        try {
-            mBlockLock.unlock()
-        } catch (err: IllegalStateException) {
-        }
+        mBlockLock.tryUnlock()
     }
 
     private fun loop() {

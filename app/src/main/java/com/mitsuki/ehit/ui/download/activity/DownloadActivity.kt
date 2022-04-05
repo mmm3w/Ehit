@@ -69,7 +69,9 @@ class DownloadActivity : BaseActivity() {
         }
 
         lifecycleScope.launchWhenCreated {
-            mViewModel.downloadList().collect { mMainAdapter.submitData(it) }
+            mViewModel.downloadList().collect {
+                mMainAdapter.submitData(it)
+            }
         }
 
     }

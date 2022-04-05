@@ -1,7 +1,10 @@
 package com.mitsuki.ehit.ui.download.service
 
 import android.app.Service
+import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.mitsuki.armory.base.NotificationHelper
+import com.mitsuki.ehit.R
 import javax.inject.Inject
 
 class DownloadNotify @Inject constructor(private val helper: NotificationHelper) {
@@ -11,7 +14,6 @@ class DownloadNotify @Inject constructor(private val helper: NotificationHelper)
         const val NOTIFICATION_CHANNEL = "DOWNLOAD"
     }
 
-    private var isNeedRecall = true
 
     /**
      *         val intent = Intent(this, MainActivity::class.java)
@@ -19,37 +21,32 @@ class DownloadNotify @Inject constructor(private val helper: NotificationHelper)
      */
 
     fun replyForeground(service: Service) {
-        if (isNeedRecall) {
-            isNeedRecall = false
-
-            helper.startForeground(
-                service,
-                NOTIFICATION_CHANNEL,
-                NOTIFICATION_ID
-            ) {
-                it.setSmallIcon(android.R.drawable.stat_sys_download)
-                it.setContentTitle("开始下载")
-            }
+        helper.startForeground(
+            service,
+            NOTIFICATION_CHANNEL,
+            NOTIFICATION_ID
+        ) {
+            it.setSmallIcon(android.R.drawable.stat_sys_download)
+            it.setContentTitle(service.getText(R.string.text_start_download))
+            it.setCategory(NotificationCompat.CATEGORY_PROGRESS)
+            it.setProgress(0, 0, true)
         }
     }
 
     fun notifyFinish(service: Service) {
         helper.notify(service, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
-            it.setSmallIcon(android.R.drawable.stat_sys_download)
+            it.setSmallIcon(android.R.drawable.stat_sys_download_done)
             it.setAutoCancel(true)
-            it.setContentTitle("下载完成")
+            it.setContentTitle(service.getText(R.string.text_download_finish))
         }
     }
 
-    fun notifyUpdate(service: Service, title: String, content: String) {
+    fun notifyUpdate(service: Service, title: String, total: Int, over: Int) {
         helper.notify(service, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
             it.setSmallIcon(android.R.drawable.stat_sys_download)
             it.setContentTitle(title)
-            it.setContentText(content)
+            it.setCategory(NotificationCompat.CATEGORY_PROGRESS)
+            it.setProgress(total, over, false)
         }
-    }
-
-    fun reset() {
-        isNeedRecall = true
     }
 }

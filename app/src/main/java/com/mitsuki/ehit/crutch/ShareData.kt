@@ -19,6 +19,8 @@ class ShareData(context: Context) {
     companion object {
         const val SP_SECURITY = "SP_SECURITY"
 
+        const val SP_GALLERY_PAGE_SIZE = "SP_GALLERY_PAGE_SIZE"
+
         const val SP_DOMAIN = "SP_DOMAIN"
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
         const val SAVE_SOME_DATA_IN_PUBLIC_STORAGE = "SAVE_SOME_DATA_IN_PUBLIC_STORAGE"
@@ -33,6 +35,10 @@ class ShareData(context: Context) {
 
     fun boolean(key: String, default: Boolean = false): Boolean =
         mDefaultSP.getBoolean(key, default)
+
+    fun int(key: String, default: Int = 0): Int =
+        mDefaultSP.getInt(key, default)
+
 
     fun edit(func: SharedPreferences.Editor.() -> Unit) {
         mDefaultSP.edit().apply(func).apply()
@@ -62,5 +68,9 @@ class ShareData(context: Context) {
     var spSaveSomeDataInPublicStorage: Boolean
         set(value) = edit { putBoolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE, value) }
         get() = boolean(SAVE_SOME_DATA_IN_PUBLIC_STORAGE)
+
+    var spGalleryPageSize: Int
+        set(value) = edit { putInt(SP_GALLERY_PAGE_SIZE, value) }
+        get() = int(SP_GALLERY_PAGE_SIZE)
 
 }

@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mitsuki.armory.base.NotificationHelper
+import com.mitsuki.ehit.crutch.RoadGate
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.download.DownloadScheduler
@@ -29,8 +30,7 @@ class DownloadService : Service() {
 
     companion object {
 
-        private const val TAG = "Download"
-
+        private const val TAG = "EDownload"
 
         const val ACTION_START_ALL = "START_ALL"
         const val ACTION_DOWNLOAD = "DOWNLOAD"
@@ -38,7 +38,6 @@ class DownloadService : Service() {
 
         const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
         const val TARGET = "TARGET"
-
 
         fun startDownload(context: Context, msg: DownloadMessage) {
             Intent(context, DownloadService::class.java).apply {
@@ -79,8 +78,8 @@ class DownloadService : Service() {
     private val mReceiver by lazy { MyBroadcastReceiver() }
 
     @Volatile
-    private var workStates = true
-    private val mLoopLock = Mutex()
+    private var workStates = false
+    private val workLock = Mutex()
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -88,61 +87,75 @@ class DownloadService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        notify.replyForeground(this)
         DownloadBroadcast.registerReceiver(this, mReceiver)
-        startWork()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        handleEvent(intent)
+        return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        runBlocking { downloadSchedule.cancelAll() }
         workStates = false
         DownloadBroadcast.unregisterReceiver(this, mReceiver)
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_START_ALL -> {
-                notify.replyForeground(this)
-                startAll()
+    private suspend fun startWork() {
+        workLock.withLock {
+            if (workStates) return
+            workStates = true
+        }
+        while (workStates) {
+            Log.d(TAG, "work loop step start")
+            val result = downloadSchedule.singleWork()
+            if (result) {
+                Log.d(TAG, "next work")
+            } else {
+                Log.d(TAG, "list is empty")
+                withContext(Dispatchers.Main) {
+                    notify.notifyFinish(this@DownloadService)
+                    stopForeground(false)
+                    stopSelf()
+                }
             }
+        }
+    }
+
+    private fun handleEvent(intent: Intent?) {
+        when (intent?.action) {
             ACTION_DOWNLOAD -> {
-                notify.replyForeground(this)
                 intent.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)?.apply { postTask(this) }
             }
+            ACTION_START_ALL -> {
+                startAll()
+            }
             ACTION_RESTART -> {
-                notify.replyForeground(this)
                 (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
                     restart(first as Long, second as String)
                 }
             }
-        }
-        return START_STICKY
-    }
+            DownloadBroadcast.DOWNLOAD_BROADCAST_PAGE -> {
+                CoroutineScope(Dispatchers.Default).launch {
+                    intent.getParcelableExtra<DownloadNode>(DownloadBroadcast.FINISH_NODE)
+                        ?.apply { downloadDao.updateDownloadNode(this) }
+                }
+                val name = intent.getStringExtra(DownloadBroadcast.TASK_NAME) ?: ""
+                val total = intent.getIntExtra(DownloadBroadcast.TASK_TOTAL, 0)
+                val over = intent.getIntExtra(DownloadBroadcast.TASK_OVER, 0)
+                notify.notifyUpdate(this@DownloadService, name, total, over)
 
-    private fun postTask(message: DownloadMessage) {
-        Log.d(TAG, "new task:$message")
-        CoroutineScope(Dispatchers.Default).launch {
-            val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
-//            downloadSchedule.thumb(message.gid, message.token)
-            downloadSchedule.append(message.key, newNode)
-            tryUnlock()
-            withContext(Dispatchers.Main) {
-                //更新通知
             }
+            DownloadBroadcast.DOWNLOAD_BROADCAST_STOP -> (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
+                stop(first as Long, second as String)
+            }
+            DownloadBroadcast.DOWNLOAD_BROADCAST_STOP_ALL -> stopAll()
         }
     }
 
-
-    private fun stopAll() {
-        Log.d(TAG, "stop all task")
-        CoroutineScope(Dispatchers.Default).launch {
-            downloadSchedule.cancelAll()
-        }
-    }
 
     private fun startAll() {
-        //从数据库中查询出所有需要下载的任务
-        //插入新任务需要统计差分
         Log.d(TAG, "start all task")
         CoroutineScope(Dispatchers.Default).launch {
             val infoList = downloadDao.queryALlDownloadInfo()
@@ -150,7 +163,7 @@ class DownloadService : Service() {
 
             infoList.forEach {
                 if (it.localThumb.isEmpty()) {
-//                    downloadSchedule.thumb(it.gid, it.token)
+                    launch(Dispatchers.IO) { downloadSchedule.thumb(it.gid, it.token) }
                 }
                 downloadDao.queryDownloadNode(it.gid, it.token).apply {
                     if (isNotEmpty()) {
@@ -159,24 +172,37 @@ class DownloadService : Service() {
                 }
             }
             downloadSchedule.append(result)
-            tryUnlock()
-            withContext(Dispatchers.Main) {
-                //显示通知
-            }
+            startWork()
         }
     }
 
-
     private fun restart(gid: Long, token: String) {
         Log.d(TAG, "restart task:$gid-$token")
-        //查询数据重新插入
         CoroutineScope(Dispatchers.Default).launch {
-//            downloadSchedule.thumb(gid, token)
+            launch(Dispatchers.IO) { downloadSchedule.thumb(gid, token) }
             downloadSchedule.append(
                 DownloadMessage.key(gid, token),
                 downloadDao.queryDownloadNode(gid, token)
             )
-            tryUnlock()
+            startWork()
+        }
+    }
+
+    private fun postTask(message: DownloadMessage) {
+        Log.d(TAG, "new task:$message")
+        CoroutineScope(Dispatchers.Default).launch {
+            val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
+            launch(Dispatchers.IO) { downloadSchedule.thumb(message.gid, message.token) }
+            downloadSchedule.append(message.key, newNode)
+            startWork()
+        }
+    }
+
+    private fun stopAll() {
+        Log.d(TAG, "stop all task")
+        CoroutineScope(Dispatchers.Default).launch {
+            downloadSchedule.cancelAll()
+            stopSelf()
         }
     }
 
@@ -187,69 +213,9 @@ class DownloadService : Service() {
         }
     }
 
-    private fun startWork() {
-        CoroutineScope(Dispatchers.Default).launch {
-            while (workStates) {
-                //在这里执行下载循环，在没有数据的时候发送一个下载完成的通知然后进行阻塞直到下次一数据到来
-                Log.d(TAG, "work loop step start")
-                mLoopLock.lock()
-                Log.d(TAG, "work loop step download")
-                val result = downloadSchedule.singleWork()
-                tryUnlock()
-                if (result) {
-                    //下一个
-                    Log.d(TAG, "next work")
-                } else {
-                    Log.d(TAG, "list is empty")
-                    //任务全结束了
-                    launch(Dispatchers.Main) {
-                        notify.notifyFinish(this@DownloadService)
-                        notify.reset()
-                        stopForeground(false)
-                    }
-                    //然后阻塞住
-                    mLoopLock.lock()
-                }
-            }
-        }
-    }
-
-    private fun tryUnlock() {
-        Log.d(TAG, "try unlock to start task")
-        try {
-            mLoopLock.unlock()
-        } catch (err: IllegalStateException) {
-            err.printStackTrace()
-        }
-    }
-
     private inner class MyBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
-            when (intent?.action) {
-                DownloadBroadcast.DOWNLOAD_BROADCAST_PAGE_START -> {
-                    val name = intent.getStringExtra(DownloadBroadcast.TASK_NAME) ?: ""
-                    val total = intent.getIntExtra(DownloadBroadcast.TASK_TOTAL, 0)
-                    val over = intent.getIntExtra(DownloadBroadcast.TASK_OVER, 0)
-                    notify.notifyUpdate(this@DownloadService, name, "${total - over}/$total")
-                }
-                DownloadBroadcast.DOWNLOAD_BROADCAST_PAGE -> {
-                    CoroutineScope(Dispatchers.Default).launch {
-                        intent.getParcelableExtra<DownloadNode>(DownloadBroadcast.FINISH_NODE)
-                            ?.apply { downloadDao.updateDownloadNode(this) }
-                        //更新数据
-                        withContext(Dispatchers.Main) {
-                            //更新通知
-                        }
-                    }
-                }
-                DownloadBroadcast.DOWNLOAD_BROADCAST_THUMB -> {
-
-                }
-                DownloadBroadcast.DOWNLOAD_BROADCAST_STOP -> (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
-                    stop(first as Long, second as String)
-                }
-                DownloadBroadcast.DOWNLOAD_BROADCAST_STOP_ALL -> stopAll()
-            }
+            handleEvent(intent)
         }
     }
 }

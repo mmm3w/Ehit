@@ -108,6 +108,8 @@
     <string name="text_uncompleted">未完成</string>
     <string name="text_page_front">第</string>
     <string name="text_page_back">页</string>
+    <string name="text_start_download">开始下载……</string>
+    <string name="text_download_finish">下载结束！</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>

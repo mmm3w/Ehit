@@ -11,8 +11,6 @@ import com.mitsuki.ehit.model.entity.db.DownloadNode
 object DownloadBroadcast {
 
     const val DOWNLOAD_BROADCAST_PAGE = "DOWNLOAD_PAGE_ACTION"
-    const val DOWNLOAD_BROADCAST_THUMB = "DOWNLOAD_THUMB_ACTION"
-    const val DOWNLOAD_BROADCAST_PAGE_START = "DOWNLOAD_BROADCAST_PAGE_START"
     const val DOWNLOAD_BROADCAST_STOP = "DOWNLOAD_BROADCAST_STOP"
     const val DOWNLOAD_BROADCAST_STOP_ALL = "DOWNLOAD_BROADCAST_STOP_ALL"
 
@@ -26,8 +24,6 @@ object DownloadBroadcast {
         LocalBroadcastManager.getInstance(context)
             .registerReceiver(receiver, IntentFilter().apply {
                 addAction(DOWNLOAD_BROADCAST_PAGE)
-                addAction(DOWNLOAD_BROADCAST_THUMB)
-                addAction(DOWNLOAD_BROADCAST_PAGE_START)
                 addAction(DOWNLOAD_BROADCAST_STOP)
                 addAction(DOWNLOAD_BROADCAST_STOP_ALL)
             })
@@ -37,17 +33,12 @@ object DownloadBroadcast {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
     }
 
-    fun sendStart(name: String, total: Int, over: Int) {
+
+    fun sendFinish(node: DownloadNode, name: String,state:Int, total: Int, over: Int) {
         AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
             putExtra(TASK_NAME, name)
             putExtra(TASK_TOTAL, total)
             putExtra(TASK_OVER, over)
-            action = DOWNLOAD_BROADCAST_PAGE_START
-        })
-    }
-
-    fun sendFinish(node: DownloadNode) {
-        AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
             putExtra(
                 FINISH_NODE,
                 DownloadNode(
@@ -62,12 +53,6 @@ object DownloadBroadcast {
         })
     }
 
-    fun sendThumbFinish() {
-        AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
-            //TODO 添加数据回调
-            action = DOWNLOAD_BROADCAST_THUMB
-        })
-    }
 
     fun sendStop(gid: Long, token: String) {
         AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {

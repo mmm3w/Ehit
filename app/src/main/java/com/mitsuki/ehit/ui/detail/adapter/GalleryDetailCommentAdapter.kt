@@ -7,7 +7,7 @@ import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.adapter.notify.NotifyQueueData
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.createItemView
-import com.mitsuki.ehit.crutch.Tools
+import com.mitsuki.ehit.crutch.uils.TimeFormat
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
@@ -39,7 +39,7 @@ class GalleryDetailCommentAdapter :
 
     override fun onBindViewHolder(holder: DetailCommentViewHolder, position: Int) {
         with(mData.item(position)) {
-            holder.binding.commentPostTime.text = Tools.commentTime(postTime)
+            holder.binding.commentPostTime.text = TimeFormat.commentTime(postTime)
             holder.binding.commentUserName.text = user
             holder.binding.commentContent.also {
                 it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)

@@ -48,6 +48,9 @@ interface Repository {
         rating: Float
     ): RequestResult<RateBack>
 
+    suspend fun gallertImagePToken(gid: Long, token: String, index: Int)
+            : RequestResult<String>
+
     suspend fun galleryPreview(gid: Long, token: String, index: Int)
             : RequestResult<GalleryPreview>
 
@@ -59,6 +62,7 @@ interface Repository {
 
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
+
 
     suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
             : RequestResult<List<Comment>>

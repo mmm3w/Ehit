@@ -1,12 +1,14 @@
 package com.mitsuki.ehit.model.entity
 
+
 data class DownloadListInfo(
     val gid: Long,
     val token: String,
     val thumb: String,
     val title: String,
     val total: Int,
-    val completed:Int
+    val completed: Int,
+    val local_thumb: String = "",
 ) {
     override fun equals(other: Any?): Boolean {
         return other is DownloadListInfo &&
