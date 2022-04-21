@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.detail.dialog
+package com.mitsuki.ehit.ui.download.dialog
 
 import android.os.Bundle
 import android.view.View
@@ -9,7 +9,7 @@ import com.mitsuki.ehit.databinding.DialogGalleryMenuListBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.detail.adapter.GalleryPreviewMenuAdapter
 
-class GalleryPreviewMenu : BottomDialogFragment(R.layout.dialog_gallery_menu_list) {
+class OptionMenu: BottomDialogFragment(R.layout.dialog_gallery_menu_list) {
 
     private val binding by viewBinding(DialogGalleryMenuListBinding::bind)
 

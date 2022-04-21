@@ -14,9 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityDownloadBinding
+import com.mitsuki.ehit.model.entity.DownloadListInfo
+import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.ui.download.ControlAnimate
 import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
 import com.mitsuki.ehit.ui.download.adapter.ListItemTouchCallback
@@ -53,6 +57,7 @@ class DownloadActivity : BaseActivity() {
             DownloadBroadcast.sendStopAll()
         }
 
+        mMainAdapter.receiver<DownloadListInfo>("option").observe(this, this::onItemOption)
 
         ItemTouchHelper(ListItemTouchCallback {
             mMainAdapter.item(it).apply {
@@ -73,6 +78,10 @@ class DownloadActivity : BaseActivity() {
                 mMainAdapter.submitData(it)
             }
         }
+
+    }
+
+    fun onItemOption(info: DownloadListInfo) {
 
     }
 

@@ -112,6 +112,11 @@
     <string name="text_start_download">开始下载……</string>
     <string name="text_download_finish">下载结束！</string>
 
+    <string name="text_export_zip">导出zip至……</string>
+    <string name="text_export_image">导出图片至……</string>
+    <string name="text_delete">删除</string>
+    <string name="text_detail">详情页面</string>
+
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>
     <string name="text_setting_read">阅读设置</string>

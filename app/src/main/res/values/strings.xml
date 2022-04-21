@@ -25,7 +25,7 @@
     <string name="text_4" translatable="false">4</string>
     <string name="text_5" translatable="false">5</string>
 
-    <string name="page_separate" translatable="false">%d/%d</string>
+    <string name="page_separate" translatable="false">$d/%d</string>
 
     <string name="dev_text_restart">Please restart the app</string>
 
@@ -136,6 +136,12 @@
     <string name="text_page_range">%d to %d</string>
     <string name="text_start_download">Start download…</string>
     <string name="text_download_finish">Download finish!</string>
+
+    <string name="text_export_zip">Export zip to……</string>
+    <string name="text_export_image">Export image to……</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_detail">Detail</string>
+
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>

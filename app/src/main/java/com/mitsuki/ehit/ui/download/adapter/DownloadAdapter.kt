@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.ui.download.adapter
 
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,11 @@ import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.coil.CacheKey
+import com.mitsuki.ehit.crutch.event.Emitter
+import com.mitsuki.ehit.crutch.event.EventEmitter
+import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extensions.corners
 import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.extensions.viewBinding
@@ -18,11 +23,13 @@ import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.DownloadListInfo
 import kotlin.math.roundToInt
 
-class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
+class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), EventEmitter {
 
     companion object {
         const val PAYLOAD_PROGRESS_UPDATE = "PAYLOAD_PROGRESS_UPDATE"
     }
+
+    override val eventEmitter: Emitter = Emitter()
 
     private val mData: NotifyQueueData<DownloadListInfo> =
         NotifyQueueData(Diff.DOWNLOAD_LIST_INFO).apply {
@@ -31,16 +38,32 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
 
     fun item(index: Int) = mData.item(index)
 
+    private val mOptionClick = { view: View ->
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        post("option", mData.item(position))
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent).apply {
-            binding.root.setOnClickListener {
+        return ViewHolder(parent).also { vh ->
+            vh.binding.root.apply {
+                tag = vh
+                setOnClickListener {
 
+                }
+                setOnLongClickListener {
+                    mOptionClick.invoke(it)
+                    true
+                }
             }
-            binding.downloadTrigger.setOnClickListener {
+            vh.binding.downloadTrigger.apply {
+                tag = vh
+                setOnClickListener {
 
+                }
             }
-            binding.downloadOption.setOnClickListener {
-
+            vh.binding.downloadOption.apply {
+                tag = vh
+                setOnClickListener(mOptionClick)
             }
         }
     }
@@ -77,15 +100,12 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
 
         fun bind(info: DownloadListInfo) {
             with(info) {
-                Log.d("asdf", "$this")
                 binding.downloadGalleryThumb.load(local_thumb.ifEmpty { thumb }) {
                     memoryCacheKey(CacheKey.thumbKey(gid, token))
-                    listener(onError = { r, t ->
-                        Log.d("asdf", "$t")
-                    })
                 }
                 binding.downloadGalleryTitle.text = title
-                binding.downloadProgressText.text = "${completed}/${total}"
+                binding.downloadProgressText.text =
+                    AppHolder.string(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
             }
@@ -93,7 +113,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
 
         fun updateProgress(info: DownloadListInfo) {
             with(info) {
-                binding.downloadProgressText.text = "${completed}/${total}"
+                binding.downloadProgressText.text =
+                    AppHolder.string(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
             }
