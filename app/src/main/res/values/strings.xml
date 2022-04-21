@@ -133,7 +133,8 @@
     <string name="text_uncompleted">Uncompleted</string>
     <string name="text_page_front">Page:</string>
     <string name="text_page_back" />
-    <string name="text_start_download">Start donwload…</string>
+    <string name="text_page_range">%d to %d</string>
+    <string name="text_start_download">Start download…</string>
     <string name="text_download_finish">Download finish!</string>
 
     <string name="text_setting_eh">EH Setting</string>

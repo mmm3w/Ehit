@@ -118,7 +118,7 @@ class GalleryDetailViewModel @Inject constructor(
                     val name = GalleryFavorites.findName(cat)
                     galleryDao.updateGalleryFavorites(gid, token, name)
 
-                    post("fav", 0)
+                    favorite.postValue(cat >= 0)
                     post("toast", string(strRes))
                 }
                 is RequestResult.Fail -> post(

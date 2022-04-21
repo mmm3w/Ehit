@@ -1,9 +1,11 @@
-package com.mitsuki.ehit.ui.download.dialog
+package com.mitsuki.ehit.ui.detail.dialog
 
 import android.os.Bundle
 import android.view.View
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogDownloadRangeBinding
 import com.mitsuki.ehit.ui.common.dialog.BaseDialogFragment
@@ -16,9 +18,15 @@ class DownloadRangeDialog(
 
     private val binding by viewBinding(DialogDownloadRangeBinding::bind)
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding?.dialogDownloadRange?.apply {
+            thumbColor = 0xff808080
+            selectedColor = 0xff808080
+            progressWidth = dp2px(4f)
+            thumbSize = dp2px(8f)
+        }
 
         binding?.dialogDownloadRange?.apply {
             setMinValue(1)
@@ -39,7 +47,7 @@ class DownloadRangeDialog(
     }
 
     private fun setTextHint(start: Int, end: Int) {
-        binding?.dialogDownloadRangeHint?.text = "$start to $end"
+        binding?.dialogDownloadRangeHint?.text = string(R.string.text_page_range).format(start, end)
     }
 
 }

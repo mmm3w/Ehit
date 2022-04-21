@@ -12,9 +12,6 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.afollestad.materialdialogs.list.listItems
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.mitsuki.armory.base.extend.statusBarHeight
@@ -27,10 +24,8 @@ import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivitySearchBinding
-import com.mitsuki.ehit.model.ehparser.GalleryRating
 import com.mitsuki.ehit.model.entity.SearchKey
 import com.mitsuki.ehit.model.entity.db.SearchHistory
-import com.mitsuki.ehit.ui.temp.adapter.*
 import com.mitsuki.ehit.ui.search.adapter.*
 import com.mitsuki.ehit.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -147,12 +142,13 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun onRatingEvent() {
-        MaterialDialog(this).show {
-            listItems(items = GalleryRating.strList(this@SearchActivity)) { _, index, _ ->
-                mAdvancedAdapter.applyRating(GalleryRating.DATA[index])
-            }
-            lifecycleOwner(this@SearchActivity)
-        }
+        //TODO 补上逻辑
+//        MaterialDialog(this).show {
+//            listItems(items = GalleryRating.strList(this@SearchActivity)) { _, index, _ ->
+//                mAdvancedAdapter.applyRating(GalleryRating.DATA[index])
+//            }
+//            lifecycleOwner(this@SearchActivity)
+//        }
     }
 
     private fun onSwitch(isAdvancedMode: Boolean) {

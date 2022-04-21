@@ -149,11 +149,6 @@ dependencies {
     implementation "androidx.room:room-ktx:2.4.1"
 
     //----------------------------------------------------------------------------------------------
-    def material_dialogs_version = "3.3.0"
-    implementation "com.afollestad.material-dialogs:core:$material_dialogs_version"
-    implementation "com.afollestad.material-dialogs:input:$material_dialogs_version"
-    implementation "com.afollestad.material-dialogs:bottomsheets:$material_dialogs_version"
-    implementation "com.afollestad.material-dialogs:lifecycle:$material_dialogs_version"
 
     implementation "org.jsoup:jsoup:1.13.1"
     implementation "com.alibaba:arouter-api:1.5.2"

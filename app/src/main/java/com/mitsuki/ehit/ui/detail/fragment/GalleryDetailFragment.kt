@@ -3,7 +3,6 @@ package com.mitsuki.ehit.ui.detail.fragment
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -12,23 +11,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
-import com.mitsuki.armory.base.widget.RatingView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extensions.observe
@@ -36,7 +27,6 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
-import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
@@ -44,7 +34,8 @@ import com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
-import com.mitsuki.ehit.ui.download.dialog.DownloadRangeDialog
+import com.mitsuki.ehit.ui.detail.dialog.DownloadRangeDialog
+import com.mitsuki.ehit.ui.detail.dialog.FavoriteDialog
 import com.mitsuki.ehit.ui.download.service.DownloadService
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -305,31 +296,27 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     }
 
     private fun showRatingDialog() {
-        MaterialDialog(requireContext()).show {
-            title(res = R.string.text_rate)
-            customView(viewRes = R.layout.dialog_rating)
-            getCustomView().findViewById<RatingView>(R.id.rating_target)?.rating =
-                mViewModel.rating
-            positiveButton(res = R.string.text_confirm) {
-                it.getCustomView()
-                    .findViewById<RatingView>(R.id.rating_target)?.rating?.apply {
-                        mViewModel.submitRating(this)
-                    }
-            }
-            negativeButton(res = R.string.text_cancel)
-            lifecycleOwner(viewLifecycleOwner)
-        }
+        //TODO 补上逻辑
+//        MaterialDialog(requireContext()).show {
+//            title(res = R.string.text_rate)
+//            customView(viewRes = R.layout.dialog_rating)
+//            getCustomView().findViewById<RatingView>(R.id.rating_target)?.rating =
+//                mViewModel.rating
+//            positiveButton(res = R.string.text_confirm) {
+//                it.getCustomView()
+//                    .findViewById<RatingView>(R.id.rating_target)?.rating?.apply {
+//                        mViewModel.submitRating(this)
+//                    }
+//            }
+//            negativeButton(res = R.string.text_cancel)
+//            lifecycleOwner(viewLifecycleOwner)
+//        }
     }
 
     private fun showFavoriteDialog() {
-        MaterialDialog(requireContext()).show {
-            title(res = R.string.title_add_favorites)
-            listItemsSingleChoice(
-                items = GalleryFavorites.favorites,
-                initialSelection = GalleryFavorites.findIndex(mViewModel.favoriteName)
-            ) { _, index, _ -> mViewModel.submitFavorites(index) }
-            lifecycleOwner(viewLifecycleOwner)
-        }
+        FavoriteDialog(mViewModel.favoriteName) {
+            mViewModel.submitFavorites(it)
+        }.show(childFragmentManager, "favorite")
     }
 
 }

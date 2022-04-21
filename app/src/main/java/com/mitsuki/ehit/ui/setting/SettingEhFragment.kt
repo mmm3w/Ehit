@@ -4,9 +4,6 @@ import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.mitsuki.armory.base.span.SpannableBuilder
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.Url
@@ -35,23 +32,25 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         get() = ""
 
     private fun showLogoutDialog(): Boolean {
-        MaterialDialog(requireContext()).show {
-//            title(res = R.string.title_sign_out)
-            title(text = "中")
-            message(res = R.string.text_sign_out_desc)
-            positiveButton(R.string.text_confirm) { /*退出操作*/ }
-            lifecycleOwner(this@SettingEhFragment)
-        }
+        //TODO 补上逻辑
+//        MaterialDialog(requireContext()).show {
+////            title(res = R.string.title_sign_out)
+//            title(text = "中")
+//            message(res = R.string.text_sign_out_desc)
+//            positiveButton(R.string.text_confirm) { /*退出操作*/ }
+//            lifecycleOwner(this@SettingEhFragment)
+//        }
         return true
     }
 
     private fun showCookieDialog(): Boolean {
-        MaterialDialog(requireContext()).show {
-            title(res = R.string.title_cookie)
-            message(text = allCookieInfo)
-            positiveButton(R.string.text_copy) { /*复制json操作*/ }
-            lifecycleOwner(this@SettingEhFragment)
-        }
+        //TODO 补上逻辑
+//        MaterialDialog(requireContext()).show {
+//            title(res = R.string.title_cookie)
+//            message(text = allCookieInfo)
+//            positiveButton(R.string.text_copy) { /*复制json操作*/ }
+//            lifecycleOwner(this@SettingEhFragment)
+//        }
         return true
     }
 

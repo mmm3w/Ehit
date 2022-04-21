@@ -23,14 +23,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_16" />
+        android:layout_marginTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_16" />
 
     <TextView
         android:id="@+id/dialog_download_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:background="?android:attr/selectableItemBackground"
         android:paddingHorizontal="@dimen/dp_20"
         android:paddingVertical="@dimen/dp_8"
