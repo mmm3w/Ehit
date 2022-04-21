@@ -15,7 +15,12 @@ abstract class DownloadDao {
     @Transaction
     open fun updateDownloadList(message: DownloadMessage): List<DownloadNode> {
 
-        insertDownloadInfo(DownloadBaseInfo(message))
+        val cache = queryDownloadInfo(message.gid, message.token)
+        if (cache == null){
+            insertDownloadInfo(DownloadBaseInfo(message))
+        }else{
+            updateDownloadInfo(DownloadBaseInfo(message))
+        }
 
         val downloadList: MutableList<DownloadNode> = arrayListOf()
         (message.start..message.end).forEach {
@@ -72,7 +77,7 @@ abstract class DownloadDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertDownloadInfo(info: DownloadBaseInfo)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     abstract fun updateDownloadInfo(info: DownloadBaseInfo)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
