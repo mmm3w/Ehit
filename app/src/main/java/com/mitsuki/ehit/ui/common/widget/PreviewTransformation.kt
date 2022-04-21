@@ -1,11 +1,10 @@
 package com.mitsuki.ehit.ui.common.widget
 
-import android.graphics.Bitmap
-import android.graphics.Rect
+import android.graphics.*
 import android.widget.ImageView
 import androidx.annotation.Px
 import androidx.core.graphics.applyCanvas
-import coil.bitmap.BitmapPool
+import androidx.core.graphics.createBitmap
 import coil.size.Size
 import coil.transform.Transformation
 
@@ -17,10 +16,10 @@ class PreviewTransformation(
     @Px private val bottom: Int
 ) : Transformation {
 
-    override fun key(): String = "${PreviewTransformation::class.java.name}$left$top$right$bottom"
+    override val cacheKey: String =
+        "${PreviewTransformation::class.java.name}$left$top$right$bottom"
 
-    override suspend fun transform(pool: BitmapPool, input: Bitmap, size: Size): Bitmap {
-        //获取目标view的大小
+    override suspend fun transform(input: Bitmap, size: Size): Bitmap {
         val targetWidth = target.measuredWidth
         val targetHeight = target.measuredHeight
 
@@ -37,15 +36,11 @@ class PreviewTransformation(
             resultWidth = (targetHeight * ratio).toInt()
         }
 
-        val output = pool.get(resultWidth, resultHeight, input.config ?: Bitmap.Config.ARGB_8888)
+        val output = createBitmap(targetWidth, targetHeight, input.config ?: Bitmap.Config.ARGB_8888)
         output.applyCanvas {
-            drawBitmap(
-                input,
-                Rect(left, top, right, bottom),
-                Rect(0, 0, resultWidth, resultHeight),
-                null
-            )
+            drawBitmap(input, Rect(left, top, right, bottom), Rect(0, 0, resultWidth, resultHeight), null)
         }
+
         return output
     }
 

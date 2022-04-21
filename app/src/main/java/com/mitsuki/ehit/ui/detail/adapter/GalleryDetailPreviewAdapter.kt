@@ -8,7 +8,8 @@ import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.size.OriginalSize
+
+import coil.size.Size
 import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.coil.CacheKey
@@ -50,7 +51,7 @@ class GalleryDetailPreviewAdapter(
                     val metaTag = CacheKey.previewKey(gid, token, it.index + 1)
                     placeholderMemoryCacheKey(CacheKey.largeTempKey(metaTag))
                     if (it.left >= 0 && it.top >= 0 && it.right >= 0 && it.bottom >= 0) {
-                        size(OriginalSize)
+                        size(Size.ORIGINAL)
                         transformations(
                             PreviewTransformation(this@apply, it.left, it.top, it.right, it.bottom)
                         )

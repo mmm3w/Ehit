@@ -77,8 +77,12 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
 
         fun bind(info: DownloadListInfo) {
             with(info) {
+                Log.d("asdf", "$this")
                 binding.downloadGalleryThumb.load(local_thumb.ifEmpty { thumb }) {
                     memoryCacheKey(CacheKey.thumbKey(gid, token))
+                    listener(onError = { r, t ->
+                        Log.d("asdf", "$t")
+                    })
                 }
                 binding.downloadGalleryTitle.text = title
                 binding.downloadProgressText.text = "${completed}/${total}"

@@ -6,11 +6,12 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import coil.clear
+import coil.dispose
 import coil.load
+import coil.request.ErrorResult
 import coil.request.ImageRequest
-import coil.request.ImageResult
-import coil.size.OriginalSize
+import coil.request.SuccessResult
+import coil.size.Size
 import com.mitsuki.armory.imagegesture.ImageGesture
 import com.mitsuki.armory.imagegesture.StartType
 import com.mitsuki.armory.loadprogress.Progress
@@ -22,7 +23,6 @@ import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.detail.dialog.GalleryPreviewMenu
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
-import com.mitsuki.ehit.ui.common.widget.OriginalTransformation
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -71,14 +71,15 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
     private fun onLoadImage(url: String) {
         binding?.galleryImage?.apply {
-            clear()
+            dispose()
             load(url) {
                 memoryCacheKey(mViewModel.largeCacheTag)
-                size(OriginalSize)
-                transformations(OriginalTransformation())
+                size(Size.ORIGINAL)
+                    //TODO 补充
+//                transformations(OriginalTransformation())
                 listener(
-                    onError = { _: ImageRequest, throwable: Throwable -> onLoadError(throwable) },
-                    onSuccess = { _: ImageRequest, _: ImageResult.Metadata -> onLoadSuccess() }
+                    onError = { _: ImageRequest, error: ErrorResult -> onLoadError(error.throwable) },
+                    onSuccess = { _: ImageRequest, _: SuccessResult -> onLoadSuccess() }
                 )
             }
         }

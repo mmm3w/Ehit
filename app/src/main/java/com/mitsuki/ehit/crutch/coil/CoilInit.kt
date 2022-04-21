@@ -31,13 +31,8 @@ object CoilInit {
     fun init(context: Context, cookieJar: CookieJar) {
         Coil.setImageLoader(ImageLoader.Builder(context)
             .okHttpClient(buildCoilOkHttpClient(context, cookieJar))
-            .availableMemoryPercentage(0.9)
             .crossfade(true)
             .error(R.drawable.ic_baseline_broken_image_24)
-            .componentRegistry {
-                add(RetryInterceptor(RETRY_TIMES))
-                if (BuildConfig.SAVE_MODE) add(LoadBreakInterceptor())
-            }
             .build())
     }
 
