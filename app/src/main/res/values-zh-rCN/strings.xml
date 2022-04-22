@@ -109,11 +109,11 @@
     <string name="text_page_front">第</string>
     <string name="text_page_back">页</string>
     <string name="text_page_range">第%d页到第%d页</string>
-    <string name="text_start_download">开始下载……</string>
+    <string name="text_start_download">开始下载…</string>
     <string name="text_download_finish">下载结束！</string>
 
-    <string name="text_export_zip">导出zip至……</string>
-    <string name="text_export_image">导出图片至……</string>
+    <string name="text_export_zip">导出压缩包至…</string>
+    <string name="text_export_image">导出图片至…</string>
     <string name="text_delete">删除</string>
     <string name="text_detail">详情页面</string>
 

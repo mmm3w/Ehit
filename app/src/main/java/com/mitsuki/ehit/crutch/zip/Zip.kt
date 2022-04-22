@@ -14,21 +14,9 @@ object Zip {
      * folder 需要被压缩的文件目录
      * file 需要被压缩的文件目录下的目标文件，null时全部压缩
      */
-    fun pack(
-        outputStream: OutputStream,
-        folder: File,
-        file: Array<String>? = null
-    ) {
-        if (!folder.exists()) throw IllegalAccessException("源目录不存在")
-        if (outputStream is BufferedOutputStream) {
-            packWithBufferedStream(outputStream, folder, file)
-        } else {
-            BufferedOutputStream(outputStream).use { bufferedOutputStream ->
-                packWithBufferedStream(bufferedOutputStream, folder, file)
-            }
-        }
-    }
 
+
+    /** 压缩 ***************************************************************************************/
     private fun packWithBufferedStream(
         outputStream: BufferedOutputStream,
         folder: File,
@@ -36,7 +24,7 @@ object Zip {
     ) {
         ZipOutputStream(outputStream).use { zipOutputStream ->
             if (file != null) {
-                if (!folder.isDirectory) throw IllegalAccessException("源目录非文件夹目录")
+                if (!folder.isDirectory) throw IllegalAccessException("illegal dir")
                 for (name in file) zip(File(folder, name), zipOutputStream)
             } else {
                 zip(folder, zipOutputStream)
@@ -44,6 +32,41 @@ object Zip {
         }
     }
 
+    private fun zip(file: File, zipOutputStream: ZipOutputStream) {
+        if (file.exists()) {
+            if (file.isDirectory) {
+                file.list()?.apply {
+                    if (isEmpty()) {
+                        zipOutputStream.putNextEntry(ZipEntry(file.name + File.separator))
+                        zipOutputStream.closeEntry()
+                    } else {
+                        for (name in this) zip(File(file, name), zipOutputStream)
+                    }
+                }
+            } else {
+                zipFile(file, zipOutputStream)
+            }
+        }
+    }
+
+    private fun zipFile(file: File, zipOutputStream: ZipOutputStream) {
+        zipOutputStream.putNextEntry(ZipEntry(file.name))
+        file.inputStream().buffered().use { fileInputStream ->
+            BufferedInputStream(fileInputStream).use { zipOutputStream.write(it, 1024) }
+        }
+        zipOutputStream.closeEntry()
+    }
+
+    fun pack(
+        outputStream: OutputStream,
+        folder: File,
+        file: Array<String>? = null
+    ) {
+        if (!folder.exists()) throw IllegalAccessException("illegal dir")
+        packWithBufferedStream(outputStream.buffered(), folder, file)
+    }
+
+    /** 解压 ***************************************************************************************/
     fun unpack(
         inputStream: InputStream,
         target: File
@@ -88,30 +111,8 @@ object Zip {
         }
     }
 
-    private fun zip(file: File, zipOutputStream: ZipOutputStream) {
-        if (file.exists()) {
-            if (file.isDirectory) {
-                file.list()?.apply {
-                    if (isEmpty()) {
-                        zipOutputStream.putNextEntry(ZipEntry(file.name + File.separator))
-                        zipOutputStream.closeEntry()
-                    } else {
-                        for (name in this) zip(File(file, name), zipOutputStream)
-                    }
-                }
-            } else {
-                zipFile(file, zipOutputStream)
-            }
-        }
-    }
 
-    private fun zipFile(file: File, zipOutputStream: ZipOutputStream) {
-        zipOutputStream.putNextEntry(ZipEntry(file.name))
-        file.inputStream().use { fileInputStream ->
-            BufferedInputStream(fileInputStream).use { zipOutputStream.write(it, 1024) }
-        }
-        zipOutputStream.closeEntry()
-    }
+    /**********************************************************************************************/
 
     private fun OutputStream.write(inputStream: InputStream, bufferSize: Int) {
         var len: Int

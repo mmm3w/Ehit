@@ -29,4 +29,18 @@ data class DownloadListInfo(
         result = 31 * result + completed
         return result
     }
+
+    fun toGallery(): Gallery {
+        return Gallery(
+            gid,
+            token,
+            "",
+            "",
+            title,
+            "",
+            local_thumb.ifEmpty { thumb },
+            emptyArray(),
+            0f
+        )
+    }
 }

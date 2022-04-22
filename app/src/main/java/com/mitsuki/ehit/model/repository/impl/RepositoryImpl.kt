@@ -14,6 +14,7 @@ import com.mitsuki.armory.httprookie.request.json
 import com.mitsuki.armory.httprookie.request.params
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
+import com.mitsuki.ehit.const.DirManager
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.crutch.toJson
@@ -468,7 +469,7 @@ class RepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             when (val info: RequestResult<GalleryPreview> = galleryPreview(gid, token, index)) {
                 is RequestResult.Success<GalleryPreview> -> {
-                    val cacheFolder = AppHolder.cacheDir("download/$gid-$token")
+                    val cacheFolder = DirManager.downloadCache(gid, token)
                     val fileName = String.format("%09d", index) + "." +
                             MimeTypeMap.getFileExtensionFromUrl(info.data.imageUrl)
                     val imageFile = File(cacheFolder, fileName)

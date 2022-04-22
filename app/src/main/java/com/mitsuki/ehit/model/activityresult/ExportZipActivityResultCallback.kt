@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.zip
+package com.mitsuki.ehit.model.activityresult
 
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
@@ -7,6 +7,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.zip.Zip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,31 +17,29 @@ import java.lang.Exception
 /**
  * 想外部存储写入
  */
-class ZipPacker(
+class ExportZipActivityResultCallback(
     private val lifecycleOwner: LifecycleOwner,
-    private val registry: ActivityResultRegistry,
-    private val folder: File,
-    private val files: Array<String>? = null,
-    private val input: () -> String
+    private val registry: ActivityResultRegistry
 ) : DefaultLifecycleObserver {
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    private lateinit var packerLauncher: ActivityResultLauncher<String>
+    private lateinit var packerLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(owner: LifecycleOwner) {
         packerLauncher =
-            registry.register("packZip", owner, ActivityResultContracts.CreateDocument()) {
-                if (it == null) {
-                    AppHolder.toast("取消保存")
+            registry.register("ExportGalleryZip", owner, ExportZipActivityResultContract()) {
+                val uri = it.second
+                val folder = it.first
+                if (uri == null) {
                     return@register
                 }
                 owner.lifecycleScope.launch(Dispatchers.IO) {
                     try {
-                        AppHolder.contentResolver.openOutputStream(it)?.use { outputStream->
-                            Zip.pack(outputStream, folder, files)
+                        AppHolder.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                            Zip.pack(outputStream, folder)
                         }
                         withContext(Dispatchers.Main) { AppHolder.toast("保存成功") }
                     } catch (inner: Exception) {
@@ -56,7 +55,7 @@ class ZipPacker(
     }
 
 
-    fun pack() {
-        packerLauncher.launch(input())
+    fun pack(title: String, gid: Long, token: String) {
+        packerLauncher.launch(arrayOf(title, gid.toString(), token))
     }
 }

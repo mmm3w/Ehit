@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.ui.main
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
@@ -19,7 +18,7 @@ import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.network.Url
 import com.mitsuki.ehit.databinding.ActivityMainBinding
-import com.mitsuki.ehit.crutch.zip.ZipPacker
+import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultCallback
 import com.mitsuki.ehit.crutch.zip.ZipReader
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -37,10 +36,12 @@ class MainActivity : BaseActivity() {
     }
     private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
+
     @Inject
     lateinit var shareData: ShareData
+
     @Inject
-    lateinit var openGate:OpenGate
+    lateinit var openGate: OpenGate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -93,6 +94,7 @@ class MainActivity : BaseActivity() {
         //TODO 还要做内部打开跳转相关的处理
         //针对url隐式意图打开的处理
         val uri = intent?.data
+        val data = intent?.getParcelableExtra<Gallery>(DataKey.GALLERY_INFO)
         when {
             openGate.open -> navDestination(R.id.nav_stack_open_gate, null)
             shareData.spSecurity -> navDestination(R.id.nav_stack_authority, null)
@@ -105,6 +107,7 @@ class MainActivity : BaseActivity() {
                     else -> GalleryPageSource.createByUri(uri)?.apply { onListLink(this) }
                 }
             }
+            data != null -> onGalleryDetail(data)
         }
     }
 
@@ -132,14 +135,16 @@ class MainActivity : BaseActivity() {
         //按/切割并获取对应位置参数
         path.split("/").apply {
             if (size >= 4) {
-                navDestination(
-                    R.id.nav_stack_gallery,
-                    bundleOf(
-                        DataKey.GALLERY_INFO to Gallery(this[2].toLongOrNull() ?: 0L, this[3])
-                    )
-                )
+                onGalleryDetail(Gallery(this[2].toLongOrNull() ?: 0L, this[3]))
             }
         }
+    }
+
+    private fun onGalleryDetail(detail: Gallery) {
+        navDestination(
+            R.id.nav_stack_gallery,
+            bundleOf(DataKey.GALLERY_INFO to detail)
+        )
     }
 
     private fun onListLink(source: GalleryPageSource) {
@@ -150,7 +155,7 @@ class MainActivity : BaseActivity() {
     private val readStorePermissionLauncher = readStorePermissionLauncher()
     private val writeStorePermissionLauncher = writeStorePermissionLauncher()
 
-    private lateinit var packer: ZipPacker
+    private lateinit var packer: ExportZipActivityResultCallback
     private lateinit var reader: ZipReader
 
 //    private fun onCreateDev() {

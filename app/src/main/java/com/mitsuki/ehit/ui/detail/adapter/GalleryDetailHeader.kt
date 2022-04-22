@@ -22,6 +22,8 @@ class GalleryDetailHeader(private var mData: HeaderInfo = HeaderInfo.DEFAULT) :
 
     override val eventEmitter: Emitter = Emitter()
 
+    private var isLoadLocal = false
+
     override val onViewHolderCreate: ViewHolder<ItemGalleryDetailHeaderBinding>.() -> Unit = {
         binding.galleryDetailUploader.setOnClickListener { post("header", UPLOADER) }
         binding.galleryDetailCategory.setOnClickListener { post("header", CATEGORY) }
@@ -31,8 +33,10 @@ class GalleryDetailHeader(private var mData: HeaderInfo = HeaderInfo.DEFAULT) :
         mData.also { info ->
             with(binding) {
                 galleryDetailThumb.apply {
-                    if (info.thumb.isNotEmpty())
+                    if (info.thumb.isNotEmpty() && !isLoadLocal) {
                         load(info.thumb) { placeholderMemoryCacheKey(info.cacheKey) }
+                        isLoadLocal = info.thumb.indexOfAny(arrayListOf("http", "https")) < 0
+                    }
                     isVisible = info.thumb.isNotEmpty()
                 }
                 galleryDetailTitle.apply {

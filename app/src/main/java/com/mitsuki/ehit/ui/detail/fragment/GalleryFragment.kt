@@ -21,7 +21,7 @@ import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
-import com.mitsuki.ehit.ui.detail.dialog.GalleryPreviewMenu
+import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,7 +75,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             load(url) {
                 memoryCacheKey(mViewModel.largeCacheTag)
                 size(Size.ORIGINAL)
-                    //TODO 补充
+                //TODO 补充
 //                transformations(OriginalTransformation())
                 listener(
                     onError = { _: ImageRequest, error: ErrorResult -> onLoadError(error.throwable) },
@@ -105,6 +105,8 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
 
 
     private fun showGalleryMenu() {
-        GalleryPreviewMenu().show(childFragmentManager, "menu")
+        BottomMenuDialogFragment(intArrayOf(R.string.text_refresh)) {
+            true
+        }.show(childFragmentManager, "menu")
     }
 }

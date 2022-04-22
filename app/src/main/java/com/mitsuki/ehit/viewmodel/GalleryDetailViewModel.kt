@@ -117,6 +117,7 @@ class GalleryDetailViewModel @Inject constructor(
 
                     val name = GalleryFavorites.findName(cat)
                     galleryDao.updateGalleryFavorites(gid, token, name)
+                    galleryDetail.favoriteName = name
 
                     favorite.postValue(cat >= 0)
                     post("toast", string(strRes))
@@ -139,7 +140,7 @@ class GalleryDetailViewModel @Inject constructor(
     }
 
     fun obtainDownloadMessage(start: Int, end: Int): DownloadMessage {
-        return DownloadMessage(gid, token, start, end, thumb, title)
+        return DownloadMessage(gid, token, start - 1, end - 1, thumb, title)
     }
 
 

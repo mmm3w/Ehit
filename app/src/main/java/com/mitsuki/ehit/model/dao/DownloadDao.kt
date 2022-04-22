@@ -23,10 +23,10 @@ abstract class DownloadDao {
         }
 
         val downloadList: MutableList<DownloadNode> = arrayListOf()
-        (message.start..message.end).forEach {
-            val isComplete = queryNodeComplete(message.gid, message.token, it) ?: 0
+        (message.start..message.end).forEach { index->
+            val isComplete = queryNodeComplete(message.gid, message.token, index) ?: 0
             if (isComplete == 0) {
-                downloadList.add(DownloadNode(message.gid, message.token, it))
+                downloadList.add(DownloadNode(message.gid, message.token, index))
             }
         }
         insertDownloadNode(downloadList)
