@@ -1,7 +1,6 @@
-package com.mitsuki.ehit.ui.download.service
+package com.mitsuki.ehit.service.download
 
 import android.app.Service
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.mitsuki.armory.base.NotificationHelper
 import com.mitsuki.ehit.R

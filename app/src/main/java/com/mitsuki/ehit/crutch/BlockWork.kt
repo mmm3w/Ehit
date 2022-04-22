@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.model.download
+package com.mitsuki.ehit.crutch
 
 import com.mitsuki.ehit.crutch.uils.tryUnlock
 import kotlinx.coroutines.*
@@ -6,17 +6,14 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.*
-import java.util.concurrent.LinkedBlockingDeque
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.ArrayList
-import kotlin.math.max
 
 
-class DownloadWork<T>(
+class BlockWork<T>(
     private val maxCount: Int,
     list: List<T> = emptyList(),
-    val action: suspend (T, Int, DownloadWork<T>) -> Unit
+    val action: suspend (T, Int, BlockWork<T>) -> Unit
 ) {
     private var mTotal = list.size
     private val mData: LinkedList<T> = LinkedList(list)
@@ -41,7 +38,7 @@ class DownloadWork<T>(
         runBlocking {
             for (item in mChannel) {
                 launch(Dispatchers.IO) {
-                    action(item, mTotal, this@DownloadWork)
+                    action(item, mTotal, this@BlockWork)
                     downLock.withLock { down++ }
                     count.getAndDecrement()
                     mBlockLock.tryUnlock()

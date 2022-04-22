@@ -36,7 +36,7 @@ import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.ui.detail.dialog.DownloadRangeDialog
 import com.mitsuki.ehit.ui.detail.dialog.FavoriteDialog
-import com.mitsuki.ehit.ui.download.service.DownloadService
+import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

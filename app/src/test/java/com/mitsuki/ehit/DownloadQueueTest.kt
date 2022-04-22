@@ -1,6 +1,6 @@
 package com.mitsuki.ehit
 
-import com.mitsuki.ehit.model.download.DownloadWork
+import com.mitsuki.ehit.crutch.BlockWork
 import kotlinx.coroutines.delay
 import org.junit.Test
 
@@ -35,7 +35,7 @@ class DownloadQueueTest {
 
     @Test
     fun workTest() {
-        val work = DownloadWork(
+        val work = BlockWork(
             3, arrayListOf(
                 "000001",
                 "000002",

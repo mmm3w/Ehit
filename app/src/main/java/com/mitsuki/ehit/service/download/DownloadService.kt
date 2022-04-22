@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.download.service
+package com.mitsuki.ehit.service.download
 
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
-import com.mitsuki.ehit.model.download.DownloadScheduler
 import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
@@ -119,16 +118,10 @@ class DownloadService : Service() {
 
     private fun handleEvent(intent: Intent?) {
         when (intent?.action) {
-            ACTION_DOWNLOAD -> {
-                intent.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)?.apply { postTask(this) }
-            }
-            ACTION_START_ALL -> {
-                startAll()
-            }
-            ACTION_RESTART -> {
-                (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
-                    restart(first as Long, second as String)
-                }
+            ACTION_DOWNLOAD -> intent.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)?.apply { postTask(this) }
+            ACTION_START_ALL -> startAll()
+            ACTION_RESTART -> (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
+                restart(first as Long, second as String)
             }
             DownloadBroadcast.DOWNLOAD_BROADCAST_PAGE -> {
                 CoroutineScope(Dispatchers.Default).launch {

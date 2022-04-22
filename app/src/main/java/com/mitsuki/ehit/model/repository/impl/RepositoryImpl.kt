@@ -510,6 +510,9 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+    override fun queryGalleryName(gid: Long, token: String): String {
+        return downloadDao.queryDownloadInfo(gid, token)?.title ?: ""
+    }
 
     override suspend fun favoritesSource(
         pageIn: FavouritePageIn,

@@ -1,23 +1,22 @@
-package com.mitsuki.ehit.model.download
+package com.mitsuki.ehit.service.download
 
 import android.util.Log
 import com.mitsuki.ehit.crutch.network.RequestResult
+import com.mitsuki.ehit.crutch.BlockWork
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
-import com.mitsuki.ehit.ui.download.service.DownloadBroadcast
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
 
 class DownloadScheduler(private val repository: Repository) {
-    private val mData: MutableMap<String, DownloadWork<DownloadNode>> = hashMapOf()
+    private val mData: MutableMap<String, BlockWork<DownloadNode>> = hashMapOf()
     private val mListData: MutableList<String> = arrayListOf()
     private val mDataLock = Mutex()
 
-
     private suspend fun innerAppend(tag: String, newNode: List<DownloadNode>) {
         mData[tag]?.apply { append(newNode) } ?: let {
-            mData[tag] = DownloadWork(3, newNode, this::downloadPage).apply {
+            mData[tag] = BlockWork(3, newNode, this::downloadPage).apply {
                 mListData.add(tag)
             }
         }
@@ -33,9 +32,7 @@ class DownloadScheduler(private val repository: Repository) {
 
     suspend fun cancelAll() {
         mDataLock.withLock {
-            mData.forEach { entry ->
-                entry.value.stop()
-            }
+            mData.forEach { entry -> entry.value.stop() }
             mData.clear()
             mListData.clear()
         }
@@ -82,14 +79,22 @@ class DownloadScheduler(private val repository: Repository) {
     private suspend fun downloadPage(
         node: DownloadNode,
         total: Int,
-        data: DownloadWork<DownloadNode>
+        data: BlockWork<DownloadNode>
     ) {
+        val name = repository.queryGalleryName(node.gid, node.token)
         when (val result = repository.downloadPage(node.gid, node.token, node.page)) {
             is RequestResult.Success<File> -> {
-                DownloadBroadcast.sendFinish(node, node.gid.toString(), 1, total, data.down)
+                DownloadBroadcast.sendFinish(
+                    node,
+                    name,
+                    result.data.absolutePath,
+                    1,
+                    total,
+                    data.down
+                )
             }
             is RequestResult.Fail<*> -> {
-                DownloadBroadcast.sendFinish(node, node.gid.toString(), 2, total, data.down)
+                DownloadBroadcast.sendFinish(node, node.gid.toString(), null, 2, total, data.down)
             }
         }
     }

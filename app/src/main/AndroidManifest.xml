@@ -42,8 +42,9 @@
         </activity>
 
         <service
-            android:name=".ui.download.service.DownloadService"
+            android:name="com.mitsuki.ehit.service.download.DownloadService"
             android:foregroundServiceType="dataSync" />
+        <service android:name="com.mitsuki.ehit.service.export.ExportService" />
 
         <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />
         <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity" />

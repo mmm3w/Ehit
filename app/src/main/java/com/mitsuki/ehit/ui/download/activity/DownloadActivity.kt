@@ -16,14 +16,13 @@ import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityDownloadBinding
 import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultCallback
-import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultContract
 import com.mitsuki.ehit.model.entity.DownloadListInfo
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
 import com.mitsuki.ehit.ui.download.ControlAnimate
 import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
 import com.mitsuki.ehit.ui.download.adapter.ListItemTouchCallback
-import com.mitsuki.ehit.ui.download.service.DownloadBroadcast
-import com.mitsuki.ehit.ui.download.service.DownloadService
+import com.mitsuki.ehit.service.download.DownloadBroadcast
+import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.main.MainActivity
 import com.mitsuki.ehit.viewmodel.DownloadViewModel
 import dagger.hilt.android.AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.download.service
+package com.mitsuki.ehit.service.download
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -34,7 +34,14 @@ object DownloadBroadcast {
     }
 
 
-    fun sendFinish(node: DownloadNode, name: String,state:Int, total: Int, over: Int) {
+    fun sendFinish(
+        node: DownloadNode,
+        name: String,
+        path: String?,
+        state: Int,
+        total: Int,
+        over: Int
+    ) {
         AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
             putExtra(TASK_NAME, name)
             putExtra(TASK_TOTAL, total)
@@ -45,8 +52,8 @@ object DownloadBroadcast {
                     node.gid,
                     node.token,
                     node.page,
-                    1,
-                    "${System.currentTimeMillis()}"
+                    state,
+                    path ?: ""
                 )
             )
             action = DOWNLOAD_BROADCAST_PAGE

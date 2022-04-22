@@ -95,4 +95,6 @@ interface Repository {
     suspend fun downloadPage(gid: Long, token: String, index: Int): RequestResult<File>
 
     suspend fun downloadFile(url: String, folder: File, name: String): RequestResult<File>
+
+    fun queryGalleryName(gid: Long, token: String): String
 }
