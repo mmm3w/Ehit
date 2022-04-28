@@ -16,6 +16,7 @@ import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.dao.GalleryDao
+import com.mitsuki.ehit.model.ehparser.Matcher
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +47,10 @@ class GalleryDetailViewModel @Inject constructor(
     private val mDetailPageIn = GeneralPageIn()
 
     val title: String get() = galleryDetail.title
-    val galleryName: String get() = galleryDetail.title
+    val galleryName: String get()  {
+
+        return galleryDetail.title.replace(Regex("\\[.*?]|\\(.*?\\)"),"")
+    }
     val uploader: String get() = galleryDetail.uploader
     val favoriteName: String? get() = galleryDetail.favoriteName
     val apiKey get() = galleryDetail.apiKey
