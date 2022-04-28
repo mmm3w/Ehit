@@ -43,13 +43,26 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
         post("option", mData.item(position))
     }
 
+    private val mThumbClick = { view: View ->
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        post("detail", mData.item(position))
+    }
+
+    private val mItemClick = { view: View ->
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        post("read", mData.item(position))
+    }
+
+    private val mTriggerClick = { view: View ->
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        post("download", mData.item(position))
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent).also { vh ->
             vh.binding.root.apply {
                 tag = vh
-                setOnClickListener {
-
-                }
+                setOnClickListener(mItemClick)
                 setOnLongClickListener {
                     mOptionClick.invoke(it)
                     true
@@ -57,13 +70,16 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
             }
             vh.binding.downloadTrigger.apply {
                 tag = vh
-                setOnClickListener {
-
-                }
+                setOnClickListener(mTriggerClick)
             }
             vh.binding.downloadOption.apply {
                 tag = vh
                 setOnClickListener(mOptionClick)
+            }
+
+            vh.binding.downloadGalleryThumb.apply {
+                tag = vh
+                setOnClickListener(mThumbClick)
             }
         }
     }

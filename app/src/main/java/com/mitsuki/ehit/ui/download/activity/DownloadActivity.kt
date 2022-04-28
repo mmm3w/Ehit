@@ -58,6 +58,8 @@ class DownloadActivity : BaseActivity() {
         }
 
         mMainAdapter.receiver<DownloadListInfo>("option").observe(this, this::onItemOption)
+        mMainAdapter.receiver<DownloadListInfo>("detail").observe(this, this::openDetail)
+        mMainAdapter.receiver<DownloadListInfo>("read").observe(this, this::openRead)
 
         ItemTouchHelper(ListItemTouchCallback {
             mMainAdapter.item(it).apply {
@@ -92,20 +94,28 @@ class DownloadActivity : BaseActivity() {
             )
         ) {
             when (it) {
-                0 -> {
-
-                }
-                1 -> startActivity(Intent(this, MainActivity::class.java)
-                    .apply { putExtra(DataKey.GALLERY_INFO, info.toGallery()) })
+                0 -> openRead(info)
+                1 -> openDetail(info)
                 2 -> mExportZip.pack(info.title, info.gid, info.token)
                 3 -> {
-
+                    //TODO
                 }
-                4 -> {
-
+                4 -> with(info) {
+                    DownloadBroadcast.sendStop(gid, token)
+                    mViewModel.deleteDownload(gid, token)
                 }
+
             }
             true
         }.show(supportFragmentManager, "option")
+    }
+
+    private fun openDetail(info: DownloadListInfo) {
+        startActivity(Intent(this, MainActivity::class.java)
+            .apply { putExtra(DataKey.GALLERY_INFO, info.toGallery()) })
+    }
+
+    private fun openRead(info: DownloadListInfo) {
+        //TODO
     }
 }

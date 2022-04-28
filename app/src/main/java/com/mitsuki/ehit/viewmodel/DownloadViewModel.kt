@@ -3,6 +3,8 @@ package com.mitsuki.ehit.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mitsuki.ehit.const.DirManager
+import com.mitsuki.ehit.crutch.extensions.clearDir
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.entity.DownloadListInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ class DownloadViewModel @Inject constructor(val downloadDao: DownloadDao) : View
     fun deleteDownload(gid: Long, token: String) {
         viewModelScope.launch(Dispatchers.Default) {
             downloadDao.deleteDownloadInfo(gid, token)
+            DirManager.downloadCache(gid, token).clearDir()
         }
     }
 
