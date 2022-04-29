@@ -10,7 +10,7 @@ import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
 import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.network.Url
+import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.model.entity.GalleryDetail
 
 class MoreInfoAdapter(info: GalleryDetail) : RecyclerView.Adapter<MoreInfoAdapter.ViewHolder>() {
@@ -44,7 +44,7 @@ class MoreInfoAdapter(info: GalleryDetail) : RecyclerView.Adapter<MoreInfoAdapte
         return arrayListOf(
             string(R.string.text_info_gid) to info.gid.toString(),
             string(R.string.text_info_token) to info.token,
-            string(R.string.text_info_url) to Url.galleryDetail(info.gid, info.token),
+            string(R.string.text_info_url) to Site.galleryDetail(info.gid, info.token),
             string(R.string.text_info_title) to info.title,
             string(R.string.text_info_title_jp) to info.titleJP,
             string(R.string.text_info_thumb) to info.detailThumb,

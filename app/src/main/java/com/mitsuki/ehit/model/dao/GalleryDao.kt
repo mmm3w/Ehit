@@ -103,7 +103,7 @@ abstract class GalleryDao {
         gid: Long,
         token: String,
         page: Int,
-        timestamp: Long = System.currentTimeMillis() - DBValue.IMAGE_SROUCE_CACHE_DURATION
+        timestamp: Long = System.currentTimeMillis() - DBValue.IMAGE_SOURCE_CACHE_DURATION
     ): List<GalleryImageSourceCache>
 
     @Query("SELECT * FROM ${DBValue.TABLE_IMAGE_SOURCE} WHERE ${DBValue.TABLE_IMAGE_SOURCE}.gid = :gid AND ${DBValue.TABLE_IMAGE_SOURCE}.token = :token AND ${DBValue.TABLE_IMAGE_SOURCE}.`index` = :index AND ${DBValue.TABLE_IMAGE_SOURCE}.timestamp > :timestamp LIMIT 1")
@@ -111,7 +111,7 @@ abstract class GalleryDao {
         gid: Long,
         token: String,
         index: Int,
-        timestamp: Long = System.currentTimeMillis() - DBValue.IMAGE_SROUCE_CACHE_DURATION
+        timestamp: Long = System.currentTimeMillis() - DBValue.IMAGE_SOURCE_CACHE_DURATION
     ): GalleryImageSourceCache?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

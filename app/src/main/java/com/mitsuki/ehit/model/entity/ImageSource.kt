@@ -3,7 +3,9 @@ package com.mitsuki.ehit.model.entity
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.Matcher
 import com.mitsuki.ehit.crutch.extensions.htmlEscape
+import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.model.entity.db.GalleryImageSourceCache
+import java.util.regex.Pattern
 
 data class ImageSource(
     val imageUrl: String,
@@ -87,6 +89,9 @@ data class ImageSource(
 
         private fun parseWithNormal(content: String?): ArrayList<ImageSource> {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
+
+            val tokenRegex = Pattern.compile("${Site.galleryList}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
+
             return ArrayList<ImageSource>().apply {
                 Matcher.NORMAL_PREVIEW.matcher(content).also {
                     while (it.find()) {
@@ -100,7 +105,7 @@ data class ImageSource(
                         val top = 0
 
                         val pageUrl = it.group(5)?.trim()?.htmlEscape() ?: ""
-                        val pToken = Matcher.PREVIEW_PAGE_TO_TOKEN.matcher(pageUrl).run {
+                        val pToken = tokenRegex.matcher(pageUrl).run {
                             if (find()) group(1) else throw ParseThrowable("lost page token")
                         }
                         add(
@@ -116,13 +121,15 @@ data class ImageSource(
 
         private fun parseWithLarge(content: String?): MutableList<ImageSource> {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
+
+            val tokenRegex = Pattern.compile("${Site.galleryList}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
             return ArrayList<ImageSource>().apply {
                 Matcher.LARGE_PREVIEW.matcher(content).also {
                     while (it.find()) {
                         val index: Int = it.group(2).spToInt() - 1
                         if (index < 0) continue
                         val pageUrl = it.group(1)?.trim()?.htmlEscape() ?: ""
-                        val pToken = Matcher.PREVIEW_PAGE_TO_TOKEN.matcher(pageUrl).run {
+                        val pToken = tokenRegex.matcher(pageUrl).run {
                             if (find()) group(1) else throw ParseThrowable("lost page token")
                         }
                         val imageUrl = it.group(3)?.trim()?.htmlEscape() ?: ""

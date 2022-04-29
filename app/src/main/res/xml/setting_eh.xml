@@ -6,22 +6,24 @@
         app:icon="@drawable/ic_baseline_login_24"
         app:key="setting_logout"
         app:persistent="false"
-        app:title="@string/text_setting_sign_out" />
+        app:title="@string/text_sign_out" />
 
     <Preference
+        app:icon="@drawable/ic_baseline_cookie_24"
         app:isPreferenceVisible="false"
         app:key="setting_cookie"
         app:persistent="false"
         app:summary="@string/text_setting_cookie_summary"
         app:title="@string/text_setting_cookie" />
 
-    <ListPreference
+    <com.mitsuki.ehit.ui.setting.IntListPreference
         app:key="SP_DOMAIN"
         app:title="@string/text_setting_site"
         app:useSimpleSummaryProvider="true" />
 
     <Preference
         android:key="setting_site"
+        app:icon="@drawable/ic_baseline_web_24"
         app:persistent="false"
         app:title="打开站点设置" />
 

@@ -10,7 +10,9 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivitySettingBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private val binding by viewBinding(ActivitySettingBinding::inflate)
@@ -26,6 +28,7 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
         )
 
         setSupportActionBar(binding.appBar)
+        setTitle(R.string.text_menu_setting)
         supportFragmentManager.commit { replace(R.id.settings_container, SettingRootFragment()) }
     }
 

@@ -3,18 +3,12 @@ package com.mitsuki.ehit.crutch
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.mitsuki.ehit.crutch.network.CookieJarImpl
-import com.mitsuki.ehit.crutch.network.Url
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import com.mitsuki.ehit.crutch.network.Site
 
 class ShareData(context: Context) {
     private val mDefaultSP: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
 
-    init {
-        Url.domainCache = spDomain
-    }
 
     companion object {
         const val SP_SECURITY = "SP_SECURITY"
@@ -49,9 +43,9 @@ class ShareData(context: Context) {
     }
 
     /**********************************************************************************************/
-    var spDomain: String
-        set(value) = edit { putString(SP_DOMAIN, value) }
-        get() = string(SP_DOMAIN, Url.EH)
+    private var spDomain: Int
+        set(value) = edit { putInt(SP_DOMAIN, value) }
+        get() = int(SP_DOMAIN, 0)
 
     var spSecurity: Boolean
         set(value) = edit { putBoolean(SP_SECURITY, value) }
@@ -73,4 +67,17 @@ class ShareData(context: Context) {
         set(value) = edit { putInt(SP_GALLERY_PAGE_SIZE, value) }
         get() = int(SP_GALLERY_PAGE_SIZE)
 
+    /**********************************************************************************************/
+    var domain: Int = spDomain
+        set(value) {
+            if (value != field) {
+                field = value
+                spDomain = value
+                Site.refreshDomain(field)
+            }
+        }
+
+    init {
+        Site.refreshDomain(domain)
+    }
 }

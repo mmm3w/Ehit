@@ -8,7 +8,7 @@ import okhttp3.CookieJar
 import javax.inject.Inject
 
 @HiltAndroidApp
-class EhApplication : Application() {
+open class EhApplication : Application() {
 
     @Inject
     lateinit var cookieJar: CookieJar

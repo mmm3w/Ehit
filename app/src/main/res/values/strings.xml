@@ -48,7 +48,6 @@
     <string name="description_download_notification_name">Download Service Notification</string>
     <string name="description_download_notification">Description</string>
 
-    <string name="title_sign_out">Sign out</string>
     <string name="title_page_go_to">Go to</string>
     <string name="title_cookie">Cookie</string>
     <string name="title_add_favorites">Add to favorites</string>
@@ -144,6 +143,9 @@
     <string name="text_delete">Delete</string>
     <string name="text_detail">Detail</string>
 
+    <string name="text_sign_out">Sign out</string>
+
+
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>
     <string name="text_setting_read">Read</string>
@@ -152,12 +154,12 @@
     <string name="text_setting_other">Other</string>
     <string name="text_setting_about">About</string>
 
-    <string name="text_setting_sign_out">Sign out</string>
     <string name="text_setting_cookie">Cookie</string>
     <string name="text_setting_cookie_summary">Check cookie</string>
     <string name="text_setting_site">Site</string>
 
-    <string name="text_sign_out_desc">Do you really want to sign out?</string>
+    <string name="text_sign_out_desc">Do you really want to sign out?\n You need to restart the app after sign out.</string>
+    <string name="text_login_desc">Please restart the app to login.</string>
 
     <string name="text_info_gid">GID</string>
     <string name="text_info_token">Token</string>
@@ -177,7 +179,6 @@
     <string name="text_info_rating_count">Rating\ncount</string>
     <string name="text_info_rating">Rating</string>
     <string name="text_info_torrents">Torrents</string>
-
 
 
 </resources>

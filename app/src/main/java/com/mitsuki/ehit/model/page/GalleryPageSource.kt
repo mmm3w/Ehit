@@ -2,13 +2,8 @@ package com.mitsuki.ehit.model.page
 
 import android.net.Uri
 import android.os.Parcelable
-import androidx.core.os.bundleOf
 import com.mitsuki.armory.httprookie.request.UrlParams
-import com.mitsuki.ehit.R
-import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.const.RequestKey
-import com.mitsuki.ehit.crutch.network.Url
-import com.mitsuki.ehit.model.entity.Gallery
+import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.model.entity.SearchKey
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -57,7 +52,7 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
 
         @IgnoredOnParcel
         override val targetUrl: String
-            get() = Url.galleryList
+            get() = Site.galleryList
 
         @IgnoredOnParcel
         override val showContent: String
@@ -83,7 +78,7 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
     data class Uploader(val name: String) : GalleryPageSource(Type.UPLOADER) {
         @IgnoredOnParcel
         override val targetUrl: String
-            get() = Url.galleryListByUploader(name)
+            get() = Site.galleryListByUploader(name)
 
         @IgnoredOnParcel
         override val showContent: String
@@ -105,7 +100,7 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
     data class Tag(val tag: String) : GalleryPageSource(Type.TAG) {
         @IgnoredOnParcel
         override val targetUrl: String
-            get() = Url.galleryListByTag(tag)
+            get() = Site.galleryListByTag(tag)
 
         @IgnoredOnParcel
         override val showContent: String
@@ -127,7 +122,7 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
 
         @IgnoredOnParcel
         override val targetUrl: String
-            get() = Url.galleryListBySubscription
+            get() = Site.galleryListBySubscription
 
         @IgnoredOnParcel
         override val showContent: String
@@ -153,7 +148,7 @@ sealed class GalleryPageSource(val type: Type) : Parcelable {
     class Popular : GalleryPageSource(Type.WHATS_HOT) {
         @IgnoredOnParcel
         override val targetUrl: String
-            get() = Url.galleryListByPopular
+            get() = Site.galleryListByPopular
 
         @IgnoredOnParcel
         override val showContent: String

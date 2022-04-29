@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.model.entity.request
 
-import com.mitsuki.ehit.const.ParamValue
+import com.mitsuki.ehit.const.ParamsValue
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -12,5 +12,5 @@ class RequestVoteInfo(
     @Json(name = "token") val token: String,
     @Json(name = "comment_id") val cid: Long,
     @Json(name = "comment_vote") val vote: Int,
-    @Json(name = "method") val method: String = ParamValue.VOTE_COMMENT
+    @Json(name = "method") val method: String = ParamsValue.VOTE_COMMENT
 )

@@ -22,7 +22,6 @@
     <string name="description_download_notification">通知下载进度、下载状态等信息</string>
 
     <string name="title_page_go_to">跳转</string>
-    <string name="title_sign_out">退出登录</string>
     <string name="title_cookie">Cookie</string>
     <string name="title_add_favorites">添加收藏</string>
     <string name="title_quick_search">快速搜索</string>
@@ -117,6 +116,8 @@
     <string name="text_delete">删除</string>
     <string name="text_detail">详情页面</string>
 
+    <string name="text_sign_out">退出登录</string>
+
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>
     <string name="text_setting_read">阅读设置</string>
@@ -125,12 +126,14 @@
     <string name="text_setting_other">其他设置</string>
     <string name="text_setting_about">关于</string>
 
-    <string name="text_setting_sign_out">退出登录</string>
+
     <string name="text_setting_cookie">身份Cookie</string>
     <string name="text_setting_cookie_summary">查看Cookie</string>
     <string name="text_setting_site">站点选择</string>
 
-    <string name="text_sign_out_desc">确定要退出登录吗？</string>
+    <string name="text_sign_out_desc">确定要退出登录吗？\n在退出登录后您需要重新APP。</string>
+    <string name="text_login_desc">请重启APP进行登录操作。</string>
+
 
     <string name="text_info_gid">GID</string>
     <string name="text_info_token">Token</string>

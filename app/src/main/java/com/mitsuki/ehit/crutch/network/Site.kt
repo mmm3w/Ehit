@@ -1,29 +1,26 @@
 package com.mitsuki.ehit.crutch.network
 
-import android.content.Context
-import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.ShareData
+object Site {
 
-object Url {
+    const val EH = "e-hentai.org" //0
+    const val EX = "exhentai.org" //1
 
-    const val EH = "e-hentai.org"
-    const val EX = "exhentai.org"
+    var currentDomain: String = domain(0)
+        private set
 
-    var domain: Array<String> = arrayOf(EH, EX)
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun host(id: Int): String {
+        return if (id == 1) EX else EH
+    }
 
-    //由link跳转进来应该需要按link的domain调整整体的domain
+    fun domain(id: Int): String {
+        return "https://${host(id)}"
+    }
 
-    var proxyDomain: String? = null
+    fun refreshDomain(id: Int) {
+        currentDomain = domain(id)
+    }
 
-    var domainCache: String = ""
-
-    val currentDomain: String
-        get() {
-            if (proxyDomain != null && proxyDomain?.isNotEmpty() == true) {
-                return "https://${proxyDomain}"
-            }
-            return "https://${domainCache}"
-        }
 
     val login: String get() = "https://forums.e-hentai.org/index.php?act=Login&CODE=01"
 

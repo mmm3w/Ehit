@@ -3,12 +3,11 @@ package com.mitsuki.ehit.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.network.CookieManager
-import com.mitsuki.ehit.crutch.network.Url
+import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.repository.Repository
@@ -55,15 +54,15 @@ class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repos
             return
         }
 
-        cookieManager.new(
+        cookieManager.newCookie(
             arrayListOf(
-                buildCookie("ipb_member_id", id, Url.EH),
-                buildCookie("ipb_pass_hash", hash, Url.EH),
-                buildCookie("igneous", igneous, Url.EH),
+                buildCookie("ipb_member_id", id, Site.EH),
+                buildCookie("ipb_pass_hash", hash, Site.EH),
+                buildCookie("igneous", igneous, Site.EH),
 
-                buildCookie("ipb_member_id", id, Url.EX),
-                buildCookie("ipb_pass_hash", hash, Url.EX),
-                buildCookie("igneous", igneous, Url.EX)
+                buildCookie("ipb_member_id", id, Site.EX),
+                buildCookie("ipb_pass_hash", hash, Site.EX),
+                buildCookie("igneous", igneous, Site.EX)
             )
         )
 

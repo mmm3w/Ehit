@@ -13,6 +13,6 @@ object DBValue {
     const val TABLE_DOWNLOAD_INFO = "download_info"
 
     const val INFO_CACHE_DURATION = 1 * 3600 * 1000 /*ms*/
-    const val IMAGE_SROUCE_CACHE_DURATION = 1 * 3600 * 1000
+    const val IMAGE_SOURCE_CACHE_DURATION = 1 * 3600 * 1000
     const val GALLERY_PREVIEW_CACHE_DURATION = 1 * 3600 * 1000
 }

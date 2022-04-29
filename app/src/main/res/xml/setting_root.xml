@@ -12,7 +12,9 @@
 
     <Preference app:title="@string/text_setting_download" />
 
-    <Preference app:title="@string/text_setting_security_and_privacy" />
+    <Preference
+        app:icon="@drawable/ic_baseline_privacy_tip_24"
+        app:title="@string/text_setting_security_and_privacy" />
 
     <Preference app:title="@string/text_setting_other" />
 

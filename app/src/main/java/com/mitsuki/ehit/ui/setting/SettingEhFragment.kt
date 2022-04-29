@@ -1,35 +1,53 @@
 package com.mitsuki.ehit.ui.setting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
-import com.mitsuki.ehit.crutch.network.Url
+import com.mitsuki.ehit.crutch.network.CookieManager
+import com.mitsuki.ehit.crutch.network.Site
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-@Suppress("unused")
+@AndroidEntryPoint
 class SettingEhFragment : PreferenceFragmentCompat() {
+
+
+    @Inject
+    lateinit var mCookieManager: CookieManager
+
+    @Inject
+    lateinit var shareData: ShareData
+
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.setting_eh, rootKey)
-
-        findPreference<Preference>("setting_logout")?.setOnPreferenceClickListener { showLogoutDialog() }
-
-        findPreference<Preference>("setting_cookie")?.apply {
-//            isVisible = ShareData.spCookies.isNotEmpty()
-            setOnPreferenceClickListener { showCookieDialog() }
+        val isLogin = mCookieManager.isLogin
+        findPreference<Preference>("setting_logout")?.apply {
+            setTitle(if (isLogin) R.string.text_sign_out else R.string.text_login)
+            setOnPreferenceClickListener { showLogoutDialog() }
         }
 
+        findPreference<Preference>("setting_cookie")?.apply {
+            isVisible = isLogin
+            setOnPreferenceClickListener { showCookieDialog() }
+        }
+//
         findPreference<ListPreference>(ShareData.SP_DOMAIN)?.apply {
-            entries = Url.domain
-            entryValues = Url.domain
+            entries = arrayOf(Site.EH, Site.EX)
+            entryValues = Array(2) { it.toString() }
+            setOnPreferenceChangeListener { _, newValue ->
+                shareData.domain = newValue.toString().toInt()
+                true
+            }
         }
 
         findPreference<Preference>("setting_site")?.setOnPreferenceClickListener { openSiteSetting() }
     }
 
-    private val allCookieInfo
-        get() = ""
 
     private fun showLogoutDialog(): Boolean {
         //TODO 补上逻辑

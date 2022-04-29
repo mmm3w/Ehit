@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.model.ehparser
 
-import com.mitsuki.ehit.crutch.network.Url
+import com.mitsuki.ehit.crutch.network.Site
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,8 +67,6 @@ object Matcher {
 
     val PREVIEW_RELOAD_KEY: Pattern by lazy { Pattern.compile("onclick=\"return nl\\('([^\\)]+)'\\)") }
     val PREVIEW_DOWNLOAD_URL: Pattern by lazy { Pattern.compile("<a href=\"([^\"]+)fullimg.php([^\"]+)\">") }
-
-    val PREVIEW_PAGE_TO_TOKEN: Pattern by lazy { Pattern.compile("${Url.currentDomain}/s/([0-9a-f]{10})/(\\d+)-(\\d+)") }
 
     val WEB_COMMENT_DATE_FORMAT: DateFormat by lazy {
         SimpleDateFormat("dd MMMMM yyyy, HH:mm", Locale.US)
