@@ -37,6 +37,7 @@ import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.ui.detail.dialog.DownloadRangeDialog
 import com.mitsuki.ehit.ui.detail.dialog.FavoriteDialog
 import com.mitsuki.ehit.service.download.DownloadService
+import com.mitsuki.ehit.ui.detail.dialog.RatingDialog
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -296,21 +297,9 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     }
 
     private fun showRatingDialog() {
-        //TODO 补上逻辑
-//        MaterialDialog(requireContext()).show {
-//            title(res = R.string.text_rate)
-//            customView(viewRes = R.layout.dialog_rating)
-//            getCustomView().findViewById<RatingView>(R.id.rating_target)?.rating =
-//                mViewModel.rating
-//            positiveButton(res = R.string.text_confirm) {
-//                it.getCustomView()
-//                    .findViewById<RatingView>(R.id.rating_target)?.rating?.apply {
-//                        mViewModel.submitRating(this)
-//                    }
-//            }
-//            negativeButton(res = R.string.text_cancel)
-//            lifecycleOwner(viewLifecycleOwner)
-//        }
+        RatingDialog(mViewModel.rating) {
+            mViewModel.submitRating(it)
+        }.show(childFragmentManager, "rating")
     }
 
     private fun showFavoriteDialog() {

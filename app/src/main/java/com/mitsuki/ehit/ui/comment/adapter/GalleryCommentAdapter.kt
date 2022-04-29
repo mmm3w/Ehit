@@ -61,6 +61,7 @@ class GalleryCommentAdapter :
         with(mData.item(position)) {
             holder.binding.commentUserName.text = user
             holder.binding.commentPostTime.text = TimeFormat.commentTime(postTime)
+            //TODO 文本展示待优化
             holder.binding.commentContent.text =
                 HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
             holder.binding.commentVoteLayout.isVisible = voteEnable

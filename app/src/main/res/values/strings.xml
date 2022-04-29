@@ -52,6 +52,7 @@
     <string name="title_cookie">Cookie</string>
     <string name="title_add_favorites">Add to favorites</string>
     <string name="title_quick_search">Quick Search</string>
+    <string name="title_jump_page">Jump page to (1 to %d)</string>
 
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>

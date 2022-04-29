@@ -8,27 +8,33 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.createItemView
+import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogDetailFavouriteBinding
 import com.mitsuki.ehit.databinding.ItemFavouriteBinding
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
-import com.mitsuki.ehit.ui.common.dialog.BaseDialogFragment
+import com.mitsuki.ehit.ui.common.dialog.BindingDialogFragment
 
 class FavoriteDialog(
     private val initName: String?,
     private val onSelected: (Int) -> Unit
 ) :
-    BaseDialogFragment(R.layout.dialog_detail_favourite) {
+    BindingDialogFragment<DialogDetailFavouriteBinding>(
+        R.layout.dialog_detail_favourite,
+        DialogDetailFavouriteBinding::bind
+    ) {
 
-    private val binding by viewBinding(DialogDetailFavouriteBinding::bind)
+    init {
+        title(text(R.string.title_add_favorites))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mAdapter = FavoriteAdapter(GalleryFavorites.findIndex(initName)){
+        val mAdapter = FavoriteAdapter(GalleryFavorites.findIndex(initName)) {
             onSelected(it)
             dismiss()
         }
-        binding?.dialogFavouriteList?.apply {
+        binding.dialogFavouriteList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
         }

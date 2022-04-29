@@ -25,6 +25,7 @@
     <string name="title_cookie">Cookie</string>
     <string name="title_add_favorites">添加收藏</string>
     <string name="title_quick_search">快速搜索</string>
+    <string name="title_jump_page">跳转至…页 (1 到 %d)</string>
 
     <string name="hint_account">账号</string>
     <string name="hint_password">密码</string>

@@ -9,6 +9,8 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
+import com.mitsuki.ehit.ui.common.dialog.show
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -50,19 +52,25 @@ class SettingEhFragment : PreferenceFragmentCompat() {
 
 
     private fun showLogoutDialog(): Boolean {
-        //TODO 补上逻辑
-//        MaterialDialog(requireContext()).show {
-////            title(res = R.string.title_sign_out)
-//            title(text = "中")
-//            message(res = R.string.text_sign_out_desc)
-//            positiveButton(R.string.text_confirm) { /*退出操作*/ }
-//            lifecycleOwner(this@SettingEhFragment)
-//        }
+        TextDialogFragment().show(childFragmentManager, "logout") {
+            title(res = R.string.text_sign_out)
+            message(res = R.string.text_sign_out_desc)
+            positiveBtn(res = R.string.text_confirm) {
+                mCookieManager.clearCookie()
+                //提示重启
+            }
+        }
         return true
     }
 
     private fun showCookieDialog(): Boolean {
-        //TODO 补上逻辑
+        TextDialogFragment().show(childFragmentManager, "logout") {
+            title(res = R.string.text_sign_out)
+            message(res = R.string.text_sign_out_desc)
+            positiveBtn(res = R.string.text_copy) {
+                /*复制json操作*/
+            }
+        }
 //        MaterialDialog(requireContext()).show {
 //            title(res = R.string.title_cookie)
 //            message(text = allCookieInfo)
