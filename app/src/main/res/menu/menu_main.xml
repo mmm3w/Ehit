@@ -19,9 +19,9 @@
             android:title="@string/text_menu_favourite" />
     </group>
 
-    <item
-        android:id="@+id/nav_history"
-        android:title="@string/text_menu_history" />
+<!--    <item-->
+<!--        android:id="@+id/nav_history"-->
+<!--        android:title="@string/text_menu_history" />-->
     <item
         android:id="@+id/nav_download"
         android:title="@string/text_menu_download" />

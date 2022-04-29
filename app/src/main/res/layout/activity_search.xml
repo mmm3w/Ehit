@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/search_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,6 +9,7 @@
         android:id="@+id/search_back"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:contentDescription="@string/content_description_back_btn"
         android:paddingHorizontal="@dimen/dp_16"
         android:src="@drawable/ic_baseline_arrow_back_24"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,26 +18,35 @@
     <EditText
         android:id="@+id/search_input"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_height="@dimen/dp_56"
         android:layout_marginBottom="2dp"
         android:background="@null"
-        android:gravity="start"
+        android:gravity="start|center_vertical"
         android:hint="@string/hint_search"
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:lines="1"
         android:singleLine="true"
+        android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="@id/search_back"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/search_clear"
         app:layout_constraintStart_toEndOf="@id/search_back"
         app:layout_constraintTop_toTopOf="@id/search_back" />
+
+    <ImageView
+        android:id="@+id/search_clear"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:padding="@dimen/dp_16"
+        android:src="@drawable/ic_round_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

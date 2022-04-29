@@ -90,7 +90,7 @@ class SearchActivity : BaseActivity() {
         mViewModel.initData(intent)
 
         mHistoryAdapter.receiver<SearchWordEvent>("his").observe(this, this::onItemEvent)
-        mAdvancedAdapter.receiver<Int>("rating").observe(this, { onRatingEvent() })
+        mAdvancedAdapter.receiver<Int>("rating").observe(this) { onRatingEvent() }
 
         mViewModel.searchKey.apply { onSearchUpdate(this) }
 
@@ -104,7 +104,8 @@ class SearchActivity : BaseActivity() {
         binding.searchStart.setOnClickListener {
             binding.searchInput.text?.toString()?.apply { onSearchEvent(this) }
         }
-        binding.searchBack.setOnClickListener { finish() }
+        binding.searchBack.setOnClickListener { onBackPressed() }
+        binding.searchClear.setOnClickListener { binding.searchInput.setText("") }
         binding.searchInput.setOnEditorActionListener { v, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {

@@ -75,8 +75,8 @@ class MainActivity : BaseActivity() {
 
                 R.id.nav_favourite -> navDestination(R.id.nav_stack_favourite, null)
 
-                R.id.nav_history ->
-                    startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
+//                R.id.nav_history ->
+//                    startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
 
                 R.id.nav_download ->
                     startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
@@ -150,47 +150,4 @@ class MainActivity : BaseActivity() {
     private fun onListLink(source: GalleryPageSource) {
         navDestination(R.id.nav_stack_main, bundleOf(DataKey.GALLERY_PAGE_SOURCE to source))
     }
-
-    /** dev 用 *************************************************************************************/
-    private val readStorePermissionLauncher = readStorePermissionLauncher()
-    private val writeStorePermissionLauncher = writeStorePermissionLauncher()
-
-    private lateinit var packer: ExportZipActivityResultCallback
-    private lateinit var reader: ZipReader
-
-//    private fun onCreateDev() {
-//        lifecycle.addObserver(OverlayTool)
-//        OverlayTool.panelAction(this::onDevPanel)
-//        OverlayTool.permission(this)?.apply { startActivity(this) }
-//
-//        packer = ZipPacker(
-//            this,
-//            activityResultRegistry,
-//            RoomData.dbFolder,
-//            RoomData.storeFileArray
-//        ) { RoomData.storeSaveFileName() }
-//        reader = ZipReader(this, activityResultRegistry, RoomData.dbFolder)
-//    }
-//
-//    private fun onDevPanel(id: Int) {
-//        when (id) {
-//            R.id.dev_overlay_db_import -> {
-//                //导入，需要读取权限
-//                if (Tool.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//                    reader.read()
-//                } else {
-//                    readStorePermissionLauncher.launch { if (it) reader.read() else toast("缺少写入权限") }
-//                }
-//            }
-//            R.id.dev_overlay_db_export -> {
-//                //导出，需要写入权限
-//                if (Tool.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                    packer.pack()
-//                } else {
-//                    writeStorePermissionLauncher.launch { if (it) packer.pack() else toast("缺少写入权限") }
-//                }
-//            }
-//        }
-//    }
-
 }

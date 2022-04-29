@@ -27,6 +27,8 @@
 
     <string name="page_separate" translatable="false">%d/%d</string>
 
+    <string name="content_description_back_btn" translatable="false">page back btn</string>
+
     <string name="dev_text_restart">Please restart the app</string>
 
     <string name="dev_text_db">About DB: </string>
@@ -175,6 +177,7 @@
     <string name="text_info_rating_count">Rating\ncount</string>
     <string name="text_info_rating">Rating</string>
     <string name="text_info_torrents">Torrents</string>
+
 
 
 </resources>
