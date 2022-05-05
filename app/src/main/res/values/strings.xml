@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ehit</string>
+    <string name="app_name" translatable="false">Ehit</string>
 
     <string name="label_gallery_list_fragment" translatable="false">GalleryListFragment</string>
     <string name="label_gallery_detail_fragment" translatable="false">GalleryDetailFragment</string>
@@ -28,13 +28,6 @@
     <string name="page_separate" translatable="false">%d/%d</string>
 
     <string name="content_description_back_btn" translatable="false">page back btn</string>
-
-    <string name="dev_text_restart">Please restart the app</string>
-
-    <string name="dev_text_db">About DB: </string>
-    <string name="dev_text_db_export">DB Export</string>
-    <string name="dev_text_db_import">DB Import</string>
-    <string name="dev_text_nsfw_change">NSFW Switch</string>
 
     <string name="error_parse_throwable_text">Data parse error</string>
 
@@ -101,6 +94,9 @@
     <string name="text_copy">Copy</string>
     <string name="text_refresh">Refresh</string>
     <string name="text_all">All</string>
+    <string name="text_share">Share</string>
+    <string name="text_save_to_system_album">Save to system album</string>
+    <string name="text_save_to">Save to …</string>
 
     <string name="text_download">Download</string>
     <string name="text_read">Read</string>
@@ -158,6 +154,29 @@
     <string name="text_setting_cookie">Cookie</string>
     <string name="text_setting_cookie_summary">Check cookie</string>
     <string name="text_setting_site">Site</string>
+    <string name="text_setting_screen_orientation">Screen orientation</string>
+    <string name="text_setting_read_orientation">Read orientation</string>
+    <string name="text_setting_image_zoom">Image zoom</string>
+    <string name="text_setting_keep_bright">Keep bright</string>
+    <string name="text_setting_show_time">Show time</string>
+    <string name="text_setting_show_battery">Show battery</string>
+    <string name="text_setting_show_progress">Show progress</string>
+    <string name="text_setting_show_page_padding">Show page padding</string>
+    <string name="text_setting_volume_button_turn_pages">Volume button turn pages</string>
+    <string name="text_setting_full_screen">Full screen</string>
+
+    <string name="text_default">Default</string>
+    <string name="text_screen_horizontal">Horizontal</string>
+    <string name="text_screen_vertical">Vertical</string>
+    <string name="text_screen_auto">Auto</string>
+    <string name="text_read_rtl">Right to left</string>
+    <string name="text_read_ltr">Left to right</string>
+    <string name="text_read_ttb">Top to bottom</string>
+    <string name="text_zoom_adapt_screen">Adapt screen</string>
+    <string name="text_zoom_adapt_width">Adapt width</string>
+    <string name="text_zoom_adapt_height">Adapt height</string>
+    <string name="text_zoom_original">Original size</string>
+    <string name="text_zoom_fix_scale">Fix scale</string>
 
     <string name="text_sign_out_desc">Do you really want to sign out?\n You need to restart the app after sign out.</string>
     <string name="text_login_desc">Please restart the app to login.</string>

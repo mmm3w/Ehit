@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <com.mitsuki.ehit.ui.setting.IntListPreference
+        app:key="SP_SCREEN_ORIENTATION"
+        android:defaultValue="0"
+        app:title="@string/text_setting_screen_orientation"
+        app:useSimpleSummaryProvider="true" />
+
+    <com.mitsuki.ehit.ui.setting.IntListPreference
+        app:key="SP_READ_ORIENTATION"
+        android:defaultValue="0"
+        app:title="@string/text_setting_read_orientation"
+        app:useSimpleSummaryProvider="true" />
+
+    <com.mitsuki.ehit.ui.setting.IntListPreference
+        app:key="SP_IMAGE_ZOOM"
+        android:defaultValue="0"
+        app:title="@string/text_setting_image_zoom"
+        app:useSimpleSummaryProvider="true" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_KEEP_BRIGHT"
+        app:title="@string/text_setting_keep_bright" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_SHOW_TIME"
+        app:title="@string/text_setting_show_time" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_SHOW_BATTERY"
+        app:title="@string/text_setting_show_battery" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_SHOW_PROGRESS"
+        app:title="@string/text_setting_show_progress" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_SHOW_PAGE_PADDING"
+        app:title="@string/text_setting_show_page_padding" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_VOLUME_BUTTON_TURN_PAGES"
+        app:title="@string/text_setting_volume_button_turn_pages" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_FULL_SCREEN"
+        app:title="@string/text_setting_full_screen" />
+
+    <SwitchPreferenceCompat
+        app:key="SP_CUSTOM_BRIGHTNESS"
+        app:title="手动亮度" />
 
 </PreferenceScreen>

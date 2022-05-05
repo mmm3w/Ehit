@@ -9,7 +9,6 @@ class ShareData(context: Context) {
     private val mDefaultSP: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
 
-
     companion object {
         const val SP_SECURITY = "SP_SECURITY"
 
@@ -18,6 +17,19 @@ class ShareData(context: Context) {
         const val SP_DOMAIN = "SP_DOMAIN"
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
         const val SAVE_SOME_DATA_IN_PUBLIC_STORAGE = "SAVE_SOME_DATA_IN_PUBLIC_STORAGE"
+
+        //read setting
+        const val SP_SCREEN_ORIENTATION = "SP_SCREEN_ORIENTATION"
+        const val SP_READ_ORIENTATION = "SP_READ_ORIENTATION"
+        const val SP_IMAGE_ZOOM = "SP_IMAGE_ZOOM"
+        const val SP_KEEP_BRIGHT = "SP_KEEP_BRIGHT"
+        const val SP_SHOW_TIME = "SP_SHOW_TIME"
+        const val SP_SHOW_BATTERY = "SP_SHOW_BATTERY"
+        const val SP_SHOW_PROGRESS = "SP_SHOW_PROGRESS"
+        const val SP_SHOW_PAGE_PADDING = "SP_SHOW_PAGE_PADDING"
+        const val SP_VOLUME_BUTTON_TURN_PAGES = "SP_VOLUME_BUTTON_TURN_PAGES"
+        const val SP_FULL_SCREEN = "SP_FULL_SCREEN"
+        const val SP_CUSTOM_BRIGHTNESS = "SP_CUSTOM_BRIGHTNESS"
 
 
         const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
@@ -67,6 +79,19 @@ class ShareData(context: Context) {
         set(value) = edit { putInt(SP_GALLERY_PAGE_SIZE, value) }
         get() = int(SP_GALLERY_PAGE_SIZE)
 
+    var spScreenOrientation: Int
+        set(value) = edit { putInt(SP_SCREEN_ORIENTATION, value) }
+        get() = int(SP_SCREEN_ORIENTATION)
+
+    var spReadOrientation: Int
+        set(value) = edit { putInt(SP_READ_ORIENTATION, value) }
+        get() = int(SP_READ_ORIENTATION)
+
+    var spImageZoom: Int
+        set(value) = edit { putInt(SP_IMAGE_ZOOM, value) }
+        get() = int(SP_IMAGE_ZOOM)
+
+
     /**********************************************************************************************/
     var domain: Int = spDomain
         set(value) {
@@ -76,6 +101,31 @@ class ShareData(context: Context) {
                 Site.refreshDomain(field)
             }
         }
+
+    var screenOrientation: Int = spScreenOrientation
+        set(value) {
+            if (value != field) {
+                field = value
+                spScreenOrientation = value
+            }
+        }
+
+    var readOrientation: Int = spReadOrientation
+        set(value) {
+            if (value != field) {
+                field = value
+                spReadOrientation = value
+            }
+        }
+
+    var imageZoom: Int = spImageZoom
+        set(value) {
+            if (value != field) {
+                field = value
+                spImageZoom = value
+            }
+        }
+
 
     init {
         Site.refreshDomain(domain)

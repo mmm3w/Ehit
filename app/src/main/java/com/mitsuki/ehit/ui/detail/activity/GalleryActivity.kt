@@ -52,6 +52,15 @@ class GalleryActivity : BaseActivity() {
         }
 
         updateIndex(mIndex)
+        //屏幕方向，跟随系统、横屏、竖屏、自动旋转
+        //阅读方向，流式（这个很麻烦，影响界面实现的基本设计了）、从左至右、从右至左（日漫）
+        //缩放：原始尺寸、匹配宽度、匹配高度、自动匹配、固定缩放（所有图片跟随同一个缩放）
+        //开页位置，不明的配置，先扔着
+        //屏幕常亮
+        //时钟、电量、进度
+        //页面间隔、音量键翻页
+        //全屏
+        //手动亮度
     }
 
     private fun updateIndex(index: Int) {
@@ -67,7 +76,7 @@ class GalleryActivity : BaseActivity() {
             //最后一页了
             return
         }
-        binding.galleryViewPager.currentItem = targetPage
+        binding.galleryViewPager.setCurrentItem(targetPage, false)
     }
 
     fun previousPage() {
@@ -78,7 +87,7 @@ class GalleryActivity : BaseActivity() {
             //第一页了
             return
         }
-        binding.galleryViewPager.currentItem = targetPage
+        binding.galleryViewPager.setCurrentItem(targetPage, false)
     }
 
 }

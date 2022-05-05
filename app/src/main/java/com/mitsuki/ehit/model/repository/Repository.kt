@@ -48,12 +48,14 @@ interface Repository {
         rating: Float
     ): RequestResult<RateBack>
 
-    suspend fun gallertImagePToken(gid: Long, token: String, index: Int)
+    suspend fun galleryImagePToken(gid: Long, token: String, index: Int)
             : RequestResult<String>
 
     suspend fun galleryPreview(gid: Long, token: String, index: Int)
             : RequestResult<GalleryPreview>
 
+    suspend fun galleryPreview(retryUrl: String, gid: Long, token: String, index: Int)
+            : RequestResult<GalleryPreview>
 
     fun favoriteList(
         pageIn: FavouritePageIn,

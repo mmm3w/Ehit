@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Ehit</string>
-
-
-    <string name="dev_text_restart">请重启APP</string>
-    <string name="dev_text_db">数据库相关：</string>
-    <string name="dev_text_db_export">DB导出</string>
-    <string name="dev_text_db_import">DB导入</string>
-    <string name="dev_text_nsfw_change">NSFW切换</string>
-
     <string name="error_parse_throwable_text">数据解析异常</string>
 
     <string name="comment_time_format_pattern">yyyy-MM-dd HH:mm</string>
@@ -74,6 +65,9 @@
     <string name="text_copy">复制</string>
     <string name="text_refresh">刷新</string>
     <string name="text_all">全部</string>
+    <string name="text_share">分享</string>
+    <string name="text_save_to_system_album">保存至系统相册</string>
+    <string name="text_save_to">保存至…</string>
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>
@@ -127,14 +121,35 @@
     <string name="text_setting_other">其他设置</string>
     <string name="text_setting_about">关于</string>
 
-
     <string name="text_setting_cookie">身份Cookie</string>
     <string name="text_setting_cookie_summary">查看Cookie</string>
     <string name="text_setting_site">站点选择</string>
+    <string name="text_setting_screen_orientation">屏幕方向</string>
+    <string name="text_setting_read_orientation">阅读方向</string>
+    <string name="text_setting_image_zoom">图片缩放</string>
+    <string name="text_setting_keep_bright">屏幕常亮</string>
+    <string name="text_setting_show_time">显示时钟</string>
+    <string name="text_setting_show_battery">显示电量</string>
+    <string name="text_setting_show_progress">显示进度</string>
+    <string name="text_setting_show_page_padding">显示页面间隔</string>
+    <string name="text_setting_volume_button_turn_pages">音量键翻页</string>
+    <string name="text_setting_full_screen">全屏显示</string>
+
+    <string name="text_default">默认</string>
+    <string name="text_screen_horizontal">横屏</string>
+    <string name="text_screen_vertical">竖屏</string>
+    <string name="text_screen_auto">自动旋转</string>
+    <string name="text_read_rtl">从右至左</string>
+    <string name="text_read_ltr">从左至右</string>
+    <string name="text_read_ttb">从上至下</string>
+    <string name="text_zoom_adapt_screen">自动适配屏幕</string>
+    <string name="text_zoom_adapt_width">适配屏宽</string>
+    <string name="text_zoom_adapt_height">适配屏高</string>
+    <string name="text_zoom_original">原始尺寸</string>
+    <string name="text_zoom_fix_scale">固定缩放</string>
 
     <string name="text_sign_out_desc">确定要退出登录吗？\n在退出登录后您需要重新APP。</string>
     <string name="text_login_desc">请重启APP进行登录操作。</string>
-
 
     <string name="text_info_gid">GID</string>
     <string name="text_info_token">Token</string>

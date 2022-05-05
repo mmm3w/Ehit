@@ -241,7 +241,7 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun gallertImagePToken(
+    override suspend fun galleryImagePToken(
         gid: Long,
         token: String,
         index: Int
@@ -287,7 +287,7 @@ class RepositoryImpl @Inject constructor(
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
             try {
-                val pToken = gallertImagePToken(gid, token, index).let {
+                val pToken = galleryImagePToken(gid, token, index).let {
                     when (it) {
                         is RequestResult.Success<String> -> it.data
                         is RequestResult.Fail<*> -> throw it.throwable
@@ -298,22 +298,37 @@ class RepositoryImpl @Inject constructor(
                 if (data != null) {
                     RequestResult.Success(GalleryPreview(data))
                 } else {
-                    val remoteData: Response<GalleryPreview> =
-                        client.get<GalleryPreview>(Site.galleryPreviewDetail(gid, pToken, index)) {
-                            convert = GalleryPreviewConvert()
-                        }.execute()
+                    galleryPreview(Site.galleryPreviewDetail(gid, pToken, index), gid, token, index)
+                }
+            } catch (inner: Throwable) {
+                RequestResult.Fail(inner)
+            }
+        }
+    }
 
-                    when (remoteData) {
-                        is Response.Success<GalleryPreview> -> RequestResult.Success(
-                            remoteData.requireBody()
-                                .apply {
-                                    galleryDao.insertGalleryPreview(
-                                        GalleryPreviewCache(gid, token, index, this)
-                                    )
-                                }
-                        )
-                        is Response.Fail<*> -> throw remoteData.throwable
-                    }
+    override suspend fun galleryPreview(
+        retryUrl: String,
+        gid: Long,
+        token: String,
+        index: Int
+    ): RequestResult<GalleryPreview> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val remoteData: Response<GalleryPreview> =
+                    client.get<GalleryPreview>(retryUrl) {
+                        convert = GalleryPreviewConvert()
+                    }.execute()
+
+                when (remoteData) {
+                    is Response.Success<GalleryPreview> -> RequestResult.Success(
+                        remoteData.requireBody()
+                            .apply {
+                                galleryDao.insertGalleryPreview(
+                                    GalleryPreviewCache(gid, token, index, this)
+                                )
+                            }
+                    )
+                    is Response.Fail<*> -> throw remoteData.throwable
                 }
 
             } catch (inner: Throwable) {
@@ -321,7 +336,6 @@ class RepositoryImpl @Inject constructor(
             }
         }
     }
-
 
     override fun favoriteList(
         pageIn: FavouritePageIn,
@@ -331,7 +345,6 @@ class RepositoryImpl @Inject constructor(
             pagingProvider.favoritesSource(this, pageIn, dataWrap)
         }.flow
     }
-
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
         return withContext(Dispatchers.IO) {

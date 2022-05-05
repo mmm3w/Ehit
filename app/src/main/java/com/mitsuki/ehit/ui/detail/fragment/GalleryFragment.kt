@@ -6,8 +6,10 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import coil.disk.DiskCache
 import coil.dispose
 import coil.load
+import coil.memory.MemoryCache
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -22,6 +24,7 @@ import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
+import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,9 +53,10 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
                 }
             }
         binding?.galleryIndex?.text = (mViewModel.index + 1).toString()
+        binding?.galleryErrorRetry?.setOnClickListener { mViewModel.retry() }
 
-        mViewModel.data.observe(viewLifecycleOwner, Observer(this::onLoadImage))
-        mViewModel.state.observe(viewLifecycleOwner, Observer(this::onViewState))
+        mViewModel.loadUrl.observe(viewLifecycleOwner, Observer(this::onLoadImage))
+        mViewModel.state.observe(viewLifecycleOwner, Observer(this::onLoadState))
         ProgressProvider.event(mViewModel.tag)
             .observe(viewLifecycleOwner, this@GalleryFragment::onLoadProgress)
 
@@ -64,33 +68,40 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         mImageGesture = null
     }
 
-    private fun onViewState(state: GalleryViewModel.ViewState) {
-        binding?.galleryLoading?.isVisible = state.loading
-        binding?.galleryErrorMessage?.text = state.error ?: ""
-    }
-
     private fun onLoadImage(url: String) {
         binding?.galleryImage?.apply {
             dispose()
             load(url) {
                 memoryCacheKey(mViewModel.largeCacheTag)
                 size(Size.ORIGINAL)
-                //TODO 补充
-//                transformations(OriginalTransformation())
                 listener(
-                    onError = { _: ImageRequest, error: ErrorResult -> onLoadError(error.throwable) },
-                    onSuccess = { _: ImageRequest, _: SuccessResult -> onLoadSuccess() }
+                    onStart = { onImageLoadStart() },
+                    onSuccess = { _: ImageRequest, _: SuccessResult -> onImageLoadFinish() },
+                    onError = { _: ImageRequest, error: ErrorResult -> onImageLoadError(error.throwable) },
+                    onCancel = { onImageLoadFinish() }
                 )
             }
         }
     }
 
-    private fun onLoadError(throwable: Throwable) {
-        binding?.galleryProgress?.isVisible = false
-        binding?.galleryErrorMessage?.text = throwable.message
+    private fun onLoadState(state: GalleryViewModel.LoadState) {
+        binding?.galleryLoading?.isVisible = state.loading
+        binding?.galleryErrorMessage?.text = state.error ?: ""
+        binding?.galleryErrorRetry?.isVisible = state.error != null
     }
 
-    private fun onLoadSuccess() {
+    private fun onImageLoadStart() {
+        binding?.galleryProgress?.isVisible = true
+        binding?.galleryErrorMessage?.text = ""
+    }
+
+    private fun onImageLoadError(throwable: Throwable) {
+        binding?.galleryErrorMessage?.text = throwable.message
+        binding?.galleryErrorRetry?.isVisible = true
+        onImageLoadFinish()
+    }
+
+    private fun onImageLoadFinish() {
         binding?.galleryProgress?.isVisible = false
     }
 
@@ -103,10 +114,40 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         }
     }
 
+    private fun showReadConfigMenu() {
+
+    }
 
     private fun showGalleryMenu() {
-        BottomMenuDialogFragment(intArrayOf(R.string.text_refresh)) {
+        BottomMenuDialogFragment(
+            intArrayOf(
+                R.string.text_refresh,
+                R.string.text_share,
+                R.string.text_save_to_system_album,
+                R.string.text_save_to
+            )
+        ) {
+            when (it) {
+                0 -> mViewModel.retry()
+                1 -> {
+
+                }
+                2 -> {
+
+                }
+                3 -> {
+
+                }
+            }
             true
         }.show(childFragmentManager, "menu")
+    }
+
+    private fun nextPage() {
+        (requireActivity() as? GalleryActivity)?.nextPage()
+    }
+
+    private  fun previousPage() {
+        (requireActivity() as? GalleryActivity)?.previousPage()
     }
 }
