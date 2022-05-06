@@ -60,4 +60,10 @@
         <item name="android:navigationBarDividerColor" tools:ignore="NewApi">@color/white</item>
     </style>
 
+    <style name="NormalText">
+        <item name="android:paddingTop">@dimen/dp_12</item>
+        <item name="android:paddingBottom">@dimen/dp_12</item>
+        <item name="android:textColor">#000</item>
+    </style>
+
 </resources>

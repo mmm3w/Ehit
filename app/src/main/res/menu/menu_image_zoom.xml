@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/zoom_adapt_screen"
+        android:title="@string/text_zoom_adapt_screen" />
+    <item
+        android:id="@+id/zoom_adapt_width"
+        android:title="@string/text_zoom_adapt_width" />
+    <item
+        android:id="@+id/zoom_adapt_height"
+        android:title="@string/text_zoom_adapt_height" />
+    <item
+        android:id="@+id/zoom_original"
+        android:title="@string/text_zoom_original" />
+    <item
+        android:id="@+id/zoom_fix_scale"
+        android:title="@string/text_zoom_fix_scale" />
+</menu>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/read_config_screen_orientation"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_screen_orientation"
+        app:layout_constraintBottom_toTopOf="@id/read_config_read_orientation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/read_config_read_orientation"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_read_orientation"
+        app:layout_constraintBottom_toTopOf="@id/read_config_image_zoom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_screen_orientation" />
+
+    <TextView
+        android:id="@+id/read_config_image_zoom"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_image_zoom"
+        app:layout_constraintBottom_toTopOf="@id/read_config_keep_bright"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_read_orientation" />
+
+    <TextView
+        android:id="@+id/read_config_keep_bright"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_keep_bright"
+        app:layout_constraintBottom_toTopOf="@id/read_config_show_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_image_zoom" />
+
+    <TextView
+        android:id="@+id/read_config_show_time"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_show_time"
+        app:layout_constraintBottom_toTopOf="@id/read_config_show_battery"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_keep_bright" />
+
+    <TextView
+        android:id="@+id/read_config_show_battery"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_show_battery"
+        app:layout_constraintBottom_toTopOf="@id/read_config_show_progress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_show_time" />
+
+    <TextView
+        android:id="@+id/read_config_show_progress"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_show_progress"
+        app:layout_constraintBottom_toTopOf="@id/read_config_show_page_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_show_battery" />
+
+    <TextView
+        android:id="@+id/read_config_show_page_padding"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_show_page_padding"
+        app:layout_constraintBottom_toTopOf="@id/read_config_volume_button_turn_pages"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_show_progress" />
+
+    <TextView
+        android:id="@+id/read_config_volume_button_turn_pages"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_volume_button_turn_pages"
+        app:layout_constraintBottom_toTopOf="@id/read_config_full_screen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_show_page_padding" />
+
+    <TextView
+        android:id="@+id/read_config_full_screen"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_full_screen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_volume_button_turn_pages" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/read_config_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="read_config_full_screen,read_config_volume_button_turn_pages,read_config_show_page_padding,read_config_show_progress,read_config_show_battery,read_config_show_time,read_config_keep_bright,read_config_screen_orientation,read_config_read_orientation,read_config_image_zoom" />
+
+
+    <TextView
+        android:id="@+id/read_config_screen_orientation_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="#000"
+        app:drawableEndCompat="@drawable/ic_round_expand_more_24"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_screen_orientation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/read_config_barrier"
+        app:layout_constraintTop_toTopOf="@id/read_config_screen_orientation" />
+
+
+    <TextView
+        android:id="@+id/read_config_read_orientation_select"
+        style="@style/NormalText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="#000"
+        app:drawableEndCompat="@drawable/ic_round_expand_more_24"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_read_orientation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/read_config_barrier"
+        app:layout_constraintTop_toTopOf="@id/read_config_read_orientation" />
+
+
+    <TextView
+        android:id="@+id/read_config_image_zoom_select"
+        style="@style/NormalText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textColor="#000"
+        app:drawableEndCompat="@drawable/ic_round_expand_more_24"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_image_zoom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/read_config_barrier"
+        app:layout_constraintTop_toTopOf="@id/read_config_image_zoom" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_keep_bright_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_keep_bright"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_keep_bright" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_show_time_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_show_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_show_time" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_show_battery_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_show_battery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_show_battery" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_show_progress_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_show_progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_show_progress" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_show_page_padding_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_show_page_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_show_page_padding" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_volume_button_turn_pages_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_volume_button_turn_pages"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_volume_button_turn_pages" />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_full_screen_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_full_screen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_full_screen" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

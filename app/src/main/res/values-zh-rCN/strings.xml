@@ -66,6 +66,7 @@
     <string name="text_refresh">刷新</string>
     <string name="text_all">全部</string>
     <string name="text_share">分享</string>
+    <string name="text_save">保存</string>
     <string name="text_save_to_system_album">保存至系统相册</string>
     <string name="text_save_to">保存至…</string>
 
@@ -135,7 +136,7 @@
     <string name="text_setting_volume_button_turn_pages">音量键翻页</string>
     <string name="text_setting_full_screen">全屏显示</string>
 
-    <string name="text_default">默认</string>
+    <string name="text_screen_default">跟随系统</string>
     <string name="text_screen_horizontal">横屏</string>
     <string name="text_screen_vertical">竖屏</string>
     <string name="text_screen_auto">自动旋转</string>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/screen_default"
+        android:title="@string/text_screen_default" />
+    <item
+        android:id="@+id/screen_vertical"
+        android:title="@string/text_screen_vertical" />
+    <item
+        android:id="@+id/screen_horizontal"
+        android:title="@string/text_screen_horizontal" />
+    <item
+        android:id="@+id/screen_auto"
+        android:title="@string/text_screen_auto" />
+</menu>

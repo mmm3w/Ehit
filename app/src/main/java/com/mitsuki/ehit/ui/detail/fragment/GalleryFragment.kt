@@ -24,7 +24,6 @@ import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
-import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -114,10 +113,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
         }
     }
 
-    private fun showReadConfigMenu() {
-
-    }
-
     private fun showGalleryMenu() {
         BottomMenuDialogFragment(
             intArrayOf(
@@ -141,13 +136,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             }
             true
         }.show(childFragmentManager, "menu")
-    }
 
-    private fun nextPage() {
-        (requireActivity() as? GalleryActivity)?.nextPage()
-    }
-
-    private  fun previousPage() {
-        (requireActivity() as? GalleryActivity)?.previousPage()
     }
 }

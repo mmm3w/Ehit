@@ -21,7 +21,7 @@ class SettingReadFragment : PreferenceFragmentCompat() {
 
         findPreference<ListPreference>(ShareData.SP_SCREEN_ORIENTATION)?.apply {
             entries = arrayOf(
-                string(R.string.text_default),
+                string(R.string.text_screen_default),
                 string(R.string.text_screen_vertical),
                 string(R.string.text_screen_horizontal),
                 string(R.string.text_screen_auto),

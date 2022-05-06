@@ -24,12 +24,13 @@
             android:textColor="#000"
             android:textSize="@dimen/sp_20" />
 
-        <FrameLayout
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/dialog_base_sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_12"
-            android:layout_marginVertical="@dimen/dp_8" />
+            android:layout_marginVertical="@dimen/dp_8"
+            android:overScrollMode="never" />
 
         <FrameLayout
             android:layout_width="match_parent"

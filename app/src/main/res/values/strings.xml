@@ -95,6 +95,7 @@
     <string name="text_refresh">Refresh</string>
     <string name="text_all">All</string>
     <string name="text_share">Share</string>
+    <string name="text_save">Save</string>
     <string name="text_save_to_system_album">Save to system album</string>
     <string name="text_save_to">Save to …</string>
 
@@ -165,7 +166,7 @@
     <string name="text_setting_volume_button_turn_pages">Volume button turn pages</string>
     <string name="text_setting_full_screen">Full screen</string>
 
-    <string name="text_default">Default</string>
+    <string name="text_screen_default">Default</string>
     <string name="text_screen_horizontal">Horizontal</string>
     <string name="text_screen_vertical">Vertical</string>
     <string name="text_screen_auto">Auto</string>

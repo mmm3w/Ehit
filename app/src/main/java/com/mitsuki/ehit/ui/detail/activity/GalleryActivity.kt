@@ -1,16 +1,26 @@
 package com.mitsuki.ehit.ui.detail.activity
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.WindowManager
+import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
+import com.mitsuki.ehit.ui.detail.dialog.ReadConfigDialog
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class GalleryActivity : BaseActivity() {
@@ -28,6 +38,9 @@ class GalleryActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
+    @Inject
+    lateinit var shareData: ShareData
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         controller.window(statusBarHide = true, navigationBarHide = true, barFit = false)
@@ -37,6 +50,9 @@ class GalleryActivity : BaseActivity() {
         mId = intent.getLongExtra(DataKey.GALLERY_ID, -1)
         mToken = intent.getStringExtra(DataKey.GALLERY_TOKEN)
             ?: throw IllegalStateException("Missing token")
+
+        enableReadConfig()
+
 
         mViewPagerAdapter = GalleryFragmentAdapter(this, isReverse, mId, mToken, mPage)
         binding.galleryViewPager.apply {
@@ -51,20 +67,11 @@ class GalleryActivity : BaseActivity() {
             })
         }
 
-        updateIndex(mIndex)
-        //屏幕方向，跟随系统、横屏、竖屏、自动旋转
-        //阅读方向，流式（这个很麻烦，影响界面实现的基本设计了）、从左至右、从右至左（日漫）
-        //缩放：原始尺寸、匹配宽度、匹配高度、自动匹配、固定缩放（所有图片跟随同一个缩放）
-        //开页位置，不明的配置，先扔着
-        //屏幕常亮
-        //时钟、电量、进度
-        //页面间隔、音量键翻页
-        //全屏
-        //手动亮度
+
     }
 
     private fun updateIndex(index: Int) {
-        binding.galleryIndex.text =
+        binding.galleryShowProgress.text =
             String.format(string(R.string.page_separate), index + 1, mPage)
     }
 
@@ -88,6 +95,46 @@ class GalleryActivity : BaseActivity() {
             return
         }
         binding.galleryViewPager.setCurrentItem(targetPage, false)
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun enableReadConfig() {
+        //屏幕方向
+        when (shareData.screenOrientation) {
+            0 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            1 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            2 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            3 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        }
+
+        if (shareData.keepBright) {
+            window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
+        binding.galleryShowTime.isVisible = shareData.showTime
+        binding.galleryShowBattery.isVisible = shareData.showBattery
+        binding.galleryShowProgress.isVisible = shareData.showProgress
+
+//        ReadConfigDialog().show(supportFragmentManager, "config")
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (shareData.volumeButtonTurnPages) {
+            return when (keyCode) {
+                KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                    nextPage()
+                    true
+                }
+                KeyEvent.KEYCODE_VOLUME_UP -> {
+                    previousPage()
+                    true
+                }
+                else -> super.onKeyDown(keyCode, event)
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
 }
