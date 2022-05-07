@@ -54,7 +54,7 @@ class ReadConfigDialog :
         set(value) {
             if (value != field) {
                 field = value
-                binding.readConfigReadOrientationSelect.text = readOrientationText(field)
+                binding.readConfigReadingDirectionSelect.text = readOrientationText(field)
             }
         }
 
@@ -83,8 +83,8 @@ class ReadConfigDialog :
                 }
             }
         }
-        binding.readConfigReadOrientationSelect.setOnClickListener {
-            showSelectMenu(it, R.menu.menu_read_orientation) { menuId ->
+        binding.readConfigReadingDirectionSelect.setOnClickListener {
+            showSelectMenu(it, R.menu.menu_reading_direction) { menuId ->
                 when (menuId) {
                     R.id.read_rtl -> readOrientation = 0
                     R.id.read_ltr -> readOrientation = 1

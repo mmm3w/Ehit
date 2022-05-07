@@ -32,4 +32,10 @@
 
     </LinearLayout>
 
+    <com.mitsuki.ehit.ui.detail.widget.TouchHotspotVisualization
+        android:id="@+id/gallery_hotspot_visualization"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>

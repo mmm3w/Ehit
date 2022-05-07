@@ -35,6 +35,7 @@
 
     <string name="text_test">测试内容</string>
     <string name="text_app_waring">本应用内容来自互联网，其中一些可能对您造成身体或精神伤害。\n您已了解上述风险并愿意承担这些风险。</string>
+    <string name="text_app_illustrate">此应用非官方应用，并且与 e-hentai.org/exhentai.org 无任何联系。</string>
 
     <string name="text_star_1">1 星</string>
     <string name="text_star_2">2 星</string>
@@ -106,6 +107,8 @@
     <string name="text_page_range">第%d页到第%d页</string>
     <string name="text_start_download">开始下载…</string>
     <string name="text_download_finish">下载结束！</string>
+    <string name="text_next_page">下一页</string>
+    <string name="text_previous_page">上一页</string>
 
     <string name="text_export_zip">导出压缩包至…</string>
     <string name="text_export_image">导出图片至…</string>
@@ -113,20 +116,27 @@
     <string name="text_detail">详情页面</string>
 
     <string name="text_sign_out">退出登录</string>
+    <string name="text_version">版本</string>
+    <string name="text_check_for_updates">检查更新</string>
+    <string name="text_source_code">源码</string>
+    <string name="text_license">开源证书</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>
     <string name="text_setting_read">阅读设置</string>
+    <string name="text_setting_read_summary">屏幕方向、阅读方向</string>
     <string name="text_setting_download">下载设置</string>
     <string name="text_setting_security_and_privacy">隐私安全</string>
     <string name="text_setting_other">其他设置</string>
+    <string name="text_setting_other_summary">语言设置、清除缓存</string>
     <string name="text_setting_about">关于</string>
+    <string name="text_setting_about_summary">版本信息</string>
 
     <string name="text_setting_cookie">身份Cookie</string>
     <string name="text_setting_cookie_summary">查看Cookie</string>
     <string name="text_setting_site">站点选择</string>
     <string name="text_setting_screen_orientation">屏幕方向</string>
-    <string name="text_setting_read_orientation">阅读方向</string>
+    <string name="text_setting_reading_direction">阅读方向</string>
     <string name="text_setting_image_zoom">图片缩放</string>
     <string name="text_setting_keep_bright">屏幕常亮</string>
     <string name="text_setting_show_time">显示时钟</string>
@@ -135,6 +145,7 @@
     <string name="text_setting_show_page_padding">显示页面间隔</string>
     <string name="text_setting_volume_button_turn_pages">音量键翻页</string>
     <string name="text_setting_full_screen">全屏显示</string>
+    <string name="text_setting_disable_screenshots">禁用截屏</string>
 
     <string name="text_screen_default">跟随系统</string>
     <string name="text_screen_horizontal">横屏</string>

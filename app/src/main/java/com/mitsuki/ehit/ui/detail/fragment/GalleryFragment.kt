@@ -6,10 +6,8 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import coil.disk.DiskCache
 import coil.dispose
 import coil.load
-import coil.memory.MemoryCache
 import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
@@ -24,6 +22,7 @@ import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
+import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,6 +48,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
                 GalleryImageGesture(this).apply {
                     startType = StartType.TOP
                     onLongPress = this@GalleryFragment::showGalleryMenu
+                    onAreaTap = this@GalleryFragment::onAreaTap
                 }
             }
         binding?.galleryIndex?.text = (mViewModel.index + 1).toString()
@@ -137,5 +137,14 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             true
         }.show(childFragmentManager, "menu")
 
+    }
+
+    private fun onAreaTap(index: Int) {
+        //TODO 需要根据阅读方向做出调整
+        when (index) {
+            0, 3 -> (requireActivity() as GalleryActivity).nextPage()
+            1, 2 -> (requireActivity() as GalleryActivity).previousPage()
+            4, 5 -> (requireActivity() as GalleryActivity).showReadConfig()
+        }
     }
 }

@@ -33,9 +33,6 @@ class MainActivity : BaseActivity() {
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     @Inject
-    lateinit var shareData: ShareData
-
-    @Inject
     lateinit var openGate: OpenGate
 
     override fun onCreate(savedInstanceState: Bundle?) {

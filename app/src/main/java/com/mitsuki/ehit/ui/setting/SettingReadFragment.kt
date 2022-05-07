@@ -33,7 +33,7 @@ class SettingReadFragment : PreferenceFragmentCompat() {
             }
         }
 
-        findPreference<ListPreference>(ShareData.SP_READ_ORIENTATION)?.apply {
+        findPreference<ListPreference>(ShareData.SP_READING_DIRECTION)?.apply {
             entries = arrayOf(
                 string(R.string.text_read_rtl),
                 string(R.string.text_read_ltr),

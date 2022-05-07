@@ -8,16 +8,26 @@
 
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.SettingReadFragment"
+        app:summary="@string/text_setting_read_summary"
         app:title="@string/text_setting_read" />
 
-    <Preference app:title="@string/text_setting_download" />
+    <Preference
+        app:fragment="com.mitsuki.ehit.ui.setting.SettingDownloadFragment"
+        app:title="@string/text_setting_download" />
 
     <Preference
+        app:fragment="com.mitsuki.ehit.ui.setting.SettingPrivacyFragment"
         app:icon="@drawable/ic_baseline_privacy_tip_24"
         app:title="@string/text_setting_security_and_privacy" />
 
-    <Preference app:title="@string/text_setting_other" />
+    <Preference
+        app:fragment="com.mitsuki.ehit.ui.setting.SettingOtherFragment"
+        app:summary="@string/text_setting_other_summary"
+        app:title="@string/text_setting_other" />
 
-    <Preference app:title="@string/text_setting_about" />
+    <Preference
+        app:fragment="com.mitsuki.ehit.ui.setting.SettingAboutFragment"
+        app:summary="@string/text_setting_about_summary"
+        app:title="@string/text_setting_about" />
 
 </PreferenceScreen>

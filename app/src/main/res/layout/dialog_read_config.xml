@@ -11,16 +11,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_setting_screen_orientation"
-        app:layout_constraintBottom_toTopOf="@id/read_config_read_orientation"
+        app:layout_constraintBottom_toTopOf="@id/read_config_reading_direction"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/read_config_read_orientation"
+        android:id="@+id/read_config_reading_direction"
         style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_setting_read_orientation"
+        android:text="@string/text_setting_reading_direction"
         app:layout_constraintBottom_toTopOf="@id/read_config_image_zoom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_config_screen_orientation" />
@@ -33,7 +33,7 @@
         android:text="@string/text_setting_image_zoom"
         app:layout_constraintBottom_toTopOf="@id/read_config_keep_bright"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_config_read_orientation" />
+        app:layout_constraintTop_toBottomOf="@id/read_config_reading_direction" />
 
     <TextView
         android:id="@+id/read_config_keep_bright"
@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="read_config_full_screen,read_config_volume_button_turn_pages,read_config_show_page_padding,read_config_show_progress,read_config_show_battery,read_config_show_time,read_config_keep_bright,read_config_screen_orientation,read_config_read_orientation,read_config_image_zoom" />
+        app:constraint_referenced_ids="read_config_full_screen,read_config_volume_button_turn_pages,read_config_show_page_padding,read_config_show_progress,read_config_show_battery,read_config_show_time,read_config_keep_bright,read_config_screen_orientation,read_config_reading_direction,read_config_image_zoom" />
 
 
     <TextView
@@ -128,17 +128,17 @@
 
 
     <TextView
-        android:id="@+id/read_config_read_orientation_select"
+        android:id="@+id/read_config_reading_direction_select"
         style="@style/NormalText"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
         android:textColor="#000"
         app:drawableEndCompat="@drawable/ic_round_expand_more_24"
-        app:layout_constraintBottom_toBottomOf="@id/read_config_read_orientation"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_reading_direction"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/read_config_barrier"
-        app:layout_constraintTop_toTopOf="@id/read_config_read_orientation" />
+        app:layout_constraintTop_toTopOf="@id/read_config_reading_direction" />
 
 
     <TextView

@@ -38,9 +38,6 @@ class GalleryActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
-    @Inject
-    lateinit var shareData: ShareData
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         controller.window(statusBarHide = true, navigationBarHide = true, barFit = false)
@@ -67,7 +64,7 @@ class GalleryActivity : BaseActivity() {
             })
         }
 
-
+        showTips()
     }
 
     private fun updateIndex(index: Int) {
@@ -97,6 +94,10 @@ class GalleryActivity : BaseActivity() {
         binding.galleryViewPager.setCurrentItem(targetPage, false)
     }
 
+    fun showReadConfig() {
+        ReadConfigDialog().show(supportFragmentManager, "config")
+    }
+
     @SuppressLint("SourceLockedOrientationActivity")
     private fun enableReadConfig() {
         //屏幕方向
@@ -116,8 +117,14 @@ class GalleryActivity : BaseActivity() {
         binding.galleryShowTime.isVisible = shareData.showTime
         binding.galleryShowBattery.isVisible = shareData.showBattery
         binding.galleryShowProgress.isVisible = shareData.showProgress
+    }
 
-//        ReadConfigDialog().show(supportFragmentManager, "config")
+    private fun showTips() {
+        if (!shareData.spGalleryTouchHotspotTips) {
+            binding.galleryHotspotVisualization.visible {
+                shareData.spGalleryTouchHotspotTips = true
+            }
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

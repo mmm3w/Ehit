@@ -26,6 +26,8 @@
     <string name="text_5" translatable="false">5</string>
 
     <string name="page_separate" translatable="false">%d/%d</string>
+    <string name="last_version_url" translatable="false">https://github.com/mmm3w/Ehit/releases/latest</string>
+    <string name="repo_url" translatable="false">https://github.com/mmm3w/Ehit</string>
 
     <string name="content_description_back_btn" translatable="false">page back btn</string>
 
@@ -64,6 +66,7 @@
 
     <string name="text_test">Test content</string>
     <string name="text_app_waring">The content of this application is from the Internet. Some of it may do physical or mental harm to you.\n You have learnt the risks above and would like to undertake them.</string>
+    <string name="text_app_illustrate">This app is not an official app and not affiliated with e-hentai.org/exhentai.org in any way.</string>
 
     <string name="text_star_1">1 star</string>
     <string name="text_star_2">2 stars</string>
@@ -135,6 +138,8 @@
     <string name="text_page_range">%d to %d</string>
     <string name="text_start_download">Start download…</string>
     <string name="text_download_finish">Download finish!</string>
+    <string name="text_next_page">Next page</string>
+    <string name="text_previous_page">Previous page</string>
 
     <string name="text_export_zip">Export zip to…</string>
     <string name="text_export_image">Export image to…</string>
@@ -142,21 +147,27 @@
     <string name="text_detail">Detail</string>
 
     <string name="text_sign_out">Sign out</string>
-
+    <string name="text_version">Version</string>
+    <string name="text_check_for_updates">Check for updates</string>
+    <string name="text_source_code">Source code</string>
+    <string name="text_license">License</string>
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>
     <string name="text_setting_read">Read</string>
+    <string name="text_setting_read_summary">Screen orientation, Reading direction</string>
     <string name="text_setting_download">Download</string>
     <string name="text_setting_security_and_privacy">Security And Privacy</string>
     <string name="text_setting_other">Other</string>
+    <string name="text_setting_other_summary">Language, Clear cache</string>
     <string name="text_setting_about">About</string>
+    <string name="text_setting_about_summary">Version</string>
 
     <string name="text_setting_cookie">Cookie</string>
     <string name="text_setting_cookie_summary">Check cookie</string>
     <string name="text_setting_site">Site</string>
     <string name="text_setting_screen_orientation">Screen orientation</string>
-    <string name="text_setting_read_orientation">Read orientation</string>
+    <string name="text_setting_reading_direction">Reading direction</string>
     <string name="text_setting_image_zoom">Image zoom</string>
     <string name="text_setting_keep_bright">Keep bright</string>
     <string name="text_setting_show_time">Show time</string>
@@ -165,6 +176,7 @@
     <string name="text_setting_show_page_padding">Show page padding</string>
     <string name="text_setting_volume_button_turn_pages">Volume button turn pages</string>
     <string name="text_setting_full_screen">Full screen</string>
+    <string name="text_setting_disable_screenshots">Disable screenshots</string>
 
     <string name="text_screen_default">Default</string>
     <string name="text_screen_horizontal">Horizontal</string>

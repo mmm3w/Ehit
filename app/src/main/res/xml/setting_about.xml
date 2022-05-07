@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.mitsuki.ehit.ui.setting.NoActionEditTextPreference
+        app:key="INNER_APP_VERSION"
+        app:title="@string/text_version"
+        app:useSimpleSummaryProvider="true" />
+
+    <Preference
+        app:key="setting_check_for_updates"
+        app:persistent="false"
+        app:summary="@string/last_version_url"
+        app:title="@string/text_check_for_updates" />
+
+    <Preference
+        app:key="setting_source_code"
+        app:persistent="false"
+        app:summary="@string/repo_url"
+        app:title="@string/text_source_code" />
+
+    <Preference
+        app:key="setting_license"
+        app:persistent="false"
+        app:title="@string/text_license" />
+
+    <Preference
+        app:key="setting_ehit"
+        app:persistent="false"
+        app:summary="@string/text_app_illustrate"
+        app:title="@string/app_name" />
+
+</PreferenceScreen>

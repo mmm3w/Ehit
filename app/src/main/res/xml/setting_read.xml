@@ -9,9 +9,9 @@
         app:useSimpleSummaryProvider="true" />
 
     <com.mitsuki.ehit.ui.setting.IntListPreference
-        app:key="SP_READ_ORIENTATION"
+        app:key="SP_READING_DIRECTION"
         android:defaultValue="0"
-        app:title="@string/text_setting_read_orientation"
+        app:title="@string/text_setting_reading_direction"
         app:useSimpleSummaryProvider="true" />
 
     <com.mitsuki.ehit.ui.setting.IntListPreference
