@@ -58,6 +58,9 @@ android {
         }
 
         release {
+            buildConfigField "String", "ipb_member_id", '""'
+            buildConfigField "String", "ipb_pass_hash", '""'
+            buildConfigField "String", "igneous", '""'
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -72,8 +75,6 @@ android {
             manifestPlaceholders = [
                     appName: "Ehit.",
             ]
-            buildConfigField "Boolean", "DEV", "true"
-            buildConfigField "Boolean", "SAVE_MODE", "false"
         }
 
         official {
@@ -81,8 +82,6 @@ android {
             manifestPlaceholders = [
                     appName: "Ehit",
             ]
-            buildConfigField "Boolean", "DEV", "false"
-            buildConfigField "Boolean", "SAVE_MODE", "false"
         }
 
     }
@@ -129,6 +128,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.biometric:biometric:1.2.0-alpha04'
 
     //----------------------------------------------------------------------------------------------
     //hilt

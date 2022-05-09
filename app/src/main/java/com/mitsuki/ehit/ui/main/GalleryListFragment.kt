@@ -92,6 +92,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         mAdapter.addLoadStateListener(mLoadStateListener)
         mViewModel.galleryList.observe(this) { mAdapter.submitData(lifecycle, it) }
 
+        (requireActivity() as? MainActivity)?.enableDrawer()
     }
 
     override fun onDestroy() {

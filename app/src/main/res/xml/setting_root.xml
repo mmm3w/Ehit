@@ -13,11 +13,13 @@
 
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.SettingDownloadFragment"
+        app:summary="@string/text_setting_download_summary"
         app:title="@string/text_setting_download" />
 
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.SettingPrivacyFragment"
         app:icon="@drawable/ic_baseline_privacy_tip_24"
+        app:summary="@string/text_setting_security_and_privacy_summary"
         app:title="@string/text_setting_security_and_privacy" />
 
     <Preference

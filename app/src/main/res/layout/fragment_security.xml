@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_8"
+        android:paddingHorizontal="@dimen/dp_16"
+        android:text="@string/text_security_hint"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_16" />
+
 
     <Button
-        android:id="@+id/test_btn"
+        android:id="@+id/security_authentication_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="这是应用锁\n点击模拟解锁成功"/>
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/text_authenticate_event" />
 
-</FrameLayout>
+</LinearLayout>

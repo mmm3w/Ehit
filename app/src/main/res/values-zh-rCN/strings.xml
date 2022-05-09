@@ -70,6 +70,8 @@
     <string name="text_save">保存</string>
     <string name="text_save_to_system_album">保存至系统相册</string>
     <string name="text_save_to">保存至…</string>
+    <string name="text_enable">已启用</string>
+    <string name="text_disable">未启用</string>
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>
@@ -120,17 +122,40 @@
     <string name="text_check_for_updates">检查更新</string>
     <string name="text_source_code">源码</string>
     <string name="text_license">开源证书</string>
+    <string name="text_app_lock">应用锁定</string>
+    <string name="text_app_lock_summary">依赖于系统的身份认证</string>
+    <string name="text_ehit_biometric_login">Ehit身份认证</string>
+    <string name="text_ehit_biometric_login_sub">使用您的生物识别凭证登录</string>
+    <string name="text_authentication_failed">认证失败</string>
+    <string name="text_authentication_error">认证异常：%s(代码 %d)</string>
+    <string name="text_authentication_cancel">认证取消</string>
+    <string name="text_security_hint">应用已被锁定\n您必须通过认证才能够继续使用</string>
+    <string name="text_authenticate_event">点击前往认证</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>
     <string name="text_setting_read">阅读设置</string>
     <string name="text_setting_read_summary">屏幕方向、阅读方向</string>
     <string name="text_setting_download">下载设置</string>
+    <string name="text_setting_download_summary">多线程数、下载原图设置</string>
     <string name="text_setting_security_and_privacy">隐私安全</string>
+    <string name="text_setting_security_and_privacy_summary">应用锁、数据分析</string>
     <string name="text_setting_other">其他设置</string>
     <string name="text_setting_other_summary">语言设置、清除缓存</string>
     <string name="text_setting_about">关于</string>
     <string name="text_setting_about_summary">版本信息</string>
+    <string name="text_setting_download_thread">下载线程数</string>
+    <string name="text_setting_preload_image">图片预加载</string>
+    <string name="text_setting_download_original_image">下载原始图片</string>
+    <string name="text_setting_download_original_image_summary">注意：开启此选项会导致图片配额大量流失</string>
+    <string name="text_setting_clear_download_redundancy">清理下载缓存</string>
+    <string name="text_setting_clear_download_redundancy_summary">删除未在下载列表中的图片文件缓存</string>
+    <string name="text_biometric_no_hardware">您的设备暂不支持身份认证</string>
+    <string name="text_biometric_hw_unavailable">当前您的设备的身份认证功能暂不可用</string>
+    <string name="text_biometric_none_enrolled">您需要创建可信的验证凭据</string>
+    <string name="text_biometric_error">凭证功能异常</string>
+    <string name="text_lock_enable">应用锁定已启用</string>
+    <string name="text_lock_disable">应用锁定已停用</string>
 
     <string name="text_setting_cookie">身份Cookie</string>
     <string name="text_setting_cookie_summary">查看Cookie</string>

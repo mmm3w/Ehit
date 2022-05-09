@@ -2,6 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.mitsuki.ehit.ui.setting.IntListPreference app:title="@string/text_setting_download_thread" />
 
+
+    <SwitchPreference
+        app:summary="@string/text_setting_download_original_image_summary"
+        app:title="@string/text_setting_download_original_image" />
+
+    <Preference
+        app:summary="@string/text_setting_clear_download_redundancy_summary"
+        app:title="@string/text_setting_clear_download_redundancy" />
 
 </PreferenceScreen>

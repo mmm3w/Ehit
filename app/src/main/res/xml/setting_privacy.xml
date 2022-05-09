@@ -2,6 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <SwitchPreference
+        app:key="SP_SECURITY"
+        app:summary="@string/text_app_lock_summary"
+        app:title="@string/text_app_lock" />
+
     <SwitchPreferenceCompat
         app:key="SP_DISABLE_SCREENSHOTS"
         app:title="@string/text_setting_disable_screenshots" />

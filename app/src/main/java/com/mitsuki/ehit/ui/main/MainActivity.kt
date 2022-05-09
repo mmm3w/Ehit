@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import androidx.core.os.bundleOf
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -43,6 +44,8 @@ class MainActivity : BaseActivity() {
             addTarget(android.R.id.content)
         }
         super.onCreate(savedInstanceState)
+
+        binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
         //NavigationUI提供的setup方法无法满足需求
@@ -101,7 +104,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
     fun navDestination(navID: Int, args: Bundle?) {
         val builder = NavOptions.Builder().setLaunchSingleTop(true)
         builder.setEnterAnim(androidx.navigation.ui.R.animator.nav_default_enter_anim)
@@ -140,4 +142,10 @@ class MainActivity : BaseActivity() {
     private fun onListLink(source: GalleryPageSource) {
         navDestination(R.id.nav_stack_main, bundleOf(DataKey.GALLERY_PAGE_SOURCE to source))
     }
+
+    fun enableDrawer(){
+        binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+
 }

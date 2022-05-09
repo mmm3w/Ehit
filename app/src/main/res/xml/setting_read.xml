@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.mitsuki.ehit.ui.setting.IntListPreference
-        app:key="SP_SCREEN_ORIENTATION"
         android:defaultValue="0"
+        app:key="SP_SCREEN_ORIENTATION"
         app:title="@string/text_setting_screen_orientation"
         app:useSimpleSummaryProvider="true" />
 
     <com.mitsuki.ehit.ui.setting.IntListPreference
-        app:key="SP_READING_DIRECTION"
         android:defaultValue="0"
+        app:key="SP_READING_DIRECTION"
         app:title="@string/text_setting_reading_direction"
         app:useSimpleSummaryProvider="true" />
 
     <com.mitsuki.ehit.ui.setting.IntListPreference
-        app:key="SP_IMAGE_ZOOM"
         android:defaultValue="0"
+        app:key="SP_IMAGE_ZOOM"
         app:title="@string/text_setting_image_zoom"
         app:useSimpleSummaryProvider="true" />
+
+    <Preference app:title="@string/text_setting_preload_image" />
 
     <SwitchPreferenceCompat
         app:key="SP_KEEP_BRIGHT"
