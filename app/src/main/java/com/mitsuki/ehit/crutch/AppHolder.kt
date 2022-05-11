@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.*
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.R
 import java.io.File
 
@@ -60,5 +61,9 @@ object AppHolder {
 
     val clipboardManager: ClipboardManager
         get() = mApplication.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    fun setAnalyticsCollectionEnabled(enable:Boolean){
+        FirebaseAnalytics.getInstance(mApplication).setAnalyticsCollectionEnabled(enable)
+    }
 
 }

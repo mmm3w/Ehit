@@ -171,6 +171,7 @@
     <string name="text_setting_volume_button_turn_pages">音量键翻页</string>
     <string name="text_setting_full_screen">全屏显示</string>
     <string name="text_setting_disable_screenshots">禁用截屏</string>
+    <string name="text_setting_data_analytics">数据收集</string>
 
     <string name="text_screen_default">跟随系统</string>
     <string name="text_screen_horizontal">横屏</string>

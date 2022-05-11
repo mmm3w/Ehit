@@ -11,5 +11,8 @@
         app:key="SP_DISABLE_SCREENSHOTS"
         app:title="@string/text_setting_disable_screenshots" />
 
+    <SwitchPreferenceCompat
+        app:key="SP_DATA_ANALYTICS"
+        app:title="@string/text_setting_data_analytics" />
 
 </PreferenceScreen>

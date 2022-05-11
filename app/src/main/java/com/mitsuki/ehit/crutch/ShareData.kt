@@ -3,6 +3,7 @@ package com.mitsuki.ehit.crutch
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.crutch.network.Site
 
@@ -20,6 +21,7 @@ class ShareData(context: Context) {
         const val SP_DOMAIN = "SP_DOMAIN"
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
         const val SP_DISABLE_SCREENSHOTS = "SP_DISABLE_SCREENSHOTS"
+        const val SP_DATA_ANALYTICS = "SP_DATA_ANALYTICS"
 
         const val SP_GALLERY_TOUCH_HOTSPOT_TIPS = "SP_GALLERY_TOUCH_HOTSPOT_TIPS"
 
@@ -128,6 +130,13 @@ class ShareData(context: Context) {
     var spDisableScreenshots: Boolean
         set(value) = edit { putBoolean(SP_DISABLE_SCREENSHOTS, value) }
         get() = boolean(SP_DISABLE_SCREENSHOTS)
+
+    var spDataAnalytics: Boolean
+        set(value) {
+            AppHolder.setAnalyticsCollectionEnabled(value)
+            edit { putBoolean(SP_DATA_ANALYTICS, value) }
+        }
+        get() = boolean(SP_DATA_ANALYTICS)
 
 
     /**********************************************************************************************/
