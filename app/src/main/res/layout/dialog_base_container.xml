@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:viewBindingIgnore="true">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -19,8 +19,9 @@
             android:id="@+id/dialog_base_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
             android:layout_marginHorizontal="@dimen/dp_12"
-            android:layout_marginVertical="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
             android:textColor="#000"
             android:textSize="@dimen/sp_20" />
 
@@ -29,13 +30,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dp_12"
-            android:layout_marginVertical="@dimen/dp_8"
+            android:layout_marginTop="52dp"
+            android:layout_marginBottom="52dp"
             android:overScrollMode="never" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8">
+            android:layout_gravity="bottom">
 
             <TextView
                 android:id="@+id/dialog_base_extend_btn"
@@ -73,5 +75,5 @@
 
             </LinearLayout>
         </FrameLayout>
-    </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

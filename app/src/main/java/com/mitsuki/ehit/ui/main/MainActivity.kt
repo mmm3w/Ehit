@@ -30,11 +30,15 @@ class MainActivity : BaseActivity() {
     private val navController: NavController by lazy {
         (supportFragmentManager.findFragmentById(R.id.main_nav_fragment) as NavHostFragment).navController
     }
-    private val controller by windowController()
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     @Inject
     lateinit var openGate: OpenGate
+
+    override fun onResume() {
+        super.onResume()
+        controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -47,7 +51,6 @@ class MainActivity : BaseActivity() {
 
         binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-        controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
         //NavigationUI提供的setup方法无法满足需求
         binding.mainNavigation.setNavigationItemSelectedListener {
             var handle = true

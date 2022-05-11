@@ -14,10 +14,12 @@
         app:title="@string/text_check_for_updates" />
 
     <Preference
-        app:key="setting_source_code"
         app:persistent="false"
         app:summary="@string/repo_url"
-        app:title="@string/text_source_code" />
+        app:title="@string/text_source_code" >
+        <intent android:action="android.intent.action.VIEW"
+            android:data="@string/repo_url"/>
+    </Preference>
 
     <Preference
         app:key="setting_license"

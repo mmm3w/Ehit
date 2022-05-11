@@ -30,8 +30,6 @@ class GalleryCommentActivity : BaseActivity() {
 
     private val mViewModel: GalleryCommentViewModel by viewModels()
 
-    private val controller by windowController()
-
     private val binding by viewBinding(ActivityGalleryCommentBinding::inflate)
 
     private val mInitAdapter by lazy { CommentLoadAdapter { mViewModel.loadComment(false) } }

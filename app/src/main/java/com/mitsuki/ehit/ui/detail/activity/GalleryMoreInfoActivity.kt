@@ -20,7 +20,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class GalleryMoreInfoActivity : BaseActivity() {
     private val binding by viewBinding(ActivityMoreInfoBinding::inflate)
-    private val controller by windowController()
 
     @Inject
     lateinit var galleryDao: GalleryDao

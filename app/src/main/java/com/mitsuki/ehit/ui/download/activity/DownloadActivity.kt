@@ -31,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DownloadActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityDownloadBinding::inflate)
-    private val controller by windowController()
+    
     private val mViewModel by viewModels<DownloadViewModel>()
 
     private val controlAnimate by lazy { ControlAnimate() }

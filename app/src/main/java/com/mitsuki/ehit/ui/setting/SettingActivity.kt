@@ -1,14 +1,15 @@
 package com.mitsuki.ehit.ui.setting
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivitySettingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,15 +18,8 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
 
     private val binding by viewBinding(ActivitySettingBinding::inflate)
 
-    private val controller by windowController()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        controller.window(
-            navigationBarLight = true, statusBarLight = true,
-            navigationBarColor = Color.WHITE,
-            statusBarColor = Color.WHITE
-        )
 
         setSupportActionBar(binding.appBar)
         setTitle(R.string.text_menu_setting)
@@ -39,16 +33,25 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
             val fragment =
                 supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment ?: "")
             fragment.arguments = pref.extras
-            replace(R.id.settings_container, fragment)
             setCustomAnimations(
-                androidx.navigation.ui.R.animator.nav_default_enter_anim,
-                androidx.navigation.ui.R.animator.nav_default_exit_anim,
-                androidx.navigation.ui.R.animator.nav_default_pop_enter_anim,
-                androidx.navigation.ui.R.animator.nav_default_pop_exit_anim
+                R.anim.nav_default_enter_anim,
+                R.anim.nav_default_exit_anim,
+                R.anim.nav_default_pop_enter_anim,
+                R.anim.nav_default_pop_exit_anim
             )
+            replace(R.id.settings_container, fragment)
             addToBackStack(pref.fragment)
+            title = pref.title
         }
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (supportFragmentManager.findFragmentById(R.id.settings_container) is SettingRootFragment) {
+            //TODO title的切换最好加入动画
+            setTitle(R.string.text_menu_setting)
+        }
     }
 }
 

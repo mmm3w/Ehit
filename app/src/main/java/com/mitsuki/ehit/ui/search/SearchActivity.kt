@@ -65,7 +65,7 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-    private val controller by windowController()
+    
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)

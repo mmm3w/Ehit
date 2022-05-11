@@ -34,8 +34,6 @@ class GalleryActivity : BaseActivity() {
 
     private var isReverse = true
 
-    private val controller by windowController()
-
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {

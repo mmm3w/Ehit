@@ -57,8 +57,6 @@ class RepositoryImpl @Inject constructor(
     private var galleryPageSize: Int = shareData.spGalleryPageSize
         set(value) {
             if (value != field) {
-                Log.d("asdf", "-=-=-=-=-= $field")
-
                 shareData.spGalleryPageSize = value
                 field = value
             }
