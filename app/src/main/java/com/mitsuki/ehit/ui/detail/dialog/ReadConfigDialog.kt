@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.showSelectMenu
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.save.MemoryData
@@ -75,7 +76,7 @@ class ReadConfigDialog :
         imageZoom = memoryData.imageZoom
 
         binding.readConfigScreenOrientationSelect.setOnClickListener {
-            showSelectMenu(it, R.menu.menu_screen_orientation) { menuId ->
+            showSelectMenu(requireContext(), it, R.menu.menu_screen_orientation) { menuId ->
                 when (menuId) {
                     R.id.screen_default -> screenOrientation = 0
                     R.id.screen_vertical -> screenOrientation = 1
@@ -85,7 +86,7 @@ class ReadConfigDialog :
             }
         }
         binding.readConfigReadingDirectionSelect.setOnClickListener {
-            showSelectMenu(it, R.menu.menu_reading_direction) { menuId ->
+            showSelectMenu(requireContext(), it, R.menu.menu_reading_direction) { menuId ->
                 when (menuId) {
                     R.id.read_rtl -> readOrientation = 0
                     R.id.read_ltr -> readOrientation = 1
@@ -94,7 +95,7 @@ class ReadConfigDialog :
             }
         }
         binding.readConfigImageZoomSelect.setOnClickListener {
-            showSelectMenu(it, R.menu.menu_image_zoom) { menuId ->
+            showSelectMenu(requireContext(), it, R.menu.menu_image_zoom) { menuId ->
                 when (menuId) {
                     R.id.zoom_adapt_screen -> imageZoom = 0
                     R.id.zoom_adapt_width -> imageZoom = 1
@@ -147,16 +148,5 @@ class ReadConfigDialog :
         return text(sid)
     }
 
-
-    private fun showSelectMenu(view: View, menu: Int, click: (Int) -> Unit) {
-        val popupMenu = PopupMenu(requireContext(), view)
-        popupMenu.menuInflater.inflate(menu, popupMenu.menu)
-        popupMenu.show()
-        popupMenu.setOnMenuItemClickListener {
-            it?.itemId?.apply(click)
-            true
-        }
-
-    }
 
 }

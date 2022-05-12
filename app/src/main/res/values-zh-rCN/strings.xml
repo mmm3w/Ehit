@@ -32,6 +32,11 @@
     <string name="hint_add_favorite_failure">添加收藏失败</string>
     <string name="hint_exit_by_next_back">再按一次退出</string>
     <string name="hint_no_data">暂无数据</string>
+    <string name="hint_host">主机/IP</string>
+    <string name="hint_port">端口</string>
+
+    <string name="error_content_empty">内容为空</string>
+    <string name="error_invalid_port">无效端口</string>
 
     <string name="text_test">测试内容</string>
     <string name="text_app_waring">本应用内容来自互联网，其中一些可能对您造成身体或精神伤害。\n您已了解上述风险并愿意承担这些风险。</string>
@@ -111,6 +116,11 @@
     <string name="text_download_finish">下载结束！</string>
     <string name="text_next_page">下一页</string>
     <string name="text_previous_page">上一页</string>
+    <string name="text_proxy">代理</string>
+    <string name="text_proxy_system">系统代理</string>
+    <string name="text_proxy_direct">直接连接</string>
+    <string name="text_proxy_http">HTTP</string>
+    <string name="text_proxy_socks">SOCKS</string>
 
     <string name="text_export_zip">导出压缩包至…</string>
     <string name="text_export_image">导出图片至…</string>

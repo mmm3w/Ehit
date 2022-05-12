@@ -2,10 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.mitsuki.ehit.ui.setting.IntListPreference
-        app:title="@string/text_language" />
+    <com.mitsuki.ehit.ui.common.widget.IntListPreference app:title="@string/text_language" />
 
     <Preference app:title="主题" />
 
+    <Preference
+        app:key="SP_PROXY_MODE"
+        app:title="@string/text_proxy" />
 
 </PreferenceScreen>

@@ -15,11 +15,10 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
 import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
-import com.mitsuki.ehit.ui.setting.SettingActivity
+import com.mitsuki.ehit.ui.setting.activity.SettingActivity
 import com.mitsuki.ehit.ui.download.activity.DownloadActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

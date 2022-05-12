@@ -16,7 +16,7 @@
         app:summary="@string/text_setting_cookie_summary"
         app:title="@string/text_setting_cookie" />
 
-    <com.mitsuki.ehit.ui.setting.IntListPreference
+    <com.mitsuki.ehit.ui.common.widget.IntListPreference
         app:key="SP_DOMAIN"
         app:title="@string/text_setting_site"
         app:useSimpleSummaryProvider="true" />

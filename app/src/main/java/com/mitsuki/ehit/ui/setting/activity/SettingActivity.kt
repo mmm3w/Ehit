@@ -1,9 +1,6 @@
-package com.mitsuki.ehit.ui.setting
+package com.mitsuki.ehit.ui.setting.activity
 
-import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.commit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -11,6 +8,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ActivitySettingBinding
+import com.mitsuki.ehit.ui.setting.fragment.SettingRootFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

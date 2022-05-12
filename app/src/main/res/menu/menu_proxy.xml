@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/proxy_direct"
+        android:title="@string/text_proxy_direct" />
+    <item
+        android:id="@+id/proxy_system"
+        android:title="@string/text_proxy_system" />
+    <item
+        android:id="@+id/proxy_http"
+        android:title="@string/text_proxy_http" />
+    <item
+        android:id="@+id/proxy_socks"
+        android:title="@string/text_proxy_socks" />
+</menu>

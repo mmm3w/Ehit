@@ -64,6 +64,11 @@
     <string name="hint_add_favorite_failure">Failed to add to favorites</string>
     <string name="hint_exit_by_next_back">Press again to exit</string>
     <string name="hint_no_data">No data</string>
+    <string name="hint_host">Host</string>
+    <string name="hint_port">Port</string>
+
+    <string name="error_content_empty">Content is empty</string>
+    <string name="error_invalid_port">Invalid port</string>
 
     <string name="text_test">Test content</string>
     <string name="text_app_waring">The content of this application is from the Internet. Some of it may do physical or mental harm to you.\n You have learnt the risks above and would like to undertake them.</string>
@@ -144,6 +149,11 @@
     <string name="text_download_finish">Download finish!</string>
     <string name="text_next_page">Next page</string>
     <string name="text_previous_page">Previous page</string>
+    <string name="text_proxy">Proxy</string>
+    <string name="text_proxy_system">System proxy</string>
+    <string name="text_proxy_direct">Direct</string>
+    <string name="text_proxy_http">HTTP</string>
+    <string name="text_proxy_socks">SOCKS</string>
 
     <string name="text_export_zip">Export zip to…</string>
     <string name="text_export_image">Export image to…</string>

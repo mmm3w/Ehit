@@ -2,33 +2,33 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="com.mitsuki.ehit.ui.setting.SettingEhFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingEhFragment"
         app:summary="@string/text_setting_eh_summary"
         app:title="@string/text_setting_eh" />
 
     <Preference
-        app:fragment="com.mitsuki.ehit.ui.setting.SettingReadFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingReadFragment"
         app:summary="@string/text_setting_read_summary"
         app:title="@string/text_setting_read" />
 
     <Preference
-        app:fragment="com.mitsuki.ehit.ui.setting.SettingDownloadFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingDownloadFragment"
         app:summary="@string/text_setting_download_summary"
         app:title="@string/text_setting_download" />
 
     <Preference
-        app:fragment="com.mitsuki.ehit.ui.setting.SettingPrivacyFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingPrivacyFragment"
         app:icon="@drawable/ic_baseline_privacy_tip_24"
         app:summary="@string/text_setting_security_and_privacy_summary"
         app:title="@string/text_setting_security_and_privacy" />
 
     <Preference
-        app:fragment="com.mitsuki.ehit.ui.setting.SettingOtherFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingOtherFragment"
         app:summary="@string/text_setting_other_summary"
         app:title="@string/text_setting_other" />
 
     <Preference
-        app:fragment="com.mitsuki.ehit.ui.setting.SettingAboutFragment"
+        app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingAboutFragment"
         app:summary="@string/text_setting_about_summary"
         app:title="@string/text_setting_about" />
 

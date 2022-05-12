@@ -1,6 +1,10 @@
 package com.mitsuki.ehit.crutch.save
 
 import com.mitsuki.ehit.crutch.network.Site
+import java.net.InetAddress
+import java.net.InetSocketAddress
+import java.net.Proxy
+import java.net.SocketAddress
 
 class MemoryData(private val shareData: ShareData) {
 
@@ -101,7 +105,48 @@ class MemoryData(private val shareData: ShareData) {
             }
         }
 
+
+    var proxy: Proxy? = null
+        private set
+
+    fun setProxy(mode: Int, host: String, port: Int) {
+        when (mode) {
+            0 -> proxy = Proxy.NO_PROXY
+            1 -> proxy = null
+            2 -> {
+                proxy = try {
+                    val inetAddress = InetAddress.getByName(host)
+                    val socketAddress: SocketAddress =
+                        InetSocketAddress(inetAddress, port)
+                    Proxy(Proxy.Type.HTTP, socketAddress)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+            3 -> {
+                proxy = try {
+                    val inetAddress = InetAddress.getByName(host)
+                    val socketAddress: SocketAddress =
+                        InetSocketAddress(inetAddress, port)
+                    Proxy(Proxy.Type.SOCKS, socketAddress)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+            else -> proxy = null
+        }
+    }
+
+    fun setProxy(mode: Int) {
+        setProxy(mode, shareData.spProxyIp, shareData.spProxyPort)
+    }
+
+
     init {
         Site.refreshDomain(domain)
+
+        setProxy(shareData.spProxyMode)
     }
 }

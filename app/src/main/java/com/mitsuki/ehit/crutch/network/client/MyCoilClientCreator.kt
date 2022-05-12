@@ -10,31 +10,34 @@ import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
+import java.net.ProxySelector
 import javax.inject.Inject
 
 class MyCoilClientCreator @Inject constructor(
     @ApplicationContext private val mContext: Context,
-    private val cookieJar: CookieJar
+    private val cookieJar: CookieJar,
+    private val proxyManager: ProxySelector
 ) : ClientCreator {
-    
-    companion object{
-       private const val RETRY_TIMES = 3
-       private const val CACHE_DIRECTORY_NAME = "image_cache"
-       private const val CACHE_LEVEL_MIN = 10L * 1024 * 1024 //10MB
-       private const val CACHE_LEVEL_MAX = 1024L * 1024 * 1024 //1GB
-       private const val CACHE_LEVEL_1 = 100L * 1024 * 1024 //100MB
-       private const val CACHE_LEVEL_2 = 200L * 1024 * 1024 //200MB
-       private const val CACHE_LEVEL_3 = 400L * 1024 * 1024 //400MB
-       private const val CACHE_LEVEL_4 = 600L * 1024 * 1024 //600MB
-       private const val CACHE_LEVEL_5 = 800L * 1024 * 1024 //800MB
-       private const val DISK_CACHE_PERCENTAGE = 0.02
+
+    companion object {
+        private const val RETRY_TIMES = 3
+        private const val CACHE_DIRECTORY_NAME = "image_cache"
+        private const val CACHE_LEVEL_MIN = 10L * 1024 * 1024 //10MB
+        private const val CACHE_LEVEL_MAX = 1024L * 1024 * 1024 //1GB
+        private const val CACHE_LEVEL_1 = 100L * 1024 * 1024 //100MB
+        private const val CACHE_LEVEL_2 = 200L * 1024 * 1024 //200MB
+        private const val CACHE_LEVEL_3 = 400L * 1024 * 1024 //400MB
+        private const val CACHE_LEVEL_4 = 600L * 1024 * 1024 //600MB
+        private const val CACHE_LEVEL_5 = 800L * 1024 * 1024 //800MB
+        private const val DISK_CACHE_PERCENTAGE = 0.02
     }
-    
-    
+
+
     override fun create(): OkHttpClient {
         return OkHttpClient.Builder()
             .cache(coilCache(mContext))
             .cookieJar(cookieJar)
+            .proxySelector(proxyManager)
             .addInterceptor(FakeHeader())
             .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
             .addInterceptor(ProgressProvider.imageLoadInterceptor)

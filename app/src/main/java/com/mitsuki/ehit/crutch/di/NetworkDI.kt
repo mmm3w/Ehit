@@ -2,6 +2,7 @@ package com.mitsuki.ehit.crutch.di
 
 import com.mitsuki.ehit.crutch.network.client.ClientCreator
 import com.mitsuki.ehit.crutch.network.CookieManager
+import com.mitsuki.ehit.crutch.network.ProxyManager
 import com.mitsuki.ehit.crutch.network.client.MyApiClientCreator
 import com.mitsuki.ehit.crutch.network.client.MyCoilClientCreator
 import dagger.Binds
@@ -11,6 +12,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.CookieJar
 import okhttp3.OkHttpClient
+import java.net.ProxySelector
 import javax.inject.Singleton
 
 
@@ -22,7 +24,12 @@ abstract class NetworkBinds {
     @Binds
     abstract fun cookieJar(impl: CookieManager): CookieJar
 
-    //请求用
+    //代理处理
+    @Singleton
+    @Binds
+    abstract fun proxyManager(impl: ProxyManager): ProxySelector
+
+    //数据请求用
     @ApiClientCreator
     @Binds
     abstract fun apiClientCreator(creator: MyApiClientCreator): ClientCreator
@@ -31,6 +38,7 @@ abstract class NetworkBinds {
     @CoilClientCreator
     @Binds
     abstract fun coilClientCreator(creator: MyCoilClientCreator): ClientCreator
+
 }
 
 

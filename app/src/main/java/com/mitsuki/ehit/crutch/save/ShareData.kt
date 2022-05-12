@@ -26,6 +26,9 @@ class ShareData(context: Context) {
         const val SP_DOWNLOAD_THREAD = "SP_DOWNLOAD_THREAD"
         const val SP_DOWNLOAD_ORIGINAL = "SP_DOWNLOAD_ORIGINAL"
         const val SP_PRELOAD_IMAGE = "SP_PRELOAD_IMAGE"
+        const val SP_PROXY_MODE = "SP_PROXY_MODE"
+        const val SP_PROXY_IP = "SP_PROXY_IP"
+        const val SP_PROXY_PORT = "SP_PROXY_PORT"
 
 
         const val SP_GALLERY_TOUCH_HOTSPOT_TIPS = "SP_GALLERY_TOUCH_HOTSPOT_TIPS"
@@ -171,6 +174,19 @@ class ShareData(context: Context) {
                 else -> throw IllegalArgumentException()
             }
         }
+
+    var spProxyMode: Int
+        set(value) = edit { putInt(SP_PROXY_MODE, value) }
+        get() = int(SP_PROXY_MODE)
+
+    var spProxyIp: String
+        set(value) = edit { putString(SP_PROXY_IP, value) }
+        get() = string(SP_PROXY_IP)
+
+    var spProxyPort: Int
+        set(value) = edit { putInt(SP_PROXY_PORT, value) }
+        get() = int(SP_PROXY_PORT)
+
 
     /**********************************************************************************************/
     private var innerAppVersion: String

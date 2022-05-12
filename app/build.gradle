@@ -177,6 +177,4 @@ dependencies {
     implementation "com.mitsuki.armory:imagegesture:1.0.0"
     implementation "com.mitsuki.armory:systemoverlay:1.0.1"
 
-    implementation 'com.github.Dimezis:BlurView:version-2.0.0'
-
 }

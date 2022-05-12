@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.setting
+package com.mitsuki.ehit.ui.setting.fragment
 
 import android.content.Context
 import android.content.Intent
