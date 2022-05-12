@@ -29,21 +29,3 @@ abstract class ApplicationBinds {
     @Binds
     abstract fun pagingSourceProvider(impl: PagingSourceImpl): PagingSource
 }
-
-@Module
-@InstallIn(SingletonComponent::class)
-object ApplicationProviders {
-
-    @Singleton
-    @Provides
-    fun notificationHelper(@ApplicationContext context: Context): NotificationHelper {
-        return NotificationHelper(context) {
-            channel(
-                DownloadNotify.NOTIFICATION_CHANNEL,
-                context.getString(R.string.description_download_notification_name),
-                context.getString(R.string.description_download_notification),
-                NotificationCompat.PRIORITY_LOW
-            )
-        }
-    }
-}
