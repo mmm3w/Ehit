@@ -53,7 +53,7 @@ class GalleryActivity : BaseActivity() {
         binding.galleryViewPager.apply {
             adapter = mViewPagerAdapter
             setCurrentItem(if (isReverse) mPage - mIndex - 1 else mIndex, false)
-            offscreenPageLimit = 3
+            offscreenPageLimit = shareData.spPreloadImage
             registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {

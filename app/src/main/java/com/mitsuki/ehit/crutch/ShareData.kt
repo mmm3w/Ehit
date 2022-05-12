@@ -6,6 +6,7 @@ import androidx.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.crutch.network.Site
+import java.lang.IllegalArgumentException
 
 class ShareData(context: Context) {
     private val mDefaultSP: SharedPreferences =
@@ -22,6 +23,10 @@ class ShareData(context: Context) {
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
         const val SP_DISABLE_SCREENSHOTS = "SP_DISABLE_SCREENSHOTS"
         const val SP_DATA_ANALYTICS = "SP_DATA_ANALYTICS"
+        const val SP_DOWNLOAD_THREAD = "SP_DOWNLOAD_THREAD"
+        const val SP_DOWNLOAD_ORIGINAL = "SP_DOWNLOAD_ORIGINAL"
+        const val SP_PRELOAD_IMAGE = "SP_PRELOAD_IMAGE"
+
 
         const val SP_GALLERY_TOUCH_HOTSPOT_TIPS = "SP_GALLERY_TOUCH_HOTSPOT_TIPS"
 
@@ -131,6 +136,10 @@ class ShareData(context: Context) {
         set(value) = edit { putBoolean(SP_DISABLE_SCREENSHOTS, value) }
         get() = boolean(SP_DISABLE_SCREENSHOTS)
 
+    var spDownloadOriginal: Boolean
+        set(value) = edit { putBoolean(SP_DOWNLOAD_ORIGINAL, value) }
+        get() = boolean(SP_DOWNLOAD_ORIGINAL)
+
     var spDataAnalytics: Boolean
         set(value) {
             AppHolder.setAnalyticsCollectionEnabled(value)
@@ -138,6 +147,30 @@ class ShareData(context: Context) {
         }
         get() = boolean(SP_DATA_ANALYTICS)
 
+    var spDownloadThread: Int
+        set(value) = edit { putInt(SP_DOWNLOAD_THREAD, value) }
+        get() {
+            return when (int(SP_DOWNLOAD_THREAD, 1)) {
+                0 -> 1
+                1 -> 3
+                2 -> 5
+                3 -> 7
+                4 -> 11
+                else -> throw IllegalArgumentException()
+            }
+        }
+
+    var spPreloadImage: Int
+        set(value) = edit { putInt(SP_PRELOAD_IMAGE, value) }
+        get() {
+            return when (int(SP_PRELOAD_IMAGE, 1)) {
+                0 -> 3
+                1 -> 5
+                2 -> 7
+                3 -> 9
+                else -> throw IllegalArgumentException()
+            }
+        }
 
     /**********************************************************************************************/
     private var innerAppVersion: String

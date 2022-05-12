@@ -14,20 +14,28 @@ class DownloadScheduler(private val repository: Repository) {
     private val mListData: MutableList<String> = arrayListOf()
     private val mDataLock = Mutex()
 
-    private suspend fun innerAppend(tag: String, newNode: List<DownloadNode>) {
+    private suspend fun innerAppend(tag: String, newNode: List<DownloadNode>, threadCount: Int) {
         mData[tag]?.apply { append(newNode) } ?: let {
-            mData[tag] = BlockWork(3, newNode, this::downloadPage).apply {
+            mData[tag] = BlockWork(threadCount, newNode, this::downloadPage).apply {
                 mListData.add(tag)
             }
         }
     }
 
-    suspend fun append(tag: String, newNode: List<DownloadNode>) {
-        mDataLock.withLock { innerAppend(tag, newNode) }
+    suspend fun append(tag: String, newNode: List<DownloadNode>, threadCount: Int) {
+        mDataLock.withLock { innerAppend(tag, newNode, threadCount) }
     }
 
-    suspend fun append(data: Map<String, List<DownloadNode>>) {
-        mDataLock.withLock { data.forEach { entry -> innerAppend(entry.key, entry.value) } }
+    suspend fun append(data: Map<String, List<DownloadNode>>, threadCount: Int) {
+        mDataLock.withLock {
+            data.forEach { entry ->
+                innerAppend(
+                    entry.key,
+                    entry.value,
+                    threadCount
+                )
+            }
+        }
     }
 
     suspend fun cancelAll() {

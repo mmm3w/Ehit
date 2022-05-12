@@ -41,10 +41,6 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>(ShareData.SP_DOMAIN)?.apply {
             entries = arrayOf(Site.EH, Site.EX)
             entryValues = Array(2) { it.toString() }
-            setOnPreferenceChangeListener { _, newValue ->
-                shareData.domain = newValue.toString().toInt()
-                true
-            }
         }
 
         findPreference<Preference>("setting_site")?.setOnPreferenceClickListener { openSiteSetting() }
@@ -71,12 +67,6 @@ class SettingEhFragment : PreferenceFragmentCompat() {
                 /*复制json操作*/
             }
         }
-//        MaterialDialog(requireContext()).show {
-//            title(res = R.string.title_cookie)
-//            message(text = allCookieInfo)
-//            positiveButton(R.string.text_copy) { /*复制json操作*/ }
-//            lifecycleOwner(this@SettingEhFragment)
-//        }
         return true
     }
 

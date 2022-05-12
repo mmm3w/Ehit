@@ -12,6 +12,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SettingReadFragment : PreferenceFragmentCompat() {
 
+    private val selectablePreload = arrayOf("3", "5", "7", "9")
+
     @Inject
     lateinit var shareData: ShareData
 
@@ -57,6 +59,21 @@ class SettingReadFragment : PreferenceFragmentCompat() {
             entryValues = Array(5) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
                 shareData.imageZoom = newValue.toString().toInt()
+                true
+            }
+        }
+
+
+        findPreference<ListPreference>(ShareData.SP_PRELOAD_IMAGE)?.apply {
+            entries = selectablePreload
+            entryValues = Array(selectablePreload.size) { it.toString() }
+            summary =
+                string(R.string.text_setting_preload_image_summery).format(shareData.spPreloadImage)
+            setOnPreferenceChangeListener { _, newValue ->
+                val index = newValue.toString().toInt()
+                summary = string(R.string.text_setting_preload_image_summery).format(
+                    selectablePreload[index].toInt()
+                )
                 true
             }
         }

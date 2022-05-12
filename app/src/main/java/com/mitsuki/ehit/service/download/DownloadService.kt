@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.entity.DownloadMessage
@@ -67,6 +68,9 @@ class DownloadService : Service() {
     @Inject
     lateinit var notify: DownloadNotify
 
+    @Inject
+    lateinit var shareData: ShareData
+
     private val downloadSchedule by lazy { DownloadScheduler(repository) }
     private val mReceiver by lazy { MyBroadcastReceiver() }
 
@@ -118,7 +122,8 @@ class DownloadService : Service() {
 
     private fun handleEvent(intent: Intent?) {
         when (intent?.action) {
-            ACTION_DOWNLOAD -> intent.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)?.apply { postTask(this) }
+            ACTION_DOWNLOAD -> intent.getParcelableExtra<DownloadMessage>(DOWNLOAD_TASK)
+                ?.apply { postTask(this) }
             ACTION_START_ALL -> startAll()
             ACTION_RESTART -> (intent.getSerializableExtra(TARGET) as? Pair<*, *>)?.apply {
                 restart(first as Long, second as String)
@@ -158,7 +163,7 @@ class DownloadService : Service() {
                     }
                 }
             }
-            downloadSchedule.append(result)
+            downloadSchedule.append(result, shareData.spDownloadThread)
             startWork()
         }
     }
@@ -169,7 +174,8 @@ class DownloadService : Service() {
             launch(Dispatchers.IO) { downloadSchedule.thumb(gid, token) }
             downloadSchedule.append(
                 DownloadMessage.key(gid, token),
-                downloadDao.queryDownloadNode(gid, token)
+                downloadDao.queryDownloadNode(gid, token),
+                shareData.spDownloadThread
             )
             startWork()
         }
@@ -180,7 +186,7 @@ class DownloadService : Service() {
         CoroutineScope(Dispatchers.Default).launch {
             val newNode = downloadDao.updateDownloadList(message) //通过数据库对比获取差分数据
             launch(Dispatchers.IO) { downloadSchedule.thumb(message.gid, message.token) }
-            downloadSchedule.append(message.key, newNode)
+            downloadSchedule.append(message.key, newNode, shareData.spDownloadThread)
             startWork()
         }
     }

@@ -145,7 +145,9 @@
     <string name="text_setting_about">关于</string>
     <string name="text_setting_about_summary">版本信息</string>
     <string name="text_setting_download_thread">下载线程数</string>
+    <string name="text_setting_download_thread_summery">最多同时下载%s张图片</string>
     <string name="text_setting_preload_image">图片预加载</string>
+    <string name="text_setting_preload_image_summery">提前加载%d张图片</string>
     <string name="text_setting_download_original_image">下载原始图片</string>
     <string name="text_setting_download_original_image_summary">注意：开启此选项会导致图片配额大量流失</string>
     <string name="text_setting_clear_download_redundancy">清理下载缓存</string>
@@ -172,6 +174,8 @@
     <string name="text_setting_full_screen">全屏显示</string>
     <string name="text_setting_disable_screenshots">禁用截屏</string>
     <string name="text_setting_data_analytics">数据收集</string>
+    <string name="text_setting_about_analytics">关于数据收集与分析</string>
+    <string name="text_setting_about_analytics_summary">该功能由 Google Firebase 提供</string>
 
     <string name="text_screen_default">跟随系统</string>
     <string name="text_screen_horizontal">横屏</string>

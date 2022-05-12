@@ -20,7 +20,10 @@
         app:title="@string/text_setting_image_zoom"
         app:useSimpleSummaryProvider="true" />
 
-    <Preference app:title="@string/text_setting_preload_image" />
+    <com.mitsuki.ehit.ui.setting.IntListPreference
+        app:key="SP_PRELOAD_IMAGE"
+        android:defaultValue="1"
+        app:title="@string/text_setting_preload_image" />
 
     <SwitchPreferenceCompat
         app:key="SP_KEEP_BRIGHT"

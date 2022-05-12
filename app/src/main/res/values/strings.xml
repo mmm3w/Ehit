@@ -178,7 +178,9 @@
     <string name="text_setting_about">About</string>
     <string name="text_setting_about_summary">Version</string>
     <string name="text_setting_download_thread">Multi-threaded download</string>
+    <string name="text_setting_download_thread_summery">Up to %s image</string>
     <string name="text_setting_preload_image">Preload image</string>
+    <string name="text_setting_preload_image_summery">Preload next %d image</string>
     <string name="text_setting_download_original_image">Download original image</string>
     <string name="text_setting_download_original_image_summary">It is dangerous! You may get 509 error.</string>
     <string name="text_setting_clear_download_redundancy">Clear download redundancy</string>
@@ -205,6 +207,8 @@
     <string name="text_setting_full_screen">Full screen</string>
     <string name="text_setting_disable_screenshots">Disable screenshots</string>
     <string name="text_setting_data_analytics">Data analytics</string>
+    <string name="text_setting_about_analytics">About analytics</string>
+    <string name="text_setting_about_analytics_summary">This feature is powered by Google Firebase.</string>
 
     <string name="text_screen_default">Default</string>
     <string name="text_screen_horizontal">Horizontal</string>

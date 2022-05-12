@@ -7,12 +7,16 @@
         app:summary="@string/text_app_lock_summary"
         app:title="@string/text_app_lock" />
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         app:key="SP_DISABLE_SCREENSHOTS"
         app:title="@string/text_setting_disable_screenshots" />
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         app:key="SP_DATA_ANALYTICS"
         app:title="@string/text_setting_data_analytics" />
+
+    <Preference
+        app:summary="@string/text_setting_about_analytics_summary"
+        app:title="@string/text_setting_about_analytics" />
 
 </PreferenceScreen>
