@@ -5,10 +5,8 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.extensions.text
-import com.mitsuki.ehit.crutch.network.Site
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -3,24 +3,19 @@ package com.mitsuki.ehit.ui.detail.activity
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.ShareData
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
 import com.mitsuki.ehit.ui.detail.dialog.ReadConfigDialog
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class GalleryActivity : BaseActivity() {
@@ -99,22 +94,22 @@ class GalleryActivity : BaseActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     private fun enableReadConfig() {
         //屏幕方向
-        when (shareData.screenOrientation) {
+        when (memoryData.screenOrientation) {
             0 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             1 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             2 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             3 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         }
 
-        if (shareData.keepBright) {
+        if (memoryData.keepBright) {
             window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
-        binding.galleryShowTime.isVisible = shareData.showTime
-        binding.galleryShowBattery.isVisible = shareData.showBattery
-        binding.galleryShowProgress.isVisible = shareData.showProgress
+        binding.galleryShowTime.isVisible = memoryData.showTime
+        binding.galleryShowBattery.isVisible = memoryData.showBattery
+        binding.galleryShowProgress.isVisible = memoryData.showProgress
     }
 
     private fun showTips() {
@@ -126,7 +121,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (shareData.volumeButtonTurnPages) {
+        if (memoryData.volumeButtonTurnPages) {
             return when (keyCode) {
                 KeyEvent.KEYCODE_VOLUME_DOWN -> {
                     nextPage()

@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.model.repository.impl
 
-import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -21,8 +20,7 @@ import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamsValue
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.ShareData
-import com.mitsuki.ehit.crutch.di.ApiClient
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.convert.*
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.dao.GalleryDao
@@ -50,7 +48,7 @@ class RepositoryImpl @Inject constructor(
     val galleryDao: GalleryDao,
     val downloadDao: DownloadDao,
     val pagingProvider: PagingSource,
-    @ApiClient val client: OkHttpClient,
+    val client: OkHttpClient,
     val shareData: ShareData
 ) : Repository {
 

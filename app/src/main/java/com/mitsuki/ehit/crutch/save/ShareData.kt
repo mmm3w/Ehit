@@ -1,10 +1,10 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.crutch.save
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.BuildConfig
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.network.Site
 import java.lang.IllegalArgumentException
 
@@ -67,7 +67,7 @@ class ShareData(context: Context) {
     }
 
     /**********************************************************************************************/
-    private var spDomain: Int
+    var spDomain: Int
         set(value) = edit { putInt(SP_DOMAIN, value) }
         get() = int(SP_DOMAIN, 0)
 
@@ -177,107 +177,8 @@ class ShareData(context: Context) {
         set(value) = edit { putString(INNER_APP_VERSION, value) }
         get() = string(INNER_APP_VERSION)
 
-    /**********************************************************************************************/
-    var domain: Int = spDomain
-        set(value) {
-            if (value != field) {
-                field = value
-                spDomain = value
-                Site.refreshDomain(field)
-            }
-        }
-
-    var screenOrientation: Int = spScreenOrientation
-        set(value) {
-            if (value != field) {
-                field = value
-                spScreenOrientation = value
-            }
-        }
-
-    var readOrientation: Int = spReadOrientation
-        set(value) {
-            if (value != field) {
-                field = value
-                spReadOrientation = value
-            }
-        }
-
-    var imageZoom: Int = spImageZoom
-        set(value) {
-            if (value != field) {
-                field = value
-                spImageZoom = value
-            }
-        }
-
-    var keepBright: Boolean = spKeepBright
-        set(value) {
-            if (value != field) {
-                field = value
-                spKeepBright = value
-            }
-        }
-
-    var showTime: Boolean = spShowTime
-        set(value) {
-            if (value != field) {
-                field = value
-                spShowTime = value
-            }
-        }
-
-    var showBattery: Boolean = spShowBattery
-        set(value) {
-            if (value != field) {
-                field = value
-                spShowBattery = value
-            }
-        }
-
-    var showProgress: Boolean = spShowProgress
-        set(value) {
-            if (value != field) {
-                field = value
-                spShowProgress = value
-            }
-        }
-
-    var showPagePadding: Boolean = spShowPagePadding
-        set(value) {
-            if (value != field) {
-                field = value
-                spShowPagePadding = value
-            }
-        }
-
-    var volumeButtonTurnPages: Boolean = spVolumeButtonTurnPages
-        set(value) {
-            if (value != field) {
-                field = value
-                spVolumeButtonTurnPages = value
-            }
-        }
-
-    var fullScreen: Boolean = spFullScreen
-        set(value) {
-            if (value != field) {
-                field = value
-                spFullScreen = value
-            }
-        }
-
-    var disableScreenshots: Boolean = spDisableScreenshots
-        set(value) {
-            if (value != field) {
-                field = value
-                spDisableScreenshots = value
-            }
-        }
-
-
     init {
-        Site.refreshDomain(domain)
+
         innerAppVersion = BuildConfig.VERSION_NAME
     }
 }

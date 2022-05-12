@@ -8,11 +8,17 @@ annotation class RemoteRepository
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ApiClient
+annotation class ApiClientCreator
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class CoilClient
+annotation class CoilClientCreator
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AsCookieManager
+
+
 
 
 

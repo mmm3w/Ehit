@@ -20,7 +20,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RoomDi {
+object RoomProviders {
     @Singleton
     @Provides
     fun cacheDB(@ApplicationContext context: Context): CacheDatabase {

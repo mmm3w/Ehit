@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.entity.DownloadMessage

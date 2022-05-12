@@ -1,14 +1,14 @@
 package com.mitsuki.ehit.viewmodel
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,10 @@ import okhttp3.Cookie
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(@RemoteRepository var repository: Repository, val cookieManager: CookieManager) :
+class LoginViewModel @Inject constructor(
+    @RemoteRepository var repository: Repository,
+    @AsCookieManager val cookieManager: CookieManager
+) :
     ViewModel(), EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()

@@ -1,12 +1,12 @@
 package com.mitsuki.ehit.ui.setting
 
 import android.os.Bundle
-import android.util.Log
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.di.AsCookieManager
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
@@ -18,6 +18,7 @@ import javax.inject.Inject
 class SettingEhFragment : PreferenceFragmentCompat() {
 
 
+    @AsCookieManager
     @Inject
     lateinit var mCookieManager: CookieManager
 

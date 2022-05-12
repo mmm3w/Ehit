@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.save.MemoryData
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -16,6 +17,9 @@ class SettingReadFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var shareData: ShareData
+
+    @Inject
+    lateinit var memoryData: MemoryData
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.setting_read, rootKey)
@@ -30,7 +34,7 @@ class SettingReadFragment : PreferenceFragmentCompat() {
             )
             entryValues = Array(4) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
-                shareData.screenOrientation = newValue.toString().toInt()
+                memoryData.screenOrientation = newValue.toString().toInt()
                 true
             }
         }
@@ -43,7 +47,7 @@ class SettingReadFragment : PreferenceFragmentCompat() {
             )
             entryValues = Array(3) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
-                shareData.readOrientation = newValue.toString().toInt()
+                memoryData.readOrientation = newValue.toString().toInt()
                 true
             }
         }
@@ -58,7 +62,7 @@ class SettingReadFragment : PreferenceFragmentCompat() {
             )
             entryValues = Array(5) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
-                shareData.imageZoom = newValue.toString().toInt()
+                memoryData.imageZoom = newValue.toString().toInt()
                 true
             }
         }

@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.OpenGate
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.databinding.FragmentLoginBinding
 import com.mitsuki.ehit.ui.main.MainActivity
 import com.mitsuki.ehit.ui.temp.adapter.*
@@ -33,7 +34,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private val mAccountAdapter by lazy { LoginAccountAdapter() }
     private val mCookieAdapter by lazy { LoginCookieAdapter() }
-    private val mDomain by lazy { LoginDomain(shareData) }
+    private val mDomain by lazy { LoginDomain(memoryData) }
     private val mExtend by lazy { LoginExtend() }
 
     private val mAdapter by lazy {
@@ -50,6 +51,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     lateinit var openGate:OpenGate
     @Inject
     lateinit var shareData: ShareData
+    @Inject
+    lateinit var memoryData: MemoryData
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding?.loginUi?.apply {

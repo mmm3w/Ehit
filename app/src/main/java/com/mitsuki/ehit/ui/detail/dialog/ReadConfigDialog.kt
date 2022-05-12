@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.extensions.text
+import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.databinding.DialogReadConfigBinding
 import com.mitsuki.ehit.ui.common.dialog.BindingDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,24 +24,24 @@ class ReadConfigDialog :
         title(text(R.string.text_setting_read))
 
         positiveBtn(text(R.string.text_confirm)) {
-            shareData.keepBright = binding.readConfigKeepBrightSwitch.isChecked
-            shareData.showTime = binding.readConfigShowTimeSwitch.isChecked
-            shareData.showBattery = binding.readConfigShowBatterySwitch.isChecked
-            shareData.showProgress = binding.readConfigShowProgressSwitch.isChecked
-            shareData.showPagePadding = binding.readConfigShowPagePaddingSwitch.isChecked
-            shareData.volumeButtonTurnPages =
+            memoryData.keepBright = binding.readConfigKeepBrightSwitch.isChecked
+            memoryData.showTime = binding.readConfigShowTimeSwitch.isChecked
+            memoryData.showBattery = binding.readConfigShowBatterySwitch.isChecked
+            memoryData.showProgress = binding.readConfigShowProgressSwitch.isChecked
+            memoryData.showPagePadding = binding.readConfigShowPagePaddingSwitch.isChecked
+            memoryData.volumeButtonTurnPages =
                 binding.readConfigVolumeButtonTurnPagesSwitch.isChecked
-            shareData.fullScreen = binding.readConfigFullScreenSwitch.isChecked
-            shareData.screenOrientation = screenOrientation
-            shareData.readOrientation = readOrientation
-            shareData.imageZoom = imageZoom
+            memoryData.fullScreen = binding.readConfigFullScreenSwitch.isChecked
+            memoryData.screenOrientation = screenOrientation
+            memoryData.readOrientation = readOrientation
+            memoryData.imageZoom = imageZoom
 
             dismiss()
         }
     }
 
     @Inject
-    lateinit var shareData: ShareData
+    lateinit var memoryData: MemoryData
 
     private var screenOrientation = -1
         set(value) {
@@ -69,9 +70,9 @@ class ReadConfigDialog :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        screenOrientation = shareData.screenOrientation
-        readOrientation = shareData.readOrientation
-        imageZoom = shareData.imageZoom
+        screenOrientation = memoryData.screenOrientation
+        readOrientation = memoryData.readOrientation
+        imageZoom = memoryData.imageZoom
 
         binding.readConfigScreenOrientationSelect.setOnClickListener {
             showSelectMenu(it, R.menu.menu_screen_orientation) { menuId ->
@@ -104,13 +105,13 @@ class ReadConfigDialog :
             }
         }
 
-        binding.readConfigKeepBrightSwitch.isChecked = shareData.keepBright
-        binding.readConfigShowTimeSwitch.isChecked = shareData.showTime
-        binding.readConfigShowBatterySwitch.isChecked = shareData.showBattery
-        binding.readConfigShowProgressSwitch.isChecked = shareData.showProgress
-        binding.readConfigShowPagePaddingSwitch.isChecked = shareData.showPagePadding
-        binding.readConfigVolumeButtonTurnPagesSwitch.isChecked = shareData.volumeButtonTurnPages
-        binding.readConfigFullScreenSwitch.isChecked = shareData.fullScreen
+        binding.readConfigKeepBrightSwitch.isChecked = memoryData.keepBright
+        binding.readConfigShowTimeSwitch.isChecked = memoryData.showTime
+        binding.readConfigShowBatterySwitch.isChecked = memoryData.showBattery
+        binding.readConfigShowProgressSwitch.isChecked = memoryData.showProgress
+        binding.readConfigShowPagePaddingSwitch.isChecked = memoryData.showPagePadding
+        binding.readConfigVolumeButtonTurnPagesSwitch.isChecked = memoryData.volumeButtonTurnPages
+        binding.readConfigFullScreenSwitch.isChecked = memoryData.fullScreen
     }
 
     private fun screenOrientationText(index: Int): CharSequence {

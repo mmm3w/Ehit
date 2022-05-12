@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.crutch
 
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.save.ShareData
 import javax.inject.Inject
 
 class OpenGate @Inject constructor(val shareData: ShareData) {

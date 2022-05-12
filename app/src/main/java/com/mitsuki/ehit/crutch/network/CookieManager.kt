@@ -1,19 +1,26 @@
 package com.mitsuki.ehit.crutch.network
 
-import com.mitsuki.ehit.crutch.ShareData
+import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.model.dao.CookieDao
 import com.mitsuki.ehit.model.entity.db.CookieCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.internal.filterList
-import java.net.URL
+import javax.inject.Inject
 
-class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
 
-    private val mMemoryCache: MutableList<okhttp3.Cookie> by lazy { arrayListOf() }
+class CookieManager @Inject constructor(
+    private val cookieDao: CookieDao,
+    private val memoryData: MemoryData,
+) : CookieJar {
+
+    private val mMemoryCache: MutableList<Cookie> by lazy { arrayListOf() }
 
     private var mLoginMark: Int = 0
 
@@ -22,7 +29,7 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
     init {
         runBlocking {
             mMemoryCache.clear()
-            val site = Site.domain(shareData.domain)
+            val site = Site.domain(memoryData.domain)
             cookieDao.queryCookie(site).forEach {
                 it.buildCookie(site.toHttpUrl())?.apply {
                     loginPick(this)
@@ -32,11 +39,11 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
         }
     }
 
-    fun newCookie(cookies: List<okhttp3.Cookie>) {
+    fun newCookie(cookies: List<Cookie>) {
         //换新
         mMemoryCache.clear()
         val current = System.currentTimeMillis()
-        val newCookies = arrayListOf<okhttp3.Cookie>()
+        val newCookies = arrayListOf<Cookie>()
         //合并cookie
         for (cookie in cookies) {
             if (cookie.expiresAt >= current) {
@@ -48,7 +55,7 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
 
         CoroutineScope(Dispatchers.Default).launch {
             cookieDao.clearCookie()
-            val site = Site.domain(shareData.domain)
+            val site = Site.domain(memoryData.domain)
             cookieDao.insertCookies(newCookies.map {
                 CookieCache(
                     domain = site,
@@ -68,11 +75,11 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
         }
     }
 
-    fun saveCookie(cookies: List<okhttp3.Cookie>) {
+    fun saveCookie(cookies: List<Cookie>) {
         //清理过期cookie
         clearExpiredCookie()
         val current = System.currentTimeMillis()
-        val newCookies = arrayListOf<okhttp3.Cookie>()
+        val newCookies = arrayListOf<Cookie>()
         //合并cookie
         for (cookie in cookies) {
             if (cookie.expiresAt >= current) {
@@ -83,7 +90,7 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            val site = Site.domain(shareData.domain)
+            val site = Site.domain(memoryData.domain)
             cookieDao.insertCookies(newCookies.map {
                 CookieCache(
                     domain = site,
@@ -94,7 +101,7 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
         }
     }
 
-    fun loadCookie(url: String): List<okhttp3.Cookie> {
+    fun loadCookie(url: String): List<Cookie> {
         //是否每次都有清理的必要？
         //clearExpiredCookie()
         return mMemoryCache.filterList { domain == url }
@@ -114,7 +121,7 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
         }
     }
 
-    private fun loginPick(cookie: okhttp3.Cookie) {
+    private fun loginPick(cookie: Cookie) {
         if (cookie.name == "ipb_member_id") {
             mLoginMark = if (cookie.value.isNotEmpty()) {
                 mLoginMark or 1
@@ -139,5 +146,16 @@ class CookieManager(val cookieDao: CookieDao, val shareData: ShareData) {
             }
 
         }
+    }
+
+    @Synchronized
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        //从内存缓存加载 cookie
+        return loadCookie(url.host).filterList { name != "yay" }
+    }
+
+    @Synchronized
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        saveCookie(cookies)
     }
 }
