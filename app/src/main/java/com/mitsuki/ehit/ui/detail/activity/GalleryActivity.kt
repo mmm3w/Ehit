@@ -33,8 +33,6 @@ class GalleryActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        controller.window(statusBarHide = true, navigationBarHide = true, barFit = false)
-
         mIndex = intent.getIntExtra(DataKey.GALLERY_INDEX, 0)
         mPage = intent.getIntExtra(DataKey.GALLERY_PAGE, 0)
         mId = intent.getLongExtra(DataKey.GALLERY_ID, -1)

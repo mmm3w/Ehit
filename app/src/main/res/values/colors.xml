@@ -33,10 +33,14 @@
     <color name="background_color_gallery_detail_tag_title">#22054166</color>
     <color name="background_color_gallery_detail_tag_item">#22ffffff</color>
     <color name="background_color_gallery_thumb">#fff</color>
+    <color name="background_color_search_bar">#fff</color>
 
     <color name="stroke_color_gallery_detail_tag_item">#DADCE0</color>
 
     <color name="ripple_color_gallery_detail_tag_item">#22000000</color>
+
+    <color name="icon_tint_general">#464646</color>
+    <color name="icon_tint_search_change">#54A5FF</color>
 
 
     <color name="gray_0a0a0a">#0a0a0a</color>

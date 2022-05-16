@@ -25,7 +25,12 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onUiMode()
+        val isNightMode =
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+        onUiMode(isNightMode)
     }
 
     override fun onResume() {
@@ -37,12 +42,7 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    open fun onUiMode() {
-        val isNightMode =
-            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> true
-                else -> false
-            }
+    open fun onUiMode(isNightMode: Boolean) {
         controller.window(
             navigationBarLight = !isNightMode,
             statusBarLight = !isNightMode,

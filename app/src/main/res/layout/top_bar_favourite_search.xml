@@ -5,7 +5,7 @@
     android:layout_height="48dp"
     android:layout_marginHorizontal="@dimen/dp_16"
     android:layout_marginVertical="@dimen/dp_8"
-    android:background="@drawable/bg_search_bar"
+    android:background="@drawable/background_search_bar"
     android:elevation="@dimen/dp_4"
     android:gravity="center_vertical"
     android:orientation="horizontal"

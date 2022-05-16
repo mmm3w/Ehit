@@ -19,6 +19,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
@@ -65,7 +66,6 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-    
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -76,15 +76,14 @@ class SearchActivity : BaseActivity() {
         setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementEnterTransition = MaterialContainerTransform().apply {
             addTarget(android.R.id.content)
-            startContainerColor = Color.WHITE
-            startContainerColor = Color.WHITE
+            startContainerColor = color(R.color.background_color_general)
+            startContainerColor = color(R.color.background_color_general)
         }
         window.sharedElementReturnTransition = MaterialContainerTransform().apply {
             addTarget(android.R.id.content)
         }
 
         super.onCreate(savedInstanceState)
-        controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
         findViewById<View>(android.R.id.content).setPadding(0, statusBarHeight(), 0, 0)
 
         mViewModel.initData(intent)
@@ -126,6 +125,16 @@ class SearchActivity : BaseActivity() {
         lifecycleScope.launchWhenCreated {
             mViewModel.searchHistory().collect { mHistoryAdapter.submitData(it) }
         }
+    }
+
+    override fun onUiMode(isNightMode: Boolean) {
+        controller.window(
+            navigationBarLight = !isNightMode,
+            statusBarLight = !isNightMode,
+            navigationBarColor = color(R.color.navigation_bar_color),
+            statusBarColor = color(R.color.status_bar_color),
+            barFit = false
+        )
     }
 
     private fun onItemEvent(event: SearchWordEvent) {

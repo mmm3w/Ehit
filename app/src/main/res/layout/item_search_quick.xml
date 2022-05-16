@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/background_color_general"
     android:elevation="0dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -25,7 +25,8 @@
         android:layout_marginHorizontal="@dimen/dp_8"
         android:layout_weight="1"
         android:ellipsize="end"
-        android:lines="1" />
+        android:lines="1"
+        android:textColor="@color/text_color_general" />
 
     <ImageView
         android:id="@+id/quick_search_del"

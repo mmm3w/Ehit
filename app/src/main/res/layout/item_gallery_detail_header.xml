@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="5"
-            android:textColor="@color/blue_202124"
+            android:textColor="@color/text_color_general"
             android:textSize="@dimen/sp_20" />
 
         <TextView
@@ -37,7 +37,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/blue_5F6368"
+            android:textColor="@color/text_color_general"
             android:textSize="@dimen/sp_16" />
 
         <com.mitsuki.ehit.ui.common.widget.CategoryView

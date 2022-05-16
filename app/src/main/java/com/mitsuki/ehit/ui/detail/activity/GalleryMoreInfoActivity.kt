@@ -26,12 +26,6 @@ class GalleryMoreInfoActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        controller.window(
-            navigationBarLight = true,
-            statusBarLight = true,
-            navigationBarColor = Color.WHITE,
-            statusBarColor = Color.WHITE
-        )
 
         binding.topBar.topBarLayout.elevation = dp2px(4f)
         binding.topBar.topBarLayout.setBackgroundColor(Color.WHITE)

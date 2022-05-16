@@ -126,7 +126,7 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
                 setStyle(CircularProgressDrawable.DEFAULT)
                 strokeWidth = dp2px(1.9f)
                 centerRadius = dp2px(6.4f)
-                setColorSchemeColors(0xff272926.toInt())
+                setColorSchemeColors(color(R.color.icon_tint_general))
                 setStartEndTrim(0.1f, 0.9f)
                 arrowEnabled = true
             })
