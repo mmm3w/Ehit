@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.widget.Toast
 import androidx.annotation.*
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.R
@@ -42,6 +43,8 @@ object AppHolder {
 
     fun drawable(@DrawableRes id: Int): Drawable? = AppCompatResources.getDrawable(mApplication, id)
 
+    fun color(@ColorRes id: Int): Int = ContextCompat.getColor(mApplication, id)
+
     //请少用该方法弹出toast
     fun toast(
         text: String? = null,
@@ -62,7 +65,7 @@ object AppHolder {
     val clipboardManager: ClipboardManager
         get() = mApplication.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-    fun setAnalyticsCollectionEnabled(enable:Boolean){
+    fun setAnalyticsCollectionEnabled(enable: Boolean) {
         FirebaseAnalytics.getInstance(mApplication).setAnalyticsCollectionEnabled(enable)
     }
 

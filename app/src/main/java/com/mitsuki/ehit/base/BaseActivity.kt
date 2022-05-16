@@ -1,7 +1,11 @@
 package com.mitsuki.ehit.base
 
+import android.content.res.Configuration
+import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.windowController
@@ -19,6 +23,10 @@ open class BaseActivity : AppCompatActivity() {
 
     val controller by windowController()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        onUiMode()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -27,5 +35,19 @@ open class BaseActivity : AppCompatActivity() {
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
+    }
+
+    open fun onUiMode() {
+        val isNightMode =
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+        controller.window(
+            navigationBarLight = !isNightMode,
+            statusBarLight = !isNightMode,
+            navigationBarColor = color(R.color.navigation_bar_color),
+            statusBarColor = color(R.color.status_bar_color)
+        )
     }
 }

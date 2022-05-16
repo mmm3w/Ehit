@@ -2,9 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.mitsuki.ehit.ui.common.widget.IntListPreference app:title="@string/text_language" />
+    <Preference app:title="@string/text_language" />
 
-    <Preference app:title="主题" />
+    <com.mitsuki.ehit.ui.common.widget.IntListPreference
+        app:defaultValue="0"
+        app:key="SP_THEME"
+        app:title="主题"
+        app:useSimpleSummaryProvider="true" />
 
     <Preference
         app:key="SP_PROXY_MODE"

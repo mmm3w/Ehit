@@ -10,7 +10,7 @@
         android:layout_width="@dimen/dp_48"
         android:layout_height="68dp"
         android:layout_margin="@dimen/dp_16"
-        android:background="@drawable/bg_gallery_thumb"
+        android:background="@drawable/background_gallery_thumb"
         android:elevation="2dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"

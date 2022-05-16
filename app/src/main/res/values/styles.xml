@@ -1,14 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
+        <!--这里固定透明-->
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
@@ -22,7 +24,7 @@
         <item name="android:paddingTop">@dimen/dp_4</item>
         <item name="android:layout_margin">@dimen/dp_4</item>
         <item name="android:paddingBottom">@dimen/dp_4</item>
-        <item name="android:textColor">@color/blue_054166</item>
+        <item name="android:textColor">@color/text_color_gallery_detail_tag</item>
     </style>
 
     <style name="TagItem">
@@ -34,7 +36,7 @@
         <item name="android:paddingTop">@dimen/dp_4</item>
         <item name="android:layout_margin">@dimen/dp_4</item>
         <item name="android:paddingBottom">@dimen/dp_4</item>
-        <item name="android:textColor">@color/blue_5F6368</item>
+        <item name="android:textColor">@color/text_color_gallery_detail_tag</item>
     </style>
 
     <style name="BottomDialogAnimation" parent="android:Animation">
@@ -50,14 +52,14 @@
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_bottom_dialog</item>
+        <item name="android:background">@drawable/background_bottom_dialog</item>
     </style>
 
     <style name="BottomSheetDialogTheme" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">@color/white</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_color</item>
+        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">@color/navigation_bar_color</item>
     </style>
 
     <style name="NormalText">

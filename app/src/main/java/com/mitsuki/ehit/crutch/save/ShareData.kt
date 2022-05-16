@@ -29,6 +29,7 @@ class ShareData(context: Context) {
         const val SP_PROXY_MODE = "SP_PROXY_MODE"
         const val SP_PROXY_IP = "SP_PROXY_IP"
         const val SP_PROXY_PORT = "SP_PROXY_PORT"
+        const val SP_THEME = "SP_THEME"
 
 
         const val SP_GALLERY_TOUCH_HOTSPOT_TIPS = "SP_GALLERY_TOUCH_HOTSPOT_TIPS"
@@ -187,6 +188,10 @@ class ShareData(context: Context) {
         set(value) = edit { putInt(SP_PROXY_PORT, value) }
         get() = int(SP_PROXY_PORT)
 
+    var spTheme: Int
+        set(value) = edit { putInt(SP_THEME, value) }
+        get() = int(SP_THEME)
+
 
     /**********************************************************************************************/
     private var innerAppVersion: String
@@ -194,7 +199,6 @@ class ShareData(context: Context) {
         get() = string(INNER_APP_VERSION)
 
     init {
-
         innerAppVersion = BuildConfig.VERSION_NAME
     }
 }

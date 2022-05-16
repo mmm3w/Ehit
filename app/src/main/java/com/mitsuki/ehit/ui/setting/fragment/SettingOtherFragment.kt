@@ -2,11 +2,14 @@ package com.mitsuki.ehit.ui.setting.fragment
 
 import android.content.Context
 import android.os.Bundle
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.ValueFinder
 import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.extensions.text
+import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.ui.setting.dialog.ProxyInputDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +33,15 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
                 }.show(childFragmentManager, "proxy")
                 true
             }
+        }
+
+        findPreference<ListPreference>(ShareData.SP_THEME)?.apply {
+            entries = arrayOf(
+                string(R.string.text_theme_follow_system),
+                string(R.string.text_theme_night_no),
+                string(R.string.text_theme_night_yes)
+            )
+            entryValues = Array(3) { it.toString() }
         }
     }
 

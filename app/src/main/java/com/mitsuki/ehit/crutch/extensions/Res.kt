@@ -2,6 +2,7 @@ package com.mitsuki.ehit.crutch.extensions
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntegerRes
 import androidx.annotation.StringRes
@@ -18,3 +19,5 @@ fun string(@StringRes id: Int): String = AppHolder.string(id)
 fun text(@StringRes id: Int): CharSequence = AppHolder.text(id)
 
 fun drawable(@DrawableRes id: Int): Drawable? = AppHolder.drawable(id)
+
+fun color(@ColorRes id: Int): Int = AppHolder.color(id)

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
@@ -31,7 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DownloadActivity : BaseActivity() {
 
     private val binding by viewBinding(ActivityDownloadBinding::inflate)
-    
+
     private val mViewModel by viewModels<DownloadViewModel>()
 
     private val controlAnimate by lazy { ControlAnimate() }
@@ -42,12 +44,8 @@ class DownloadActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        controller.window(
-            navigationBarLight = true,
-            statusBarLight = true,
-            navigationBarColor = Color.WHITE,
-            statusBarColor = Color.WHITE
-        )
+
+        AppCompatDelegate.getDefaultNightMode()
         binding.topBar.topBarText.text = getText(R.string.text_download)
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
         binding.topBar.topBarStart.setOnClickListener {

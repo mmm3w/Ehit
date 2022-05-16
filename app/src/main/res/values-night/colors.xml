@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="navigation_bar_color">#303030</color>
+    <color name="status_bar_color">#303030</color>
+
+    <color name="text_color_general">#c5c5c5</color>
+    <color name="text_color_gallery_detail_tag">#054166</color>
+
+    <color name="background_color_general">#303030</color>
+    <color name="background_color_gallery_detail_tag_title">#22054166</color>
+    <color name="background_color_gallery_detail_tag_item">#22ffffff</color>
+    <color name="background_color_gallery_thumb">#282828</color>
+
+    <color name="stroke_color_gallery_detail_tag_item">#DADCE0</color>
+
+    <color name="ripple_color_gallery_detail_tag_item">#22000000</color>
+
+
+
+</resources>

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#55999999</color>
-    <color name="colorPrimaryDark">#556b6b6b</color>
-    <color name="colorPrimaryLight">#55cfcfcf</color>
-    <color name="colorAccent">#aa999999</color>
+    <color name="colorPrimary">#0972b3</color>
+    <color name="colorPrimaryDark">#054166</color>
+    <color name="colorPrimaryLight">#0972b3</color>
+    <color name="colorAccent">#054166</color>
 
+    <!--fixed-->
     <color name="color_doujinshi">#f26f5f</color>
     <color name="color_manga">#fcb417</color>
     <color name="color_artist_cg">#dde500</color>
@@ -19,6 +20,50 @@
 
     <color name="blue_054166">#054166</color>
 
+
+    <!--dynamic-->
+    <color name="navigation_bar_color">#ffffff</color>
+    <color name="status_bar_color">#ffffff</color>
+
+
+    <color name="text_color_general">#464646</color>
+    <color name="text_color_gallery_detail_tag">#054166</color>
+
+    <color name="background_color_general">#ffffff</color>
+    <color name="background_color_gallery_detail_tag_title">#22054166</color>
+    <color name="background_color_gallery_detail_tag_item">#22ffffff</color>
+    <color name="background_color_gallery_thumb">#fff</color>
+
+    <color name="stroke_color_gallery_detail_tag_item">#DADCE0</color>
+
+    <color name="ripple_color_gallery_detail_tag_item">#22000000</color>
+
+
+    <color name="gray_0a0a0a">#0a0a0a</color>
+    <color name="gray_141414">#141414</color>
+    <color name="gray_1e1e1e">#1e1e1e</color>
+    <color name="gray_282828">#282828</color>
+    <color name="gray_323232">#323232</color>
+    <color name="gray_3c3c3c">#3c3c3c</color>
+    <color name="gray_464646">#464646</color>
+    <color name="gray_505050">#505050</color>
+    <color name="gray_5a5a5a">#5a5a5a</color>
+    <color name="gray_646464">#646464</color>
+    <color name="gray_6e6e6e">#6e6e6e</color>
+    <color name="gray_787878">#787878</color>
+    <color name="gray_828282">#828282</color>
+    <color name="gray_8c8c8c">#8c8c8c</color>
+    <color name="gray_969696">#969696</color>
+    <color name="gray_a0a0a0">#a0a0a0</color>
+    <color name="gray_aaaaaa">#aaaaaa</color>
+    <color name="gray_b4b4b4">#b4b4b4</color>
+    <color name="gray_bebebe">#bebebe</color>
+    <color name="gray_c8c8c8">#c8c8c8</color>
+    <color name="gray_d2d2d2">#d2d2d2</color>
+    <color name="gray_dcdcdc">#dcdcdc</color>
+    <color name="gray_e6e6e6">#e6e6e6</color>
+    <color name="gray_f0f0f0">#f0f0f0</color>
+    <color name="gray_fafafa">#fafafa</color>
 
     <color name="black_00">#FF000000</color>
     <color name="black_05">#F2000000</color>

@@ -201,6 +201,9 @@
     <string name="text_biometric_none_enrolled">You need to create credentials.</string>
     <string name="text_lock_enable">App lock is enable.</string>
     <string name="text_lock_disable">App lock is disable.</string>
+    <string name="text_theme_follow_system">Follow system</string>
+    <string name="text_theme_night_no">Normal mode</string>
+    <string name="text_theme_night_yes">DayNight mode</string>
 
     <string name="text_setting_cookie">Cookie</string>
     <string name="text_setting_cookie_summary">Check cookie</string>

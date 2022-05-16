@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="horizontal_space">24dp</dimen>
+
+
+    <dimen name="corner_base_dialog">2dp</dimen>
+    <dimen name="corner_bottom_dialog">8dp</dimen>
+    <dimen name="corner_gallery_thumb">2dp</dimen>
+    <dimen name="corner_search_bar">4dp</dimen>
+
+
 </resources>

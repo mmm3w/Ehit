@@ -168,6 +168,9 @@
     <string name="text_biometric_error">凭证功能异常</string>
     <string name="text_lock_enable">应用锁定已启用</string>
     <string name="text_lock_disable">应用锁定已停用</string>
+    <string name="text_theme_follow_system">跟随系统</string>
+    <string name="text_theme_night_no">普通主题</string>
+    <string name="text_theme_night_yes">暗黑主题</string>
 
     <string name="text_setting_cookie">身份Cookie</string>
     <string name="text_setting_cookie_summary">查看Cookie</string>

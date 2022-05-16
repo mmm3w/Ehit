@@ -25,6 +25,7 @@ import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -75,8 +76,8 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
-            startContainerColor = Color.WHITE
-            endContainerColor = Color.WHITE
+            startContainerColor = color(R.color.background_color_general)
+            endContainerColor = color(R.color.background_color_general)
         }
 
         mViewModel.initData(arguments)

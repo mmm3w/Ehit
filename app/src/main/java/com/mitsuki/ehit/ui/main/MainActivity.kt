@@ -1,6 +1,8 @@
 package com.mitsuki.ehit.ui.main
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import androidx.core.os.bundleOf
@@ -14,6 +16,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.*
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
 import com.mitsuki.ehit.model.entity.Gallery
@@ -33,11 +36,6 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var openGate: OpenGate
-
-    override fun onResume() {
-        super.onResume()
-        controller.window(navigationBarLight = true, statusBarLight = true, barFit = false)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -106,6 +104,21 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    override fun onUiMode() {
+        val isNightMode =
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+        controller.window(
+            navigationBarLight = !isNightMode,
+            statusBarLight = !isNightMode,
+            navigationBarColor = Color.TRANSPARENT,
+            statusBarColor = Color.TRANSPARENT
+        )
+    }
+
+
     fun navDestination(navID: Int, args: Bundle?) {
         val builder = NavOptions.Builder().setLaunchSingleTop(true)
         builder.setEnterAnim(androidx.navigation.ui.R.animator.nav_default_enter_anim)
@@ -145,7 +158,7 @@ class MainActivity : BaseActivity() {
         navDestination(R.id.nav_stack_main, bundleOf(DataKey.GALLERY_PAGE_SOURCE to source))
     }
 
-    fun enableDrawer(){
+    fun enableDrawer() {
         binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 

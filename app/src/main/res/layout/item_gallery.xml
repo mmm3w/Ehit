@@ -2,16 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/gallery_layout"
-    android:background="?android:attr/selectableItemBackground"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/gallery_thumb"
         android:layout_width="@dimen/dp_80"
         android:layout_height="120dp"
         android:layout_margin="@dimen/dp_16"
-        android:background="@drawable/bg_gallery_thumb"
+        android:background="@drawable/background_gallery_thumb"
         android:elevation="@dimen/dp_4"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,7 @@
         android:layout_marginVertical="@dimen/dp_4"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/grayscale_20"
+        android:textColor="@color/text_color_general"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/gallery_thumb"
@@ -37,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
+        android:textColor="@color/text_color_general"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="@id/gallery_title"
         app:layout_constraintTop_toBottomOf="@id/gallery_title" />
@@ -72,6 +73,7 @@
         android:layout_marginHorizontal="@dimen/dp_16"
         android:layout_marginVertical="@dimen/dp_4"
         android:lines="1"
+        android:textColor="@color/text_color_general"
         app:layout_constraintBottom_toBottomOf="@id/gallery_thumb"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -79,6 +81,7 @@
         android:id="@+id/gallery_lang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/text_color_general"
         app:layout_constraintBottom_toTopOf="@id/gallery_time"
         app:layout_constraintEnd_toEndOf="@id/gallery_time" />
 
