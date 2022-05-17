@@ -20,29 +20,6 @@
 
     <color name="blue_054166">#054166</color>
 
-
-    <!--dynamic-->
-    <color name="navigation_bar_color">#ffffff</color>
-    <color name="status_bar_color">#ffffff</color>
-
-
-    <color name="text_color_general">#464646</color>
-    <color name="text_color_gallery_detail_tag">#054166</color>
-
-    <color name="background_color_general">#ffffff</color>
-    <color name="background_color_gallery_detail_tag_title">#22054166</color>
-    <color name="background_color_gallery_detail_tag_item">#22ffffff</color>
-    <color name="background_color_gallery_thumb">#fff</color>
-    <color name="background_color_search_bar">#fff</color>
-
-    <color name="stroke_color_gallery_detail_tag_item">#DADCE0</color>
-
-    <color name="ripple_color_gallery_detail_tag_item">#22000000</color>
-
-    <color name="icon_tint_general">#464646</color>
-    <color name="icon_tint_search_change">#54A5FF</color>
-
-
     <color name="gray_0a0a0a">#0a0a0a</color>
     <color name="gray_141414">#141414</color>
     <color name="gray_1e1e1e">#1e1e1e</color>
@@ -110,5 +87,33 @@
     <color name="white_85">#21FFFFFF</color>
     <color name="white_90">#19FFFFFF</color>
     <color name="white_95">#0CFFFFFF</color>
+
+
+    <!--dynamic-->
+    <color name="navigation_bar_color">#ffffff</color>
+    <color name="status_bar_color">#ffffff</color>
+
+
+    <color name="text_color_general">#464646</color>
+    <color name="text_color_gallery_detail_tag">#054166</color>
+    <color name="text_color_gallery_preview_index">#1e1e1e</color>
+    <color name="text_color_gallery_preview_error_info">#c5c5c5</color>
+    <color name="text_color_gallery_preview_tips">#c5c5c5</color>
+
+    <color name="background_color_general">#ffffff</color>
+    <color name="background_color_gallery_detail_tag_title">#22054166</color>
+    <color name="background_color_gallery_detail_tag_item">#22ffffff</color>
+    <color name="background_color_gallery_thumb">#fff</color>
+    <color name="background_color_search_bar">#fff</color>
+    <color name="background_color_gallery_preview">#6f6f6f</color>
+
+    <color name="stroke_color_gallery_detail_tag_item">#DADCE0</color>
+
+    <color name="ripple_color_gallery_detail_tag_item">#22000000</color>
+
+    <color name="icon_tint_general">#464646</color>
+    <color name="icon_tint_search_change">#54A5FF</color>
+    <color name="icon_tint_gallery_preview_battery">#c5c5c5</color>
+    <color name="icon_tint_gallery_preview_battery_low">#af3131</color>
 
 </resources>

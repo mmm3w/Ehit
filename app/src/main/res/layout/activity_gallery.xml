@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color_gallery_preview">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/gallery_view_pager"
@@ -9,26 +10,33 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
+        android:id="@+id/gallery_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp">
 
         <TextView
             android:id="@+id/gallery_show_progress"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/gallery_show_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:textColor="@color/text_color_gallery_preview_tips" />
 
         <TextView
             android:id="@+id/gallery_show_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:textColor="@color/text_color_gallery_preview_tips" />
 
+        <ImageView
+            android:id="@+id/gallery_show_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp" />
 
     </LinearLayout>
 

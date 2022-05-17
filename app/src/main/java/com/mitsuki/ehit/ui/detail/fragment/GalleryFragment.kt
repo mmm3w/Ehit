@@ -20,12 +20,14 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.detail.widget.GalleryImageGesture
 import com.mitsuki.ehit.viewmodel.GalleryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
@@ -35,6 +37,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     private var mImageGesture: ImageGesture? = null
 
     private val binding by viewBinding(FragmentGalleryBinding::bind)
+
+    @Inject
+    lateinit var memoryData: MemoryData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +112,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     private fun onLoadProgress(progress: Progress?) {
         mViewModel.changeLoadingState(false)
         binding?.galleryProgress?.isVisible = true
+        binding?.galleryProgress?.layoutDirection = View.LAYOUT_DIRECTION_LTR
         progress?.apply {
             binding?.galleryProgress?.progress =
                 (currentBytes.toDouble() / contentLength.toDouble() * 100).toInt()
@@ -140,10 +146,11 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
     }
 
     private fun onAreaTap(index: Int) {
-        //TODO 需要根据阅读方向做出调整
         when (index) {
-            0, 3 -> (requireActivity() as GalleryActivity).nextPage()
-            1, 2 -> (requireActivity() as GalleryActivity).previousPage()
+            0 -> (requireActivity() as GalleryActivity).dyPreviousPage()
+            1 -> (requireActivity() as GalleryActivity).previousPage()
+            2 -> (requireActivity() as GalleryActivity).dyNextPage()
+            3 -> (requireActivity() as GalleryActivity).nextPage()
             4, 5 -> (requireActivity() as GalleryActivity).showReadConfig()
         }
     }

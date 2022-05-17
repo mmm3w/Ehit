@@ -71,7 +71,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
     private val mLoadStateListener: (CombinedLoadStates) -> Unit = {
         mInitAdapter.loadState = it.refresh
         if (mInitAdapter.isOver) {
-            //TODO 表现有异常，在刷新的时候会额外发送一次noloading
+            //TODO 表现有异常，在刷新的时候会额外发送一次noloading，新版本paging已修复该问题
+                // TODO 加载状态需要重新整理
             binding?.galleryListRefresh?.isRefreshing = it.refresh is LoadState.Loading
             mViewModel.refreshing = it.refresh is LoadState.Loading
         }

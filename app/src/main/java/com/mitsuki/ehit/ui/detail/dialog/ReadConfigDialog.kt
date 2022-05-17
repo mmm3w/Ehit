@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ReadConfigDialog :
+class ReadConfigDialog(private val confirmAction: () -> Unit) :
     BindingDialogFragment<DialogReadConfigBinding>(
         R.layout.dialog_read_config,
         DialogReadConfigBinding::bind
@@ -36,7 +36,7 @@ class ReadConfigDialog :
             memoryData.screenOrientation = screenOrientation
             memoryData.readOrientation = readOrientation
             memoryData.imageZoom = imageZoom
-
+            confirmAction()
             dismiss()
         }
     }

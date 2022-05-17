@@ -2,20 +2,31 @@ package com.mitsuki.ehit.ui.detail.activity
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import android.view.WindowManager
 import androidx.core.view.isVisible
+import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.MinuteDelay
+import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
+import com.mitsuki.ehit.receiver.BatteryReceiver
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
 import com.mitsuki.ehit.ui.detail.dialog.ReadConfigDialog
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class GalleryActivity : BaseActivity() {
@@ -27,9 +38,14 @@ class GalleryActivity : BaseActivity() {
 
     private lateinit var mViewPagerAdapter: GalleryFragmentAdapter
 
-    private var isReverse = true
+    private val mMinuteDelay by lazy { MinuteDelay(this) }
+
+    @SuppressLint("SimpleDateFormat")
+    private val mDateFormat = SimpleDateFormat("HH:mm");
 
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
+
+    private val mBatteryReceiver by lazy { BatteryReceiver() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,23 +55,39 @@ class GalleryActivity : BaseActivity() {
         mToken = intent.getStringExtra(DataKey.GALLERY_TOKEN)
             ?: throw IllegalStateException("Missing token")
 
+        updateIndex(mIndex)
         enableReadConfig()
 
-
-        mViewPagerAdapter = GalleryFragmentAdapter(this, isReverse, mId, mToken, mPage)
+        mViewPagerAdapter = GalleryFragmentAdapter(this, mId, mToken, mPage)
         binding.galleryViewPager.apply {
             adapter = mViewPagerAdapter
-            setCurrentItem(if (isReverse) mPage - mIndex - 1 else mIndex, false)
+            setCurrentItem(mIndex, false)
             offscreenPageLimit = shareData.spPreloadImage
             registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    updateIndex(if (isReverse) mPage - position - 1 else position)
+                    updateIndex(position)
                 }
             })
         }
 
+        mMinuteDelay.receiver<Long>("timestamp").observe(this) {
+            binding.galleryShowTime.text = mDateFormat.format(it)
+        }
+
+        mBatteryReceiver.receiver<Int>("battery").observe(this, this::onBattery)
+
         showTips()
+
+        registerReceiver(
+            mBatteryReceiver,
+            BatteryReceiver.intentFilter()
+        )?.apply { mBatteryReceiver.postIntentData(this) }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(mBatteryReceiver)
     }
 
     private fun updateIndex(index: Int) {
@@ -63,40 +95,68 @@ class GalleryActivity : BaseActivity() {
             String.format(string(R.string.page_separate), index + 1, mPage)
     }
 
+    fun dyNextPage() {
+        if (binding.galleryViewPager.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+            nextPage()
+        } else {
+            previousPage()
+        }
+    }
+
+    fun dyPreviousPage() {
+        if (binding.galleryViewPager.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+            previousPage()
+        } else {
+            nextPage()
+        }
+    }
+
     fun nextPage() {
         val current = binding.galleryViewPager.currentItem
-        val targetPage = if (isReverse) current - 1 else current + 1
-
-        if ((isReverse && targetPage < 0) || (!isReverse && targetPage >= mPage)) {
+        if (current + 1 >= mPage) {
             //最后一页了
             return
         }
+        val targetPage = current + 1
         binding.galleryViewPager.setCurrentItem(targetPage, false)
     }
 
     fun previousPage() {
         val current = binding.galleryViewPager.currentItem
-        val targetPage = if (isReverse) current + 1 else current - 1
-
-        if ((isReverse && targetPage >= mPage) || (!isReverse && targetPage < 0)) {
+        if (current - 1 < 0) {
             //第一页了
             return
         }
+        val targetPage = current - 1
         binding.galleryViewPager.setCurrentItem(targetPage, false)
     }
 
     fun showReadConfig() {
-        ReadConfigDialog().show(supportFragmentManager, "config")
+        ReadConfigDialog { enableReadConfig() }.show(supportFragmentManager, "config")
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun enableReadConfig() {
-        //屏幕方向
         when (memoryData.screenOrientation) {
             0 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             1 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             2 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             3 -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        }
+
+        when (memoryData.readOrientation) {
+            0 -> {
+                binding.galleryViewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+                binding.galleryViewPager.layoutDirection = View.LAYOUT_DIRECTION_RTL
+            }
+            1 -> {
+                binding.galleryViewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+                binding.galleryViewPager.layoutDirection = View.LAYOUT_DIRECTION_LTR
+            }
+            2 -> {
+                binding.galleryViewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+                binding.galleryViewPager.layoutDirection = View.LAYOUT_DIRECTION_LTR
+            }
         }
 
         if (memoryData.keepBright) {
@@ -105,9 +165,44 @@ class GalleryActivity : BaseActivity() {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
-        binding.galleryShowTime.isVisible = memoryData.showTime
+        if (memoryData.showTime) {
+            binding.galleryShowTime.isVisible = true
+            mMinuteDelay.start()
+        } else {
+            binding.galleryShowTime.isVisible = false
+            mMinuteDelay.stop()
+        }
+
         binding.galleryShowBattery.isVisible = memoryData.showBattery
         binding.galleryShowProgress.isVisible = memoryData.showProgress
+
+        if (memoryData.showPagePadding) {
+            binding.galleryViewPager.setPageTransformer(MarginPageTransformer(dp2px(20f).roundToInt()))
+        } else {
+            binding.galleryViewPager.setPageTransformer(null)
+        }
+
+        if (memoryData.fullScreen) {
+            controller.window(
+                statusBarHide = true,
+                statusBarLight = false,
+                statusBarColor = Color.TRANSPARENT,
+                navigationBarHide = true,
+                navigationBarLight = false,
+                navigationBarColor = Color.TRANSPARENT,
+                barFit = false
+            )
+        } else {
+            controller.window(
+                statusBarHide = false,
+                statusBarLight = false,
+                statusBarColor = Color.TRANSPARENT,
+                navigationBarHide = false,
+                navigationBarLight = false,
+                navigationBarColor = Color.TRANSPARENT,
+                barFit = false
+            )
+        }
     }
 
     private fun showTips() {
@@ -115,6 +210,20 @@ class GalleryActivity : BaseActivity() {
             binding.galleryHotspotVisualization.visible {
                 shareData.spGalleryTouchHotspotTips = true
             }
+        }
+    }
+
+    private fun onBattery(tag: Int) {
+        when (tag) {
+            BatteryReceiver.BATTERY_LEVEL_CHARGING -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_charging_14)
+            BatteryReceiver.BATTERY_LEVEL_0 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_0_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_1 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_1_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_2 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_2_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_3 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_3_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_4 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_4_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_5 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_5_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_6 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_6_bar_14)
+            BatteryReceiver.BATTERY_LEVEL_7 -> binding.galleryShowBattery.setImageResource(R.drawable.ic_baseline_battery_full_14)
         }
     }
 

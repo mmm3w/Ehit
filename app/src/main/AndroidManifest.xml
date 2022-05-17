@@ -57,6 +57,9 @@
         <activity android:name="com.mitsuki.ehit.ui.download.activity.DownloadActivity" />
         <activity android:name="com.mitsuki.ehit.ui.comment.activity.CommentSendActivity" />
 
+
+
+
     </application>
 
 </manifest>
