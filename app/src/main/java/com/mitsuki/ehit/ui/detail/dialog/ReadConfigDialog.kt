@@ -100,8 +100,8 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
                     R.id.zoom_adapt_screen -> imageZoom = 0
                     R.id.zoom_adapt_width -> imageZoom = 1
                     R.id.zoom_adapt_height -> imageZoom = 2
-                    R.id.zoom_original -> imageZoom = 3
-                    R.id.zoom_fix_scale -> imageZoom = 4
+//                    R.id.zoom_original -> imageZoom = 3
+//                    R.id.zoom_fix_scale -> imageZoom = 4
                 }
             }
         }

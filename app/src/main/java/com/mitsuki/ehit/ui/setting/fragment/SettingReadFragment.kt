@@ -57,10 +57,10 @@ class SettingReadFragment : PreferenceFragmentCompat() {
                 string(R.string.text_zoom_adapt_screen),
                 string(R.string.text_zoom_adapt_width),
                 string(R.string.text_zoom_adapt_height),
-                string(R.string.text_zoom_original),
-                string(R.string.text_zoom_fix_scale),
+//                string(R.string.text_zoom_original),
+//                string(R.string.text_zoom_fix_scale),
             )
-            entryValues = Array(5) { it.toString() }
+            entryValues = Array(3) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
                 memoryData.imageZoom = newValue.toString().toInt()
                 true
