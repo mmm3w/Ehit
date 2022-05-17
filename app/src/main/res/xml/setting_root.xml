@@ -4,16 +4,19 @@
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingEhFragment"
         app:summary="@string/text_setting_eh_summary"
-        app:title="@string/text_setting_eh" />
+        app:title="@string/text_setting_eh"
+        app:icon="@drawable/ic_launcher_foreground"/>
 
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingReadFragment"
         app:summary="@string/text_setting_read_summary"
-        app:title="@string/text_setting_read" />
+        app:title="@string/text_setting_read"
+        app:icon="@drawable/ic_baseline_book_24"/>
 
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingDownloadFragment"
         app:summary="@string/text_setting_download_summary"
+        app:icon="@drawable/ic_baseline_download_24"
         app:title="@string/text_setting_download" />
 
     <Preference
@@ -25,10 +28,12 @@
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingOtherFragment"
         app:summary="@string/text_setting_other_summary"
+        app:icon="@drawable/ic_baseline_settings_24"
         app:title="@string/text_setting_other" />
 
     <Preference
         app:fragment="com.mitsuki.ehit.ui.setting.fragment.SettingAboutFragment"
+        app:icon="@drawable/ic_baseline_info_24"
         app:summary="@string/text_setting_about_summary"
         app:title="@string/text_setting_about" />
 

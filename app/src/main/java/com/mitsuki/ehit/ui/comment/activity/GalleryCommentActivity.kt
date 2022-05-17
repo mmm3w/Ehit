@@ -14,6 +14,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
@@ -42,7 +43,7 @@ class GalleryCommentActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         binding.topBar.topBarLayout.elevation = dp2px(4f)
-        binding.topBar.topBarLayout.setBackgroundColor(Color.WHITE)
+        binding.topBar.topBarLayout.setBackgroundColor(color(R.color.background_color_general))
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
         binding.topBar.topBarText.apply {
             text = intent?.getStringExtra(DataKey.GALLERY_NAME) ?: text(R.string.text_more_comments)

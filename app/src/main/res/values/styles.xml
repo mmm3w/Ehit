@@ -18,7 +18,7 @@
     <style name="TagTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/bg_tag_title</item>
+        <item name="android:background">@drawable/background_tag_title</item>
         <item name="android:paddingStart">@dimen/dp_12</item>
         <item name="android:paddingEnd">@dimen/dp_12</item>
         <item name="android:paddingTop">@dimen/dp_4</item>
@@ -30,7 +30,7 @@
     <style name="TagItem">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/bg_tag_item</item>
+        <item name="android:background">@drawable/background_tag_item</item>
         <item name="android:paddingStart">@dimen/dp_12</item>
         <item name="android:paddingEnd">@dimen/dp_12</item>
         <item name="android:paddingTop">@dimen/dp_4</item>

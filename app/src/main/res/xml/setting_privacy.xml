@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
+        app:icon="@drawable/ic_baseline_lock_24"
         app:key="SP_SECURITY"
         app:summary="@string/text_app_lock_summary"
         app:title="@string/text_app_lock" />
 
     <SwitchPreference
         app:key="SP_DISABLE_SCREENSHOTS"
+        app:icon="@drawable/ic_baseline_stop_screen_share_24"
         app:title="@string/text_setting_disable_screenshots" />
 
     <SwitchPreference
+        app:icon="@drawable/ic_baseline_analytics_24"
         app:key="SP_DATA_ANALYTICS"
         app:title="@string/text_setting_data_analytics" />
 

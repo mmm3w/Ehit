@@ -6,5 +6,5 @@
     android:tint="@color/icon_tint_general">
   <path
       android:fillColor="@android:color/white"
-      android:pathData="M8,19c1.1,0 2,-0.9 2,-2L10,7c0,-1.1 -0.9,-2 -2,-2s-2,0.9 -2,2v10c0,1.1 0.9,2 2,2zM14,7v10c0,1.1 0.9,2 2,2s2,-0.9 2,-2L18,7c0,-1.1 -0.9,-2 -2,-2s-2,0.9 -2,2z"/>
+      android:pathData="M19,3L5,3c-1.1,0 -2,0.9 -2,2v14c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2L21,5c0,-1.1 -0.9,-2 -2,-2zM9,17L7,17v-5h2v5zM13,17h-2v-3h2v3zM13,12h-2v-2h2v2zM17,17h-2L15,7h2v10z"/>
 </vector>

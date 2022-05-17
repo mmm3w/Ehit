@@ -15,6 +15,7 @@ import com.mitsuki.armory.base.extend.view
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.model.entity.DetailPart
 
@@ -32,7 +33,7 @@ class GalleryDetailOperatingPart(
 
     val divider = object : RecyclerView.ItemDecoration() {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = 0xffDADCE0.toInt()
+            color = color(R.color.text_color_general)
             style = Paint.Style.FILL
         }
 
@@ -47,7 +48,7 @@ class GalleryDetailOperatingPart(
         }
 
         override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            for (i in 0 until parent.childCount) {
+            for (i in 1 until parent.childCount) {
                 parent.getChildAt(i)?.apply {
                     val center = (bottom + top) / 2
                     c.drawRect(

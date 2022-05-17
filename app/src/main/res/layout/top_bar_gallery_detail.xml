@@ -43,8 +43,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_margin="@dimen/dp_16"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_baseline_more_vert_24"
-            android:visibility="gone" />
+            android:src="@drawable/ic_baseline_more_vert_24" />
 
     </LinearLayout>
 
