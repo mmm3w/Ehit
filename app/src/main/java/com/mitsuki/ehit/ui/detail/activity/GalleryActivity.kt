@@ -182,6 +182,18 @@ class GalleryActivity : BaseActivity() {
             binding.galleryViewPager.setPageTransformer(null)
         }
 
+        onUiMode(false)
+    }
+
+    private fun showTips() {
+        if (!shareData.spGalleryTouchHotspotTips) {
+            binding.galleryHotspotVisualization.visible {
+                shareData.spGalleryTouchHotspotTips = true
+            }
+        }
+    }
+
+    override fun onUiMode(isNightMode: Boolean) {
         if (memoryData.fullScreen) {
             controller.window(
                 statusBarHide = true,
@@ -202,14 +214,6 @@ class GalleryActivity : BaseActivity() {
                 navigationBarColor = Color.TRANSPARENT,
                 barFit = false
             )
-        }
-    }
-
-    private fun showTips() {
-        if (!shareData.spGalleryTouchHotspotTips) {
-            binding.galleryHotspotVisualization.visible {
-                shareData.spGalleryTouchHotspotTips = true
-            }
         }
     }
 

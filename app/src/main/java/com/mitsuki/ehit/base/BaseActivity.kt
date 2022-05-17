@@ -23,16 +23,6 @@ open class BaseActivity : AppCompatActivity() {
 
     val controller by windowController()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val isNightMode =
-            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> true
-                else -> false
-            }
-        onUiMode(isNightMode)
-    }
-
     override fun onResume() {
         super.onResume()
         if (shareData.spDisableScreenshots) {
@@ -40,6 +30,13 @@ open class BaseActivity : AppCompatActivity() {
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
+
+        val isNightMode =
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+        onUiMode(isNightMode)
     }
 
     open fun onUiMode(isNightMode: Boolean) {
