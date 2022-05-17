@@ -52,7 +52,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             binding?.galleryImage?.run {
                 GalleryImageGesture(this).apply {
                     startType = when (memoryData.imageZoom) {
-                        0 -> if (memoryData.readOrientation == 0) StartType.AUTO_RIGHT else StartType.AUTO_LEFT
+                        0 -> StartType.NONE
                         1 -> StartType.TOP
                         2 -> if (memoryData.readOrientation == 0) StartType.RIGHT else StartType.LEFT
                         else -> throw  IllegalArgumentException()
