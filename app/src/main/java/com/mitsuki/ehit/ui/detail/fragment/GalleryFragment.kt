@@ -52,28 +52,11 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
             binding?.galleryImage?.run {
                 GalleryImageGesture(this).apply {
                     startType = when (memoryData.imageZoom) {
-                        0 -> {
-                            if (memoryData.readOrientation == 0) StartType.AUTO_RIGHT else StartType.AUTO_LEFT
-                        }
+                        0 -> if (memoryData.readOrientation == 0) StartType.AUTO_RIGHT else StartType.AUTO_LEFT
                         1 -> StartType.TOP
-                        2 -> {
-                            if (memoryData.readOrientation == 0) StartType.RIGHT else StartType.LEFT
-                        }
+                        2 -> if (memoryData.readOrientation == 0) StartType.RIGHT else StartType.LEFT
                         else -> throw  IllegalArgumentException()
                     }
-//                    startType = when(memoryData.imageZoom){
-//                        0-> StartType.TOP
-//                        1-> StartType.TOP
-//                        2->
-//                        3->
-//                        4->
-//
-//                    }
-
-//                    TOP,        //顶部起始 适配屏宽
-//                    LEFT,       //左边起始 适配屏高
-//                    RIGHT,      //右边起始 适配屏高
-                    startType = StartType.AUTO_LEFT
                     onLongPress = this@GalleryFragment::showGalleryMenu
                     onAreaTap = this@GalleryFragment::onAreaTap
                 }
