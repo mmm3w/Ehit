@@ -32,9 +32,9 @@ class CommentLoadAdapter(private val retryCallback: () -> Unit) :
         override fun bindTo(loadState: LoadState) {
             binding.loadStateProgress.isVisible = loadState is LoadState.Loading
             binding.loadStateRetry.isVisible = loadState is LoadState.Error
-            binding.loadStateError.isVisible =
+            binding.loadStateText.isVisible =
                 !(loadState as? LoadState.Error)?.error?.message.isNullOrBlank()
-            binding.loadStateError.text = (loadState as? LoadState.Error)?.error?.message
+            binding.loadStateText.text = (loadState as? LoadState.Error)?.error?.message
         }
     }
 

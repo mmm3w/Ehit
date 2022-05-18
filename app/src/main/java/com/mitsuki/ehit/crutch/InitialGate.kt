@@ -9,6 +9,7 @@ class InitialGate {
     private var mSwitch: Int = 0
 
     fun prep(open: Boolean) {
+        if (ignore()) return
         mSwitch = if (open) {
             mSwitch or PREP_MASK
         } else {
@@ -17,6 +18,7 @@ class InitialGate {
     }
 
     fun trigger() {
+        if (ignore()) return
         if (mSwitch and PREP_MASK == PREP_MASK) {
             mSwitch = mSwitch or CORE_MASK
         }

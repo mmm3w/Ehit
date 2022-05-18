@@ -18,9 +18,9 @@ class MyApiClientCreator @Inject constructor(
             .proxySelector(proxyManager)
             .addInterceptor(FakeHeader())
             .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .readTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(1, TimeUnit.MINUTES)
+//            .connectTimeout(1, TimeUnit.MINUTES)
+//            .readTimeout(1, TimeUnit.MINUTES)
+//            .writeTimeout(1, TimeUnit.MINUTES)
             .build()
     }
 }

@@ -22,11 +22,9 @@ class GalleryListViewModel @Inject constructor(@RemoteRepository var repository:
 
     private lateinit var mListPageIn: GalleryListPageIn
 
-    //navigation不支持保存fragment的状态，迟早干掉navigation这个库
-    var refreshEnable = false
-    var refreshing = false
     var searchBarTranslationY: Float = 0F
 
+    val refreshEnable: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
     val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
     val searchBarHint: MutableLiveData<String> by lazy { MutableLiveData() }
     val pageSource: GalleryPageSource get() = mListPageIn.pageSource

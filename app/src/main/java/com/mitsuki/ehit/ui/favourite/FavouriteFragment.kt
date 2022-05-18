@@ -65,11 +65,11 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
 
         lifecycleScope.launchWhenCreated {
             mAdapter.loadStateFlow.collectLatest {
-                if (mInitAdapter.isOver) {
-                    binding?.favouriteRefresh?.isRefreshing = it.refresh is LoadState.Loading
-                } else {
-                    mInitAdapter.loadState = it.refresh
-                }
+//                if (mInitAdapter.isOver) {
+//                    binding?.favouriteRefresh?.isRefreshing = it.refresh is LoadState.Loading
+//                } else {
+//                    mInitAdapter.loadState = it.refresh
+//                }
                 binding?.favouriteRefresh?.isEnabled = it.prepend.endOfPaginationReached
             }
         }

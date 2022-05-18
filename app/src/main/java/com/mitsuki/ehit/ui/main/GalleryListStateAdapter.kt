@@ -22,7 +22,7 @@ class GalleryListLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) 
         set(value) {
             if (value != field) {
                 if (field is ListState.None) {
-                    if (!isRefreshEnable && field is ListState.Refresh) {
+                    if (!isRefreshEnable && value is ListState.Refresh) {
                         /* do nothing*/
                     } else {
                         notifyItemInserted(0)
@@ -33,7 +33,7 @@ class GalleryListLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) 
                         notifyItemRemoved(0)
                         field = value
                     } else {
-                        if (!isRefreshEnable && field is ListState.Refresh) {
+                        if (!isRefreshEnable && value is ListState.Refresh) {
                             /* do nothing*/
                             notifyItemRemoved(0)
                             field = ListState.None
