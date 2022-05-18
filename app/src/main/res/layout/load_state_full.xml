@@ -3,9 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="16dp">
-
+    android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/load_state_progress"
@@ -15,11 +13,13 @@
         android:layout_gravity="center" />
 
     <TextView
-        android:id="@+id/load_state_error"
+        android:id="@+id/load_state_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center" />
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="@color/text_color_general" />
 
     <Button
         android:id="@+id/load_state_retry"

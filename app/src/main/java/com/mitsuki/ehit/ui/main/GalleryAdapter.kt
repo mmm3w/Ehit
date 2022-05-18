@@ -28,7 +28,7 @@ class GalleryAdapter :
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
-        getItem(position)?.apply {
+        peek(position)?.apply {
             post("click", GalleryClick(view, this))
         }
         Unit

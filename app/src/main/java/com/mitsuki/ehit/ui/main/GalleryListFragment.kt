@@ -12,9 +12,9 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,24 +39,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
+    private val binding by viewBinding(FragmentGalleryListBinding::bind)
+
     private val mViewModel: GalleryListViewModel
             by createViewModelLazy(GalleryListViewModel::class, { viewModelStore })
 
-    private val mAdapter by lazy { GalleryAdapter() }
-    private val mInitAdapter by lazy { GalleryListLoadStateAdapter(mAdapter) }
-
-    private val mConcatAdapter by lazy {
-        val header = DefaultLoadStateAdapter(mAdapter)
-        val footer = DefaultLoadStateAdapter(mAdapter)
-
-        mAdapter.addLoadStateListener { loadStates ->
-            header.loadState = loadStates.prepend
-            footer.loadState = loadStates.append
-        }
-        ConcatAdapter(header, mInitAdapter, mAdapter, footer)
-    }
-
-    private val binding by viewBinding(FragmentGalleryListBinding::bind)
+    private val mMainAdapter by lazy { GalleryAdapter() }
+    private val mHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
+    private val mFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
+    private val mStateAdapter by lazy { GalleryListLoadStateAdapter(mMainAdapter) }
+    private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -64,41 +56,68 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
             it.data?.getParcelableExtra<GalleryPageSource>(DataKey.GALLERY_PAGE_SOURCE)?.apply {
                 mViewModel.galleryListCondition(this)
-                mAdapter.refresh()
+                mMainAdapter.refresh()
             }
         }
-
-    private val mLoadStateListener: (CombinedLoadStates) -> Unit = {
-        mInitAdapter.loadState = it.refresh
-        if (mInitAdapter.isOver) {
-            //TODO 表现有异常，在刷新的时候会额外发送一次noloading，新版本paging已修复该问题
-                // TODO 加载状态需要重新整理
-            binding?.galleryListRefresh?.isRefreshing = it.refresh is LoadState.Loading
-            mViewModel.refreshing = it.refresh is LoadState.Loading
-        }
-
-        if (it.refresh !is LoadState.Loading) {
-            binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
-            mViewModel.refreshEnable = it.prepend.endOfPaginationReached
-        }
-    }
 
 
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (requireActivity() as? MainActivity)?.enableDrawer()
         mViewModel.initData(arguments)
 
-        mAdapter.receiver<GalleryAdapter.GalleryClick>("click").observe(this, ::onDetailNavigation)
-        mAdapter.addLoadStateListener(mLoadStateListener)
-        mViewModel.galleryList.observe(this) { mAdapter.submitData(lifecycle, it) }
+        mMainAdapter.receiver<GalleryAdapter.GalleryClick>("click")
+            .observe(this, ::onDetailNavigation)
+        mViewModel.galleryList.observe(this) { mMainAdapter.submitData(lifecycle, it) }
 
-        (requireActivity() as? MainActivity)?.enableDrawer()
-    }
+        lifecycleScope.launchWhenCreated {
+            mMainAdapter.loadStateFlow.collect {
+                //
+                mHeader.loadState = it.prepend
+                mFooter.loadState = it.append
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mAdapter.removeLoadStateListener(mLoadStateListener)
+                //refreshView的刷新状态
+                //state的刷新状态
+                //state的异常状态
+                //列表需要回到顶部
+
+                //刷新中，非下拉触发的 下拉不可用，
+
+
+                when (it.refresh) {
+                    is LoadState.Loading -> {
+                        binding?.galleryListRefresh?.isRefreshing = true
+                        mStateAdapter.listState = GalleryListLoadStateAdapter.ListState.Refresh
+                    }
+                    is LoadState.NotLoading -> {
+                        binding?.galleryListRefresh?.isRefreshing = false
+                        binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
+                        mStateAdapter.listState = GalleryListLoadStateAdapter.ListState.None
+                    }
+                    is LoadState.Error -> {
+                        binding?.galleryListRefresh?.isRefreshing = false
+                        binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
+                        mStateAdapter.listState =
+                            GalleryListLoadStateAdapter.ListState.Error((it.refresh as LoadState.Error).error)
+                    }
+                }
+
+//                mInitAdapter.loadState = it.refresh
+//                if (mInitAdapter.isOver) {
+//                    //TODO 表现有异常，在刷新的时候会额外发送一次noloading，新版本paging已修复该问题
+//                    // TODO 加载状态需要重新整理
+//                    binding?.galleryListRefresh?.isRefreshing = it.refresh is LoadState.Loading
+//                    mViewModel.refreshing = it.refresh is LoadState.Loading
+//                }
+//
+//                if (it.refresh !is LoadState.Loading) {
+//                    binding?.galleryListRefresh?.isEnabled = it.prepend.endOfPaginationReached
+//                    mViewModel.refreshEnable = it.prepend.endOfPaginationReached
+//                }
+            }
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -116,7 +135,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         binding?.galleryList?.apply {
             setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = mConcatAdapter
+            adapter = mAdapter
 
             binding?.topBar?.topSearchLayout?.apply {
                 translationY = mViewModel.searchBarTranslationY
@@ -154,11 +173,10 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         binding?.galleryListRefresh?.apply {
             isEnabled = mViewModel.refreshEnable
-            isRefreshing = mViewModel.refreshing
             setProgressViewOffset(false, dp2px(8f).toInt(), dp2px(120f).toInt())
             setOnRefreshListener {
                 mViewModel.galleryListPage(1)
-                mAdapter.refresh()
+                mMainAdapter.refresh()
             }
         }
     }
@@ -179,14 +197,14 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
         if (mViewModel.maxPage <= 1) return
         PageDialog(mViewModel.maxPage) {
             mViewModel.galleryListPage(it)
-            mAdapter.refresh()
+            mMainAdapter.refresh()
         }.show(childFragmentManager, "page")
     }
 
     private fun showQuickSearchPanel() {
         QuickSearchPanel {
             mViewModel.galleryListCondition(it)
-            mAdapter.refresh()
+            mMainAdapter.refresh()
         }.show(childFragmentManager, "QuickSearchPanel")
     }
 }
