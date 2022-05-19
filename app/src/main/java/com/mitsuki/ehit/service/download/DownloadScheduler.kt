@@ -2,7 +2,7 @@ package com.mitsuki.ehit.service.download
 
 import android.util.Log
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.BlockWork
+import com.mitsuki.ehit.crutch.uils.BlockWork
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.sync.Mutex

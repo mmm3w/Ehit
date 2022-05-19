@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.crutch.uils
 
 import android.os.Handler
 import android.os.Looper

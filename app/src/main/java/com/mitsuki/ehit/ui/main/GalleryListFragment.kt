@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -18,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.dp2px
@@ -26,8 +24,8 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.InitialGate
-import com.mitsuki.ehit.crutch.PagingEmptyValve
+import com.mitsuki.ehit.crutch.uils.InitialGate
+import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
@@ -41,8 +39,6 @@ import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {

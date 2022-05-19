@@ -1,6 +1,6 @@
 package com.mitsuki.ehit
 
-import com.mitsuki.ehit.crutch.BlockWork
+import com.mitsuki.ehit.crutch.uils.BlockWork
 import kotlinx.coroutines.delay
 import org.junit.Test
 

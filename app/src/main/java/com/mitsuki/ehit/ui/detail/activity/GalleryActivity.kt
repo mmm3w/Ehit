@@ -14,12 +14,11 @@ import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.MinuteDelay
+import com.mitsuki.ehit.crutch.uils.MinuteDelay
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.receiver.BatteryReceiver
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter

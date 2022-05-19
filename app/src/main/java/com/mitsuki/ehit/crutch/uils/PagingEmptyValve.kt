@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.crutch.uils
 
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
@@ -48,12 +48,4 @@ class PagingEmptyValve<T : Any> {
     private fun LoadStates.isEmptyStates(): Boolean {
         return this === androidx.paging.PageEvent.Insert.EMPTY_REFRESH_LOCAL.sourceLoadStates
     }
-
-    private fun Mutex.tryUnlock() {
-        try {
-            unlock(owner)
-        } catch (e: Exception) {
-        }
-    }
-
 }
