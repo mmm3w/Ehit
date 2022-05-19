@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.ui.favourite
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -16,46 +17,49 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
-import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.uils.InitialGate
+import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
 import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
-import com.mitsuki.ehit.ui.main.GalleryAdapter
+import com.mitsuki.ehit.ui.main.GalleryListAdapter
 import com.mitsuki.ehit.ui.main.GalleryListStateAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
-class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
+class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
+    R.layout.fragment_favourite,
+    FragmentFavouriteBinding::bind
+) {
 
     private val mViewModel: FavouriteViewModel by viewModels()
-    private val binding by viewBinding(FragmentFavouriteBinding::bind)
 
-    private val mAdapter by lazy { GalleryAdapter() }
-    private val mInitAdapter by lazy { GalleryListStateAdapter(mAdapter) }
+    //大体结构上和list相同
+    private val mGate = InitialGate()
 
-    private val mConcatAdapter by lazy {
-        val header = DefaultLoadStateAdapter(mAdapter)
-        val footer = DefaultLoadStateAdapter(mAdapter)
+    //不知道为什么在这里工作不正常
+    private val mEmptyValve = PagingEmptyValve()
 
-        mAdapter.addLoadStateListener { loadStates ->
-            header.loadState = loadStates.prepend
-            footer.loadState = loadStates.append
-        }
-        ConcatAdapter(header, mInitAdapter, mAdapter, footer)
-    }
+    private val mMainAdapter by lazy { GalleryListAdapter() }
+    private val mHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
+    private val mFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
+    private val mStateAdapter by lazy { GalleryListStateAdapter(mMainAdapter) }
+
+    private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
     private val favouriteSelectPanel by lazy {
         FavouriteSelectPanel().apply {
             onFavouriteSelect = {
                 mViewModel.setFavouriteGroup(it)
-                mAdapter.refresh()
+                mViewModel.refreshEnable.postValue(false)
+                mEmptyValve.enable()
+                mMainAdapter.refresh()
             }
         }
     }
@@ -63,57 +67,117 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
+            .observe(this, ::onDetailNavigation)
+
         lifecycleScope.launchWhenCreated {
-            mAdapter.loadStateFlow.collectLatest {
-//                if (mInitAdapter.isOver) {
-//                    binding?.favouriteRefresh?.isRefreshing = it.refresh is LoadState.Loading
-//                } else {
-//                    mInitAdapter.loadState = it.refresh
-//                }
-                binding?.favouriteRefresh?.isEnabled = it.prepend.endOfPaginationReached
+            mMainAdapter.loadStateFlow.collect {
+                //过滤掉置空的状态事件
+                if (mEmptyValve.emptyStates(it.source)) {
+                    return@collect
+                }
+
+                mHeader.loadState = it.prepend
+                mFooter.loadState = it.append
+
+                when (it.refresh) {
+                    is LoadState.Loading -> {
+                        mGate.prep(true)
+                        requireBinding().favouriteRefresh.apply {
+                            if (isEnabled) isRefreshing = true
+                        }
+                        mStateAdapter.listState = GalleryListStateAdapter.ListState.Refresh
+                    }
+                    is LoadState.NotLoading -> {
+                        mGate.trigger()
+                        requireBinding().favouriteRefresh.isRefreshing = false
+                        mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
+
+                        mStateAdapter.listState =
+                            if (mMainAdapter.itemCount == 0)
+                            //TODO 提示文字替换
+                                GalleryListStateAdapter.ListState.Message("empty")
+                            else
+                                GalleryListStateAdapter.ListState.None
+                        mStateAdapter.isRefreshEnable = true
+                        requireBinding().favouriteTarget.smoothScrollToPosition(0)
+                    }
+                    is LoadState.Error -> {
+                        mGate.prep(false)
+                        requireBinding().favouriteRefresh.isRefreshing = false
+                        mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
+                        mStateAdapter.apply {
+                            //既然刷新状态让你显示，那么错误状态也别显示了
+                            listState =
+                                if (isRefreshEnable) GalleryListStateAdapter.ListState.Error((it.refresh as LoadState.Error).error)
+                                else GalleryListStateAdapter.ListState.None
+                            if (!isRefreshEnable) {
+                                //TODO 通过toast或snackBar展示错误信息
+                            }
+                            //判断完上面的逻辑重置状态
+                            isRefreshEnable = true
+                        }
+                    }
+                }
             }
         }
-        mAdapter.receiver<GalleryAdapter.GalleryClick>("click").observe(this, ::onDetailNavigation)
-        mViewModel.count.observe(this, { favouriteSelectPanel.postCountData(it) })
-        mViewModel.favouriteList.observe(this, { mAdapter.submitData(lifecycle, it) })
+
+        lifecycleScope.launchWhenCreated {
+            mViewModel.favouriteList.collect { mEmptyValve.submitData(lifecycle,mMainAdapter, it) }
+        }
+
+        mViewModel.count.observe(this) { favouriteSelectPanel.postCountData(it) }
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        innBinding: FragmentFavouriteBinding,
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding?.favouriteTarget?.apply {
-            setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = mConcatAdapter
-            binding?.topBar?.topSearchLayout?.apply { addOnScrollListener(ListFloatHeader(this) {}) }
-        }
-
-        binding?.topBar?.topSearchLayout?.apply {
-            layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
-                setMargins(
-                    leftMargin,
-                    topMargin + requireActivity().statusBarHeight(),
-                    rightMargin,
-                    bottomMargin
-                )
+        with(innBinding) {
+            favouriteTarget.apply {
+                setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = mAdapter
+                topBar.topSearchLayout.apply { addOnScrollListener(ListFloatHeader(this) {}) }
             }
-        }
 
-        mViewModel.searchBarHint.observe(viewLifecycleOwner) {
-            binding?.topBar?.topSearchText?.hint = it
-        }
+            topBar.topSearchLayout.apply {
+                layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
+                    setMargins(
+                        leftMargin,
+                        topMargin + requireActivity().statusBarHeight(),
+                        rightMargin,
+                        bottomMargin
+                    )
+                }
+            }
 
-        binding?.favouriteCate?.setOnClickListener { showFavouriteSelectPanel() }
+            mViewModel.searchBarHint.observe(viewLifecycleOwner) {
+                topBar.topSearchText.hint = it
+            }
 
-        binding?.favouriteRefresh?.apply {
-            setProgressViewOffset(false, dp2px(8f).toInt(), dp2px(120f).toInt())
-            setOnRefreshListener { mAdapter.refresh() }
+            mViewModel.refreshEnable.observe(viewLifecycleOwner) {
+                favouriteRefresh.isEnabled = it
+            }
+
+            favouriteCate.setOnClickListener { showFavouriteSelectPanel() }
+
+            favouriteRefresh.apply {
+                setProgressViewOffset(false, dp2px(0f).toInt(), dp2px(140f).toInt())
+                setOnRefreshListener {
+                    mStateAdapter.isRefreshEnable = false
+                    mMainAdapter.refresh()
+                }
+            }
         }
     }
 
-    private fun onDetailNavigation(galleryClick: GalleryAdapter.GalleryClick) {
+
+    private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
         with(galleryClick) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(
@@ -128,6 +192,5 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
     private fun showFavouriteSelectPanel() {
         favouriteSelectPanel.show(childFragmentManager, "FavouriteSelectPanel")
     }
-
 
 }

@@ -62,9 +62,10 @@ data class Gallery(
                 }
             }
 
-            val ptt: Element = doc.byClassFirst("ptt", "page node".prefix())
-            val es = ptt.child(0).child(0).children()
-            val totalPage = es[es.size - 2].text().trim().toInt()
+            val ptt: Element? = doc.byClassFirstIgnoreError("ptt")
+            val totalPage =
+                ptt?.child(0)?.child(0)?.children()?.let { it[it.size - 2].text().trim().toInt() }
+                    ?: 0
 
             val totalCount = Matcher.LIST_TOTAL_COUNT.matcher(content).run {
                 if (find()) {

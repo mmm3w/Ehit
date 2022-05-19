@@ -20,8 +20,8 @@ import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Gallery
 import java.util.*
 
-class GalleryAdapter :
-    PagingDataAdapter<Gallery, GalleryAdapter.ViewHolder>(Diff.GALLERY_DIFF_CALLBACK),
+class GalleryListAdapter :
+    PagingDataAdapter<Gallery, GalleryListAdapter.ViewHolder>(Diff.GALLERY_DIFF_CALLBACK),
     EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingHorizontal="@dimen/dp_16"
     android:paddingVertical="@dimen/dp_8">
 
@@ -11,12 +10,14 @@
         android:id="@+id/favourite_option_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/text_color_general"
         android:paddingStart="@dimen/dp_8"
         tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/favourite_option_count"
         android:layout_width="wrap_content"
+        android:textColor="@color/text_color_general"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end" />
 

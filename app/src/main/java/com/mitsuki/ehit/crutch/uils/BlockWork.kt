@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.crutch.uils
 
+import com.mitsuki.ehit.crutch.extensions.tryUnlock
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.sync.Mutex

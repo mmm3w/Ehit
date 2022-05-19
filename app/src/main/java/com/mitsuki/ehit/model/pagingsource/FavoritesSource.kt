@@ -28,13 +28,12 @@ class FavoritesSource(
                     repository.favoritesSource(pageIn, page)) {
                     is Response.Success<Pair<PageInfo<Gallery>, Array<Int>>> -> {
                         val dataPair: Pair<PageInfo<Gallery>, Array<Int>> = data.requireBody()
-                        val list = dataPair.first.data
                         val countData = dataPair.second
                         dataWrap.postData(GalleryFavorites.attachName(countData))
                         LoadResult.Page(
-                            data = list,
-                            prevKey = if (page <= GeneralPageIn.START) null else page - 1,
-                            nextKey = if (list.isNotEmpty()) page + 1 else null
+                            data = dataPair.first.data,
+                            prevKey = dataPair.first.prevKey,
+                            nextKey = dataPair.first.nextKey
                         )
                     }
                     is Response.Fail<*> -> throw data.throwable

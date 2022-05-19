@@ -18,6 +18,7 @@ import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.ehparser.Matcher
 import com.mitsuki.ehit.model.entity.*
+import com.mitsuki.ehit.model.repository.PagingRepository
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GalleryDetailViewModel @Inject constructor(
     @RemoteRepository var repository: Repository,
+    var pagingData: PagingRepository,
     val galleryDao: GalleryDao
 ) : ViewModel(), EventEmitter {
 
@@ -47,10 +49,11 @@ class GalleryDetailViewModel @Inject constructor(
     private val mDetailPageIn = GeneralPageIn()
 
     val title: String get() = galleryDetail.title
-    val galleryName: String get()  {
+    val galleryName: String
+        get() {
 
-        return galleryDetail.title.replace(Regex("\\[.*?]|\\(.*?\\)"),"")
-    }
+            return galleryDetail.title.replace(Regex("\\[.*?]|\\(.*?\\)"), "")
+        }
     val uploader: String get() = galleryDetail.uploader
     val favoriteName: String? get() = galleryDetail.favoriteName
     val apiKey get() = galleryDetail.apiKey
@@ -62,7 +65,7 @@ class GalleryDetailViewModel @Inject constructor(
     val itemTransitionName: String get() = "gallery:$gid$token"
 
     val detailImage: LiveData<PagingData<ImageSource>>
-        get() = repository.detailImage(gid, token, mDetailPageIn)
+        get() = pagingData.detailImage(gid, token, mDetailPageIn)
             .cachedIn(viewModelScope)
             .asLiveData()
 

@@ -60,7 +60,7 @@ abstract class GalleryDao {
         index: Int
     ): PageInfo<ImageSource> {
         val cacheData = queryGalleryImageCache(gid, token, index)
-        if (cacheData.isNullOrEmpty()) return PageInfo.emtpy()
+        if (cacheData.isNullOrEmpty()) return PageInfo.empty()
         return PageInfo(
             cacheData.map { ImageSource(it) },
             index,

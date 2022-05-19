@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.uils
+package com.mitsuki.ehit.crutch.extensions
 
 import kotlinx.coroutines.sync.Mutex
 
@@ -6,7 +6,7 @@ import kotlinx.coroutines.sync.Mutex
 fun Mutex.tryUnlock(owner: Any? = null) {
     try {
         unlock(owner)
-    } catch (err: IllegalStateException) {
+    } catch (err: Exception) {
 
     }
 }

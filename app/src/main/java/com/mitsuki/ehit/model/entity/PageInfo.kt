@@ -9,7 +9,7 @@ data class PageInfo<D>(
     val nextKey: Int?
 ) {
     companion object {
-        fun <T> emtpy(): PageInfo<T> {
+        fun <T> empty(): PageInfo<T> {
             return PageInfo(arrayListOf(), 0, 0, 0, null, null)
         }
     }

@@ -1,9 +1,6 @@
 package com.mitsuki.ehit.model.repository.impl
 
 import android.webkit.MimeTypeMap
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.mitsuki.armory.httprookie.convert.FileConvert
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.get
@@ -33,11 +30,8 @@ import com.mitsuki.ehit.model.entity.reponse.VoteBack
 import com.mitsuki.ehit.model.entity.request.RequestRateInfo
 import com.mitsuki.ehit.model.entity.request.RequestVoteInfo
 import com.mitsuki.ehit.model.page.FavouritePageIn
-import com.mitsuki.ehit.model.page.GeneralPageIn
-import com.mitsuki.ehit.model.pagingsource.PagingSource
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.File
@@ -47,7 +41,6 @@ import kotlin.math.ceil
 class RepositoryImpl @Inject constructor(
     val galleryDao: GalleryDao,
     val downloadDao: DownloadDao,
-    val pagingProvider: PagingSource,
     val client: OkHttpClient,
     val shareData: ShareData
 ) : Repository {
@@ -60,34 +53,12 @@ class RepositoryImpl @Inject constructor(
             }
         }
 
-    //pageconfig
-    private val mListPagingConfig by lazy { PagingConfig(pageSize = 25) }
-    private val mDetailPagingConfig by lazy { PagingConfig(pageSize = 40) }
-    private val mFavoritePagingConfig by lazy { PagingConfig(pageSize = 50) }
-
     //convert
     private val mGalleryListConvert by lazy { GalleryListConvert() }
     private val mGalleryDetailImageConvert by lazy { GalleryDetailImageConvert() }
     private val mJustImageConvert by lazy { ImageSourceConvert() }
 
     private val mFavoritesSourceConvert by lazy { GalleryListWithFavoriteCountConvert() }
-
-    override fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>> {
-        return Pager(mListPagingConfig, initialKey = GeneralPageIn.START) {
-            pagingProvider.galleryListSource(this, pageIn)
-        }.flow
-    }
-
-    override fun detailImage(
-        gid: Long,
-        token: String,
-        pageIn: GeneralPageIn
-    ): Flow<PagingData<ImageSource>> {
-        return Pager(mDetailPagingConfig, initialKey = GeneralPageIn.START) {
-            pagingProvider.detailImageSource(this, gid, token, pageIn)
-        }.flow
-    }
-
 
     override suspend fun login(account: String, password: String): RequestResult<String> {
         return withContext(Dispatchers.IO) {
@@ -172,7 +143,7 @@ class RepositoryImpl @Inject constructor(
     ): RequestResult<PageInfo<ImageSource>> {
         return withContext(Dispatchers.IO) {
             val images = if (ignoreCache)
-                PageInfo.emtpy()
+                PageInfo.empty()
             else
                 galleryDao.queryGalleryImageSource(gid, token, page)
 
@@ -333,14 +304,6 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override fun favoriteList(
-        pageIn: FavouritePageIn,
-        dataWrap: FavouriteCountWrap
-    ): Flow<PagingData<Gallery>> {
-        return Pager(mFavoritePagingConfig, initialKey = GeneralPageIn.START) {
-            pagingProvider.favoritesSource(this, pageIn, dataWrap)
-        }.flow
-    }
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
         return withContext(Dispatchers.IO) {

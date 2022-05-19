@@ -30,7 +30,6 @@ import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
-import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
@@ -49,9 +48,9 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
     //控制下拉刷新的可用性
     private val mGate = InitialGate()
-    private val mEmptyValve = PagingEmptyValve<Gallery>()
+    private val mEmptyValve = PagingEmptyValve()
 
-    private val mMainAdapter by lazy { GalleryAdapter() }
+    private val mMainAdapter by lazy { GalleryListAdapter() }
     private val mHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
     private val mFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
     private val mStateAdapter by lazy { GalleryListStateAdapter(mMainAdapter) }
@@ -75,12 +74,9 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         (requireActivity() as? MainActivity)?.enableDrawer()
         mViewModel.initData(arguments)
 
-        mMainAdapter.receiver<GalleryAdapter.GalleryClick>("click")
+        mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
             .observe(this, ::onDetailNavigation)
 
-        lifecycleScope.launchWhenCreated {
-            mViewModel.galleryList.collect { mEmptyValve.submitData(mMainAdapter, it) }
-        }
 
         lifecycleScope.launchWhenCreated {
             mMainAdapter.loadStateFlow.collect {
@@ -134,6 +130,9 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             }
         }
 
+        lifecycleScope.launchWhenCreated {
+            mViewModel.galleryList.collect { mEmptyValve.submitData(lifecycle, mMainAdapter, it) }
+        }
     }
 
 
@@ -205,7 +204,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         }
     }
 
-    private fun onDetailNavigation(galleryClick: GalleryAdapter.GalleryClick) {
+    private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
         with(galleryClick) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(

@@ -12,14 +12,17 @@ import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.model.repository.PagingRepository
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class GalleryListViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
-    ViewModel() {
+class GalleryListViewModel @Inject constructor(
+    @RemoteRepository var repository: Repository,
+    var pagingData: PagingRepository,
+) : ViewModel() {
 
     private lateinit var mListPageIn: GalleryListPageIn
 
@@ -32,7 +35,7 @@ class GalleryListViewModel @Inject constructor(@RemoteRepository var repository:
     val maxPage get() = mListPageIn.maxPage
 
     val galleryList: Flow<PagingData<Gallery>> by lazy {
-        repository.galleryList(mListPageIn)
+        pagingData.galleryList(mListPageIn)
             .cachedIn(viewModelScope)
     }
 

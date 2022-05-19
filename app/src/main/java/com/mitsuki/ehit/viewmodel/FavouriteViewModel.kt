@@ -8,14 +8,14 @@ import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.entity.FavouriteCountWrap
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.FavouritePageIn
-import com.mitsuki.ehit.crutch.di.RemoteRepository
-import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.model.repository.PagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class FavouriteViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
+class FavouriteViewModel @Inject constructor(var pagingRepository: PagingRepository) :
     ViewModel() {
 
     private val mListPageIn: FavouritePageIn by lazy { FavouritePageIn() }
@@ -26,10 +26,12 @@ class FavouriteViewModel @Inject constructor(@RemoteRepository var repository: R
 
     val searchBarHint: MutableLiveData<String> by lazy { MutableLiveData() }
 
-    val favouriteList: LiveData<PagingData<Gallery>> by lazy {
-        repository.favoriteList(mListPageIn, countWrap)
+    val refreshEnable: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
+
+
+    val favouriteList: Flow<PagingData<Gallery>> by lazy {
+        pagingRepository.favoriteList(mListPageIn, countWrap)
             .cachedIn(viewModelScope)
-            .asLiveData()
     }
 
     fun setFavouriteGroup(tag: Int) {
