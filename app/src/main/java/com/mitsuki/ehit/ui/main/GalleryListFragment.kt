@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -13,13 +14,11 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.createViewModelLazy
-import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.filter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.base.extend.dp2px
@@ -28,18 +27,22 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.InitialGate
+import com.mitsuki.ehit.crutch.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
+import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
@@ -51,11 +54,12 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
     //控制下拉刷新的可用性
     private val mGate = InitialGate()
+    private val mEmptyValve = PagingEmptyValve<Gallery>()
 
     private val mMainAdapter by lazy { GalleryAdapter() }
     private val mHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
     private val mFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
-    private val mStateAdapter by lazy { GalleryListLoadStateAdapter(mMainAdapter) }
+    private val mStateAdapter by lazy { GalleryListStateAdapter(mMainAdapter) }
     private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
@@ -63,12 +67,15 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
             it.data?.getParcelableExtra<GalleryPageSource>(DataKey.GALLERY_PAGE_SOURCE)?.apply {
                 mViewModel.galleryListCondition(this)
-                mStateAdapter.isRefreshEnable = false
+                //禁用下拉刷新效果
+                mViewModel.refreshEnable.postValue(false)
+                //新的搜索去置空列表
+                mEmptyValve.enable()
                 mMainAdapter.refresh()
             }
         }
 
-
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("ControlFlowWithEmptyBody")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,10 +84,18 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
 
         mMainAdapter.receiver<GalleryAdapter.GalleryClick>("click")
             .observe(this, ::onDetailNavigation)
-        mViewModel.galleryList.observe(this) { mMainAdapter.submitData(lifecycle, it) }
+
+        lifecycleScope.launchWhenCreated {
+            mViewModel.galleryList.collect { mEmptyValve.submitData(mMainAdapter, it) }
+        }
 
         lifecycleScope.launchWhenCreated {
             mMainAdapter.loadStateFlow.collect {
+                //过滤掉置空的状态事件
+                if (mEmptyValve.emptyStates(it.source)) {
+                    return@collect
+                }
+
                 mHeader.loadState = it.prepend
                 mFooter.loadState = it.append
 
@@ -90,13 +105,19 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                         binding?.galleryListRefresh?.apply {
                             if (isEnabled) isRefreshing = true
                         }
-                        mStateAdapter.listState = GalleryListLoadStateAdapter.ListState.Refresh
+                        mStateAdapter.listState = GalleryListStateAdapter.ListState.Refresh
                     }
                     is LoadState.NotLoading -> {
                         mGate.trigger()
                         binding?.galleryListRefresh?.isRefreshing = false
                         mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
-                        mStateAdapter.listState = GalleryListLoadStateAdapter.ListState.None
+
+                        mStateAdapter.listState =
+                            if (mMainAdapter.itemCount == 0)
+                            //TODO 提示文字替换
+                                GalleryListStateAdapter.ListState.Message("empty")
+                            else
+                                GalleryListStateAdapter.ListState.None
                         mStateAdapter.isRefreshEnable = true
                         binding?.galleryList?.smoothScrollToPosition(0)
                     }
@@ -104,9 +125,17 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
                         mGate.prep(false)
                         binding?.galleryListRefresh?.isRefreshing = false
                         mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
-                        mStateAdapter.listState =
-                            GalleryListLoadStateAdapter.ListState.Error((it.refresh as LoadState.Error).error)
-                        mStateAdapter.isRefreshEnable = true
+                        mStateAdapter.apply {
+                            //既然刷新状态让你显示，那么错误状态也别显示了
+                            listState =
+                                if (isRefreshEnable) GalleryListStateAdapter.ListState.Error((it.refresh as LoadState.Error).error)
+                                else GalleryListStateAdapter.ListState.None
+                            if (!isRefreshEnable) {
+                                //TODO 通过toast或snackBar展示错误信息
+                            }
+                            //判断完上面的逻辑重置状态
+                            isRefreshEnable = true
+                        }
                     }
                 }
             }
@@ -126,7 +155,7 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             binding?.topBar?.topSearchText?.hint = it
         }
 
-        mViewModel.refreshEnable.observe(viewLifecycleOwner){
+        mViewModel.refreshEnable.observe(viewLifecycleOwner) {
             binding?.galleryListRefresh?.isEnabled = it
         }
 
@@ -173,6 +202,8 @@ class GalleryListFragment : BaseFragment(R.layout.fragment_gallery_list) {
             setProgressViewOffset(false, 0, dp2px(140f).toInt())
 
             setOnRefreshListener {
+                //下拉刷新不用置空列表
+                //并且禁用列表中的刷新效果
                 mStateAdapter.isRefreshEnable = false
                 mViewModel.galleryListPage(1)
                 mMainAdapter.refresh()

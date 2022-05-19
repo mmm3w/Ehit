@@ -14,6 +14,7 @@ import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,10 +31,9 @@ class GalleryListViewModel @Inject constructor(@RemoteRepository var repository:
     val pageSource: GalleryPageSource get() = mListPageIn.pageSource
     val maxPage get() = mListPageIn.maxPage
 
-    val galleryList: LiveData<PagingData<Gallery>> by lazy {
+    val galleryList: Flow<PagingData<Gallery>> by lazy {
         repository.galleryList(mListPageIn)
             .cachedIn(viewModelScope)
-            .asLiveData()
     }
 
     fun initData(bundle: Bundle?) {

@@ -26,7 +26,7 @@ import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.main.GalleryAdapter
-import com.mitsuki.ehit.ui.main.GalleryListLoadStateAdapter
+import com.mitsuki.ehit.ui.main.GalleryListStateAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -38,7 +38,7 @@ class FavouriteFragment : BaseFragment(R.layout.fragment_favourite) {
     private val binding by viewBinding(FragmentFavouriteBinding::bind)
 
     private val mAdapter by lazy { GalleryAdapter() }
-    private val mInitAdapter by lazy { GalleryListLoadStateAdapter(mAdapter) }
+    private val mInitAdapter by lazy { GalleryListStateAdapter(mAdapter) }
 
     private val mConcatAdapter by lazy {
         val header = DefaultLoadStateAdapter(mAdapter)

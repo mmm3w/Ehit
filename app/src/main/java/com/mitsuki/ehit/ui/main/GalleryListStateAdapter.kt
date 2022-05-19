@@ -14,8 +14,8 @@ import com.mitsuki.ehit.ui.common.adapter.InitialViewHolder
 /**
  * empty、error、init、load
  */
-class GalleryListLoadStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
-    RecyclerView.Adapter<GalleryListLoadStateAdapter.ViewHolder>() {
+class GalleryListStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
+    RecyclerView.Adapter<GalleryListStateAdapter.ViewHolder>() {
 
     @Suppress("LiftReturnOrAssignment")
     var listState: ListState = ListState.None
