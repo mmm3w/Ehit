@@ -18,6 +18,7 @@ import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.extensions.postNext
+import com.mitsuki.ehit.crutch.extensions.setNext
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.model.diff.Diff
@@ -86,20 +87,21 @@ class GalleryDetailViewModel @Inject constructor(
         this.token = info.token
         if (gid == -1L || token.isEmpty()) throw IllegalStateException()
 
-        _infoStates.postNext { it.copy(header = DetailHeader(info)) }
+        _infoStates.setNext { it.copy(header = DetailHeader(info)) }
     }
 
     fun loadInfo() {
         viewModelScope.launch {
             if (mCachedInfo == null) {
-                _infoStates.postNext { it.copy(loadState = LoadState.Loading) }
+                _infoStates.postNext {
+                    it.copy(loadState = LoadState.Loading)
+                }
             }
             when (val result = repository.galleryDetailInfo(gid, token)) {
                 is RequestResult.Success<GalleryDetail> -> {
 
                     _infoStates.postNext {
                         it.copy(
-                            isInit = true,
                             header = result.data.obtainHeaderInfo(),
                             loadState = LoadState.NotLoading(true),
                             part = result.data.obtainOperating(),
@@ -116,15 +118,16 @@ class GalleryDetailViewModel @Inject constructor(
                     }
 
                     mCachedInfo = result.data
-//                    loadSign.postValue(true)
 
                     post("newData", true)
+                    post("datapick", 0)
                 }
                 is RequestResult.Fail -> {
                     if (mCachedInfo == null) {
                         _infoStates.postNext { it.copy(loadState = LoadState.Error(result.throwable)) }
                     } else {
                         /* toast */
+                        post("toast", result.throwable.message)
                     }
                 }
             }
@@ -187,7 +190,6 @@ class GalleryDetailViewModel @Inject constructor(
     }
 
     data class InfoStates(
-        val isInit: Boolean = false,
         val header: DetailHeader = DetailHeader.DEFAULT,
         val loadState: LoadState = LoadState.NotLoading(true),
         val part: DetailPart? = null,

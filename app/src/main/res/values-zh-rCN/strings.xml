@@ -37,6 +37,7 @@
 
     <string name="error_content_empty">内容为空</string>
     <string name="error_invalid_port">无效端口</string>
+    <string name="error_no_data">无数据</string>
 
     <string name="text_test">测试内容</string>
     <string name="text_app_waring">本应用内容来自互联网，其中一些可能对您造成身体或精神伤害。\n您已了解上述风险并愿意承担这些风险。</string>

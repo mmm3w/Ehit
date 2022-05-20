@@ -1,8 +1,8 @@
 package com.mitsuki.ehit.ui.detail.fragment
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -22,7 +22,6 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
@@ -41,8 +40,7 @@ import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.detail.dialog.RatingDialog
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 
 @AndroidEntryPoint
 class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
@@ -75,6 +73,8 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private val mPreviewAdapter by lazy { ConcatAdapter(mLoadHeader, mMainAdapter, mLoadFooter) }
 
+    private var mDataPickJob: Job? = null
+
 
 //    private val mPreviewAdapter: GalleryDetailPreviewAdapter
 //            by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }
@@ -104,23 +104,12 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
         mViewModel.initData(arguments)
 
-        mHeader.receiver<String>("header")
-            .isClick()
-            .observe(this, this::onHeaderEvent)
-
-        mViewModel.receiver<String>("rate")
-            .isClick()
-            .observe(viewLifecycleOwner) { mOperating.notifyItemChanged(0) }
-
-        mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
-            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
-        }
-
-        mViewModel.infoStates.observe(viewLifecycleOwner) { infoStates ->
+        mViewModel.infoStates.observe(this) { infoStates ->
             mHeader.data = infoStates.header
             mStatesAdapter.loadState = infoStates.loadState
             mOperating.data = infoStates.part
             mCommentHint.commentState = infoStates.commentState
+
 
             infoStates.favorite.also {
                 binding?.topBar?.topTitleRefresh?.isVisible = it != null
@@ -131,21 +120,15 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
-
-        lifecycleScope.launchWhenCreated {
-            mViewModel.detailImage.collect {
-
+        mViewModel.receiver<Int>("datapick").observe(this) {
+            mDataPickJob?.cancel()
+            mDataPickJob = lifecycleScope.launchWhenCreated {
+                mViewModel.detailImage.collect { mMainAdapter.submitData(it) }
             }
         }
 
+//
 
-//
-//        mOperating.receiver<String>("operating").observe(this, this::onOperatingEvent)
-//        mTag.receiver<Pair<String, String>>("tag").observe(this, this::onTagNavigation)
-//        mComment.receiver<String>("comment").observe(this) { goComment() }
-//        mCommentHint.receiver<String>("comment").observe(this) { goComment() }
-//        mPreviewAdapter.receiver<ImageSource>("detail").observe(this, this::onPreviewClick)
-//
         mViewModel.loadInfo()
     }
 
@@ -177,9 +160,9 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
                 arrowEnabled = true
             })
             setOnClickListener {
-                startRefreshAnimate()
-                mViewModel.clearCache()
-                mViewModel.loadInfo()
+//                startRefreshAnimate()
+//                mViewModel.clearCache()
+//                mViewModel.loadInfo()
             }
         }
         binding?.topBar?.topTitleFavorite?.apply {
@@ -227,15 +210,37 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
+        mHeader.receiver<String>("header")
+            .isClick()
+            .observe(viewLifecycleOwner, this::onHeaderEvent)
 
-//        mViewModel.loadSign.observe(viewLifecycleOwner) {
-////            if (it) {
-////                mViewModel.detailImage.observe(viewLifecycleOwner) { pagingData ->
-////                    mPreviewAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
-////                }
-////            }
-//        }
+        mViewModel.receiver<String>("rate")
+            .isClick()
+            .observe(viewLifecycleOwner) { mOperating.notifyItemChanged(0) }
 
+        mOperating.receiver<String>("operating")
+            .isClick()
+            .observe(this, this::onOperatingEvent)
+
+        mTag.receiver<Pair<String, String>>("tag")
+            .isClick()
+            .observe(this, this::onTagNavigation)
+
+        mComment.receiver<String>("comment")
+            .isClick()
+            .observe(this) { goComment() }
+
+        mCommentHint.receiver<String>("comment")
+            .isClick()
+            .observe(this) { goComment() }
+
+        mMainAdapter.receiver<ImageSource>("detail")
+            .isClick()
+            .observe(this, this::onPreviewClick)
+
+        mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun onHeaderEvent(event: String) {
@@ -287,15 +292,14 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private fun startRefreshAnimate() {
         (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.apply {
-//            arrowEnabled = false
+            arrowEnabled = false
             start()
         }
     }
 
-    private fun finishRefreshAnimate(isReset: Boolean) {
+    private fun finishRefreshAnimate() {
         (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.apply {
             stop()
-            if (isReset) setStartEndTrim(0.1f, 0.9f)
             arrowEnabled = true
         }
     }

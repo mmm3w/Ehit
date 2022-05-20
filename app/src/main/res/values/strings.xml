@@ -69,6 +69,7 @@
 
     <string name="error_content_empty">Content is empty</string>
     <string name="error_invalid_port">Invalid port</string>
+    <string name="error_no_data">No data</string>
 
     <string name="text_test">Test content</string>
     <string name="text_app_waring">The content of this application is from the Internet. Some of it may do physical or mental harm to you.\n You have learnt the risks above and would like to undertake them.</string>
