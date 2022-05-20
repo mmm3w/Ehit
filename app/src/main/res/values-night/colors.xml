@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#56ace1</color>
+    <color name="colorPrimaryDark">#0972b3</color>
+    <color name="colorPrimaryLight">#56ace1</color>
+    <color name="colorAccent">#0972b3</color>
 
     <color name="navigation_bar_color">#303030</color>
     <color name="status_bar_color">#303030</color>

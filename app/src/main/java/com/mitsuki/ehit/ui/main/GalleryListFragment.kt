@@ -104,8 +104,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
                         mStateAdapter.listState =
                             if (mMainAdapter.itemCount == 0)
-                            //TODO 提示文字替换
-                                ListStatesAdapter.ListState.Message("empty")
+                                ListStatesAdapter.ListState.Message(string(R.string.text_content_empty))
                             else
                                 ListStatesAdapter.ListState.None
                         mStateAdapter.isRefreshEnable = true

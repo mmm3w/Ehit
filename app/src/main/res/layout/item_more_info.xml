@@ -10,13 +10,13 @@
         android:id="@+id/more_info_key"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:textColor="#333" />
+        android:textColor="@color/text_color_general" />
 
     <TextView
         android:id="@+id/more_info_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
-        android:textColor="#333" />
+        android:textColor="@color/text_color_general" />
 
 </FrameLayout>

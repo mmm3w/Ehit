@@ -74,7 +74,7 @@ data class Gallery(
                         ?.joinToString(separator = "")
                         ?.toIntOrNull()
                         ?: throw ParseThrowable("total count parse error")
-                } else throw ParseThrowable("lost total count")
+                } else 0
             }
 
             var prevKey: Int? = null
@@ -87,7 +87,8 @@ data class Gallery(
                     nextKey = (it.group(6) ?: "").toIntOrNull()
                     index = (it.group(3) ?: throw  ParseThrowable("未找到当前页码")).toIntOrNull()
                         ?: throw ParseThrowable("当前页码格式转换失败")
-                } else throw ParseThrowable("未找到页码信息")
+                }
+//                else throw ParseThrowable("未找到页码信息")
             }
 
             return PageInfo(

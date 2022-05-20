@@ -20,6 +20,7 @@ import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
@@ -92,8 +93,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
 
                         mStateAdapter.listState =
                             if (mMainAdapter.itemCount == 0)
-                            //TODO 提示文字替换
-                                ListStatesAdapter.ListState.Message("empty")
+                                ListStatesAdapter.ListState.Message(string(R.string.text_content_empty))
                             else
                                 ListStatesAdapter.ListState.None
                         mStateAdapter.isRefreshEnable = true

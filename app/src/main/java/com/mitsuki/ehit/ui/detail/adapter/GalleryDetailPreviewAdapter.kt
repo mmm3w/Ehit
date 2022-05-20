@@ -32,7 +32,7 @@ class GalleryDetailPreviewAdapter(
 
     private val mItemClick = { view: View ->
         val holder = view.tag as ViewHolder
-        post("detail", getItem(holder.bindingAdapterPosition))
+        post("detail", peek(holder.bindingAdapterPosition))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

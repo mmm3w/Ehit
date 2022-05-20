@@ -175,6 +175,7 @@
     <string name="text_security_hint">App is locked.\nYou must be authenticated to use the app.</string>
     <string name="text_authenticate_event">Click to authenticate</string>
     <string name="text_load_all_comment">Load all comment</string>
+    <string name="text_content_empty">Content is empty</string>
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>

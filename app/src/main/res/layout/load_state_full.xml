@@ -19,7 +19,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="16dp"
-        android:textColor="@color/text_color_general" />
+        android:textColor="@color/text_color_general"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/load_state_retry"

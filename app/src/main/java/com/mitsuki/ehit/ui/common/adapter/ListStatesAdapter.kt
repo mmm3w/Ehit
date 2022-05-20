@@ -31,8 +31,8 @@ class ListStatesAdapter(private val action: (() -> Unit)? = null) :
                     } else {
                         if (!isRefreshEnable && value is ListState.Refresh) {
                             /* do nothing*/
-                            notifyItemRemoved(0)
-                            field = ListState.None
+//                            notifyItemRemoved(0)
+//                            field = ListState.None
                         } else {
                             notifyItemChanged(0)
                             field = value
@@ -90,7 +90,17 @@ class ListStatesAdapter(private val action: (() -> Unit)? = null) :
 
     sealed class ListState {
         class Error(val error: Throwable) : ListState()
-        class Message(val text: String) : ListState()
+
+        class Message(val text: String) : ListState() {
+            override fun equals(other: Any?): Boolean {
+                return other is Message && other.text == text
+            }
+
+            override fun hashCode(): Int {
+                return text.hashCode()
+            }
+        }
+
         object None : ListState()
         object Refresh : ListState()
     }

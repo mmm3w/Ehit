@@ -9,6 +9,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.db.RoomData
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityMoreInfoBinding
@@ -28,7 +29,7 @@ class GalleryMoreInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         binding.topBar.topBarLayout.elevation = dp2px(4f)
-        binding.topBar.topBarLayout.setBackgroundColor(Color.WHITE)
+        binding.topBar.topBarLayout.setBackgroundColor(color(R.color.background_color_general))
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
         binding.topBar.topBarText.text = getText(R.string.text_more_information)
 
