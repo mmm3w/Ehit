@@ -13,10 +13,10 @@ import com.mitsuki.ehit.ui.common.adapter.BottomMenuAdapter
 open class BottomMenuDialogFragment(
     private val mOptions: IntArray,
     private val onOptionClick: (Int) -> Boolean
-) :
-    BottomDialogFragment(R.layout.dialog_gallery_menu_list) {
-
-    private val binding by viewBinding(DialogGalleryMenuListBinding::bind)
+) : BindingBottomDialogFragment<DialogGalleryMenuListBinding>(
+    R.layout.dialog_gallery_menu_list,
+    DialogGalleryMenuListBinding::bind
+) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireDialog().setCanceledOnTouchOutside(true)

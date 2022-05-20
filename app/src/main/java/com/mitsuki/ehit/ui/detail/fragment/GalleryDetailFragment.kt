@@ -22,6 +22,7 @@ import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
@@ -43,7 +44,10 @@ import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
+class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
+    R.layout.fragment_gallery_detail,
+    FragmentGalleryDetailBinding::bind
+) {
 
     private val mViewModel: GalleryDetailViewModel by viewModels()
 
@@ -70,8 +74,6 @@ class GalleryDetailFragment : BaseFragment(R.layout.fragment_gallery_detail) {
     private val mConcatAdapter: ConcatAdapter by lazy {
         ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment, mCommentHint)
     }
-
-    private val binding by viewBinding(FragmentGalleryDetailBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,24 +1,40 @@
 package com.mitsuki.ehit.base
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.viewbinding.ViewBinding
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 
-abstract class BindingFragment<VB : ViewBinding>(@LayoutRes layout: Int, inflate: (View) -> VB) :
+abstract class BindingFragment<VB : ViewBinding>(
+    @LayoutRes layout: Int,
+    val inflate: (View) -> VB
+) :
     BaseFragment(layout) {
-    val binding by viewBinding(inflate)
+    var binding: VB? = null
+        private set
 
     fun requireBinding(): VB {
         return binding ?: throw IllegalArgumentException()
     }
 
     @CallSuper
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        onViewCreated(requireBinding(), view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)?.apply {
+            binding = inflate(this)
+        }
     }
 
-    abstract fun onViewCreated(innBinding: VB, view: View, savedInstanceState: Bundle?)
+    @CallSuper
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
 }

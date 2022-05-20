@@ -20,7 +20,7 @@ class PageDialog(
     init {
         title(text = string(R.string.title_jump_page).format(range))
         positiveBtn(text(R.string.text_confirm)) {
-            val target = binding.dialogPageInput.text?.toString()?.trim()?.toIntOrNull()
+            val target = binding?.dialogPageInput?.text?.toString()?.trim()?.toIntOrNull()
                 ?.coerceIn(1, range) ?: -1
             if (target == -1) {
                 //提示输入的内容有问题
@@ -33,6 +33,6 @@ class PageDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.dialogPageInput.apply { setText("1") }
+        binding?.dialogPageInput?.apply { setText("1") }
     }
 }

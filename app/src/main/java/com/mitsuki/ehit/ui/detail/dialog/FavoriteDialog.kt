@@ -34,7 +34,7 @@ class FavoriteDialog(
             onSelected(it)
             dismiss()
         }
-        binding.dialogFavouriteList.apply {
+        binding?.dialogFavouriteList?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
         }

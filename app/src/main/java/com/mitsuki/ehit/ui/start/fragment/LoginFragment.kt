@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
@@ -27,7 +28,8 @@ import javax.inject.Inject
  * web登录用新activity
  */
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.fragment_login) {
+class LoginFragment :
+    BindingFragment<FragmentLoginBinding>(R.layout.fragment_login, FragmentLoginBinding::bind) {
 
     private val mViewModel: LoginViewModel
             by createViewModelLazy(LoginViewModel::class, { viewModelStore })
@@ -46,11 +48,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         )
     }
 
-    private val binding by viewBinding(FragmentLoginBinding::bind)
     @Inject
-    lateinit var openGate:OpenGate
+    lateinit var openGate: OpenGate
+
     @Inject
     lateinit var shareData: ShareData
+
     @Inject
     lateinit var memoryData: MemoryData
 

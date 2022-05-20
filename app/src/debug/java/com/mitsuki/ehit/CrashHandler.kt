@@ -16,10 +16,6 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
     private val mDefaultExceptionHandler: Thread.UncaughtExceptionHandler? =
         Thread.getDefaultUncaughtExceptionHandler()
 
-    init {
-        Thread.setDefaultUncaughtExceptionHandler(this)
-    }
-
     private lateinit var mLogCacheFile: File
 
     @SuppressLint("SimpleDateFormat")
@@ -28,6 +24,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
     fun init(context: Context) {
         /*try create*/
         Log.i("CrashHandler", "Create")
+        Thread.setDefaultUncaughtExceptionHandler(this)
         mLogCacheFile = File(context.cacheDir, "crash_log")
         mLogCacheFile.ensureDir()
     }

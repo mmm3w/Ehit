@@ -8,13 +8,15 @@ import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogFavouriteSelectBinding
+import com.mitsuki.ehit.ui.common.dialog.BindingBottomDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 
-class FavouriteSelectPanel : BottomDialogFragment(R.layout.dialog_favourite_select) {
+class FavouriteSelectPanel : BindingBottomDialogFragment<DialogFavouriteSelectBinding>(
+    R.layout.dialog_favourite_select,
+    DialogFavouriteSelectBinding::bind
+) {
 
     private val mAdapter: FavouriteItemAdapter by lazy { FavouriteItemAdapter() }
-
-    private val binding by viewBinding(DialogFavouriteSelectBinding::bind)
 
     var onFavouriteSelect: ((Int) -> Unit)? = null
 

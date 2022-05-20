@@ -25,14 +25,16 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
         title(text(R.string.text_setting_read))
 
         positiveBtn(text(R.string.text_confirm)) {
-            memoryData.keepBright = binding.readConfigKeepBrightSwitch.isChecked
-            memoryData.showTime = binding.readConfigShowTimeSwitch.isChecked
-            memoryData.showBattery = binding.readConfigShowBatterySwitch.isChecked
-            memoryData.showProgress = binding.readConfigShowProgressSwitch.isChecked
-            memoryData.showPagePadding = binding.readConfigShowPagePaddingSwitch.isChecked
-            memoryData.volumeButtonTurnPages =
-                binding.readConfigVolumeButtonTurnPagesSwitch.isChecked
-            memoryData.fullScreen = binding.readConfigFullScreenSwitch.isChecked
+            binding?.apply {
+                memoryData.keepBright = readConfigKeepBrightSwitch.isChecked
+                memoryData.showTime = readConfigShowTimeSwitch.isChecked
+                memoryData.showBattery = readConfigShowBatterySwitch.isChecked
+                memoryData.showProgress = readConfigShowProgressSwitch.isChecked
+                memoryData.showPagePadding = readConfigShowPagePaddingSwitch.isChecked
+                memoryData.volumeButtonTurnPages =
+                    readConfigVolumeButtonTurnPagesSwitch.isChecked
+                memoryData.fullScreen = readConfigFullScreenSwitch.isChecked
+            }
             memoryData.screenOrientation = screenOrientation
             memoryData.readOrientation = readOrientation
             memoryData.imageZoom = imageZoom
@@ -48,7 +50,7 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
         set(value) {
             if (value != field) {
                 field = value
-                binding.readConfigScreenOrientationSelect.text = screenOrientationText(field)
+                binding?.readConfigScreenOrientationSelect?.text = screenOrientationText(field)
             }
         }
 
@@ -56,7 +58,7 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
         set(value) {
             if (value != field) {
                 field = value
-                binding.readConfigReadingDirectionSelect.text = readOrientationText(field)
+                binding?.readConfigReadingDirectionSelect?.text = readOrientationText(field)
             }
         }
 
@@ -64,7 +66,7 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
         set(value) {
             if (value != field) {
                 field = value
-                binding.readConfigImageZoomSelect.text = imageZoomText(field)
+                binding?.readConfigImageZoomSelect?.text = imageZoomText(field)
             }
         }
 
@@ -75,44 +77,48 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
         readOrientation = memoryData.readOrientation
         imageZoom = memoryData.imageZoom
 
-        binding.readConfigScreenOrientationSelect.setOnClickListener {
-            showSelectMenu(requireContext(), it, R.menu.menu_screen_orientation) { menuId ->
-                when (menuId) {
-                    R.id.screen_default -> screenOrientation = 0
-                    R.id.screen_vertical -> screenOrientation = 1
-                    R.id.screen_horizontal -> screenOrientation = 2
-                    R.id.screen_auto -> screenOrientation = 3
+        binding?.apply {
+            readConfigScreenOrientationSelect.setOnClickListener {
+                showSelectMenu(requireContext(), it, R.menu.menu_screen_orientation) { menuId ->
+                    when (menuId) {
+                        R.id.screen_default -> screenOrientation = 0
+                        R.id.screen_vertical -> screenOrientation = 1
+                        R.id.screen_horizontal -> screenOrientation = 2
+                        R.id.screen_auto -> screenOrientation = 3
+                    }
                 }
             }
-        }
-        binding.readConfigReadingDirectionSelect.setOnClickListener {
-            showSelectMenu(requireContext(), it, R.menu.menu_reading_direction) { menuId ->
-                when (menuId) {
-                    R.id.read_rtl -> readOrientation = 0
-                    R.id.read_ltr -> readOrientation = 1
-                    R.id.read_ttb -> readOrientation = 2
+            readConfigReadingDirectionSelect.setOnClickListener {
+                showSelectMenu(requireContext(), it, R.menu.menu_reading_direction) { menuId ->
+                    when (menuId) {
+                        R.id.read_rtl -> readOrientation = 0
+                        R.id.read_ltr -> readOrientation = 1
+                        R.id.read_ttb -> readOrientation = 2
+                    }
                 }
             }
-        }
-        binding.readConfigImageZoomSelect.setOnClickListener {
-            showSelectMenu(requireContext(), it, R.menu.menu_image_zoom) { menuId ->
-                when (menuId) {
-                    R.id.zoom_adapt_screen -> imageZoom = 0
-                    R.id.zoom_adapt_width -> imageZoom = 1
-                    R.id.zoom_adapt_height -> imageZoom = 2
+            readConfigImageZoomSelect.setOnClickListener {
+                showSelectMenu(requireContext(), it, R.menu.menu_image_zoom) { menuId ->
+                    when (menuId) {
+                        R.id.zoom_adapt_screen -> imageZoom = 0
+                        R.id.zoom_adapt_width -> imageZoom = 1
+                        R.id.zoom_adapt_height -> imageZoom = 2
 //                    R.id.zoom_original -> imageZoom = 3
 //                    R.id.zoom_fix_scale -> imageZoom = 4
+                    }
                 }
             }
+
+           readConfigKeepBrightSwitch.isChecked = memoryData.keepBright
+           readConfigShowTimeSwitch.isChecked = memoryData.showTime
+           readConfigShowBatterySwitch.isChecked = memoryData.showBattery
+           readConfigShowProgressSwitch.isChecked = memoryData.showProgress
+           readConfigShowPagePaddingSwitch.isChecked = memoryData.showPagePadding
+           readConfigVolumeButtonTurnPagesSwitch.isChecked = memoryData.volumeButtonTurnPages
+           readConfigFullScreenSwitch.isChecked = memoryData.fullScreen
         }
 
-        binding.readConfigKeepBrightSwitch.isChecked = memoryData.keepBright
-        binding.readConfigShowTimeSwitch.isChecked = memoryData.showTime
-        binding.readConfigShowBatterySwitch.isChecked = memoryData.showBattery
-        binding.readConfigShowProgressSwitch.isChecked = memoryData.showProgress
-        binding.readConfigShowPagePaddingSwitch.isChecked = memoryData.showPagePadding
-        binding.readConfigVolumeButtonTurnPagesSwitch.isChecked = memoryData.volumeButtonTurnPages
-        binding.readConfigFullScreenSwitch.isChecked = memoryData.fullScreen
+
     }
 
     private fun screenOrientationText(index: Int): CharSequence {

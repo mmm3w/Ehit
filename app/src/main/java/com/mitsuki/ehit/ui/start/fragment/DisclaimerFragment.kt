@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
@@ -17,13 +18,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DisclaimerFragment : Fragment(R.layout.fragment_disclaimer) {
+class DisclaimerFragment : BindingFragment<FragmentDisclaimerBinding>(
+    R.layout.fragment_disclaimer,
+    FragmentDisclaimerBinding::bind
+) {
 
     private val mAdapter by lazy { DisclaimerAdapter() }
-    private val binding by viewBinding(FragmentDisclaimerBinding::bind)
 
     @Inject
-    lateinit var openGate:OpenGate
+    lateinit var openGate: OpenGate
+
     @Inject
     lateinit var shareData: ShareData
 

@@ -13,16 +13,17 @@ class RatingDialog(val rating: Float, val onConfirm: (Float) -> Unit) :
     init {
         title(text(R.string.text_rate))
         positiveBtn(text(R.string.text_confirm)) {
-            onConfirm(binding.ratingTarget.rating)
+            binding?.ratingTarget?.rating?.apply(onConfirm)
             dismiss()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.ratingTarget.rating = rating
+        binding?.ratingTarget?.rating = rating
 
     }
+
 
 
 }

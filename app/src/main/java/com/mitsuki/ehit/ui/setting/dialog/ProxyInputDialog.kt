@@ -27,40 +27,43 @@ class ProxyInputDialog(
     init {
         title(res = R.string.text_proxy)
         positiveBtn(res = R.string.text_confirm) {
-            val host = binding.proxyHost.text.toString().trim()
-            if (host.isEmpty()) {
-                binding.proxyHostLayout.isErrorEnabled = true
-                binding.proxyHostLayout.error = text(R.string.error_content_empty)
-                return@positiveBtn
-            } else {
-                binding.proxyHostLayout.isErrorEnabled = false
+            binding?.apply {
+                val host = proxyHost.text.toString().trim()
+                if (host.isEmpty()) {
+                    proxyHostLayout.isErrorEnabled = true
+                    proxyHostLayout.error = text(R.string.error_content_empty)
+                    return@positiveBtn
+                } else {
+                    proxyHostLayout.isErrorEnabled = false
+                }
+
+                val portStr = proxyPort.text.toString().trim()
+                if (portStr.isEmpty()) {
+                    proxyPortLayout.isErrorEnabled = true
+                    proxyPortLayout.error = text(R.string.error_content_empty)
+                    return@positiveBtn
+                } else {
+                    proxyPortLayout.isErrorEnabled = false
+                }
+
+                val port = portStr.toIntOrNull()
+                if (port == null || port < 0 || port > 65535) {
+                    proxyPortLayout.isErrorEnabled = true
+                    proxyPortLayout.error = text(R.string.error_invalid_port)
+                    return@positiveBtn
+                } else {
+                    proxyPortLayout.isErrorEnabled = false
+
+                }
+
+                shareData.spProxyIp = host
+                shareData.spProxyPort = port
+                shareData.spProxyMode = currentMode
+                memoryData.setProxy(currentMode, host, port)
+
+                onConfirm(currentMode, "$host:$port")
             }
 
-            val portStr = binding.proxyPort.text.toString().trim()
-            if (portStr.isEmpty()) {
-                binding.proxyPortLayout.isErrorEnabled = true
-                binding.proxyPortLayout.error = text(R.string.error_content_empty)
-                return@positiveBtn
-            } else {
-                binding.proxyPortLayout.isErrorEnabled = false
-            }
-
-            val port = portStr.toIntOrNull()
-            if (port == null || port < 0 || port > 65535) {
-                binding.proxyPortLayout.isErrorEnabled = true
-                binding.proxyPortLayout.error = text(R.string.error_invalid_port)
-                return@positiveBtn
-            } else {
-                binding.proxyPortLayout.isErrorEnabled = false
-
-            }
-
-            shareData.spProxyIp = host
-            shareData.spProxyPort = port
-            shareData.spProxyMode = currentMode
-            memoryData.setProxy(currentMode, host, port)
-
-            onConfirm(currentMode, "$host:$port")
             dismiss()
         }
     }
@@ -76,7 +79,7 @@ class ProxyInputDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         currentMode = shareData.spProxyMode
-        binding.proxyModeSelect.apply {
+        binding?.proxyModeSelect?.apply {
             setText(ValueFinder.proxySummary(currentMode))
             setOnClickListener {
                 showSelectMenu(requireContext(), it, R.menu.menu_proxy) { menuIndex ->
@@ -94,14 +97,14 @@ class ProxyInputDialog(
     private fun setProxyInputVisible(mode: Int) {
         when (mode) {
             0, 1 -> {
-                binding.proxyHostLayout.isVisible = false
-                binding.proxyPortLayout.isVisible = false
+                binding?.proxyHostLayout?.isVisible = false
+                binding?.proxyPortLayout?.isVisible = false
             }
             2, 3 -> {
-                binding.proxyHostLayout.isVisible = true
-                binding.proxyPortLayout.isVisible = true
-                binding.proxyHost.setText(shareData.spProxyIp)
-                binding.proxyPort.setText(shareData.spProxyPort.toString())
+                binding?.proxyHostLayout?.isVisible = true
+                binding?.proxyPortLayout?.isVisible = true
+                binding?.proxyHost?.setText(shareData.spProxyIp)
+                binding?.proxyPort?.setText(shareData.spProxyPort.toString())
 
             }
         }

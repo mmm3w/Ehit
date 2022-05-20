@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
@@ -19,8 +20,10 @@ import com.mitsuki.ehit.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SecurityFragment : Fragment(R.layout.fragment_security) {
-    private val binding by viewBinding(FragmentSecurityBinding::bind)
+class SecurityFragment : BindingFragment<FragmentSecurityBinding>(
+    R.layout.fragment_security,
+    FragmentSecurityBinding::bind
+) {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo

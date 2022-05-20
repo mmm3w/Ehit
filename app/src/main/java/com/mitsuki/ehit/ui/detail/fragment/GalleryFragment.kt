@@ -18,6 +18,7 @@ import com.mitsuki.armory.loadprogress.Progress
 import com.mitsuki.armory.loadprogress.ProgressProvider
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
+import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.save.MemoryData
@@ -30,13 +31,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class GalleryFragment : BaseFragment(R.layout.fragment_gallery) {
-
+class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
+    R.layout.fragment_gallery,
+    FragmentGalleryBinding::bind
+) {
     private val mViewModel: GalleryViewModel by viewModels()
 
     private var mImageGesture: ImageGesture? = null
-
-    private val binding by viewBinding(FragmentGalleryBinding::bind)
 
     @Inject
     lateinit var memoryData: MemoryData

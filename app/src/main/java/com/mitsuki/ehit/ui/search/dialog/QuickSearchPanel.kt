@@ -12,6 +12,7 @@ import com.mitsuki.ehit.crutch.extensions.observeWithCoro
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.ui.common.dialog.BindingBottomDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.search.QuickSearchItemTouchHelperCallback
 import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
@@ -23,14 +24,15 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class QuickSearchPanel(val onQuickSearch: ((GalleryPageSource) -> Unit)) :
-    BottomDialogFragment(R.layout.dialog_quick_search) {
+    BindingBottomDialogFragment<DialogQuickSearchBinding>(
+        R.layout.dialog_quick_search,
+        DialogQuickSearchBinding::bind
+    ) {
 
     private val mViewModel: QuickSearchViewModel by viewModels({ requireActivity() })
 
     private val mParentViewModel: GalleryListViewModel
             by viewModels(ownerProducer = { requireParentFragment() })
-
-    private val binding by viewBinding(DialogQuickSearchBinding::bind)
 
     private val mAdapter by lazy { QuickSearchAdapter() }
 

@@ -10,17 +10,16 @@ import com.mitsuki.ehit.ui.common.dialog.BindingDialogFragment
 class DownloadRangeDialog(
     private val range: Int,
     private val onConfirm: (Int, Int) -> Unit
-) :
-    BindingDialogFragment<DialogDownloadRangeBinding>(
-        R.layout.dialog_download_range,
-        DialogDownloadRangeBinding::bind
-    ) {
+) : BindingDialogFragment<DialogDownloadRangeBinding>(
+    R.layout.dialog_download_range,
+    DialogDownloadRangeBinding::bind
+) {
 
     init {
         title(text = text(R.string.text_download))
 
-        positiveBtn(text(R.string.text_confirm)){
-            binding.apply {
+        positiveBtn(text(R.string.text_confirm)) {
+            binding?.apply {
                 val start = dialogDownloadRangeStart.text.toString().trim().toIntOrNull() ?: 1
                 val end = dialogDownloadRangeEnd.text.toString().trim().toIntOrNull() ?: range
                 onConfirm(start, end)
@@ -31,8 +30,8 @@ class DownloadRangeDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.dialogDownloadRangeStart.setText("1")
-        binding.dialogDownloadRangeEnd.setText(range.toString())
+        binding?.dialogDownloadRangeStart?.setText("1")
+        binding?.dialogDownloadRangeEnd?.setText(range.toString())
 
     }
 }

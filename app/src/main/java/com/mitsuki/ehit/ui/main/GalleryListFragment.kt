@@ -92,14 +92,14 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 when (it.refresh) {
                     is LoadState.Loading -> {
                         mGate.prep(true)
-                        requireBinding().galleryListRefresh.apply {
+                        binding?.galleryListRefresh?.apply {
                             if (isEnabled) isRefreshing = true
                         }
                         mStateAdapter.listState = ListStatesAdapter.ListState.Refresh
                     }
                     is LoadState.NotLoading -> {
                         mGate.trigger()
-                        requireBinding().galleryListRefresh.isRefreshing = false
+                        binding?.galleryListRefresh?.isRefreshing = false
                         mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
 
                         mStateAdapter.listState =
@@ -111,7 +111,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                     }
                     is LoadState.Error -> {
                         mGate.prep(false)
-                        requireBinding().galleryListRefresh.isRefreshing = false
+                        binding?.galleryListRefresh?.isRefreshing = false
                         mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
                         mStateAdapter.apply {
                             //既然刷新状态让你显示，那么错误状态也别显示了
@@ -135,13 +135,11 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
 
-    override fun onViewCreated(
-        innBinding: FragmentGalleryListBinding, view: View, savedInstanceState: Bundle?
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        with(innBinding) {
+        binding?.apply {
             mViewModel.searchBarText.observe(viewLifecycleOwner) { topBar.topSearchText.text = it }
 
             mViewModel.searchBarHint.observe(viewLifecycleOwner) { topBar.topSearchText.hint = it }

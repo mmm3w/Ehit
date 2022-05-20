@@ -81,14 +81,14 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
                 when (it.refresh) {
                     is LoadState.Loading -> {
                         mGate.prep(true)
-                        requireBinding().favouriteRefresh.apply {
+                        binding?.favouriteRefresh?.apply {
                             if (isEnabled) isRefreshing = true
                         }
                         mStateAdapter.listState = ListStatesAdapter.ListState.Refresh
                     }
                     is LoadState.NotLoading -> {
                         mGate.trigger()
-                        requireBinding().favouriteRefresh.isRefreshing = false
+                        binding?.favouriteRefresh?.isRefreshing = false
                         mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
 
                         mStateAdapter.listState =
@@ -100,7 +100,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
                     }
                     is LoadState.Error -> {
                         mGate.prep(false)
-                        requireBinding().favouriteRefresh.isRefreshing = false
+                        binding?.favouriteRefresh?.isRefreshing = false
                         mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
                         mStateAdapter.apply {
                             //既然刷新状态让你显示，那么错误状态也别显示了
@@ -125,15 +125,11 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
         mViewModel.count.observe(this) { favouriteSelectPanel.postCountData(it) }
     }
 
-    override fun onViewCreated(
-        innBinding: FragmentFavouriteBinding,
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        with(innBinding) {
+        binding?.apply {
             favouriteTarget.apply {
                 setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
                 layoutManager = LinearLayoutManager(requireContext())
