@@ -13,10 +13,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extensions.color
-import com.mitsuki.ehit.crutch.extensions.observe
-import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.extensions.text
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.databinding.ActivityGalleryCommentBinding
 import com.mitsuki.ehit.model.entity.Comment
@@ -57,13 +54,17 @@ class GalleryCommentActivity :
         mViewModel.initData(intent)
 
 
-        mMainAdapter.receiver<Pair<Int, Comment>>("VoteUp").observe(this) {
-            mViewModel.voteComment(it.first, it.second, 1)
-        }
+        mMainAdapter.receiver<Pair<Int, Comment>>("VoteUp")
+            .isClick()
+            .observe(this) {
+                mViewModel.voteComment(it.first, it.second, 1)
+            }
 
-        mMainAdapter.receiver<Pair<Int, Comment>>("VoteDown").observe(this) {
-            mViewModel.voteComment(it.first, it.second, -1)
-        }
+        mMainAdapter.receiver<Pair<Int, Comment>>("VoteDown")
+            .isClick()
+            .observe(this) {
+                mViewModel.voteComment(it.first, it.second, -1)
+            }
 
         mViewModel.receiver<NotifyData<Comment>>("vote").observe(this) {
             mMainAdapter.updateData(lifecycle, it)

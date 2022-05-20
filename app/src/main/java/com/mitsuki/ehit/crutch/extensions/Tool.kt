@@ -20,15 +20,15 @@ inline fun <reified T : Parcelable> parcelableCreatorOf(): Parcelable.Creator<T>
     }
 
 
-fun String.copying2Clipboard() {
+fun String.copying2Clipboard(label: CharSequence? = null) {
     AppHolder.clipboardManager.setPrimaryClip(
-        ClipData.newPlainText(string(R.string.hint_gallery_info), this)
+        ClipData.newPlainText(label ?: this, this)
     )
 }
 
 
-fun Context.setPrimaryClip(text: String) {
+fun Context.copying2Clipboard(label: CharSequence? = null, text: String) {
     ContextCompat.getSystemService(this, ClipboardManager::class.java)?.setPrimaryClip(
-        ClipData.newPlainText("Label", text)
+        ClipData.newPlainText(label ?: text, text)
     )
 }

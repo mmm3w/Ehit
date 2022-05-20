@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.showToast
 import java.io.File
 
 object AppHolder {
@@ -52,12 +53,12 @@ object AppHolder {
         duration: Int = Toast.LENGTH_SHORT
     ) {
         if (!text.isNullOrEmpty()) {
-            Toast.makeText(mApplication, text, duration).show()
+            mApplication.showToast(text, duration)
             return
         }
 
         if (textRes > 0) {
-            Toast.makeText(mApplication, string(textRes), duration).show()
+            mApplication.showToast(text(textRes), duration)
             return
         }
     }

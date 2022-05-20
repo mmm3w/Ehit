@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/detail_share"
+        android:title="@string/text_share" />
+    <item
+        android:id="@+id/detail_seed"
+        android:title="@string/text_seed" />
+    <item
+        android:id="@+id/detail_h_at_h"
+        android:title="@string/text_h_at_h_download" />
+
+    <item
+        android:id="@+id/detail_search_thumb"
+        android:title="@string/text_search_thumb" />
+
+    <item android:title="在其他应用中打开" />
+</menu>

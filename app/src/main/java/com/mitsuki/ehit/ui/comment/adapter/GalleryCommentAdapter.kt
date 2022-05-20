@@ -14,6 +14,8 @@ import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
+import com.mitsuki.ehit.crutch.extensions.showPopupMenu
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemCommentABinding
 import com.mitsuki.ehit.model.diff.Diff
@@ -38,6 +40,16 @@ class GalleryCommentAdapter :
         post("VoteDown", position to mData.item(position))
     }
 
+    private val mItemOptionClick = { view: View ->
+        val position = (view.tag as ViewHolder).bindingAdapterPosition
+        val data = mData.item(position)
+        view.showPopupMenu(view.context, R.menu.menu_comment_option) {
+            when (it) {
+                R.id.comment_copy -> data.text.copying2Clipboard()
+            }
+        }
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -51,7 +63,10 @@ class GalleryCommentAdapter :
                 tag = it
                 setOnClickListener(mItemVoteDownClick)
             }
-            it.binding.commentOption.setOnClickListener { }
+            it.binding.commentOption.apply {
+                tag = it
+                setOnClickListener(mItemOptionClick)
+            }
         }
     }
 
@@ -61,7 +76,6 @@ class GalleryCommentAdapter :
         with(mData.item(position)) {
             holder.binding.commentUserName.text = user
             holder.binding.commentPostTime.text = TimeFormat.commentTime(postTime)
-            //TODO 文本展示待优化
             holder.binding.commentContent.text =
                 HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
             holder.binding.commentVoteLayout.isVisible = voteEnable

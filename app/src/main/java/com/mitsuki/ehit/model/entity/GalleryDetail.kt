@@ -238,8 +238,8 @@ data class GalleryDetail(
         }
     }
 
-    fun obtainHeaderInfo(): HeaderInfo {
-        return HeaderInfo(
+    fun obtainHeaderInfo(): DetailHeader {
+        return DetailHeader(
             detailThumb,
             title,
             uploader,

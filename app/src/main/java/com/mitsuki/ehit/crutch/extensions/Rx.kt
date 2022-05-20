@@ -10,6 +10,7 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.functions.Consumer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 fun <T : Any> Observable<T>.observe(owner: LifecycleOwner, onNext: Consumer<T>) {
     if (owner.lifecycle.currentState == Lifecycle.State.DESTROYED) return
@@ -33,3 +34,6 @@ class RxLife(private val disposable: Disposable) : DefaultLifecycleObserver {
         owner.lifecycle.removeObserver(this)
     }
 }
+
+inline fun <reified T : Any> Observable<T>.isClick(): Observable<T> =
+    throttleFirst(444, TimeUnit.MILLISECONDS)

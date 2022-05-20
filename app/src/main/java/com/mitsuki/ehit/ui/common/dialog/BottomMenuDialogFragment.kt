@@ -5,6 +5,7 @@ import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogGalleryMenuListBinding
@@ -23,9 +24,11 @@ open class BottomMenuDialogFragment(
         isCancelable = true
 
         val mAdapter = BottomMenuAdapter(mOptions)
-        mAdapter.receiver<Int>("option").observe(viewLifecycleOwner) {
-            if (onOptionClick(it)) dismiss()
-        }
+        mAdapter.receiver<Int>("option")
+            .isClick()
+            .observe(viewLifecycleOwner) {
+                if (onOptionClick(it)) dismiss()
+            }
 
         binding?.galleryMenu?.apply {
             layoutManager = LinearLayoutManager(requireContext())

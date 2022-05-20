@@ -26,6 +26,7 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
@@ -76,6 +77,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         mViewModel.initData(arguments)
 
         mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
+            .isClick()
             .observe(this, ::onDetailNavigation)
 
 
@@ -202,6 +204,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
+//        try {
         with(galleryClick) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(
@@ -211,6 +214,11 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                     FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
                 )
         }
+//        } catch (e: Exception) {
+        /* 同时点击两个item会导致同时进入该方法，后一个进入会导致Navigation.findNavController抛出异常 */
+        /* 不catch异常会导致事件观察链断开，后续再也无法触发事件 */
+        /* 其实在接收处通过throttleFirst防抖即可处理该问题*/
+//        }
     }
 
     private fun showPageJumpDialog() {

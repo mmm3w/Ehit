@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:textColor="@color/text_color_general"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -27,7 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_baseline_more_vert_24" />
+            android:src="@drawable/ic_baseline_more_vert_24"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
@@ -43,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:lineSpacingExtra="1dp"
         android:textColor="@color/text_color_general"
         android:textIsSelectable="true"
         android:textSize="14sp" />

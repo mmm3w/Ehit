@@ -77,6 +77,10 @@
     <string name="text_save_to">保存至…</string>
     <string name="text_enable">已启用</string>
     <string name="text_disable">未启用</string>
+    <string name="text_seed">种子</string>
+    <string name="text_h_at_h_download">H@H下载</string>
+    <string name="text_search_thumb">搜索封面</string>
+
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>

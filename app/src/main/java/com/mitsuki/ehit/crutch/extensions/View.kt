@@ -37,11 +37,5 @@ fun View.corners(radius: Float) {
 
 
 fun showSelectMenu(context: Context, view: View, menu: Int, click: (Int) -> Unit) {
-    val popupMenu = PopupMenu(context, view)
-    popupMenu.menuInflater.inflate(menu, popupMenu.menu)
-    popupMenu.show()
-    popupMenu.setOnMenuItemClickListener {
-        it?.itemId?.apply(click)
-        true
-    }
+    view.showPopupMenu(context, menu, click)
 }

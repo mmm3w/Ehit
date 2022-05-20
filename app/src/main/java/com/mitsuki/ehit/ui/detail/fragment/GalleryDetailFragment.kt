@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,11 +24,9 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseFragment
 import com.mitsuki.ehit.base.BindingFragment
-import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extensions.color
-import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryPageSource
@@ -42,6 +41,8 @@ import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.detail.dialog.RatingDialog
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
@@ -51,29 +52,48 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private val mViewModel: GalleryDetailViewModel by viewModels()
 
-    private val mPreviewAdapter: GalleryDetailPreviewAdapter
-            by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }
+    private val mStatesAdapter by lazy { GalleryDetailLoadStatesAdapter {} }
+    private val mHeader: GalleryDetailHeader by lazy { GalleryDetailHeader() }
 
-    private val mConcatPreviewAdapter by lazy {
-        mPreviewAdapter.withLoadStateHeaderAndFooter(
-            header = DefaultLoadStateAdapter(mPreviewAdapter),
-            footer = DefaultLoadStateAdapter(mPreviewAdapter)
+    private val mOperating: GalleryDetailOperatingBlock by lazy { GalleryDetailOperatingBlock() }
+    private val mTag: GalleryDetailTagAdapter by lazy { GalleryDetailTagAdapter(mViewModel.myTags) }
+    private val mComment: GalleryDetailCommentAdapter by lazy {
+        GalleryDetailCommentAdapter(
+            mViewModel.myComments
         )
     }
-
-    private val mInitialLoadState: GalleryDetailInitialAdapter by lazy {
-        GalleryDetailInitialAdapter { mViewModel.loadInfo() }
-    }
-
-    private val mHeader: GalleryDetailHeader by lazy { GalleryDetailHeader() }
-    private val mOperating: GalleryDetailOperatingBlock by lazy { GalleryDetailOperatingBlock() }
-    private val mTag: GalleryDetailTagAdapter by lazy { GalleryDetailTagAdapter() }
-    private val mComment: GalleryDetailCommentAdapter by lazy { GalleryDetailCommentAdapter() }
     private val mCommentHint: GalleryDetailCommentHintAdapter by lazy { GalleryDetailCommentHintAdapter() }
 
-    private val mConcatAdapter: ConcatAdapter by lazy {
-        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment, mCommentHint)
+    private val mInfoAdapter by lazy {
+        ConcatAdapter(mHeader, mStatesAdapter, mOperating, mTag, mComment, mCommentHint)
     }
+
+    private val mMainAdapter: GalleryDetailPreviewAdapter
+            by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }
+    private val mLoadHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
+    private val mLoadFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
+
+    private val mPreviewAdapter by lazy { ConcatAdapter(mLoadHeader, mMainAdapter, mLoadFooter) }
+
+
+//    private val mPreviewAdapter: GalleryDetailPreviewAdapter
+//            by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }
+//
+//    private val mConcatPreviewAdapter by lazy {
+//        mPreviewAdapter.withLoadStateHeaderAndFooter(
+//            header = DefaultLoadStateAdapter(mPreviewAdapter),
+//            footer = DefaultLoadStateAdapter(mPreviewAdapter)
+//        )
+//    }
+
+//    private val mInitialLoadState: GalleryDetailInitialAdapter by lazy {
+//        GalleryDetailInitialAdapter { mViewModel.loadInfo() }
+//    }
+
+
+//    private val mConcatAdapter: ConcatAdapter by lazy {
+//        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment, mCommentHint)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,26 +104,48 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
         mViewModel.initData(arguments)
 
-        mViewModel.initLoading.observe(this) {
-            mInitialLoadState.isEnable = it.first
-            mInitialLoadState.errorMsg = it.second
-        }
-        mViewModel.headerInfo.observe(this) { mHeader.postData(it) }
-        mViewModel.detailPart.observe(this) { mOperating.data = it }
-        mViewModel.detailInfo.observe(this) {
-            mTag.postData(it.tagGroup.toList())
-            mComment.postData(it.comments.toList().subList(0, it.comments.size.coerceAtMost(3)))
-            mCommentHint.commentState = it.obtainCommentState()
-            finishRefreshAnimate()
+        mHeader.receiver<String>("header")
+            .isClick()
+            .observe(this, this::onHeaderEvent)
+
+        mViewModel.receiver<String>("rate")
+            .isClick()
+            .observe(viewLifecycleOwner) { mOperating.notifyItemChanged(0) }
+
+        mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         }
 
-        mHeader.receiver<String>("header").observe(this, this::onHeaderEvent)
-        mOperating.receiver<String>("operating").observe(this, this::onOperatingEvent)
-        mTag.receiver<Pair<String, String>>("tag").observe(this, this::onTagNavigation)
-        mComment.receiver<String>("comment").observe(this) { goComment() }
-        mCommentHint.receiver<String>("comment").observe(this) { goComment() }
-        mPreviewAdapter.receiver<ImageSource>("detail").observe(this, this::onPreviewClick)
+        mViewModel.infoStates.observe(viewLifecycleOwner) { infoStates ->
+            mHeader.data = infoStates.header
+            mStatesAdapter.loadState = infoStates.loadState
+            mOperating.data = infoStates.part
+            mCommentHint.commentState = infoStates.commentState
 
+            infoStates.favorite.also {
+                binding?.topBar?.topTitleRefresh?.isVisible = it != null
+                binding?.topBar?.topTitleFavorite?.apply {
+                    isVisible = it != null
+                    isSelected = it == true
+                }
+            }
+        }
+
+
+        lifecycleScope.launchWhenCreated {
+            mViewModel.detailImage.collect {
+
+            }
+        }
+
+
+//
+//        mOperating.receiver<String>("operating").observe(this, this::onOperatingEvent)
+//        mTag.receiver<Pair<String, String>>("tag").observe(this, this::onTagNavigation)
+//        mComment.receiver<String>("comment").observe(this) { goComment() }
+//        mCommentHint.receiver<String>("comment").observe(this) { goComment() }
+//        mPreviewAdapter.receiver<ImageSource>("detail").observe(this, this::onPreviewClick)
+//
         mViewModel.loadInfo()
     }
 
@@ -111,6 +153,8 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
         ViewCompat.setTransitionName(view, mViewModel.itemTransitionName)
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
+
+
         binding?.topBar?.topTitleLayout?.apply {
             layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
                 setMargins(
@@ -121,7 +165,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
                 )
             }
         }
-
+//
         binding?.topBar?.topTitleBack?.setOnClickListener { requireActivity().onBackPressed() }
         binding?.topBar?.topTitleRefresh?.apply {
             setImageDrawable(CircularProgressDrawable(requireContext()).apply {
@@ -152,6 +196,13 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
                 true
             }
         }
+        binding?.topBar?.topTitleMenu?.apply {
+            setOnClickListener {
+                showPopupMenu(context, R.menu.menu_gallery_detail) {
+
+                }
+            }
+        }
 
         binding?.galleryDetail?.apply {
             infoList {
@@ -162,12 +213,12 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
                     0
                 )
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = mConcatAdapter
+                adapter = mInfoAdapter
             }
 
             previewList {
                 layoutManager = GridLayoutManager(requireContext(), 3)
-                adapter = mConcatPreviewAdapter
+                adapter = mPreviewAdapter
             }
 
             bindbarMove {
@@ -176,26 +227,15 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
-        mViewModel.favorite.observe(viewLifecycleOwner) {
-            binding?.topBar?.topTitleRefresh?.isVisible = it != null
-            binding?.topBar?.topTitleFavorite?.apply {
-                isVisible = it != null
-                isSelected = it == true
-            }
-        }
 
-        mViewModel.receiver<String>("rate")
-            .observe(viewLifecycleOwner) { mOperating.notifyItemChanged(0) }
-        mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
-            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
-        }
-        mViewModel.loadSign.observe(viewLifecycleOwner) {
-            if (it) {
-                mViewModel.detailImage.observe(viewLifecycleOwner) { pagingData ->
-                    mPreviewAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
-                }
-            }
-        }
+//        mViewModel.loadSign.observe(viewLifecycleOwner) {
+////            if (it) {
+////                mViewModel.detailImage.observe(viewLifecycleOwner) { pagingData ->
+////                    mPreviewAdapter.submitData(viewLifecycleOwner.lifecycle, pagingData)
+////                }
+////            }
+//        }
+
     }
 
     private fun onHeaderEvent(event: String) {
@@ -247,15 +287,15 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private fun startRefreshAnimate() {
         (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.apply {
-            arrowEnabled = false
+//            arrowEnabled = false
             start()
         }
     }
 
-    private fun finishRefreshAnimate() {
+    private fun finishRefreshAnimate(isReset: Boolean) {
         (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.apply {
             stop()
-            setStartEndTrim(0.1f, 0.9f)
+            if (isReset) setStartEndTrim(0.1f, 0.9f)
             arrowEnabled = true
         }
     }

@@ -6,15 +6,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extensions.color
-import com.mitsuki.ehit.crutch.extensions.observe
-import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityDownloadBinding
 import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultCallback
@@ -25,6 +24,7 @@ import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
 import com.mitsuki.ehit.ui.download.adapter.ListItemTouchCallback
 import com.mitsuki.ehit.service.download.DownloadBroadcast
 import com.mitsuki.ehit.service.download.DownloadService
+import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.ui.main.MainActivity
 import com.mitsuki.ehit.viewmodel.DownloadViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +38,10 @@ class DownloadActivity : BaseActivity() {
 
     private val controlAnimate by lazy { ControlAnimate() }
 
+    private val mStatesAdapter by lazy { ListStatesAdapter() }
     private val mMainAdapter by lazy { DownloadAdapter() }
+    private val mAdapter by lazy { ConcatAdapter(mStatesAdapter, mMainAdapter) }
+
 
     private val mExportZip = ExportZipActivityResultCallback(this, activityResultRegistry)
 
@@ -55,9 +58,15 @@ class DownloadActivity : BaseActivity() {
             DownloadBroadcast.sendStopAll()
         }
 
-        mMainAdapter.receiver<DownloadListInfo>("option").observe(this, this::onItemOption)
-        mMainAdapter.receiver<DownloadListInfo>("detail").observe(this, this::openDetail)
-        mMainAdapter.receiver<DownloadListInfo>("read").observe(this, this::openRead)
+        mMainAdapter.receiver<DownloadListInfo>("option")
+            .isClick()
+            .observe(this, this::onItemOption)
+        mMainAdapter.receiver<DownloadListInfo>("detail")
+            .isClick()
+            .observe(this, this::openDetail)
+        mMainAdapter.receiver<DownloadListInfo>("read")
+            .isClick()
+            .observe(this, this::openRead)
 
         ItemTouchHelper(ListItemTouchCallback {
             mMainAdapter.item(it).apply {
@@ -69,12 +78,14 @@ class DownloadActivity : BaseActivity() {
         lifecycleScope.launchWhenCreated {
             binding.downloadList.apply {
                 layoutManager = LinearLayoutManager(this@DownloadActivity)
-                adapter = mMainAdapter
+                adapter = mAdapter
             }
         }
 
         lifecycleScope.launchWhenCreated {
             mViewModel.downloadList().collect {
+                mStatesAdapter.listState =
+                    if (it.isEmpty()) ListStatesAdapter.ListState.Message(text(R.string.text_content_empty)) else ListStatesAdapter.ListState.None
                 mMainAdapter.submitData(it)
             }
         }
@@ -102,7 +113,6 @@ class DownloadActivity : BaseActivity() {
                     DownloadBroadcast.sendStop(gid, token)
                     mViewModel.deleteDownload(gid, token)
                 }
-
             }
             true
         }.show(supportFragmentManager, "option")

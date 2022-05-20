@@ -2,8 +2,11 @@ package com.mitsuki.ehit.viewmodel
 
 import android.os.Bundle
 import androidx.lifecycle.*
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.mitsuki.armory.adapter.notify.NotifyData
+import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.DataKey
@@ -14,14 +17,17 @@ import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.model.ehparser.GalleryFavorites
 import com.mitsuki.ehit.model.page.GeneralPageIn
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.extensions.postNext
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.dao.GalleryDao
-import com.mitsuki.ehit.model.ehparser.Matcher
+import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.repository.PagingRepository
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,41 +39,42 @@ class GalleryDetailViewModel @Inject constructor(
 
     override val eventEmitter: Emitter = Emitter()
 
-    private lateinit var galleryDetail: GalleryDetail
     var gid: Long = -1L
         private set
     var token: String = ""
         private set
 
-    val headerInfo: MutableLiveData<HeaderInfo> by lazy { MutableLiveData() }
-    val detailInfo: MutableLiveData<GalleryDetail> by lazy { MutableLiveData() }
-    val initLoading: MutableLiveData<Pair<Boolean, Throwable?>> by lazy { MutableLiveData((true to null)) }
-    val favorite: MutableLiveData<Boolean?> by lazy { MutableLiveData(null) }
-    val loadSign: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
-    val detailPart: MutableLiveData<DetailPart?> by lazy { MutableLiveData(null) }
-
     private val mDetailPageIn = GeneralPageIn()
 
-    val title: String get() = galleryDetail.title
+    val title: String get() = mCachedInfo?.title ?: throw IllegalArgumentException()
     val galleryName: String
         get() {
-
-            return galleryDetail.title.replace(Regex("\\[.*?]|\\(.*?\\)"), "")
+            return mCachedInfo?.title?.replace(Regex("\\[.*?]|\\(.*?\\)"), "")
+                ?: throw IllegalArgumentException()
         }
-    val uploader: String get() = galleryDetail.uploader
-    val favoriteName: String? get() = galleryDetail.favoriteName
-    val apiKey get() = galleryDetail.apiKey
-    val apiUID get() = galleryDetail.apiUID
-    val rating get() = galleryDetail.rating
-    val page get() = galleryDetail.pages
-    val thumb get() = galleryDetail.detailThumb
+    val uploader: String get() = mCachedInfo?.uploader ?: throw IllegalArgumentException()
+    val favoriteName: String? get() = mCachedInfo?.favoriteName
+    val apiKey get() = mCachedInfo?.apiKey ?: throw IllegalArgumentException()
+    val apiUID get() = mCachedInfo?.apiUID ?: throw IllegalArgumentException()
+    val rating get() = mCachedInfo?.rating ?: throw IllegalArgumentException()
+    val page get() = mCachedInfo?.pages ?: throw IllegalArgumentException()
+    val thumb get() = mCachedInfo?.detailThumb ?: throw IllegalArgumentException()
 
     val itemTransitionName: String get() = "gallery:$gid$token"
 
-    val detailImage: LiveData<PagingData<ImageSource>>
+    val detailImage: Flow<PagingData<ImageSource>>
         get() = pagingData.detailImage(gid, token, mDetailPageIn)
             .cachedIn(viewModelScope)
-            .asLiveData()
+
+
+    /**********************************************************************************************/
+    private var mCachedInfo: GalleryDetail? = null
+
+    private val _infoStates: MutableLiveData<InfoStates> by lazy { MutableLiveData(InfoStates()) }
+    val infoStates: LiveData<InfoStates> get() = _infoStates
+
+    val myTags: NotifyQueueData<TagGroup> by lazy { NotifyQueueData(Diff.GALLERY_DETAIL_TAG) }
+    val myComments: NotifyQueueData<Comment> by lazy { NotifyQueueData(Diff.GALLERY_COMMENT) }
 
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
@@ -79,23 +86,46 @@ class GalleryDetailViewModel @Inject constructor(
         this.token = info.token
         if (gid == -1L || token.isEmpty()) throw IllegalStateException()
 
-        headerInfo.postValue(HeaderInfo(info))
+        _infoStates.postNext { it.copy(header = DetailHeader(info)) }
     }
 
     fun loadInfo() {
         viewModelScope.launch {
+            if (mCachedInfo == null) {
+                _infoStates.postNext { it.copy(loadState = LoadState.Loading) }
+            }
             when (val result = repository.galleryDetailInfo(gid, token)) {
                 is RequestResult.Success<GalleryDetail> -> {
-                    galleryDetail = result.data
-                    headerInfo.postValue(result.data.obtainHeaderInfo())
-                    initLoading.postValue(false to null)
-                    detailInfo.postValue(result.data)
-                    favorite.postValue(result.data.isFavorited)
-                    loadSign.postValue(true)
-                    detailPart.postValue(result.data.obtainOperating())
+
+                    _infoStates.postNext {
+                        it.copy(
+                            isInit = true,
+                            header = result.data.obtainHeaderInfo(),
+                            loadState = LoadState.NotLoading(true),
+                            part = result.data.obtainOperating(),
+                            commentState = result.data.obtainCommentState(),
+                            favorite = result.data.isFavorited
+                        )
+                    }
+                    //部分数据依赖ViewModel中缓存的数据更新队列进行更新
+                    myTags.postUpdate(NotifyData.Refresh(result.data.tagGroup.toList()))
+                    result.data.comments.toList().also {
+                        myComments.postUpdate(
+                            NotifyData.Refresh(it.subList(0, it.size.coerceAtMost(3)))
+                        )
+                    }
+
+                    mCachedInfo = result.data
+//                    loadSign.postValue(true)
+
+                    post("newData", true)
                 }
                 is RequestResult.Fail -> {
-                    initLoading.postValue(true to result.throwable)
+                    if (mCachedInfo == null) {
+                        _infoStates.postNext { it.copy(loadState = LoadState.Error(result.throwable)) }
+                    } else {
+                        /* toast */
+                    }
                 }
             }
         }
@@ -106,9 +136,15 @@ class GalleryDetailViewModel @Inject constructor(
             when (val result = repository.rating(gid, token, apiUID, apiKey, r)) {
                 is RequestResult.Success -> {
                     post("toast", string(R.string.hint_rate_successfully))
-                    detailPart.postValue(
-                        DetailPart(result.data.avg.toFloat(), result.data.count, page)
-                    )
+                    _infoStates.postNext {
+                        it.copy(
+                            part = DetailPart(
+                                result.data.avg.toFloat(),
+                                result.data.count,
+                                page
+                            )
+                        )
+                    }
                 }
                 is RequestResult.Fail -> post("toast", result.throwable.message)
             }
@@ -124,9 +160,9 @@ class GalleryDetailViewModel @Inject constructor(
 
                     val name = GalleryFavorites.findName(cat)
                     galleryDao.updateGalleryFavorites(gid, token, name)
-                    galleryDetail.favoriteName = name
+                    mCachedInfo?.favoriteName = name
 
-                    favorite.postValue(cat >= 0)
+                    _infoStates.postNext { it.copy(favorite = cat >= 0) }
                     post("toast", string(strRes))
                 }
                 is RequestResult.Fail -> post(
@@ -150,5 +186,12 @@ class GalleryDetailViewModel @Inject constructor(
         return DownloadMessage(gid, token, start - 1, end - 1, thumb, title)
     }
 
-
+    data class InfoStates(
+        val isInit: Boolean = false,
+        val header: DetailHeader = DetailHeader.DEFAULT,
+        val loadState: LoadState = LoadState.NotLoading(true),
+        val part: DetailPart? = null,
+        val commentState: CommentState? = null,
+        val favorite: Boolean? = null
+    )
 }

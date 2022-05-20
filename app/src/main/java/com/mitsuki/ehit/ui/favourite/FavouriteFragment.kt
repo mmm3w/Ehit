@@ -19,6 +19,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
@@ -31,6 +32,7 @@ import com.mitsuki.ehit.ui.main.GalleryListAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
@@ -66,6 +68,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
         super.onCreate(savedInstanceState)
 
         mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
+            .isClick()
             .observe(this, ::onDetailNavigation)
 
         lifecycleScope.launchWhenCreated {

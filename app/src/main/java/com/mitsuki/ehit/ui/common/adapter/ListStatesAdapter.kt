@@ -91,7 +91,7 @@ class ListStatesAdapter(private val action: (() -> Unit)? = null) :
     sealed class ListState {
         class Error(val error: Throwable) : ListState()
 
-        class Message(val text: String) : ListState() {
+        class Message(val text: CharSequence) : ListState() {
             override fun equals(other: Any?): Boolean {
                 return other is Message && other.text == text
             }

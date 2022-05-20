@@ -109,6 +109,9 @@
     <string name="text_save_to">Save to …</string>
     <string name="text_enable">Enable</string>
     <string name="text_disable">Disable</string>
+    <string name="text_seed">Seed</string>
+    <string name="text_h_at_h_download">H@H Download</string>
+    <string name="text_search_thumb">Search thumb</string>
 
 
     <string name="text_download">Download</string>

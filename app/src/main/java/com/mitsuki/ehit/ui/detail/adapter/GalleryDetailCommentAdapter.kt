@@ -3,29 +3,23 @@ package com.mitsuki.ehit.ui.detail.adapter
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.mitsuki.armory.adapter.notify.NotifyData
-import com.mitsuki.armory.adapter.notify.NotifyQueueData
+import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.uils.TimeFormat
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemCommentBinding
-import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Comment
+import com.mitsuki.ehit.ui.common.adapter.BindingViewHolder
 
-class GalleryDetailCommentAdapter :
+class GalleryDetailCommentAdapter(private val mData: NotifyQueueData<Comment>) :
     RecyclerView.Adapter<GalleryDetailCommentAdapter.DetailCommentViewHolder>(), EventEmitter {
+    init {
+        mData.attachAdapter(this)
+    }
 
     override val eventEmitter: Emitter = Emitter()
-
-    private val mData: NotifyQueueData<Comment> by lazy {
-        NotifyQueueData(Diff.GALLERY_COMMENT).apply {
-            attachAdapter(this@GalleryDetailCommentAdapter)
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailCommentViewHolder {
         return DetailCommentViewHolder(parent).apply {
@@ -48,17 +42,10 @@ class GalleryDetailCommentAdapter :
         }
     }
 
-    fun postData(data: List<Comment>) {
-        if (data.isEmpty()) {
-            mData.postUpdate(NotifyData.Clear())
-        } else {
-            mData.postUpdate(NotifyData.Refresh(data))
-        }
-    }
-
     class DetailCommentViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_comment)) {
-        val binding by viewBinding(ItemCommentBinding::bind)
-
-    }
+        BindingViewHolder<ItemCommentBinding>(
+            parent,
+            R.layout.item_comment,
+            ItemCommentBinding::bind
+        )
 }

@@ -8,12 +8,23 @@ import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.databinding.ItemGalleryDetailHeaderBinding
-import com.mitsuki.ehit.model.entity.HeaderInfo
+import com.mitsuki.ehit.model.entity.DetailHeader
 
-class GalleryDetailHeader(private var mData: HeaderInfo = HeaderInfo.DEFAULT) :
-    SingleItemBindingAdapter<ItemGalleryDetailHeaderBinding>(
-        R.layout.item_gallery_detail_header, ItemGalleryDetailHeaderBinding::bind
-    ), EventEmitter {
+class GalleryDetailHeader : SingleItemBindingAdapter<ItemGalleryDetailHeaderBinding>(
+    R.layout.item_gallery_detail_header, ItemGalleryDetailHeaderBinding::bind, false
+), EventEmitter {
+
+    var data: DetailHeader? = null
+        set(value) {
+            if (value != field) {
+                when {
+                    field == null -> isEnable = true
+                    value == null -> isEnable = false
+                    else -> notifyItemChanged(0)
+                }
+                field = value
+            }
+        }
 
     companion object {
         const val UPLOADER = "Uploader"
@@ -30,7 +41,7 @@ class GalleryDetailHeader(private var mData: HeaderInfo = HeaderInfo.DEFAULT) :
     }
 
     override val onViewHolderBind: ViewHolder<ItemGalleryDetailHeaderBinding>.() -> Unit = {
-        mData.also { info ->
+        data?.also { info ->
             with(binding) {
                 galleryDetailThumb.apply {
                     if (info.thumb.isNotEmpty() && !isLoadLocal) {
@@ -53,13 +64,6 @@ class GalleryDetailHeader(private var mData: HeaderInfo = HeaderInfo.DEFAULT) :
                     setCategoryColor(info.categoryColor)
                 }
             }
-        }
-    }
-
-    fun postData(data: HeaderInfo) {
-        if (mData != data) {
-            mData = data
-            notifyItemChanged(0)
         }
     }
 }

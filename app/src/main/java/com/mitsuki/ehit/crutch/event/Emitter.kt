@@ -14,14 +14,12 @@ class Emitter {
             .apply { mSubjectMap[tag] = this }
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "UPPER_BOUND_VIOLATED_BASED_ON_JAVA_ANNOTATIONS")
     fun <T> receiver(tag: String): Observable<T> {
         return ((mSubjectMap[tag] as? PublishSubject<T>) ?: PublishSubject.create<T>()
             .apply { mSubjectMap[tag] = this }).hideWithMainThread()
     }
 }
-
-
 
 fun <T> EventEmitter.emitter(tag: String): PublishSubject<T> {
     return eventEmitter.emitter(tag)
