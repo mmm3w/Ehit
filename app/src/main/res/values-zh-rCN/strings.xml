@@ -141,6 +141,7 @@
     <string name="text_authentication_cancel">认证取消</string>
     <string name="text_security_hint">应用已被锁定\n您必须通过认证才能够继续使用</string>
     <string name="text_authenticate_event">点击前往认证</string>
+    <string name="text_load_all_comment">加载全部评论</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>

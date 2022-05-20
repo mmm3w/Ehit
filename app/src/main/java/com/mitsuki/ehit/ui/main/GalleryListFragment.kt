@@ -33,6 +33,7 @@ import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
+import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +54,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     private val mMainAdapter by lazy { GalleryListAdapter() }
     private val mHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
     private val mFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
-    private val mStateAdapter by lazy { GalleryListStateAdapter(mMainAdapter) }
+    private val mStateAdapter by lazy { ListStatesAdapter { mMainAdapter.retry() } }
     private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
@@ -94,7 +95,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                         requireBinding().galleryListRefresh.apply {
                             if (isEnabled) isRefreshing = true
                         }
-                        mStateAdapter.listState = GalleryListStateAdapter.ListState.Refresh
+                        mStateAdapter.listState = ListStatesAdapter.ListState.Refresh
                     }
                     is LoadState.NotLoading -> {
                         mGate.trigger()
@@ -104,11 +105,10 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                         mStateAdapter.listState =
                             if (mMainAdapter.itemCount == 0)
                             //TODO 提示文字替换
-                                GalleryListStateAdapter.ListState.Message("empty")
+                                ListStatesAdapter.ListState.Message("empty")
                             else
-                                GalleryListStateAdapter.ListState.None
+                                ListStatesAdapter.ListState.None
                         mStateAdapter.isRefreshEnable = true
-                        requireBinding().galleryList.smoothScrollToPosition(0)
                     }
                     is LoadState.Error -> {
                         mGate.prep(false)
@@ -117,8 +117,8 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                         mStateAdapter.apply {
                             //既然刷新状态让你显示，那么错误状态也别显示了
                             listState =
-                                if (isRefreshEnable) GalleryListStateAdapter.ListState.Error((it.refresh as LoadState.Error).error)
-                                else GalleryListStateAdapter.ListState.None
+                                if (isRefreshEnable) ListStatesAdapter.ListState.Error((it.refresh as LoadState.Error).error)
+                                else ListStatesAdapter.ListState.None
                             if (!isRefreshEnable) {
                                 //TODO 通过toast或snackBar展示错误信息
                             }

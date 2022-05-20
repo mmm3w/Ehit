@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.ui.comment.activity
 
-import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
@@ -11,33 +10,36 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.base.BaseActivity
+import com.mitsuki.ehit.base.BindingActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
-import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.windowController
+import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.databinding.ActivityGalleryCommentBinding
 import com.mitsuki.ehit.model.entity.Comment
-import com.mitsuki.ehit.ui.comment.adapter.CommentLoadAdapter
 import com.mitsuki.ehit.ui.comment.adapter.GalleryCommentAdapter
+import com.mitsuki.ehit.ui.comment.adapter.LoadAllCommentAdapter
+import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.viewmodel.GalleryCommentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GalleryCommentActivity : BaseActivity() {
+class GalleryCommentActivity :
+    BindingActivity<ActivityGalleryCommentBinding>(ActivityGalleryCommentBinding::inflate) {
 
     private val mViewModel: GalleryCommentViewModel by viewModels()
 
-    private val binding by viewBinding(ActivityGalleryCommentBinding::inflate)
 
-    private val mInitAdapter by lazy { CommentLoadAdapter { mViewModel.loadComment(false) } }
     private val mMainAdapter by lazy { GalleryCommentAdapter() }
+    private val mStatesAdapter by lazy { ListStatesAdapter { mViewModel.loadComment(false) } }
+    private val mLoadActionAdapter by lazy {
+        LoadAllCommentAdapter { mViewModel.loadComment(true) }
+    }
 
-    //TODO 还缺一个empty adapter 一个显示全部adapter
-    private val mAdapter by lazy { ConcatAdapter(mInitAdapter, mMainAdapter) }
+    private val mAdapter by lazy { ConcatAdapter(mStatesAdapter, mMainAdapter, mLoadActionAdapter) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,19 +69,22 @@ class GalleryCommentActivity : BaseActivity() {
             mMainAdapter.updateData(lifecycle, it)
         }
 
-        lifecycleScope.launchWhenCreated {
-            mViewModel.loadStateFlow.collect {
-                if (mInitAdapter.isOver) {
-                    binding.commentRefresh.isRefreshing = it is LoadState.Loading
-                } else {
-                    mInitAdapter.loadState = it
-                }
-                binding.commentRefresh.isEnabled = mInitAdapter.isOver
-            }
+        mViewModel.viewStates.observe(this) {
+            binding.commentRefresh.isRefreshing = it.refreshState
+            mStatesAdapter.listState = it.listState
+            mLoadActionAdapter.loadState = it.loadAllState
         }
 
         lifecycleScope.launchWhenCreated {
-            mViewModel.commentDataFlow.collect { mMainAdapter.submitData(it) }
+            mViewModel.commentDataFlow.collect {
+                if (it.isEmpty()) {
+                    mStatesAdapter.listState =
+                        ListStatesAdapter.ListState.Message(string(R.string.text_no_comments))
+                } else {
+                    mStatesAdapter.listState = ListStatesAdapter.ListState.None
+                }
+                mMainAdapter.submitData(it)
+            }
         }
 
         binding.commentRefresh.setOnRefreshListener {

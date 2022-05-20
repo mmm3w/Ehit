@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.ui.favourite
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -28,7 +27,7 @@ import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.main.GalleryListAdapter
-import com.mitsuki.ehit.ui.main.GalleryListStateAdapter
+import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,14 +41,12 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
 
     //大体结构上和list相同
     private val mGate = InitialGate()
-
-    //不知道为什么在这里工作不正常
     private val mEmptyValve = PagingEmptyValve()
 
     private val mMainAdapter by lazy { GalleryListAdapter() }
     private val mHeader by lazy { DefaultLoadStateAdapter(mMainAdapter) }
     private val mFooter by lazy { DefaultLoadStateAdapter(mMainAdapter) }
-    private val mStateAdapter by lazy { GalleryListStateAdapter(mMainAdapter) }
+    private val mStateAdapter by lazy { ListStatesAdapter { mMainAdapter.retry() } }
 
     private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
@@ -86,7 +83,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
                         requireBinding().favouriteRefresh.apply {
                             if (isEnabled) isRefreshing = true
                         }
-                        mStateAdapter.listState = GalleryListStateAdapter.ListState.Refresh
+                        mStateAdapter.listState = ListStatesAdapter.ListState.Refresh
                     }
                     is LoadState.NotLoading -> {
                         mGate.trigger()
@@ -96,11 +93,10 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
                         mStateAdapter.listState =
                             if (mMainAdapter.itemCount == 0)
                             //TODO 提示文字替换
-                                GalleryListStateAdapter.ListState.Message("empty")
+                                ListStatesAdapter.ListState.Message("empty")
                             else
-                                GalleryListStateAdapter.ListState.None
+                                ListStatesAdapter.ListState.None
                         mStateAdapter.isRefreshEnable = true
-                        requireBinding().favouriteTarget.smoothScrollToPosition(0)
                     }
                     is LoadState.Error -> {
                         mGate.prep(false)
@@ -109,8 +105,8 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
                         mStateAdapter.apply {
                             //既然刷新状态让你显示，那么错误状态也别显示了
                             listState =
-                                if (isRefreshEnable) GalleryListStateAdapter.ListState.Error((it.refresh as LoadState.Error).error)
-                                else GalleryListStateAdapter.ListState.None
+                                if (isRefreshEnable) ListStatesAdapter.ListState.Error((it.refresh as LoadState.Error).error)
+                                else ListStatesAdapter.ListState.None
                             if (!isRefreshEnable) {
                                 //TODO 通过toast或snackBar展示错误信息
                             }
@@ -123,7 +119,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
         }
 
         lifecycleScope.launchWhenCreated {
-            mViewModel.favouriteList.collect { mEmptyValve.submitData(lifecycle,mMainAdapter, it) }
+            mViewModel.favouriteList.collect { mEmptyValve.submitData(lifecycle, mMainAdapter, it) }
         }
 
         mViewModel.count.observe(this) { favouriteSelectPanel.postCountData(it) }

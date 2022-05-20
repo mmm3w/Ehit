@@ -1,21 +1,17 @@
-package com.mitsuki.ehit.ui.main
+package com.mitsuki.ehit.ui.common.adapter
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.databinding.LoadStateFullBinding
-import com.mitsuki.ehit.ui.common.adapter.BindingViewHolder
-import com.mitsuki.ehit.ui.common.adapter.InitialLoadStateAdapter
-import com.mitsuki.ehit.ui.common.adapter.InitialViewHolder
 
 /**
  * empty、error、init、load
  */
-class GalleryListStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
-    RecyclerView.Adapter<GalleryListStateAdapter.ViewHolder>() {
+class ListStatesAdapter(private val action: (() -> Unit)? = null) :
+    RecyclerView.Adapter<ListStatesAdapter.ViewHolder>() {
 
     @Suppress("LiftReturnOrAssignment")
     var listState: ListState = ListState.None
@@ -59,7 +55,7 @@ class GalleryListStateAdapter(private val adapter: PagingDataAdapter<*, *>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent).apply {
-            binding.loadStateRetry.setOnClickListener { adapter.retry() }
+            binding.loadStateRetry.setOnClickListener { action?.invoke() }
         }
     }
 
