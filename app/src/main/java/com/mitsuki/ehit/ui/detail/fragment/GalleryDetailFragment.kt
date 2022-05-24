@@ -16,7 +16,6 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.mitsuki.armory.base.extend.dp2px
@@ -37,6 +36,7 @@ import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.ui.detail.dialog.DownloadRangeDialog
 import com.mitsuki.ehit.ui.detail.dialog.FavoriteDialog
 import com.mitsuki.ehit.service.download.DownloadService
+import com.mitsuki.ehit.ui.common.widget.CircularProgressDrawable
 import com.mitsuki.ehit.ui.detail.dialog.RatingDialog
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -127,8 +127,6 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
-//
-
         mViewModel.loadInfo()
     }
 
@@ -151,18 +149,15 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 //
         binding?.topBar?.topTitleBack?.setOnClickListener { requireActivity().onBackPressed() }
         binding?.topBar?.topTitleRefresh?.apply {
-            setImageDrawable(CircularProgressDrawable(requireContext()).apply {
-                setStyle(CircularProgressDrawable.DEFAULT)
+            setImageDrawable(CircularProgressDrawable().apply {
                 strokeWidth = dp2px(1.9f)
                 centerRadius = dp2px(6.4f)
-                setColorSchemeColors(color(R.color.icon_tint_general))
+                color = color(R.color.icon_tint_general)
                 setStartEndTrim(0.1f, 0.9f)
-                arrowEnabled = true
             })
             setOnClickListener {
-//                startRefreshAnimate()
-//                mViewModel.clearCache()
-//                mViewModel.loadInfo()
+                mViewModel.clearCache()
+                mViewModel.loadInfo()
             }
         }
         binding?.topBar?.topTitleFavorite?.apply {
@@ -241,6 +236,10 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
         mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         }
+
+        mViewModel.receiver<Boolean>("loading").observe(viewLifecycleOwner) {
+            if (it) startRefreshAnimate() else finishRefreshAnimate()
+        }
     }
 
     private fun onHeaderEvent(event: String) {
@@ -291,17 +290,11 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun startRefreshAnimate() {
-        (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.apply {
-            arrowEnabled = false
-            start()
-        }
+        (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.start()
     }
 
     private fun finishRefreshAnimate() {
-        (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.apply {
-            stop()
-            arrowEnabled = true
-        }
+        (binding?.topBar?.topTitleRefresh?.drawable as? CircularProgressDrawable)?.stop()
     }
 
     private fun onTagNavigation(tag: Pair<String, String>) {

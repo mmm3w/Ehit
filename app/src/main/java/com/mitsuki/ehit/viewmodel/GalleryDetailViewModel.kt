@@ -97,6 +97,7 @@ class GalleryDetailViewModel @Inject constructor(
                     it.copy(loadState = LoadState.Loading)
                 }
             }
+            post("loading", true)
             when (val result = repository.galleryDetailInfo(gid, token)) {
                 is RequestResult.Success<GalleryDetail> -> {
 
@@ -131,6 +132,7 @@ class GalleryDetailViewModel @Inject constructor(
                     }
                 }
             }
+            post("loading", false)
         }
     }
 
