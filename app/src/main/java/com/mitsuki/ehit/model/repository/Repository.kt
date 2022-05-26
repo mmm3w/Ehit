@@ -50,22 +50,6 @@ interface Repository {
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
 
-
-    suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
-            : RequestResult<List<Comment>>
-
-    suspend fun sendGalleryComment(gid: Long, token: String, comment: String): RequestResult<Int>
-
-    suspend fun voteGalleryComment(
-        apiKey: String,
-        apiUid: Long,
-        gid: Long,
-        token: String,
-        cid: Long,
-        vote: Int
-    ): RequestResult<VoteBack>
-
-
     suspend fun favoritesSource(
         pageIn: FavouritePageIn,
         page: Int

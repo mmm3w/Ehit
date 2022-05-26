@@ -104,7 +104,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onUiMode(isNightMode:Boolean) {
+    override fun onUiMode(isNightMode: Boolean) {
         controller.window(
             navigationBarLight = !isNightMode,
             statusBarLight = !isNightMode,
@@ -113,7 +113,6 @@ class MainActivity : BaseActivity() {
             barFit = false
         )
     }
-
 
     fun navDestination(navID: Int, args: Bundle?) {
         val builder = NavOptions.Builder().setLaunchSingleTop(true)

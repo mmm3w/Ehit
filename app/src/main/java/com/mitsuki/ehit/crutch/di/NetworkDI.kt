@@ -1,5 +1,7 @@
 package com.mitsuki.ehit.crutch.di
 
+import coil.ImageLoaderFactory
+import com.mitsuki.ehit.crutch.coil.MyImageLoaderFactory
 import com.mitsuki.ehit.crutch.network.client.ClientCreator
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.ProxyManager
@@ -38,6 +40,9 @@ abstract class NetworkBinds {
     @CoilClientCreator
     @Binds
     abstract fun coilClientCreator(creator: MyCoilClientCreator): ClientCreator
+
+    @Binds
+    abstract fun imageLoaderFactory(factory: MyImageLoaderFactory): ImageLoaderFactory
 
 }
 

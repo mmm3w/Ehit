@@ -21,6 +21,7 @@ import com.mitsuki.ehit.crutch.extensions.postNext
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.uils.InitialGate
+import com.mitsuki.ehit.model.repository.CommentRepository
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.ui.comment.adapter.LoadAllCommentAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
@@ -31,7 +32,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GalleryCommentViewModel @Inject constructor(@RemoteRepository var repository: Repository) :
+class GalleryCommentViewModel @Inject constructor(
+    @RemoteRepository var repository: Repository,
+    var commentRepository: CommentRepository
+) :
     ViewModel(), EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()
@@ -72,7 +76,7 @@ class GalleryCommentViewModel @Inject constructor(@RemoteRepository var reposito
             }
 
             when (val result =
-                repository.galleryComment(mGalleryID, mGalleryToken, showAll)) {
+                commentRepository.galleryComment(mGalleryID, mGalleryToken, showAll)) {
                 is RequestResult.Success -> {
                     isInit = true
 
@@ -117,7 +121,7 @@ class GalleryCommentViewModel @Inject constructor(@RemoteRepository var reposito
             }
 
             when (val result =
-                repository.sendGalleryComment(mGalleryID, mGalleryToken, text)) {
+                commentRepository.sendGalleryComment(mGalleryID, mGalleryToken, text)) {
                 is RequestResult.Success -> {
                     Log.d("asdf", "成功")
                 }
@@ -131,7 +135,7 @@ class GalleryCommentViewModel @Inject constructor(@RemoteRepository var reposito
     fun voteComment(position: Int, comment: Comment, vote: Int) {
         viewModelScope.launch {
             when (val result =
-                repository.voteGalleryComment(
+                commentRepository.voteGalleryComment(
                     mApiKey,
                     mApiUID,
                     mGalleryID,

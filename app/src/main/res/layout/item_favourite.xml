@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingHorizontal="@dimen/dp_16">
+    android:paddingVertical="@dimen/dp_8">
 
     <RadioButton
         android:id="@+id/favourite_option_text"

@@ -76,26 +76,6 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private var mDataPickJob: Job? = null
 
-
-//    private val mPreviewAdapter: GalleryDetailPreviewAdapter
-//            by lazy { GalleryDetailPreviewAdapter(mViewModel.gid, mViewModel.token) }
-//
-//    private val mConcatPreviewAdapter by lazy {
-//        mPreviewAdapter.withLoadStateHeaderAndFooter(
-//            header = DefaultLoadStateAdapter(mPreviewAdapter),
-//            footer = DefaultLoadStateAdapter(mPreviewAdapter)
-//        )
-//    }
-
-//    private val mInitialLoadState: GalleryDetailInitialAdapter by lazy {
-//        GalleryDetailInitialAdapter { mViewModel.loadInfo() }
-//    }
-
-
-//    private val mConcatAdapter: ConcatAdapter by lazy {
-//        ConcatAdapter(mHeader, mInitialLoadState, mOperating, mTag, mComment, mCommentHint)
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform(requireContext(), true).apply {
@@ -165,7 +145,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
         binding?.topBar?.topTitleFavorite?.apply {
             setImageDrawable(HeartDrawable().apply {
                 heartHintColor = color(R.color.icon_tint_general)
-                heartHintStroke = dp2px(1.8f)
+                heartHintStroke = dp2px(1.9f)
             })
             setOnClickListener {
                 if (it.isSelected) {

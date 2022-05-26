@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.model.repository.impl
 
 import android.webkit.MimeTypeMap
+import coil.Coil
 import com.mitsuki.armory.httprookie.convert.FileConvert
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.get
@@ -337,86 +338,6 @@ class RepositoryImpl @Inject constructor(
             }
         }
     }
-
-    override suspend fun galleryComment(gid: Long, token: String, allComment: Boolean)
-            : RequestResult<List<Comment>> {
-        return withContext(Dispatchers.IO) {
-            val data = client.get<List<Comment>>(Site.galleryDetail(gid, token)) {
-                convert = GalleryCommentsConvert()
-                if (allComment) urlParams(RequestKey.HC, "1")
-            }
-                .execute()
-            try {
-                when (data) {
-                    is Response.Success<List<Comment>> -> RequestResult.Success(data.requireBody())
-                    is Response.Fail<*> -> throw data.throwable
-                }
-            } catch (inner: Throwable) {
-                RequestResult.Fail(inner)
-            }
-        }
-    }
-
-    override suspend fun sendGalleryComment(
-        gid: Long,
-        token: String,
-        comment: String
-    ): RequestResult<Int> = withContext(Dispatchers.IO) {
-        val data = client.post<Int>(Site.galleryDetail(gid, token)) {
-            convert = SendCommentConvert()
-            urlParams(RequestKey.HC, "1")
-            params(RequestKey.COMMENT_TEXT, comment)
-
-            header(RequestKey.HEADER_ORIGIN, Site.currentDomain)
-            header(RequestKey.HEADER_REFERER, url())
-        }
-            .execute()
-
-        try {
-            when (data) {
-                is Response.Success<Int> -> RequestResult.Success(0)
-                is Response.Fail<*> -> throw  data.throwable
-            }
-        } catch (inner: Throwable) {
-            RequestResult.Fail(inner)
-        }
-    }
-
-
-    override suspend fun voteGalleryComment(
-        apiKey: String,
-        apiUid: Long,
-        gid: Long,
-        token: String,
-        cid: Long,
-        vote: Int
-    ): RequestResult<VoteBack> =
-        withContext(Dispatchers.IO) {
-            val data = client.post<VoteBack>(Site.api) {
-                convert = VoteBackConvert()
-                json(
-                    RequestVoteInfo(
-                        apiUid = apiUid,
-                        apiKey = apiKey,
-                        galleryID = gid,
-                        token = token,
-                        cid = cid,
-                        vote = vote
-                    ).toJson()
-                )
-                header(RequestKey.HEADER_ORIGIN, Site.currentDomain)
-                header(RequestKey.HEADER_REFERER, Site.galleryDetail(gid, token))
-            }
-                .execute()
-            try {
-                when (data) {
-                    is Response.Success<VoteBack> -> RequestResult.Success(data.requireBody())
-                    is Response.Fail<*> -> throw data.throwable
-                }
-            } catch (inner: Throwable) {
-                RequestResult.Fail(inner)
-            }
-        }
 
     override suspend fun downloadThumb(gid: Long, token: String): RequestResult<File> =
         withContext(Dispatchers.IO) {

@@ -7,8 +7,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
+import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.text
 
@@ -146,6 +149,23 @@ abstract class BaseDialogFragment : DialogFragment() {
                 isVisible = negativeText.isNotEmpty()
                 text = negativeText
                 setOnClickListener { negativeAction?.invoke(dialog) }
+            }
+
+            val marginBottom =
+                if (neutralText.isEmpty() && positiveText.isEmpty() && negativeText.isEmpty())
+                    dp2px(8f) else dp2px(52f)
+
+            val marginTop = if (title.isEmpty()) dp2px(8f) else dp2px(52f)
+
+            view.findViewById<NestedScrollView>(R.id.dialog_base_sub).apply {
+                val lp = layoutParams as FrameLayout.LayoutParams
+                lp.setMargins(
+                    dp2px(12f).toInt(),
+                    marginTop.toInt(),
+                    dp2px(12f).toInt(),
+                    marginBottom.toInt()
+                )
+                layoutParams = lp
             }
         }
     }

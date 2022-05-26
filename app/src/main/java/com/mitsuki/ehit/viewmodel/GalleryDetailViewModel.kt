@@ -160,15 +160,11 @@ class GalleryDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (repository.favorites(gid, token, cat)) {
                 is RequestResult.Success -> {
-                    val strRes =
-                        if (cat < 0) R.string.hint_remove_favorite_success else R.string.hint_add_favorite_success
-
                     val name = GalleryFavorites.findName(cat)
                     galleryDao.updateGalleryFavorites(gid, token, name)
                     mCachedInfo?.favoriteName = name
 
                     _infoStates.postNext { it.copy(favorite = cat >= 0) }
-                    post("toast", string(strRes))
                 }
                 is RequestResult.Fail -> post(
                     "toast",
