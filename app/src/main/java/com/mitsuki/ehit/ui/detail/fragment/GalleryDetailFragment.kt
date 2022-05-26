@@ -37,6 +37,7 @@ import com.mitsuki.ehit.ui.detail.dialog.DownloadRangeDialog
 import com.mitsuki.ehit.ui.detail.dialog.FavoriteDialog
 import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.common.widget.CircularProgressDrawable
+import com.mitsuki.ehit.ui.common.widget.HeartDrawable
 import com.mitsuki.ehit.ui.detail.dialog.RatingDialog
 import com.mitsuki.ehit.viewmodel.GalleryDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -110,13 +111,13 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             mOperating.data = infoStates.part
             mCommentHint.commentState = infoStates.commentState
 
-
-            infoStates.favorite.also {
-                binding?.topBar?.topTitleRefresh?.isVisible = it != null
-                binding?.topBar?.topTitleFavorite?.apply {
-                    isVisible = it != null
-                    isSelected = it == true
+            binding?.topBar?.topTitleRefresh?.isVisible = infoStates.favorite != null
+            binding?.topBar?.topTitleFavorite?.apply {
+                isVisible = infoStates.favorite != null
+                infoStates.favorite?.apply {
+                    (drawable as? HeartDrawable)?.setChecked(this)
                 }
+                isSelected = infoStates.favorite == true
             }
         }
 
@@ -154,6 +155,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
                 centerRadius = dp2px(6.4f)
                 color = color(R.color.icon_tint_general)
                 setStartEndTrim(0.1f, 0.9f)
+                setArrowDimensions(dp2px(10f), dp2px(5f))
             })
             setOnClickListener {
                 mViewModel.clearCache()
@@ -161,6 +163,10 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
         binding?.topBar?.topTitleFavorite?.apply {
+            setImageDrawable(HeartDrawable().apply {
+                heartHintColor = color(R.color.icon_tint_general)
+                heartHintStroke = dp2px(1.8f)
+            })
             setOnClickListener {
                 if (it.isSelected) {
                     //取消收藏

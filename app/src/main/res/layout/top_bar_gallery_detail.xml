@@ -21,19 +21,17 @@
 
         <ImageView
             android:id="@+id/top_title_favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_gravity="end|center_vertical"
-            android:layout_margin="@dimen/dp_16"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_gallery_favorite" />
+            android:layout_marginEnd="@dimen/dp_4" />
 
         <ImageView
             android:id="@+id/top_title_refresh"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_gravity="end|center_vertical"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_marginHorizontal="@dimen/dp_12"
             android:background="?android:attr/selectableItemBackgroundBorderless" />
 
         <ImageView
@@ -41,7 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_16"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_baseline_more_vert_24" />
 
