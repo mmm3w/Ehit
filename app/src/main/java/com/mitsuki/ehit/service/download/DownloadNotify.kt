@@ -4,6 +4,7 @@ import android.app.Service
 import androidx.core.app.NotificationCompat
 import com.mitsuki.armory.base.NotificationHelper
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.string
 import javax.inject.Inject
 
 class DownloadNotify @Inject constructor(private val helper: NotificationHelper) {
@@ -12,12 +13,6 @@ class DownloadNotify @Inject constructor(private val helper: NotificationHelper)
         const val NOTIFICATION_ID = 10002
         const val NOTIFICATION_CHANNEL = "DOWNLOAD"
     }
-
-
-    /**
-     *         val intent = Intent(this, MainActivity::class.java)
-    val pi = PendingIntent.getActivity(this, 0, intent, 0)
-     */
 
     fun replyForeground(service: Service) {
         helper.startForeground(
@@ -33,10 +28,10 @@ class DownloadNotify @Inject constructor(private val helper: NotificationHelper)
     }
 
     fun notifyFinish(service: Service) {
-        helper.notify(service, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
+        helper.notify(service.applicationContext, NOTIFICATION_CHANNEL, NOTIFICATION_ID) {
             it.setSmallIcon(android.R.drawable.stat_sys_download_done)
             it.setAutoCancel(true)
-            it.setContentTitle(service.getText(R.string.text_download_finish))
+            it.setContentTitle(string(R.string.text_download_finish))
         }
     }
 

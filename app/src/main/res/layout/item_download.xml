@@ -48,6 +48,7 @@
         android:ellipsize="end"
         android:gravity="start"
         android:maxLines="2"
+        android:textColor="@color/text_color_general"
         app:layout_constraintEnd_toStartOf="@+id/download_trigger"
         app:layout_constraintStart_toEndOf="@id/download_gallery_thumb"
         app:layout_constraintTop_toTopOf="@id/download_gallery_thumb" />
@@ -58,6 +59,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
+        android:progressTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@id/download_gallery_thumb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/download_gallery_thumb" />

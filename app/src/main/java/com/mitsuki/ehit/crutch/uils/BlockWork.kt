@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.crutch.uils
 
+import com.mitsuki.ehit.crutch.Stabilizer
 import com.mitsuki.ehit.crutch.extensions.tryUnlock
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -11,15 +12,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 class BlockWork<T>(
-    private val maxCount: Int,
+    maxCount: Int,
     list: List<T> = emptyList(),
     val action: suspend (T) -> Unit
 ) {
     private val mWorkLock = Mutex()
     private var mLoopJob: Job? = null
 
-    private var count = AtomicInteger(0)
-    private var mCountLock = Mutex()
+    private val stabilizer: Stabilizer = Stabilizer(maxCount)
 
     private val mChannel = Channel<T>()
     private val mData: LinkedList<T> = LinkedList(list)
@@ -37,9 +37,7 @@ class BlockWork<T>(
                 for (item in mChannel) {
                     launch(Dispatchers.Default) {
                         action(item)
-                        count.getAndDecrement()
-                        mCountLock.tryUnlock()
-                        mCountLock.lock()
+                        stabilizer.release()
                     }
                 }
             }
@@ -80,20 +78,13 @@ class BlockWork<T>(
     private fun loop(): Job {
         return CoroutineScope(Dispatchers.Default).launch {
             while (!isDeath.get()) {
-                val c = count.get()
-                if (c >= maxCount) {
-                    //这里要卡住
-                    mCountLock.withLock { /* just lock */ }
-                } else {
-                    mDataLock.withLock {
-                        try {
-                            mChannel.send(mData.remove())
-                            count.incrementAndGet()
-                            mCountLock.tryUnlock()
-                        } catch (err: NoSuchElementException) {
-                            isDeath.getAndSet(true)
-                            mChannel.close()
-                        }
+                stabilizer.stuck()
+                mDataLock.withLock {
+                    try {
+                        mChannel.send(mData.remove())
+                    } catch (err: NoSuchElementException) {
+                        isDeath.getAndSet(true)
+                        mChannel.close()
                     }
                 }
             }

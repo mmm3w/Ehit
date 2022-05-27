@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.favourite
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.receiver
@@ -42,4 +43,8 @@ class FavouriteSelectPanel : BindingBottomDialogFragment<DialogFavouriteSelectBi
         mAdapter.postUpdate(lifecycle, data = data.toList())
     }
 
+    override fun show(manager: FragmentManager, tag: String?) {
+        if (mAdapter.itemCount <= 0) return
+        super.show(manager, tag)
+    }
 }

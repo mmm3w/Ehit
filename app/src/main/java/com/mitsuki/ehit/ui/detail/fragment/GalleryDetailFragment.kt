@@ -28,6 +28,7 @@ import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.service.download.DownloadEvent
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity
 import com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity
@@ -314,12 +315,9 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun showDownloadDialog() {
-//        DownloadRangeDialog(mViewModel.page) { s, e ->
-//            DownloadService.startDownload(
-//                requireContext(),
-//                mViewModel.obtainDownloadMessage(s, e)
-//            )
-//        }.show(childFragmentManager, "download")
+        DownloadRangeDialog(mViewModel.page) { s, e ->
+            DownloadEvent.startDownload(requireContext(),  mViewModel.obtainDownloadMessage(s, e))
+        }.show(childFragmentManager, "download")
     }
 
     private fun showRatingDialog() {

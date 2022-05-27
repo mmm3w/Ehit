@@ -20,18 +20,19 @@ object DownloadEvent {
         }
     }
 
-    fun stopAllDownload(){
+    fun stopAllDownload() {
         DownloadBroadcast.sendStopAll()
     }
 
-    fun stopDownload() {
-
+    fun stopDownload(gid: Long, token: String) {
+        DownloadBroadcast.sendStop(gid, token)
     }
 
     fun restartDownload(context: Context, gid: Long, token: String) {
         Intent(context, DownloadService::class.java).apply {
             action = ACTION_RESTART
-            putExtra(DataKey.DOWNLOAD_TASK, gid to token)
+            putExtra(DataKey.GALLERY_ID, gid)
+            putExtra(DataKey.GALLERY_TOKEN, token)
             ContextCompat.startForegroundService(context, this)
         }
     }

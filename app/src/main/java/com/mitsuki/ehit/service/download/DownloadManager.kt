@@ -3,8 +3,10 @@ package com.mitsuki.ehit.service.download
 import android.util.Log
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.save.ShareData
+import com.mitsuki.ehit.crutch.uils.BlockWork
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.entity.DownloadMessage
+import com.mitsuki.ehit.model.entity.db.DownloadNode
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -18,37 +20,78 @@ class DownloadManager @Inject constructor(
 ) {
     private val tag = "EDownload"
 
+    private val mData: MutableMap<String, BlockWork<DownloadNode>> = hashMapOf()
+    private val mList: MutableList<String> = arrayListOf()
+    private val mDataLock = Mutex()
+
     private val workLock = Mutex()
     private var workMark = false
     private var workJob: Job? = null
-
-    private val downloadSchedule by lazy { DownloadScheduler(repository) }
 
 
     fun postTask(message: DownloadMessage) {
         Log.d(tag, "new task:$message")
         CoroutineScope(Dispatchers.Default).launch {
-            val newNodes = downloadDao.updateDownloadList(message)
-            //下载封面
-            //投入任务
-            //开始任务loop循环
+            mDataLock.withLock {
+                val newNodes = downloadDao.updateDownloadList(message)
+                innerAppend(key(message.gid, message.token), newNodes)
+            }
+            launch { downloadThumb(message.gid, message.token) }
+            startWork()
+        }
+    }
 
+    fun startTask(gid: Long, token: String) {
+        Log.d(tag, "restart $gid:$token")
+        CoroutineScope(Dispatchers.Default).launch {
+            mDataLock.withLock {
+                val tag = key(gid, token)
+                if (!mList.contains(tag)) {
+                    val data = downloadDao.queryDownloadNodeWithNotState(gid, token, 1)
+                    innerAppend(tag, data)
+                }
+            }
+            launch { downloadThumb(gid, token) }
             startWork()
         }
     }
 
     fun startAll() {
-
+        Log.d(tag, "start all")
+        CoroutineScope(Dispatchers.Default).launch {
+            mDataLock.withLock {
+                val infoList = downloadDao.queryALlDownloadInfo()
+                infoList.forEach {
+                    val tag = key(it.gid, it.token)
+                    if (!mList.contains(tag)) {
+                        val data = downloadDao.queryDownloadNodeWithNotState(it.gid, it.token, 1)
+                        innerAppend(tag, data)
+                    }
+                }
+            }
+            //TODO thumb
+            startWork()
+        }
     }
 
-    fun stopTask() {
-
+    fun stopTask(gid: Long, token: String) {
+        Log.d(tag, "stop $gid:$token")
+        CoroutineScope(Dispatchers.Default).launch {
+            mDataLock.withLock {
+                mData.remove(tag)?.stop()
+                mList.remove(tag)
+            }
+        }
     }
 
     fun stopAll() {
         CoroutineScope(Dispatchers.Default).launch {
             workJob?.cancel()
-            downloadSchedule.cancelAll()
+            mDataLock.withLock {
+                mData.forEach { entry -> entry.value.stop() }
+                mData.clear()
+                mList.clear()
+            }
             workLock.withLock { workMark = false }
         }
     }
@@ -66,15 +109,66 @@ class DownloadManager @Inject constructor(
         workJob = CoroutineScope(Dispatchers.Default).launch {
             while (workMark) {
                 Log.d(tag, "work loop step start")
-                val result = downloadSchedule.singleWork()
+
+                val result = mDataLock.withLock {
+                    Log.d(tag, "single work get")
+                    val tag = mList.firstOrNull()
+                    val data = mData[tag]
+                    if (tag == null || data == null) {
+                        null
+                    } else {
+                        tag to data
+                    }
+                }?.let {
+                    resolveKey(it.first).apply { DownloadBroadcast.sendStart(first, second) }
+                    it.second.exec()
+                    Log.d(tag, "single work finish")
+                    mDataLock.withLock {
+                        Log.d(tag, "single work remove")
+                        mData.remove(it.first)
+                        mList.remove(it.first)
+                        mList.isNotEmpty()
+                    }
+                } ?: false
+
                 if (result) {
                     Log.d(tag, "next work")
                 } else {
                     Log.d(tag, "list is empty")
                     workLock.withLock { workMark = false }
-                    DownloadBroadcast.finish()
+                    DownloadBroadcast.sendFinish()
                 }
             }
+        }
+    }
+
+    private suspend fun innerAppend(tag: String, newNodes: List<DownloadNode>) {
+        mData[tag]?.run { if (append(newNodes)) this else null } ?: let {
+            mData[tag] = BlockWork(shareData.spDownloadThread, newNodes, this::downloadPage)
+                .apply { mList.add(tag) }
+        }
+    }
+
+    private fun key(g: Long, t: String) = "g:$g-$t"
+
+    private fun resolveKey(key: String): Pair<Long, String> {
+        val data = key.replace("g:", "").split("-")
+        return data[0].toLong() to data[1]
+    }
+
+    /**********************************************************************************************/
+    private suspend fun downloadPage(node: DownloadNode) {
+        node.downloadState = 1
+        downloadDao.updateDownloadNode(node)
+        delay(1000)
+        withContext(Dispatchers.IO) {
+
+        }
+    }
+
+    private suspend fun downloadThumb(gid: Long, token: String) {
+        withContext(Dispatchers.IO) {
+
         }
     }
 }

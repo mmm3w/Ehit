@@ -31,20 +31,20 @@
 
         <ImageView
             android:id="@+id/top_bar_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_gravity="center_vertical"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_16"
+            android:layout_margin="@dimen/dp_12"
             android:src="@drawable/ic_round_play_arrow_24" />
 
         <ImageView
             android:id="@+id/top_bar_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_gravity="center_vertical"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="@dimen/dp_16"
+            android:layout_margin="@dimen/dp_12"
             android:src="@drawable/ic_round_pause_24" />
 
     </LinearLayout>

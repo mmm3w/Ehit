@@ -124,6 +124,7 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
                     AppHolder.string(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
+//                binding.downloadProgress.secondaryProgress =
             }
         }
 
