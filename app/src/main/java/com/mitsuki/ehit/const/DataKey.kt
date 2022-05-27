@@ -25,4 +25,7 @@ object DataKey {
 
     const val GALLERY_FRAGMENT_CODE = "GALLERY_FRAGMENT_CODE"
     const val GALLERY_SEARCH_KEY = "GALLERY_SEARCH_KEY"
+
+    const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
+    const val DOWNLOAD_TARGET = "DOWNLOAD_TARGET"
 }

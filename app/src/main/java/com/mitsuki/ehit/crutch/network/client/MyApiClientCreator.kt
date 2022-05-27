@@ -17,6 +17,8 @@ class MyApiClientCreator @Inject constructor(
             .cookieJar(cookieJar)
             .proxySelector(proxyManager)
             .addInterceptor(FakeHeader())
+            .followRedirects(false)
+            .followSslRedirects(false)
             .addNetworkInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
 //            .connectTimeout(1, TimeUnit.MINUTES)
 //            .readTimeout(1, TimeUnit.MINUTES)

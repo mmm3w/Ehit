@@ -29,8 +29,15 @@ data class DownloadNode(
     @ColumnInfo(name = "page") val page: Int,
     @ColumnInfo(name = "download_state") val downloadState: Int = 0, //0未开始，1完成，2异常
     @ColumnInfo(name = "local_path") val localPath: String = "",
+    @ColumnInfo(name = "content_length") val fileSize: Int = -1,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 ) : Parcelable {
+
+    fun isSameNode(other: DownloadNode): Boolean {
+        return gid == other.gid &&
+                token == other.token &&
+                page == other.page
+    }
 
     override fun equals(other: Any?): Boolean {
         return other is DownloadNode &&

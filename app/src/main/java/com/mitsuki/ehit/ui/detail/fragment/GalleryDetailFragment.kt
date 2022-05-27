@@ -314,12 +314,12 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun showDownloadDialog() {
-        DownloadRangeDialog(mViewModel.page) { s, e ->
-            DownloadService.startDownload(
-                requireContext(),
-                mViewModel.obtainDownloadMessage(s, e)
-            )
-        }.show(childFragmentManager, "download")
+//        DownloadRangeDialog(mViewModel.page) { s, e ->
+//            DownloadService.startDownload(
+//                requireContext(),
+//                mViewModel.obtainDownloadMessage(s, e)
+//            )
+//        }.show(childFragmentManager, "download")
     }
 
     private fun showRatingDialog() {

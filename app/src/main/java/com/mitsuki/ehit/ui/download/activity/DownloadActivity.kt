@@ -52,10 +52,10 @@ class DownloadActivity : BaseActivity() {
         binding.topBar.topBarText.text = getText(R.string.text_download)
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
         binding.topBar.topBarStart.setOnClickListener {
-            DownloadService.startAllDownload(this)
+//            DownloadService.startAllDownload(this)
         }
         binding.topBar.topBarPause.setOnClickListener {
-            DownloadBroadcast.sendStopAll()
+//            DownloadBroadcast.sendStopAll()
         }
 
         mMainAdapter.receiver<DownloadListInfo>("option")

@@ -3,7 +3,6 @@ package com.mitsuki.ehit.model.diff
 import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.model.entity.*
-import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter

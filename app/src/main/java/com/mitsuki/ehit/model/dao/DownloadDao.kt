@@ -5,6 +5,7 @@ import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.DownloadListInfo
 import com.mitsuki.ehit.model.entity.DownloadMessage
+import com.mitsuki.ehit.model.entity.DownloadTaskNode
 import com.mitsuki.ehit.model.entity.db.DownloadBaseInfo
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class DownloadDao {
 
     @Transaction
-    open fun updateDownloadList(message: DownloadMessage): List<DownloadNode> {
+    open fun updateDownloadList(message: DownloadMessage): List<DownloadTaskNode> {
 
         val cache = queryDownloadInfo(message.gid, message.token)
         if (cache == null) {
@@ -22,14 +23,14 @@ abstract class DownloadDao {
             updateDownloadInfo(DownloadBaseInfo(message))
         }
 
-        val downloadList: MutableList<DownloadNode> = arrayListOf()
+        val downloadList: MutableList<DownloadTaskNode> = arrayListOf()
         (message.start..message.end).forEach { index ->
             val isComplete = queryNodeComplete(message.gid, message.token, index) ?: 0
             if (isComplete == 0) {
-                downloadList.add(DownloadNode(message.gid, message.token, index))
+                insertDownloadNode(DownloadNode(message.gid, message.token, index))
+                downloadList.add(DownloadTaskNode(message.gid, message.token, index))
             }
         }
-        insertDownloadNode(downloadList)
         return downloadList
     }
 
@@ -80,8 +81,8 @@ abstract class DownloadDao {
     @Update
     abstract fun updateDownloadInfo(info: DownloadBaseInfo)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertDownloadNode(nodes: List<DownloadNode>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertDownloadNode(node: DownloadNode)
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract fun updateDownloadNode(node: DownloadNode)

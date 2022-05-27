@@ -55,7 +55,11 @@ class RepositoryImpl @Inject constructor(
         }
 
     //convert
-    private val mGalleryListConvert by lazy { GalleryListConvert() }
+    private val mGalleryListConvert by lazy {
+        GalleryListConvert()
+            .decoIPBanned()
+            .deco302()
+    }
     private val mGalleryDetailImageConvert by lazy { GalleryDetailImageConvert() }
     private val mJustImageConvert by lazy { ImageSourceConvert() }
 

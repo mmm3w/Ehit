@@ -5,10 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.model.entity.db.DownloadNode
 
-object DownloadBroadcast {
+internal object DownloadBroadcast {
+
+
+    const val DOWNLOAD_FINISH = "DOWNLOAD_FINISH"
+
 
     const val DOWNLOAD_BROADCAST_PAGE = "DOWNLOAD_PAGE_ACTION"
     const val DOWNLOAD_BROADCAST_STOP = "DOWNLOAD_BROADCAST_STOP"
@@ -23,6 +28,7 @@ object DownloadBroadcast {
     fun registerReceiver(context: Context, receiver: BroadcastReceiver) {
         LocalBroadcastManager.getInstance(context)
             .registerReceiver(receiver, IntentFilter().apply {
+                addAction(DOWNLOAD_FINISH)
                 addAction(DOWNLOAD_BROADCAST_PAGE)
                 addAction(DOWNLOAD_BROADCAST_STOP)
                 addAction(DOWNLOAD_BROADCAST_STOP_ALL)
@@ -33,6 +39,9 @@ object DownloadBroadcast {
         LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
     }
 
+    fun finish() {
+        AppHolder.localBroadcastManager().sendBroadcast(Intent().apply { action = DOWNLOAD_FINISH })
+    }
 
     fun sendFinish(
         node: DownloadNode,
@@ -64,7 +73,7 @@ object DownloadBroadcast {
     fun sendStop(gid: Long, token: String) {
         AppHolder.localBroadcastManager().sendBroadcast(Intent().apply {
             action = DOWNLOAD_BROADCAST_STOP
-            putExtra(DownloadService.TARGET, gid to token)
+            putExtra(DataKey.DOWNLOAD_TARGET, gid to token)
         })
     }
 

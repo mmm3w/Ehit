@@ -13,77 +13,88 @@ import java.util.concurrent.atomic.AtomicInteger
 class BlockWork<T>(
     private val maxCount: Int,
     list: List<T> = emptyList(),
-    val action: suspend (T, Int, BlockWork<T>) -> Unit
+    val action: suspend (T) -> Unit
 ) {
-    private var mTotal = list.size
+    private val mWorkLock = Mutex()
+    private var mLoopJob: Job? = null
+
+    private var count = AtomicInteger(0)
+    private var mCountLock = Mutex()
+
+    private val mChannel = Channel<T>()
     private val mData: LinkedList<T> = LinkedList(list)
     private val mDataLock = Mutex()
 
-    var down = 0
-        private set
-    private val downLock = Mutex()
-
-    private var count = AtomicInteger(0)
-    private val mBlockLock = Mutex()
-    private val mChannel = Channel<T>()
-
-    private val mIsStarted: AtomicBoolean = AtomicBoolean(false)
-
-    val isStarted = mIsStarted.get()
+    private var isDeath: AtomicBoolean = AtomicBoolean(false)
 
     fun exec() {
-        if (isStarted) return
-        mIsStarted.getAndSet(true)
-        loop()
         runBlocking {
-            for (item in mChannel) {
-                launch(Dispatchers.IO) {
-                    action(item, mTotal, this@BlockWork)
-                    downLock.withLock { down++ }
-                    count.getAndDecrement()
-                    mBlockLock.tryUnlock()
+            mWorkLock.withLock {
+                if (isDeath.get()) return@withLock
+                mLoopJob?.cancel()
+                mLoopJob = loop()
+
+                for (item in mChannel) {
+                    launch(Dispatchers.Default) {
+                        action(item)
+                        count.getAndDecrement()
+                        mCountLock.tryUnlock()
+                        mCountLock.lock()
+                    }
                 }
             }
         }
-        mIsStarted.getAndSet(false)
     }
 
-    suspend fun append(data: T) {
-        mDataLock.withLock {
-            mData.add(data)
-            mTotal++
+    suspend fun append(data: T): Boolean {
+        return mDataLock.withLock {
+            if (isDeath.get()) {
+                false
+            } else {
+                mData.add(data)
+                true
+            }
         }
     }
 
-    suspend fun append(data: List<T>) {
-        mDataLock.withLock {
-            mData.addAll(data)
-            mTotal += data.size
+    suspend fun append(data: List<T>): Boolean {
+        return mDataLock.withLock {
+            if (isDeath.get()) {
+                false
+            } else {
+                mData.addAll(data)
+                true
+            }
         }
     }
 
     suspend fun stop() {
-        //清除残余数据
         mDataLock.withLock {
+            isDeath.getAndSet(true)
+            mLoopJob?.cancel()
+            mChannel.close()
             mData.clear()
         }
-        count.set(0)
-        //释放锁 结束loop 结束exec
-        mBlockLock.tryUnlock()
     }
 
-    private fun loop() {
-        CoroutineScope(Dispatchers.Default).launch {
-            while (true) {
-                try {
-                    mDataLock.withLock { mChannel.send(mData.remove()) }
-                    val c = count.incrementAndGet()
-                    if (c >= maxCount) {
-                        mBlockLock.lock()
+    private fun loop(): Job {
+        return CoroutineScope(Dispatchers.Default).launch {
+            while (!isDeath.get()) {
+                val c = count.get()
+                if (c >= maxCount) {
+                    //这里要卡住
+                    mCountLock.withLock { /* just lock */ }
+                } else {
+                    mDataLock.withLock {
+                        try {
+                            mChannel.send(mData.remove())
+                            count.incrementAndGet()
+                            mCountLock.tryUnlock()
+                        } catch (err: NoSuchElementException) {
+                            isDeath.getAndSet(true)
+                            mChannel.close()
+                        }
                     }
-                } catch (err: NoSuchElementException) {
-                    mChannel.close()
-                    break
                 }
             }
         }
