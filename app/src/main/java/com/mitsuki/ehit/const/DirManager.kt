@@ -9,5 +9,9 @@ object DirManager {
         return AppHolder.cacheDir("download/$gid-$token")
     }
 
+    fun thumbCache():File{
+        return AppHolder.cacheDir("thumb")
+    }
+
 
 }

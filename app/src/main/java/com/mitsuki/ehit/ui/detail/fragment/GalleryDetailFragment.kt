@@ -52,7 +52,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private val mViewModel: GalleryDetailViewModel by viewModels()
 
-    private val mStatesAdapter by lazy { GalleryDetailLoadStatesAdapter {} }
+    private val mStatesAdapter by lazy { GalleryDetailLoadStatesAdapter { mViewModel.loadInfo() } }
     private val mHeader: GalleryDetailHeader by lazy { GalleryDetailHeader() }
 
     private val mOperating: GalleryDetailOperatingBlock by lazy { GalleryDetailOperatingBlock() }
@@ -316,7 +316,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private fun showDownloadDialog() {
         DownloadRangeDialog(mViewModel.page) { s, e ->
-            DownloadEvent.startDownload(requireContext(),  mViewModel.obtainDownloadMessage(s, e))
+            DownloadEvent.startDownload(requireContext(), mViewModel.obtainDownloadMessage(s, e))
         }.show(childFragmentManager, "download")
     }
 

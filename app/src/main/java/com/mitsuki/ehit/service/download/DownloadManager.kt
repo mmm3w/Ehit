@@ -1,20 +1,27 @@
 package com.mitsuki.ehit.service.download
 
 import android.util.Log
+import android.webkit.MimeTypeMap
+import com.mitsuki.ehit.const.DirManager
 import com.mitsuki.ehit.crutch.di.RemoteRepository
+import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.uils.BlockWork
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.entity.DownloadMessage
+import com.mitsuki.ehit.model.entity.GalleryPreview
 import com.mitsuki.ehit.model.entity.db.DownloadNode
+import com.mitsuki.ehit.model.repository.DownloadRepository
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.io.File
 import javax.inject.Inject
 
 class DownloadManager @Inject constructor(
     @RemoteRepository private val repository: Repository,
+    private val downloadRepository: DownloadRepository,
     private val downloadDao: DownloadDao,
     private val shareData: ShareData
 ) {
@@ -158,17 +165,56 @@ class DownloadManager @Inject constructor(
 
     /**********************************************************************************************/
     private suspend fun downloadPage(node: DownloadNode) {
-        node.downloadState = 1
-        downloadDao.updateDownloadNode(node)
-        delay(1000)
-        withContext(Dispatchers.IO) {
+        when (val galleryInfo = repository.galleryPreview(node.gid, node.token, node.page)) {
+            is RequestResult.Success<GalleryPreview> -> {
 
+                val fileName = String.format("%09d", node.page) + "." +
+                        MimeTypeMap.getFileExtensionFromUrl(galleryInfo.data.imageUrl)
+
+                val result = downloadRepository.downloadImage(
+                    galleryInfo.data.imageUrl,
+                    DirManager.downloadCache(node.gid, node.token),
+                    fileName
+                )
+
+                when (result) {
+                    is RequestResult.Success<File> -> {
+                        node.downloadState = 1
+                        node.localPath = result.data.absolutePath
+                        downloadDao.updateDownloadNode(node)
+                    }
+                    is RequestResult.Fail<*> -> {
+                        node.downloadState = 2
+                        downloadDao.updateDownloadNode(node)
+                    }
+                }
+            }
+            is RequestResult.Fail<*> -> {
+                node.downloadState = 2
+                downloadDao.updateDownloadNode(node)
+            }
         }
     }
 
     private suspend fun downloadThumb(gid: Long, token: String) {
-        withContext(Dispatchers.IO) {
+        downloadDao.queryDownloadInfo(gid, token)?.let { info ->
+            if (info.localThumb.isNotEmpty()) return
 
+            val fileName = "thumb_${gid}_$token.${MimeTypeMap.getFileExtensionFromUrl(info.thumb)}"
+            val result = downloadRepository.downloadImage(
+                info.thumb,
+                DirManager.thumbCache(),
+                fileName
+            )
+
+            when (result) {
+                is RequestResult.Success<File> -> {
+                    info.localThumb = result.data.absolutePath
+                    downloadDao.updateDownloadInfo(info)
+                }
+                is RequestResult.Fail<*> -> {
+                }
+            }
         }
     }
 }

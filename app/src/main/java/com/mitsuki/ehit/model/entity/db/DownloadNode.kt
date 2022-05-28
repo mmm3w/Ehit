@@ -28,8 +28,7 @@ data class DownloadNode(
     @ColumnInfo(name = "token") val token: String,
     @ColumnInfo(name = "page") val page: Int,
     @ColumnInfo(name = "download_state") var downloadState: Int = 0, //0未开始，1完成，2异常
-    @ColumnInfo(name = "local_path") val localPath: String = "",
-    @ColumnInfo(name = "content_length") val fileSize: Int = -1,
+    @ColumnInfo(name = "local_path") var localPath: String = "",
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 ) : Parcelable {
 

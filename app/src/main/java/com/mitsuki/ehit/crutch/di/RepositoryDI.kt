@@ -1,9 +1,11 @@
 package com.mitsuki.ehit.crutch.di
 
 import com.mitsuki.ehit.model.repository.CommentRepository
+import com.mitsuki.ehit.model.repository.DownloadRepository
 import com.mitsuki.ehit.model.repository.PagingRepository
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.model.repository.impl.CommentRepositoryImpl
+import com.mitsuki.ehit.model.repository.impl.DownloadRepositoryImpl
 import com.mitsuki.ehit.model.repository.impl.PagingRepositoryImpl
 import com.mitsuki.ehit.model.repository.impl.RepositoryImpl
 import dagger.Binds
@@ -27,4 +29,8 @@ abstract class RepositoryBinds {
     @Singleton
     @Binds
     abstract fun comment(impl: CommentRepositoryImpl): CommentRepository
+
+    @Singleton
+    @Binds
+    abstract fun downloadRepository(impl: DownloadRepositoryImpl): DownloadRepository
 }

@@ -23,6 +23,7 @@ import com.mitsuki.ehit.ui.download.ControlAnimate
 import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
 import com.mitsuki.ehit.ui.download.adapter.ListItemTouchCallback
 import com.mitsuki.ehit.service.download.DownloadBroadcast
+import com.mitsuki.ehit.service.download.DownloadEvent
 import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.ui.main.MainActivity
@@ -52,10 +53,10 @@ class DownloadActivity : BaseActivity() {
         binding.topBar.topBarText.text = getText(R.string.text_download)
         binding.topBar.topBarBack.setOnClickListener { onBackPressed() }
         binding.topBar.topBarStart.setOnClickListener {
-//            DownloadService.startAllDownload(this)
+            DownloadEvent.startAllDownload(this)
         }
         binding.topBar.topBarPause.setOnClickListener {
-//            DownloadBroadcast.sendStopAll()
+            DownloadEvent.stopAllDownload()
         }
 
         mMainAdapter.receiver<DownloadListInfo>("option")
