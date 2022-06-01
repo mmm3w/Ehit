@@ -11,6 +11,7 @@ import kotlin.math.cos
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlin.collections.indices as indices
 
 class HeartDrawable : Drawable(), Animatable {
 
@@ -53,7 +54,7 @@ class HeartDrawable : Drawable(), Animatable {
             }
         }
 
-    var heartHintColor :Int
+    var heartHintColor: Int
         get() = mEffect.heartHintColor
         set(value) {
             if (value != mEffect.heartHintColor) {
@@ -62,7 +63,7 @@ class HeartDrawable : Drawable(), Animatable {
             }
         }
 
-    var heartHintStroke :Float
+    var heartHintStroke: Float
         get() = mEffect.heartHintStroke
         set(value) {
             if (value != mEffect.heartHintStroke) {
@@ -84,6 +85,10 @@ class HeartDrawable : Drawable(), Animatable {
                 invalidateSelf()
             }
         }
+    }
+
+    fun setParticleColor(color: (Int, Int) -> Int) {
+        mEffect.setParticleColor(color)
     }
 
     override fun start() {
@@ -118,9 +123,7 @@ class HeartDrawable : Drawable(), Animatable {
         canvas.save()
         mEffect.draw(canvas, bounds)
         canvas.restore()
-
     }
-
 
     private class Effect {
         var fixed = true
@@ -130,22 +133,12 @@ class HeartDrawable : Drawable(), Animatable {
         var heartHintColor: Int = 0xff222222.toInt()
         var heartHintStroke: Float = 2f
 
-        var circleStartColor: Int = 0xffd54ed8.toInt()
-        var circleEndColor: Int = 0xffcfa6f0.toInt()
-        var particleSaturation = 0.7f
+        var circleStartColor: Int = 0xffca4c86.toInt()
+        var circleEndColor: Int = 0xffc193ee.toInt()
 
         var size: Float = -1f
 
-        val particleColor = Array<Float>(PARTICLE_COUNT) { 0f }
-
-        fun size(bounds: Rect): Float {
-            return if (size < 0) {
-                bounds.width().coerceAtMost(bounds.height()).toFloat()
-            } else {
-                size
-            }
-        }
-
+        private val particleColor = Array(PARTICLE_COUNT * 4) { 0 }
         private val mPaint = Paint().apply { isAntiAlias = true }
         private val mPath = Path()
 
@@ -157,32 +150,65 @@ class HeartDrawable : Drawable(), Animatable {
                 }
             }
 
+        init {
+            var group: Int = -1
+            setParticleColor { index, _ ->
+                if (index % 2 == 0) {
+                    group = (0 until (PARTICLE_FIXED_COLLOCATION.size / 2)).random()
+                    PARTICLE_FIXED_COLLOCATION[group]
+                } else {
+                    PARTICLE_FIXED_COLLOCATION[group + 1]
+                }
+            }
+        }
+
         companion object {
-            const val CIRCLE_SIZE = 0.5f
+            const val CIRCLE_SIZE = 0.55f
             const val HEART_SIZE = 0.34f
             const val HEART_BEAT_SCALE = 0.1f
             const val PARTICLE_COUNT = 7
-            const val PARTICLE_SIZE = 0.015f
+            const val PARTICLE_SIZE = 0.04f
+
             const val PARTICLE_DEFLECTION_A = 12
-            const val PARTICLE_DEFLECTION_B = 20
-
             const val PARTICLE_START_SCOPE_A = 0.48f
-            const val PARTICLE_MIDDLE_SCOPE_A = 0.5f
+            const val PARTICLE_MIDDLE_SCOPE_A = 0.67f
             const val PARTICLE_END_SCOPE_A = 0.75f
-            const val PARTICLE_SIZE_SCALE_A = 0.5f
 
-            const val PARTICLE_START_SCOPE_B = 0.40f
-            const val PARTICLE_MIDDLE_SCOPE_B = 0.5f
+            const val PARTICLE_DEFLECTION_B = 23
+            const val PARTICLE_START_SCOPE_B = 0.25f
+            const val PARTICLE_MIDDLE_SCOPE_B = 0.8f
             const val PARTICLE_END_SCOPE_B = 0.9f
-            const val PARTICLE_SIZE_SCALE_B = 3f
 
+            val PARTICLE_FIXED_COLLOCATION = intArrayOf(
+                0xffb2cbe2.toInt(), 0xffc7ace8.toInt(),
+                0xffbc99de.toInt(), 0xffe3bc7c.toInt(),
+                0xffb1e0cb.toInt(), 0xffd0c3ac.toInt(),
+                0xffe0a46c.toInt(), 0xff7ba1cd.toInt(),
+                0xffb2cbe2.toInt(), 0xffc394cb.toInt(),
+                0xffbc99de.toInt(), 0xffd2eed2.toInt(),
+            )
+        }
+
+        fun setParticleColor(color: (Int, Int) -> Int) {
+            for (i in particleColor.indices) {
+                particleColor[i] = color(i, particleColor[i])
+            }
         }
 
         fun draw(c: Canvas, bounds: Rect) {
             mPaint.alpha = alpha
-            drawParticle(c, bounds)
+            drawParticleA(c, bounds)
+            drawParticleB(c, bounds)
             drawCircle(c, bounds)
             drawHeart(c, bounds)
+        }
+
+        private fun size(bounds: Rect): Float {
+            return if (size < 0) {
+                bounds.width().coerceAtMost(bounds.height()).toFloat()
+            } else {
+                size
+            }
         }
 
         private fun drawHeart(canvas: Canvas, bounds: Rect) {
@@ -204,9 +230,10 @@ class HeartDrawable : Drawable(), Animatable {
             } else {
                 mPaint.style = Paint.Style.FILL
                 mPaint.color = heartColor
-                val node1 = 0.25f
+                val node1 = 0.3f
                 val node2 = 0.5f
                 val node3 = 0.7f
+                val node4 = 1f
                 when (interpolatedTime) {
                     in node1..node2 -> {
                         val size = interpolatedTime.realPercent(node1, node2) * heartSize
@@ -219,9 +246,9 @@ class HeartDrawable : Drawable(), Animatable {
                         mPath.heart(centerX, centerY, size)
                         canvas.drawPath(mPath, mPaint)
                     }
-                    in node3..1f -> {
+                    in node3..node4 -> {
                         val size = heartSize * (1 - (1 -
-                                interpolatedTime.realPercent(node3, 1f)) * HEART_BEAT_SCALE)
+                                interpolatedTime.realPercent(node3, node4)) * HEART_BEAT_SCALE)
                         mPath.heart(centerX, centerY, size)
                         canvas.drawPath(mPath, mPaint)
                     }
@@ -241,20 +268,22 @@ class HeartDrawable : Drawable(), Animatable {
 
             when (interpolatedTime) {
                 in 0f..node1 -> {
-                    val realPercent = interpolatedTime.realPercent(0f, node1)
-                    mPaint.style = Paint.Style.FILL
                     mPaint.color = colorChange(
-                        realPercent,
+                        interpolatedTime.realPercent(0f, node2),
                         circleStartColor,
                         circleEndColor
                     )
-                    val size = realPercent * circleSize
+                    val size = interpolatedTime.realPercent(0f, node1) * circleSize
                     mPath.addCircle(centerX, centerY, size, Path.Direction.CW)
                     canvas.drawPath(mPath, mPaint)
                 }
                 in node1..node2 -> {
                     mPaint.style = Paint.Style.FILL
-                    mPaint.color = circleEndColor
+                    mPaint.color = colorChange(
+                        interpolatedTime.realPercent(0f, node2),
+                        circleStartColor,
+                        circleEndColor
+                    )
                     mPath.addCircle(centerX, centerY, circleSize, Path.Direction.CW)
                     val size = interpolatedTime.realPercent(node1, node2) * circleSize
                     mPath.addCircle(centerX, centerY, size, Path.Direction.CCW)
@@ -263,108 +292,46 @@ class HeartDrawable : Drawable(), Animatable {
             }
         }
 
-        private fun drawParticle(canvas: Canvas, bounds: Rect) {
+        private fun drawParticleA(canvas: Canvas, bounds: Rect) {
             if (fixed) return
             mPaint.style = Paint.Style.FILL
 
-            val node1 = 0.15f
-            val node2 = 0.5f
-            val node3 = 0.7f
             val centerX = bounds.centerX().toFloat()
             val centerY = bounds.centerY().toFloat()
 
             val currentSize = size(bounds)
             val particleSize = currentSize * PARTICLE_SIZE / 2
 
+            val node1 = 0.25f
+            val node2 = 0.5f
+            val node3 = 0.7f
+
+            val colorStart = 0.35f
+
             when (interpolatedTime) {
-                0f -> {
-                    for (i in 0 until PARTICLE_COUNT) {
-                        particleColor[i] = (0..1530).random().toFloat() / 1530f
-                    }
-                }
-                in 0.1f..node1 -> {
-                    val realPercent = interpolatedTime.realPercent(0f, node1)
-
-                    val particleScopeRadiusA = (PARTICLE_START_SCOPE_A * currentSize + realPercent *
-                            (PARTICLE_MIDDLE_SCOPE_A - PARTICLE_START_SCOPE_A) * currentSize) / 2
-                    val particleScopeRadiusB = (PARTICLE_START_SCOPE_B * currentSize + realPercent *
-                            (PARTICLE_MIDDLE_SCOPE_B - PARTICLE_START_SCOPE_B) * currentSize) / 2
-                    for (i in 0 until PARTICLE_COUNT) {
-                        mPaint.color = pickColor(particleColor[i], 1f - particleSaturation)
-                        canvas.drawCircle(
-                            circleX(
-                                centerX,
-                                particleScopeRadiusA,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
-                            ).toFloat(),
-                            circleY(
-                                centerY,
-                                particleScopeRadiusA,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
-                            ).toFloat(),
-                            particleSize,
-                            mPaint
-                        )
-
-                        mPaint.color = pickColor(particleColor[i] + 0.1f, 1f - particleSaturation)
-                        canvas.drawCircle(
-                            circleX(
-                                centerX,
-                                particleScopeRadiusB,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
-                            ).toFloat(),
-                            circleY(
-                                centerY,
-                                particleScopeRadiusB,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
-                            ).toFloat(),
-                            particleSize,
-                            mPaint
-                        )
-                    }
-                }
                 in node1..node2 -> {
                     val realPercent = interpolatedTime.realPercent(node1, node2)
-                    val newParticleSizeA = particleSize * (1 + PARTICLE_SIZE_SCALE_A * realPercent)
-                    val particleScopeRadiusA =
-                        (PARTICLE_MIDDLE_SCOPE_A * currentSize + realPercent *
-                                (PARTICLE_END_SCOPE_A - PARTICLE_MIDDLE_SCOPE_A) * currentSize) / 2
-                    val newParticleSizeB = particleSize * (1 + PARTICLE_SIZE_SCALE_B * realPercent)
-                    val particleScopeRadiusB =
-                        (PARTICLE_MIDDLE_SCOPE_B * currentSize + realPercent *
-                                (PARTICLE_END_SCOPE_B - PARTICLE_MIDDLE_SCOPE_B) * currentSize) / 2
+                    val particleScopeRadius = (PARTICLE_START_SCOPE_A * currentSize + realPercent *
+                            (PARTICLE_MIDDLE_SCOPE_A - PARTICLE_START_SCOPE_A) * currentSize) / 2
                     for (i in 0..6) {
-                        mPaint.color = pickColor(particleColor[i], 1f - particleSaturation)
-
-                        canvas.drawCircle(
-                            circleX(
-                                centerX,
-                                particleScopeRadiusA,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
-                            ).toFloat(),
-                            circleY(
-                                centerY,
-                                particleScopeRadiusA,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
-                            ).toFloat(),
-                            newParticleSizeA,
-                            mPaint
+                        mPaint.color = colorChange(
+                            interpolatedTime.realPercent(colorStart, node3),
+                            particleColor[i * 4],
+                            particleColor[i * 4 + 1]
                         )
 
-                        mPaint.color = pickColor(particleColor[i] + 0.1f, 1f - particleSaturation)
-
                         canvas.drawCircle(
                             circleX(
                                 centerX,
-                                particleScopeRadiusB,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
+                                particleScopeRadius,
+                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
                             ).toFloat(),
                             circleY(
                                 centerY,
-                                particleScopeRadiusB,
-                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
+                                particleScopeRadius,
+                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
                             ).toFloat(),
-                            newParticleSizeB,
+                            particleSize,
                             mPaint
                         )
                     }
@@ -372,44 +339,104 @@ class HeartDrawable : Drawable(), Animatable {
                 }
                 in node2..node3 -> {
                     val realPercent = interpolatedTime.realPercent(node2, node3)
-                    val newParticleSizeA =
-                        particleSize * (1 + PARTICLE_SIZE_SCALE_A) * (1 - realPercent)
-                    val particleScopeRadiusA = PARTICLE_END_SCOPE_A * currentSize / 2
-
-                    val newParticleSizeB =
-                        particleSize * (1 + PARTICLE_SIZE_SCALE_B) * (1 - realPercent)
-                    val particleScopeRadiusB = PARTICLE_END_SCOPE_B * currentSize / 2
-
+                    val newParticleSize = particleSize * (1 - realPercent)
+                    val particleScopeRadius = (PARTICLE_MIDDLE_SCOPE_A * currentSize + realPercent *
+                            (PARTICLE_END_SCOPE_A - PARTICLE_MIDDLE_SCOPE_A) * currentSize) / 2
                     for (i in 0..6) {
-                        mPaint.color = pickColor(particleColor[i], 1f - particleSaturation)
+                        mPaint.color = colorChange(
+                            interpolatedTime.realPercent(colorStart, node3),
+                            particleColor[i * 4],
+                            particleColor[i * 4 + 1]
+                        )
 
                         canvas.drawCircle(
                             circleX(
                                 centerX,
-                                particleScopeRadiusA,
+                                particleScopeRadius,
                                 (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
                             ).toFloat(),
                             circleY(
                                 centerY,
-                                particleScopeRadiusA,
+                                particleScopeRadius,
                                 (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_A).toInt()
                             ).toFloat(),
-                            newParticleSizeA,
+                            newParticleSize,
                             mPaint
                         )
-                        mPaint.color = pickColor(particleColor[i] + 0.1f, 1f - particleSaturation)
+                    }
+                }
+            }
+        }
+
+        private fun drawParticleB(canvas: Canvas, bounds: Rect) {
+            if (fixed) return
+            mPaint.style = Paint.Style.FILL
+
+            val centerX = bounds.centerX().toFloat()
+            val centerY = bounds.centerY().toFloat()
+
+            val currentSize = size(bounds)
+            val particleSize = currentSize * PARTICLE_SIZE / 2
+
+            val node1 = 0.2f
+            val node2 = 0.6f
+            val node3 = 1f
+
+            val colorStart = 0.42f
+
+            when (interpolatedTime) {
+                in node1..node2 -> {
+                    val realPercent = interpolatedTime.realPercent(node1, node2)
+                    val particleScopeRadius = (PARTICLE_START_SCOPE_B * currentSize + realPercent *
+                            (PARTICLE_MIDDLE_SCOPE_B - PARTICLE_START_SCOPE_B) * currentSize) / 2
+                    for (i in 0..6) {
+                        mPaint.color = colorChange(
+                            interpolatedTime.realPercent(colorStart, node3),
+                            particleColor[i * 4 + 2],
+                            particleColor[i * 4 + 3]
+                        )
+
                         canvas.drawCircle(
                             circleX(
                                 centerX,
-                                particleScopeRadiusB,
+                                particleScopeRadius,
                                 (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
                             ).toFloat(),
                             circleY(
                                 centerY,
-                                particleScopeRadiusB,
+                                particleScopeRadius,
                                 (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
                             ).toFloat(),
-                            newParticleSizeB,
+                            particleSize,
+                            mPaint
+                        )
+                    }
+
+                }
+                in node2..node3 -> {
+                    val realPercent = interpolatedTime.realPercent(node2, node3)
+                    val newParticleSize = particleSize * (1 - realPercent)
+                    val particleScopeRadius = (PARTICLE_MIDDLE_SCOPE_B * currentSize + realPercent *
+                            (PARTICLE_END_SCOPE_B - PARTICLE_MIDDLE_SCOPE_B) * currentSize) / 2
+                    for (i in 0..6) {
+                        mPaint.color = colorChange(
+                            interpolatedTime.realPercent(colorStart, node3),
+                            particleColor[i * 4 + 2],
+                            particleColor[i * 4 + 3]
+                        )
+
+                        canvas.drawCircle(
+                            circleX(
+                                centerX,
+                                particleScopeRadius,
+                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
+                            ).toFloat(),
+                            circleY(
+                                centerY,
+                                particleScopeRadius,
+                                (360f / PARTICLE_COUNT * i + PARTICLE_DEFLECTION_B).toInt()
+                            ).toFloat(),
+                            newParticleSize,
                             mPaint
                         )
                     }
@@ -498,6 +525,7 @@ class HeartDrawable : Drawable(), Animatable {
         }
 
         private fun Float.realPercent(offset: Float, end: Float): Float {
+            if (this <= offset) return 0f
             return (this - offset) / (end - offset)
         }
 
@@ -517,39 +545,39 @@ class HeartDrawable : Drawable(), Animatable {
                     (startB + (p * (endB - startB)).toInt())
         }
 
-        private fun pickColor(p: Float, saturation: Float = 0.0f): Int {
-            val level = floor(p * 6).roundToInt() % 6
-            val percent = p * 6 % 1
-            return when (level) {
-                0 -> (0xff shl 24) or
-                        (0xff shl 16) or
-                        ((255 * saturation).toInt() shl 8) or
-                        (255 * (percent + saturation - percent * saturation)).toInt()
-
-                1 -> (0xff shl 24) or
-                        ((255 * (1 - percent + percent * saturation)).toInt() shl 16) or
-                        ((255 * saturation).toInt() shl 8) or
-                        0xff
-
-                2 -> (0xff shl 24) or
-                        ((255 * saturation).toInt() shl 16) or
-                        ((255 * (percent + saturation - percent * saturation)).toInt() shl 8) or
-                        0xff
-                3 -> (0xff shl 24) or
-                        ((255 * saturation).toInt() shl 16) or
-                        (0xff shl 8) or
-                        (255 * (1 - percent + percent * saturation)).toInt()
-                4 -> (0xff shl 24) or
-                        ((255 * (percent + saturation - percent * saturation)).toInt() shl 16) or
-                        (0xff shl 8) or
-                        (255 * saturation).toInt()
-                5 -> (0xff shl 24) or
-                        (0xff shl 16) or
-                        ((255 * (1 - percent + percent * saturation)).toInt() shl 8) or
-                        (255 * saturation).toInt()
-                else -> throw  IllegalArgumentException()
-            }
-
-        }
+//        private fun pickColor(p: Float, saturation: Float = 0.0f): Int {
+//            val level = floor(p * 6).roundToInt() % 6
+//            val percent = p * 6 % 1
+//            return when (level) {
+//                0 -> (0xff shl 24) or
+//                        (0xff shl 16) or
+//                        ((255 * saturation).toInt() shl 8) or
+//                        (255 * (percent + saturation - percent * saturation)).toInt()
+//
+//                1 -> (0xff shl 24) or
+//                        ((255 * (1 - percent + percent * saturation)).toInt() shl 16) or
+//                        ((255 * saturation).toInt() shl 8) or
+//                        0xff
+//
+//                2 -> (0xff shl 24) or
+//                        ((255 * saturation).toInt() shl 16) or
+//                        ((255 * (percent + saturation - percent * saturation)).toInt() shl 8) or
+//                        0xff
+//                3 -> (0xff shl 24) or
+//                        ((255 * saturation).toInt() shl 16) or
+//                        (0xff shl 8) or
+//                        (255 * (1 - percent + percent * saturation)).toInt()
+//                4 -> (0xff shl 24) or
+//                        ((255 * (percent + saturation - percent * saturation)).toInt() shl 16) or
+//                        (0xff shl 8) or
+//                        (255 * saturation).toInt()
+//                5 -> (0xff shl 24) or
+//                        (0xff shl 16) or
+//                        ((255 * (1 - percent + percent * saturation)).toInt() shl 8) or
+//                        (255 * saturation).toInt()
+//                else -> throw  IllegalArgumentException()
+//            }
+//
+//        }
     }
 }
