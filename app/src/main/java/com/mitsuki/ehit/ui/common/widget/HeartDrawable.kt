@@ -20,7 +20,7 @@ class HeartDrawable : Drawable(), Animatable {
 
     companion object {
         private val LINEAR_INTERPOLATOR: Interpolator = LinearInterpolator()
-        private const val ANIMATION_DURATION = 700
+        private const val ANIMATION_DURATION = 1000
 
     }
 
@@ -164,20 +164,20 @@ class HeartDrawable : Drawable(), Animatable {
 
         companion object {
             const val CIRCLE_SIZE = 0.55f
-            const val HEART_SIZE = 0.34f
+            const val HEART_SIZE = 0.37f
             const val HEART_BEAT_SCALE = 0.1f
             const val PARTICLE_COUNT = 7
-            const val PARTICLE_SIZE = 0.04f
+            const val PARTICLE_SIZE = 0.05f
 
             const val PARTICLE_DEFLECTION_A = 12
-            const val PARTICLE_START_SCOPE_A = 0.48f
+            const val PARTICLE_START_SCOPE_A = 0.51f
             const val PARTICLE_MIDDLE_SCOPE_A = 0.67f
-            const val PARTICLE_END_SCOPE_A = 0.75f
+            const val PARTICLE_END_SCOPE_A = 0.72f
 
             const val PARTICLE_DEFLECTION_B = 23
-            const val PARTICLE_START_SCOPE_B = 0.25f
-            const val PARTICLE_MIDDLE_SCOPE_B = 0.8f
-            const val PARTICLE_END_SCOPE_B = 0.9f
+            const val PARTICLE_START_SCOPE_B = 0.51f
+            const val PARTICLE_MIDDLE_SCOPE_B = 0.79f
+            const val PARTICLE_END_SCOPE_B = 0.90f
 
             val PARTICLE_FIXED_COLLOCATION = intArrayOf(
                 0xffb2cbe2.toInt(), 0xffc7ace8.toInt(),
@@ -230,9 +230,9 @@ class HeartDrawable : Drawable(), Animatable {
             } else {
                 mPaint.style = Paint.Style.FILL
                 mPaint.color = heartColor
-                val node1 = 0.3f
-                val node2 = 0.5f
-                val node3 = 0.7f
+                val node1 = 0.18f
+                val node2 = 0.36f
+                val node3 = 0.58f
                 val node4 = 1f
                 when (interpolatedTime) {
                     in node1..node2 -> {
@@ -260,8 +260,8 @@ class HeartDrawable : Drawable(), Animatable {
             if (fixed) return
             mPath.reset()
 
-            val node1 = 0.25f
-            val node2 = 0.5f
+            val node1 = 0.15f
+            val node2 = 0.33f
             val circleSize = size(bounds) * CIRCLE_SIZE / 2
             val centerX = bounds.centerX().toFloat()
             val centerY = bounds.centerY().toFloat()
@@ -302,11 +302,11 @@ class HeartDrawable : Drawable(), Animatable {
             val currentSize = size(bounds)
             val particleSize = currentSize * PARTICLE_SIZE / 2
 
-            val node1 = 0.25f
-            val node2 = 0.5f
-            val node3 = 0.7f
+            val node1 = 0.15f
+            val node2 = 0.25f
+            val node3 = 0.8f
 
-            val colorStart = 0.35f
+            val colorStart = 0.16f
 
             when (interpolatedTime) {
                 in node1..node2 -> {
@@ -378,11 +378,11 @@ class HeartDrawable : Drawable(), Animatable {
             val currentSize = size(bounds)
             val particleSize = currentSize * PARTICLE_SIZE / 2
 
-            val node1 = 0.2f
-            val node2 = 0.6f
+            val node1 = 0.20f
+            val node2 = 0.44f
             val node3 = 1f
 
-            val colorStart = 0.42f
+            val colorStart = 0.21f
 
             when (interpolatedTime) {
                 in node1..node2 -> {
@@ -544,40 +544,5 @@ class HeartDrawable : Drawable(), Animatable {
                     ((startG + (p * (endG - startG)).toInt()) shl 8) or
                     (startB + (p * (endB - startB)).toInt())
         }
-
-//        private fun pickColor(p: Float, saturation: Float = 0.0f): Int {
-//            val level = floor(p * 6).roundToInt() % 6
-//            val percent = p * 6 % 1
-//            return when (level) {
-//                0 -> (0xff shl 24) or
-//                        (0xff shl 16) or
-//                        ((255 * saturation).toInt() shl 8) or
-//                        (255 * (percent + saturation - percent * saturation)).toInt()
-//
-//                1 -> (0xff shl 24) or
-//                        ((255 * (1 - percent + percent * saturation)).toInt() shl 16) or
-//                        ((255 * saturation).toInt() shl 8) or
-//                        0xff
-//
-//                2 -> (0xff shl 24) or
-//                        ((255 * saturation).toInt() shl 16) or
-//                        ((255 * (percent + saturation - percent * saturation)).toInt() shl 8) or
-//                        0xff
-//                3 -> (0xff shl 24) or
-//                        ((255 * saturation).toInt() shl 16) or
-//                        (0xff shl 8) or
-//                        (255 * (1 - percent + percent * saturation)).toInt()
-//                4 -> (0xff shl 24) or
-//                        ((255 * (percent + saturation - percent * saturation)).toInt() shl 16) or
-//                        (0xff shl 8) or
-//                        (255 * saturation).toInt()
-//                5 -> (0xff shl 24) or
-//                        (0xff shl 16) or
-//                        ((255 * (1 - percent + percent * saturation)).toInt() shl 8) or
-//                        (255 * saturation).toInt()
-//                else -> throw  IllegalArgumentException()
-//            }
-//
-//        }
     }
 }
