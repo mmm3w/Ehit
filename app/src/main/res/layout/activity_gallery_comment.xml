@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/top_bar"
-        layout="@layout/top_bar_normal" />
+        layout="@layout/top_bar_comment" />
 
     <FrameLayout
         android:layout_width="match_parent"
