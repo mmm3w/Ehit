@@ -285,7 +285,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun onTagNavigation(tag: Pair<String, String>) {
-        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+        Navigation.findNavController(requireView())
             .navigate(
                 R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
                 bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Tag("${tag.first}:${tag.second}")),
@@ -295,23 +295,23 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun onNameNavigation() {
-        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-            .navigate(
-                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Normal(mViewModel.galleryName)),
-                null,
-                null
-            )
+//        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//            .navigate(
+//                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+//                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Normal(mViewModel.galleryName)),
+//                null,
+//                null
+//            )
     }
 
     private fun onUploaderNavigation() {
-        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-            .navigate(
-                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Uploader(mViewModel.uploader)),
-                null,
-                null
-            )
+//        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//            .navigate(
+//                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+//                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Uploader(mViewModel.uploader)),
+//                null,
+//                null
+//            )
     }
 
     private fun showDownloadDialog() {

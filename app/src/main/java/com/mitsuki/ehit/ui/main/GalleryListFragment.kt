@@ -73,7 +73,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (requireActivity() as? MainActivity)?.enableDrawer()
+//        (requireActivity() as? MainActivity)?.enableDrawer()
         mViewModel.initData(arguments)
 
         mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
@@ -134,6 +134,19 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         lifecycleScope.launchWhenCreated {
             mViewModel.galleryList.collect { mEmptyValve.submitData(lifecycle, mMainAdapter, it) }
         }
+
+
+        mViewModel.searchBarText.observe(this) {
+            binding?.topBar?.topSearchText?.text = it
+        }
+
+        mViewModel.searchBarHint.observe(this) {
+            binding?.topBar?.topSearchText?.hint = it
+        }
+
+        mViewModel.refreshEnable.observe(this) {
+            binding?.galleryListRefresh?.isEnabled = it
+        }
     }
 
 
@@ -142,14 +155,6 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
         binding?.apply {
-            mViewModel.searchBarText.observe(viewLifecycleOwner) { topBar.topSearchText.text = it }
-
-            mViewModel.searchBarHint.observe(viewLifecycleOwner) { topBar.topSearchText.hint = it }
-
-            mViewModel.refreshEnable.observe(viewLifecycleOwner) {
-                galleryListRefresh.isEnabled = it
-            }
-
             galleryList.apply {
                 setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
                 layoutManager = LinearLayoutManager(requireContext())
@@ -206,12 +211,12 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
 //        try {
         with(galleryClick) {
-            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            Navigation.findNavController(requireView())
                 .navigate(
                     R.id.action_gallery_list_fragment_to_gallery_detail_fragment,
                     bundleOf(DataKey.GALLERY_INFO to data),
                     null,
-                    FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
+                    FragmentNavigatorExtras(target to data.itemTransitionName)
                 )
         }
 //        } catch (e: Exception) {

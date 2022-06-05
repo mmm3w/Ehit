@@ -44,7 +44,7 @@ class SecurityFragment : BindingFragment<FragmentSecurityBinding>(
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
+//                    (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
                 }
 
                 override fun onAuthenticationFailed() {

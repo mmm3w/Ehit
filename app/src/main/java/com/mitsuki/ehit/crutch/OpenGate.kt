@@ -12,8 +12,8 @@ class OpenGate @Inject constructor(val shareData: ShareData) {
 
     val nextNav: Int
         get() {
-            if (!shareData.spLoginShowed)
-                return R.id.action_global_login_fragment
+//            if (!shareData.spLoginShowed)
+//                return R.id.action_global_login_fragment
 
             return -1
         }

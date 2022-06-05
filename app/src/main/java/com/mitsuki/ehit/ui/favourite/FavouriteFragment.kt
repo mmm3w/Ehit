@@ -174,13 +174,13 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
 
     private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
         with(galleryClick) {
-            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-                .navigate(
-                    R.id.action_favourite_fragment_to_gallery_detail_fragment,
-                    bundleOf(DataKey.GALLERY_INFO to data),
-                    null,
-                    FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
-                )
+//            Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+//                .navigate(
+//                    R.id.action_favourite_fragment_to_gallery_detail_fragment,
+//                    bundleOf(DataKey.GALLERY_INFO to data),
+//                    null,
+//                    FragmentNavigatorExtras(galleryClick.target to data.itemTransitionName)
+//                )
         }
     }
 

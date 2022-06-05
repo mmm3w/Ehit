@@ -85,12 +85,12 @@ class LoginFragment :
 
     private fun nextNav() {
         shareData.spLoginShowed = true
-        with(openGate.nextNav) {
-            if (this == -1) {
-                (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
-            } else {
-                (requireActivity() as MainActivity).navigate(this)
-            }
-        }
+//        with(openGate.nextNav) {
+//            if (this == -1) {
+//                (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
+//            } else {
+//                (requireActivity() as MainActivity).navigate(this)
+//            }
+//        }
     }
 }
