@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.comment.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
@@ -49,6 +50,9 @@ class GalleryCommentActivity :
             ellipsize = TextUtils.TruncateAt.END
             isSingleLine = true
             setPadding(0, 0, dp2px(16F).toInt(), 0)
+        }
+        binding.topBar.topBarReply.setOnClickListener {
+            startActivity(Intent(this, CommentSendActivity::class.java))
         }
 
         mViewModel.initData(intent)

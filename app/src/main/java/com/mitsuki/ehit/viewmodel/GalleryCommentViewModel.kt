@@ -113,25 +113,6 @@ class GalleryCommentViewModel @Inject constructor(
         }
     }
 
-
-    fun sendComment(text: String) {
-        viewModelScope.launch {
-            if (text.isEmpty()) {
-                return@launch
-            }
-
-            when (val result =
-                commentRepository.sendGalleryComment(mGalleryID, mGalleryToken, text)) {
-                is RequestResult.Success -> {
-                    Log.d("asdf", "成功")
-                }
-                is RequestResult.Fail -> {
-                    post("toast", result.throwable.message)
-                }
-            }
-        }
-    }
-
     fun voteComment(position: Int, comment: Comment, vote: Int) {
         viewModelScope.launch {
             when (val result =
