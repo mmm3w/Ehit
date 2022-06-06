@@ -7,12 +7,15 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingFragment
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.databinding.FragmentSecurityBinding
+import com.mitsuki.ehit.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +26,11 @@ class SecurityFragment : BindingFragment<FragmentSecurityBinding>(
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (requireActivity() as? MainActivity)?.setDrawerEnable(false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(requireContext()),
@@ -40,7 +48,9 @@ class SecurityFragment : BindingFragment<FragmentSecurityBinding>(
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-//                    (requireActivity() as MainActivity).navDestination(R.id.nav_stack_main, null)
+                    AppHolder.unlock()
+                    Navigation.findNavController(requireView())
+                        .navigate(R.id.action_global_security_back)
                 }
 
                 override fun onAuthenticationFailed() {

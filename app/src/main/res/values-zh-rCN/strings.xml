@@ -70,6 +70,7 @@
     <string name="text_yes">是</string>
     <string name="text_no">否</string>
     <string name="text_confirm">确定</string>
+    <string name="text_refuse">拒绝</string>
     <string name="text_cancel">取消</string>
     <string name="text_copy">复制</string>
     <string name="text_refresh">刷新</string>

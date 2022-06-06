@@ -24,6 +24,7 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
@@ -31,6 +32,7 @@ import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
@@ -40,6 +42,7 @@ import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
@@ -60,6 +63,9 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     private val mStateAdapter by lazy { ListStatesAdapter { mMainAdapter.retry() } }
     private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
+    @Inject
+    lateinit var shareData: ShareData
+
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
@@ -75,13 +81,12 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (requireActivity() as? MainActivity)?.enableDrawer()
+
         mViewModel.initData(arguments)
 
         mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
             .isClick()
             .observe(this, ::onDetailNavigation)
-
 
         lifecycleScope.launchWhenCreated {
             mMainAdapter.loadStateFlow.collect {
@@ -146,11 +151,23 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         }
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
+        when {
+            shareData.spInitial -> {
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_gallery_list_fragment_to_nav_first_time)
+                return
+            }
+            shareData.spSecurity && AppHolder.isLocked -> {
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_gallery_list_fragment_to_nav_security)
+                return
+            }
+        }
+        (requireActivity() as? MainActivity)?.setDrawerEnable(true)
         binding?.apply {
             galleryList.apply {
                 setPadding(0, paddingTop + requireActivity().statusBarHeight(), 0, 0)
@@ -204,8 +221,10 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             }
         }
 
-        mViewModel.galleryList.observe(viewLifecycleOwner) {
-            runBlocking { mEmptyValve.submitData(lifecycle, mMainAdapter, it) }
+        lifecycleScope.launchWhenStarted {
+            mViewModel.galleryList.collect {
+                mEmptyValve.submitData(lifecycle, mMainAdapter, it)
+            }
         }
     }
 

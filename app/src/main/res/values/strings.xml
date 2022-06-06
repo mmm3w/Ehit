@@ -24,6 +24,7 @@
     <string name="text_3" translatable="false">3</string>
     <string name="text_4" translatable="false">4</string>
     <string name="text_5" translatable="false">5</string>
+    <string name="text_ok" translatable="false">OK</string>
 
     <string name="page_separate" translatable="false">%d/%d</string>
     <string name="last_version_url" translatable="false">https://github.com/mmm3w/Ehit/releases/latest</string>
@@ -101,7 +102,8 @@
 
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
-    <string name="text_confirm">OK</string>
+    <string name="text_confirm">Confirm</string>
+    <string name="text_refuse">Refuse</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_copy">Copy</string>
     <string name="text_refresh">Refresh</string>

@@ -45,7 +45,6 @@ class SettingPrivacyFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.setting_privacy, rootKey)
 
-
         findPreference<SwitchPreference>(ShareData.SP_SECURITY)?.apply {
             setOnPreferenceClickListener {
                 if (!shareData.spSecurity) {

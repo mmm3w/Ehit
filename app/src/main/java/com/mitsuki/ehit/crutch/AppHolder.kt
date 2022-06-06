@@ -18,7 +18,7 @@ import java.io.File
 
 object AppHolder {
     private lateinit var mApplication: Application
-
+    private var locked = true
 
     fun hold(application: Application) {
         mApplication = application
@@ -27,6 +27,8 @@ object AppHolder {
     fun localBroadcastManager(): LocalBroadcastManager {
         return LocalBroadcastManager.getInstance(mApplication)
     }
+
+    val isLocked get() = locked
 
     val fileDir: File get() = mApplication.filesDir
 
@@ -61,6 +63,14 @@ object AppHolder {
             mApplication.showToast(text(textRes), duration)
             return
         }
+    }
+
+    fun lock() {
+        locked = true
+    }
+
+    fun unlock() {
+        locked = false
     }
 
     val clipboardManager: ClipboardManager

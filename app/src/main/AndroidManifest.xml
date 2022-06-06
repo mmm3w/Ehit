@@ -34,11 +34,6 @@
             <nav-graph android:value="@navigation/nav_graph" />
         </activity>
 
-        <service
-            android:name="com.mitsuki.ehit.service.download.DownloadService"
-            android:foregroundServiceType="dataSync" />
-        <service android:name="com.mitsuki.ehit.service.export.ExportService" />
-
         <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />
         <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity" />
         <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryActivity" />
@@ -47,7 +42,11 @@
         <activity android:name="com.mitsuki.ehit.ui.temp.activity.HistoryActivity" />
         <activity android:name="com.mitsuki.ehit.ui.download.activity.DownloadActivity" />
         <activity android:name="com.mitsuki.ehit.ui.comment.activity.CommentSendActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.login.activity.LoginActivity" />
 
+        <service
+            android:name="com.mitsuki.ehit.service.download.DownloadService"
+            android:foregroundServiceType="dataSync" />
 
     </application>
 

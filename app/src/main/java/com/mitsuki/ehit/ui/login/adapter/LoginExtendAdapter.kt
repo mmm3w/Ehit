@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.start.adapter
+package com.mitsuki.ehit.ui.login.adapter
 
 import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R

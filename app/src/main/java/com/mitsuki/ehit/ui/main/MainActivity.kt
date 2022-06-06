@@ -13,6 +13,7 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
@@ -41,9 +42,7 @@ class MainActivity : BaseActivity() {
             addTarget(android.R.id.content)
         }
         super.onCreate(savedInstanceState)
-
-//        binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-
+        AppHolder.lock()
         //NavigationUI提供的setup方法无法满足需求
         binding.mainNavigation.setNavigationItemSelectedListener {
             var handle = true
@@ -106,7 +105,11 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun enableDrawer() {
-        binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    fun setDrawerEnable(enable: Boolean) {
+        if (enable) {
+            binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        } else {
+            binding.mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        }
     }
 }

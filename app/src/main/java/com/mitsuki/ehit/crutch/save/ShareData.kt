@@ -16,6 +16,7 @@ class ShareData(context: Context) {
         private const val INNER_APP_VERSION = "INNER_APP_VERSION"
 
         const val SP_SECURITY = "SP_SECURITY"
+        const val SP_INITIAL_INSTALLATION = "SP_INITIAL_INSTALLATION"
 
         const val SP_GALLERY_PAGE_SIZE = "SP_GALLERY_PAGE_SIZE"
 
@@ -47,9 +48,6 @@ class ShareData(context: Context) {
         const val SP_FULL_SCREEN = "SP_FULL_SCREEN"
         const val SP_CUSTOM_BRIGHTNESS = "SP_CUSTOM_BRIGHTNESS"
 
-
-        const val SP_OPEN_APP_WARING_CONFIRM = "SP_OPEN_APP_WARING_CONFIRM"
-        const val SP_OPEN_LOGIN_SHOWED = "SP_OPEN_LOGIN_SHOWED"
     }
 
     fun string(key: String, default: String = ""): String =
@@ -79,13 +77,9 @@ class ShareData(context: Context) {
         set(value) = edit { putBoolean(SP_SECURITY, value) }
         get() = boolean(SP_SECURITY)
 
-    var spWaringConfirm: Boolean
-        set(value) = edit { putBoolean(SP_OPEN_APP_WARING_CONFIRM, value) }
-        get() = boolean(SP_OPEN_APP_WARING_CONFIRM)
-
-    var spLoginShowed: Boolean
-        set(value) = edit { putBoolean(SP_OPEN_LOGIN_SHOWED, value) }
-        get() = boolean(SP_OPEN_LOGIN_SHOWED)
+    var spInitial: Boolean
+        set(value) = edit { putBoolean(SP_INITIAL_INSTALLATION, value) }
+        get() = boolean(SP_INITIAL_INSTALLATION, true)
 
     var spGalleryPageSize: Int
         set(value) = edit { putInt(SP_GALLERY_PAGE_SIZE, value) }
