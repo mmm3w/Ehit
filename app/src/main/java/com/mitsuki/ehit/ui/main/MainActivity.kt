@@ -18,7 +18,6 @@ import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
-import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.download.activity.DownloadActivity
 import com.mitsuki.ehit.ui.setting.activity.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,25 +46,18 @@ class MainActivity : BaseActivity() {
         binding.mainNavigation.setNavigationItemSelectedListener {
             var handle = true
             when (it.itemId) {
-                R.id.nav_home -> navController.navigate(
-                    R.id.action_global_gallery_list_fragment,
-                    bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_NORMAL)
-                )
+                R.id.nav_home -> navController.navigate(R.id.action_global_gallery_list_fragment)
                 R.id.nav_subscription ->
                     navController.navigate(
                         R.id.action_global_gallery_list_fragment,
-                        bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.DEFAULT_SUBSCRIPTION)
+                        bundleOf(DataKey.GALLERY_TYPE_PART to "watched")
                     )
                 R.id.nav_popular ->
                     navController.navigate(
                         R.id.action_global_gallery_list_fragment,
-                        bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.POPULAR)
+                        bundleOf(DataKey.GALLERY_SEARCH_KEY to "popular")
                     )
                 R.id.nav_favourite -> navController.navigate(R.id.action_global_favourite_fragment)
-
-//                R.id.nav_history ->
-//                    startActivity(Intent(this@MainActivity, HistoryActivity::class.java))
-
                 R.id.nav_download ->
                     startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
 

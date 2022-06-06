@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.observeWithCoro
-import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
-import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.model.entity.GalleryDataType
 import com.mitsuki.ehit.ui.common.dialog.BindingBottomDialogFragment
-import com.mitsuki.ehit.ui.common.dialog.BottomDialogFragment
 import com.mitsuki.ehit.ui.search.QuickSearchItemTouchHelperCallback
 import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
@@ -23,7 +21,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class QuickSearchPanel(val onQuickSearch: ((GalleryPageSource) -> Unit)) :
+class QuickSearchPanel(val onQuickSearch: ((GalleryDataType) -> Unit)) :
     BindingBottomDialogFragment<DialogQuickSearchBinding>(
         R.layout.dialog_quick_search,
         DialogQuickSearchBinding::bind
@@ -44,21 +42,21 @@ class QuickSearchPanel(val onQuickSearch: ((GalleryPageSource) -> Unit)) :
 
         mAdapter.clickItem.observeWithCoro(this) {
             when (it) {
-                is QuickSearchAdapter.Event.Click -> {
-                    val data = when (it.data.type) {
-                        GalleryPageSource.Type.NORMAL -> GalleryPageSource.Normal(it.data.key)
-                        GalleryPageSource.Type.UPLOADER -> GalleryPageSource.Uploader(it.data.key)
-                        GalleryPageSource.Type.TAG -> GalleryPageSource.Tag(it.data.key)
-                        GalleryPageSource.Type.SUBSCRIPTION -> GalleryPageSource.Subscription(it.data.key)
-                        GalleryPageSource.Type.WHATS_HOT -> GalleryPageSource.POPULAR
-                    }
-                    data.apply { onQuickSearch.invoke(this) }
-                    dismiss()
-                }
-                is QuickSearchAdapter.Event.Delete -> {
-                    mAdapter.removeItem(it.data)
-                    mViewModel.delSearch(it.data.key, it.data.type)
-                }
+//                is QuickSearchAdapter.Event.Click -> {
+//                    val data = when (it.data.type) {
+//                        GalleryDataType.Type.NORMAL -> GalleryDataType.Normal(it.data.key)
+//                        GalleryDataType.Type.UPLOADER -> GalleryDataType.Uploader(it.data.key)
+//                        GalleryDataType.Type.TAG -> GalleryDataType.Tag(it.data.key)
+//                        GalleryDataType.Type.SUBSCRIPTION -> GalleryDataType.Subscription(it.data.key)
+//                        GalleryDataType.Type.WHATS_HOT -> GalleryDataType.POPULAR
+//                    }
+//                    data.apply { onQuickSearch.invoke(this) }
+//                    dismiss()
+//                }
+//                is QuickSearchAdapter.Event.Delete -> {
+//                    mAdapter.removeItem(it.data)
+//                    mViewModel.delSearch(it.data.key, it.data.type)
+//                }
             }
         }
     }
@@ -68,16 +66,16 @@ class QuickSearchPanel(val onQuickSearch: ((GalleryPageSource) -> Unit)) :
         isCancelable = true
         requireDialog().setCanceledOnTouchOutside(true)
 
-        binding?.quickSearchAdd?.setOnClickListener {
-            mParentViewModel.pageSource.apply {
-                lifecycleScope.launch {
-                    if (!mViewModel.isQuickSave(cacheKey, type)) {
-                        mViewModel.saveSearch(cacheKey, cacheKey, type)
-                        mAdapter.addItem(cacheKey, cacheKey, type)
-                    }
-                }
-            }
-        }
+//        binding?.quickSearchAdd?.setOnClickListener {
+//            mParentViewModel.pageSource.apply {
+//                lifecycleScope.launch {
+//                    if (!mViewModel.isQuickSave(cacheKey, type)) {
+//                        mViewModel.saveSearch(cacheKey, cacheKey, type)
+//                        mAdapter.addItem(cacheKey, cacheKey, type)
+//                    }
+//                }
+//            }
+//        }
 
         val touchCallBack = QuickSearchItemTouchHelperCallback()
         val itemTouchHelper = ItemTouchHelper(touchCallBack)

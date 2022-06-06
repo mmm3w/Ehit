@@ -3,13 +3,16 @@ package com.mitsuki.ehit.model.page
 import com.mitsuki.armory.httprookie.request.UrlParams
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.const.RequestKey
-import java.lang.RuntimeException
+import com.mitsuki.ehit.model.entity.GalleryDataKey
+import com.mitsuki.ehit.model.entity.GalleryDataType
 
-class GalleryListPageIn(var pageSource: GalleryPageSource) : GeneralPageIn() {
+class GalleryListPageIn(
+    var type: GalleryDataType,
+    var key: GalleryDataKey
+) : GeneralPageIn() {
 
-    val targetUrl: String get() = pageSource.targetUrl
-    val showContent: String get() = pageSource.showContent
-    val type: GalleryPageSource.Type get() = pageSource.type
+    val targetUrl: String get() = type.targetUrl
+    val hintContent: String get() = if (type.enableSearch && key.searchHint.isNotEmpty()) key.searchHint else type.hint
 
     var maxPage: Int = 0
 
@@ -19,6 +22,10 @@ class GalleryListPageIn(var pageSource: GalleryPageSource) : GeneralPageIn() {
     }
 
     fun attachSearchKey(source: UrlParams) {
-        pageSource.applyKey(source)
+        if (type.enableSearch) {
+            key.addParams(source)
+        } else {
+            throw IllegalStateException("Source $type can not do search")
+        }
     }
 }

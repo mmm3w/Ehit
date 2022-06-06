@@ -6,11 +6,10 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.crutch.Key
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.model.ehparser.Category
-import com.mitsuki.ehit.model.page.GalleryListPageIn
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class SearchKey(
+data class GalleryDataKey(
     @Key(RequestKey.SEARCH_KEY_WORD)
     var key: String = "",
     @Key(RequestKey.SEARCH_KEY_CATEGORY)
@@ -49,11 +48,11 @@ data class SearchKey(
     var isDisableTagsFilter: Boolean = false
 ) : Parcelable {
     companion object {
-        val DEFAULT = SearchKey()
+        val DEFAULT = GalleryDataKey()
 
-        fun createByQuery(query: String): SearchKey {
+        fun createByQuery(query: String): GalleryDataKey {
             //反向解析
-            val key = SearchKey()
+            val key = GalleryDataKey()
             var pageStart = -1
             var pageEnd = -1
             query.split("&").forEach {
@@ -105,7 +104,7 @@ data class SearchKey(
         }
     }
 
-    val showContent: String
+    val searchHint: String
         get() {
             if (key.isNotEmpty()) return key
             Category.DATA.forEach {
@@ -115,9 +114,6 @@ data class SearchKey(
             return ""
         }
 
-    //00000000101
-    //11111111010
-    //11111111010
     private val categoryForSearch: String
         get() = (category.inv() and Category.ALL_CATEGORY).toString()
 

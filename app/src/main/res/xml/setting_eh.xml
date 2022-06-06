@@ -19,6 +19,7 @@
     <com.mitsuki.ehit.ui.common.widget.IntListPreference
         app:key="SP_DOMAIN"
         app:title="@string/text_setting_site"
+        app:defaultValue="0"
         app:useSimpleSummaryProvider="true" />
 
     <Preference

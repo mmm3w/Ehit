@@ -11,12 +11,10 @@
 
         <deepLink app:uri="e-hentai.org" />
         <deepLink app:uri="exhentai.org" />
+        <deepLink app:uri="e-hentai.org/{part}" />
+        <deepLink app:uri="exhentai.org/{part}" />
         <deepLink app:uri="e-hentai.org/tag/{tag}" />
         <deepLink app:uri="exhentai.org/tag/{tag}" />
-        <deepLink app:uri="e-hentai.org/watched" />
-        <deepLink app:uri="exhentai.org/watched" />
-        <deepLink app:uri="e-hentai.org/popular" />
-        <deepLink app:uri="exhentai.org/popular" />
         <deepLink app:uri="e-hentai.org/uploader/{uploader}" />
         <deepLink app:uri="exhentai.org/uploader/{uploader}" />
 

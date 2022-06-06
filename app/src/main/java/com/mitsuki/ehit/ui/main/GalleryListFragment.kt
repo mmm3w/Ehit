@@ -34,7 +34,6 @@ import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
-import com.mitsuki.ehit.model.page.GalleryPageSource
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
@@ -68,14 +67,14 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     private val searchActivityLaunch: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
-            it.data?.getParcelableExtra<GalleryPageSource>(DataKey.GALLERY_PAGE_SOURCE)?.apply {
-                mViewModel.galleryListCondition(this)
-                //禁用下拉刷新效果
-                mViewModel.refreshEnable.postValue(false)
-                //新的搜索去置空列表
-                mEmptyValve.enable()
-                mMainAdapter.refresh()
-            }
+//            it.data?.getParcelableExtra<GalleryPageSource>(DataKey.GALLERY_PAGE_SOURCE)?.apply {
+//                mViewModel.galleryListCondition(this)
+//                //禁用下拉刷新效果
+//                mViewModel.refreshEnable.postValue(false)
+//                //新的搜索去置空列表
+//                mEmptyValve.enable()
+//                mMainAdapter.refresh()
+//            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +119,9 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                     is LoadState.Error -> {
                         mGate.prep(false)
                         binding?.galleryListRefresh?.isRefreshing = false
-                        mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
+                        //TODO 加载异常的时候it.prepend.endOfPaginationReached有点问题，后续再进行问题追踪
+//                        mViewModel.refreshEnable.postValue(it.prepend.endOfPaginationReached && mGate.ignore())
+                        mViewModel.refreshEnable.postValue(mGate.ignore())
                         mStateAdapter.apply {
                             //既然刷新状态让你显示，那么错误状态也别显示了
                             listState =
@@ -197,7 +198,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                         val options =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(this, it, name)
                         searchActivityLaunch.launch(Intent(this, SearchActivity::class.java).apply {
-                            putExtra(DataKey.GALLERY_PAGE_SOURCE, mViewModel.pageSource)
+//                            putExtra(DataKey.GALLERY_PAGE_SOURCE, mViewModel.pageSource)
                         }, options)
                     }
                 }
@@ -228,7 +229,8 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
-//        try {
+        /* 同时点击两个item会导致同时进入该方法，后一个进入会导致Navigation.findNavController抛出异常 */
+        /* 接收处需要防抖处理*/
         with(galleryClick) {
             Navigation.findNavController(requireView())
                 .navigate(
@@ -238,11 +240,6 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                     FragmentNavigatorExtras(target to data.itemTransitionName)
                 )
         }
-//        } catch (e: Exception) {
-        /* 同时点击两个item会导致同时进入该方法，后一个进入会导致Navigation.findNavController抛出异常 */
-        /* 不catch异常会导致事件观察链断开，后续再也无法触发事件 */
-        /* 其实在接收处通过throttleFirst防抖即可处理该问题*/
-//        }
     }
 
     private fun showPageJumpDialog() {

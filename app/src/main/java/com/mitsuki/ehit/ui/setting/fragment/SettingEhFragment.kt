@@ -9,6 +9,7 @@ import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.show
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,9 @@ class SettingEhFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var shareData: ShareData
+
+    @Inject
+    lateinit var memoryData:MemoryData
 
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -42,6 +46,10 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         findPreference<ListPreference>(ShareData.SP_DOMAIN)?.apply {
             entries = arrayOf(Site.EH, Site.EX)
             entryValues = Array(2) { it.toString() }
+            setOnPreferenceChangeListener { _, newValue ->
+                memoryData.domain = newValue.toString().toInt()
+                true
+            }
         }
 
         findPreference<Preference>("setting_site")?.setOnPreferenceClickListener { openSiteSetting() }

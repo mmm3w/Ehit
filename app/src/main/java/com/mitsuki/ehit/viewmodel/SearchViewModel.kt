@@ -3,11 +3,8 @@ package com.mitsuki.ehit.viewmodel
 import android.content.Intent
 
 import androidx.lifecycle.ViewModel
-import com.mitsuki.ehit.crutch.db.RoomData
-import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.model.entity.db.SearchHistory
-import com.mitsuki.ehit.model.entity.SearchKey
-import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.model.entity.GalleryDataType
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.dao.SearchDao
 import com.mitsuki.ehit.model.repository.Repository
@@ -26,23 +23,23 @@ class SearchViewModel @Inject constructor(
 
     @Suppress("PrivatePropertyName")
     private val HISTORY_COUNT = 20
-    lateinit var pageSource: GalleryPageSource
+    lateinit var dataType: GalleryDataType
 
-    val searchKey: SearchKey get() = pageSource.searchKeyProvider()
+//    val galleryDataKey: com.mitsuki.ehit.model.entity.GalleryDataKey get() = dataType.searchKeyProvider()
 
-    fun buildNewSource(searchKey: SearchKey): GalleryPageSource {
-        return when (pageSource) {
-            is GalleryPageSource.Normal,
-            is GalleryPageSource.Uploader,
-            is GalleryPageSource.Tag -> GalleryPageSource.Normal(searchKey)
-            is GalleryPageSource.Subscription -> GalleryPageSource.Subscription(searchKey)
-            else -> throw IllegalStateException() //TODO 有额外的一个类型需要处理
-        }
-    }
+//    fun buildNewSource(galleryDataKey: com.mitsuki.ehit.model.entity.GalleryDataKey): GalleryDataType {
+////        return when (dataType) {
+////            is GalleryDataType.Normal,
+////            is GalleryDataType.Uploader,
+////            is GalleryDataType.Tag -> GalleryDataType.Normal(galleryDataKey)
+////            is GalleryDataType.Subscription -> GalleryDataType.Subscription(galleryDataKey)
+////            else -> throw IllegalStateException() //TODO 有额外的一个类型需要处理
+////        }
+//    }
 
     fun initData(intent: Intent?) {
-        pageSource = intent?.getParcelableExtra(DataKey.GALLERY_PAGE_SOURCE)
-            ?: GalleryPageSource.DEFAULT_NORMAL
+//        dataType = intent?.getParcelableExtra(DataKey.GALLERY_PAGE_SOURCE)
+//            ?: GalleryDataType.DEFAULT_NORMAL
     }
 
     suspend fun searchHistory(): Flow<List<SearchHistory>> =

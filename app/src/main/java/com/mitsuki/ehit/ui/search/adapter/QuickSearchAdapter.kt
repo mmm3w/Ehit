@@ -12,7 +12,7 @@ import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemSearchQuickBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.QuickSearch
-import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.model.entity.GalleryDataType
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
@@ -132,7 +132,7 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
         }
     }
 
-    suspend fun addItem(name: String, key: String, type: GalleryPageSource.Type) {
+    suspend fun addItem(name: String, key: String, type: GalleryDataType.Type) {
         if (name.isEmpty() || key.isEmpty()) return
         postUpdate(NotifyData.Insert(QuickSearch(type, name, key, 0)))
     }

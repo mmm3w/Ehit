@@ -1,11 +1,15 @@
 package com.mitsuki.ehit.const
 
 object DataKey {
+    const val GALLERY_ID = "gid"
+    const val GALLERY_TOKEN = "token"
+    const val GALLERY_TYPE_PART = "part"
+    const val GALLERY_TYPE_TAG = "tag"
+    const val GALLERY_TYPE_UPLOADER = "uploader"
+
     const val GALLERY_INFO = "GALLERY_INFO"
     const val GALLERY_INDEX = "GALLERY_INDEX"
-    const val GALLERY_ID = "GALLERY_ID"
     const val GALLERY_NAME = "GALLERY_NAME"
-    const val GALLERY_TOKEN = "GALLERY_TOKEN"
     const val GALLERY_API_KEY = "GALLERY_API_KEY"
     const val GALLERY_API_UID = "GALLERY_API_UID"
 
@@ -26,6 +30,8 @@ object DataKey {
     const val GALLERY_FRAGMENT_CODE = "GALLERY_FRAGMENT_CODE"
     const val GALLERY_SEARCH_KEY = "GALLERY_SEARCH_KEY"
 
+
     const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
+
 
 }

@@ -7,7 +7,7 @@ import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.databinding.ItemSearchAdvancedBinding
 import com.mitsuki.ehit.model.ehparser.GalleryRating
-import com.mitsuki.ehit.model.entity.SearchKey
+import com.mitsuki.ehit.model.entity.GalleryDataKey
 
 class SearchAdvancedAdapter :
     SingleItemBindingAdapter<ItemSearchAdvancedBinding>(
@@ -43,7 +43,7 @@ class SearchAdvancedAdapter :
 
     override fun getItemCount(): Int = if (isVisible && isEnable) 1 else 0
 
-    private var tempKey: SearchKey? = null
+    private var tempKeyGallery: GalleryDataKey? = null
 
     private var isGalleryNameChecked = true
     private var isGalleryTagsChecked = true
@@ -121,7 +121,7 @@ class SearchAdvancedAdapter :
     }
 
     override val onViewHolderBind: ViewHolder<ItemSearchAdvancedBinding>.() -> Unit = {
-        tempKey?.apply {
+        tempKeyGallery?.apply {
             binding.searchAdvancedGalleryName.isChecked = isSearchGalleryName
             binding.searchAdvancedGalleryTags.isChecked = isSearchGalleryTags
             binding.searchAdvancedGalleryDescription.isChecked = isSearchGalleryDescription
@@ -149,8 +149,8 @@ class SearchAdvancedAdapter :
     }
 
 
-    fun getOptions(searchKey: SearchKey) {
-        with(searchKey) {
+    fun getOptions(galleryDataKey: GalleryDataKey) {
+        with(galleryDataKey) {
             isSearchGalleryName = isGalleryNameChecked
             isSearchGalleryTags = isGalleryTagsChecked
             isSearchGalleryDescription = isGalleryDescriptionChecked
@@ -168,13 +168,13 @@ class SearchAdvancedAdapter :
         }
     }
 
-    fun submitData(searchKey: SearchKey) {
-        tempKey = searchKey
+    fun submitData(galleryDataKey: GalleryDataKey) {
+        tempKeyGallery = galleryDataKey
         if (isEnable) notifyItemChanged(0)
     }
 
     fun applyRating(data: Pair<Int, Int>) {
-        tempKey?.minimumRating = data.first
+        tempKeyGallery?.minimumRating = data.first
         if (isEnable) notifyItemChanged(0)
     }
 }

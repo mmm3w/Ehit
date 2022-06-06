@@ -2,7 +2,6 @@ package com.mitsuki.ehit.ui.detail.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -11,10 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.createViewModelLazy
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +26,7 @@ import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.page.GalleryPageSource
+import com.mitsuki.ehit.model.entity.GalleryDataType
 import com.mitsuki.ehit.service.download.DownloadEvent
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity
@@ -38,7 +35,6 @@ import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.detail.adapter.*
 import com.mitsuki.ehit.ui.detail.dialog.DownloadRangeDialog
 import com.mitsuki.ehit.ui.detail.dialog.FavoriteDialog
-import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.common.widget.CircularProgressDrawable
 import com.mitsuki.ehit.ui.common.widget.HeartDrawable
 import com.mitsuki.ehit.ui.detail.dialog.RatingDialog
@@ -295,7 +291,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
         Navigation.findNavController(requireView())
             .navigate(
                 R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Tag("${tag.first}:${tag.second}")),
+                bundleOf(DataKey.GALLERY_TYPE_TAG to "${tag.first}:${tag.second}"),
                 null,
                 null
             )
@@ -312,13 +308,13 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun onUploaderNavigation() {
-//        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-//            .navigate(
-//                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-//                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Uploader(mViewModel.uploader)),
-//                null,
-//                null
-//            )
+        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(
+                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+                bundleOf(DataKey.GALLERY_TYPE_UPLOADER to mViewModel.uploader),
+                null,
+                null
+            )
     }
 
     private fun showDownloadDialog() {

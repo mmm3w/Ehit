@@ -84,8 +84,8 @@ class GalleryDetailViewModel @Inject constructor(
         //通过url打开仅有token和gid，通过点击Item打开拥有全部数据
         val info: Gallery =
             bundle.getParcelable(DataKey.GALLERY_INFO) ?: run {
-                val gid = bundle.getString("gid")?.toLongOrNull() ?: -1
-                val token = bundle.getString("token") ?: ""
+                val gid = bundle.getString(DataKey.GALLERY_ID)?.toLongOrNull() ?: -1
+                val token = bundle.getString(DataKey.GALLERY_TOKEN) ?: ""
                 Gallery(gid, token)
             }
 
