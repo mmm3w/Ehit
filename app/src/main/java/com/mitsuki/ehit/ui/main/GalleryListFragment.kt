@@ -3,7 +3,6 @@ package com.mitsuki.ehit.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -30,6 +29,7 @@ import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
+import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.save.ShareData
@@ -41,7 +41,6 @@ import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -128,7 +127,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                                 if (isRefreshEnable) ListStatesAdapter.ListState.Error((it.refresh as LoadState.Error).error)
                                 else ListStatesAdapter.ListState.None
                             if (!isRefreshEnable) {
-                                //TODO 通过toast或snackBar展示错误信息
+                                requireContext().showToast((it.refresh as LoadState.Error).error.message)
                             }
                             //判断完上面的逻辑重置状态
                             isRefreshEnable = true

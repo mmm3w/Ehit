@@ -67,6 +67,8 @@ class GalleryDetailViewModel @Inject constructor(
         get() = pagingData.detailImage(gid, token, mDetailPageIn)
             .cachedIn(viewModelScope)
 
+    var viewTranslationY: Float = 0F
+
 
     /**********************************************************************************************/
     private var mCachedInfo: GalleryDetail? = null

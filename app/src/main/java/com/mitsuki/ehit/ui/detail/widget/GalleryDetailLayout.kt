@@ -30,12 +30,11 @@ class GalleryDetailLayout @JvmOverloads constructor(
     private var mCurrentOffset = 0f
 
     private var mExtraScrolled = 0f
-//    private var mTitleOffsetRange = 0
 
     private var mTopToPreview = 0f
 
     private var mBarMoveEvent: ((Float) -> Unit)? = null
-
+    private var stateBack: ((Float) -> Unit)? = null
 
     init {
         addView(mInfoView)
@@ -112,6 +111,7 @@ class GalleryDetailLayout @JvmOverloads constructor(
                 }
                 mInfoView.translationY = mCurrentOffset
                 mPreviewView.translationY = mCurrentOffset
+                stateBack?.invoke(mCurrentOffset)
                 moveTitle()
             }
         }
@@ -132,6 +132,7 @@ class GalleryDetailLayout @JvmOverloads constructor(
                 }
                 mInfoView.translationY = mCurrentOffset
                 mPreviewView.translationY = mCurrentOffset
+                stateBack?.invoke(mCurrentOffset)
                 moveTitle()
             }
         }
@@ -167,9 +168,20 @@ class GalleryDetailLayout @JvmOverloads constructor(
         return action?.run { mPreviewView.apply(this) } ?: mPreviewView
     }
 
-    fun bindbarMove(action: ((Float) -> Unit)? = null) {
+    fun restoreTranslationY(value: Float) {
+        mCurrentOffset = value
+        mInfoView.translationY = mCurrentOffset
+        mPreviewView.translationY = mCurrentOffset
+    }
+
+    fun bindBarMove(action: ((Float) -> Unit)? = null) {
         mBarMoveEvent = action
     }
+
+    fun bindState(action: ((Float) -> Unit)? = null) {
+        stateBack = action
+    }
+
 
 //    fun setListener(pageJumpListener: (() -> Unit)? = null) {
 //        pageJumpListener?.apply {

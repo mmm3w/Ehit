@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
+import androidx.fragment.app.createViewModelLazy
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -51,7 +52,8 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     FragmentGalleryDetailBinding::bind
 ) {
 
-    private val mViewModel: GalleryDetailViewModel by viewModels()
+    private val mViewModel: GalleryDetailViewModel
+            by createViewModelLazy(GalleryDetailViewModel::class, { viewModelStore })
 
     private val mStatesAdapter by lazy { GalleryDetailLoadStatesAdapter { mViewModel.loadInfo() } }
     private val mHeader: GalleryDetailHeader by lazy { GalleryDetailHeader() }
@@ -187,9 +189,13 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
                 adapter = mPreviewAdapter
             }
 
-            bindbarMove {
+            bindBarMove {
                 binding?.topBar?.topTitleLayout?.translationY =
                     it.coerceIn(-(dp2px(56f) + requireActivity().statusBarHeight()), 0f)
+            }
+            restoreTranslationY(mViewModel.viewTranslationY)
+            bindState {
+                mViewModel.viewTranslationY = it
             }
         }
 

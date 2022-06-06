@@ -8,6 +8,18 @@
         android:id="@+id/gallery_list_fragment"
         android:name="com.mitsuki.ehit.ui.main.GalleryListFragment"
         android:label="GalleryListFragment">
+
+        <deepLink app:uri="e-hentai.org" />
+        <deepLink app:uri="exhentai.org" />
+        <deepLink app:uri="e-hentai.org/tag/{tag}" />
+        <deepLink app:uri="exhentai.org/tag/{tag}" />
+        <deepLink app:uri="e-hentai.org/watched" />
+        <deepLink app:uri="exhentai.org/watched" />
+        <deepLink app:uri="e-hentai.org/popular" />
+        <deepLink app:uri="exhentai.org/popular" />
+        <deepLink app:uri="e-hentai.org/uploader/{uploader}" />
+        <deepLink app:uri="exhentai.org/uploader/{uploader}" />
+
         <action
             android:id="@+id/action_gallery_list_fragment_to_gallery_detail_fragment"
             app:destination="@id/gallery_detail_fragment" />
