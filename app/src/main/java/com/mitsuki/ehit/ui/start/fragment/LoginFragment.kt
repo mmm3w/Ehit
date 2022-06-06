@@ -2,7 +2,6 @@ package com.mitsuki.ehit.ui.start.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.createViewModelLazy
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,11 +12,12 @@ import com.mitsuki.ehit.crutch.OpenGate
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.observe
-import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.databinding.FragmentLoginBinding
-import com.mitsuki.ehit.ui.main.MainActivity
-import com.mitsuki.ehit.ui.temp.adapter.*
+import com.mitsuki.ehit.ui.start.adapter.LoginAccountAdapter
+import com.mitsuki.ehit.ui.start.adapter.LoginCookieAdapter
+import com.mitsuki.ehit.ui.start.adapter.LoginDomain
+import com.mitsuki.ehit.ui.start.adapter.LoginExtend
 import com.mitsuki.ehit.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

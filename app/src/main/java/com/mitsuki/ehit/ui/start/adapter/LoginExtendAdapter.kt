@@ -1,8 +1,7 @@
-package com.mitsuki.ehit.ui.temp.adapter
+package com.mitsuki.ehit.ui.start.adapter
 
 import com.mitsuki.armory.adapter.SingleItemBindingAdapter
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post

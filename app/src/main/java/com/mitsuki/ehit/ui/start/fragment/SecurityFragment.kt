@@ -1,6 +1,5 @@
-package com.mitsuki.ehit.ui.temp.fragment
+package com.mitsuki.ehit.ui.start.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.biometric.BiometricManager
@@ -8,15 +7,12 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
-import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.FragmentSecurityBinding
-import com.mitsuki.ehit.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

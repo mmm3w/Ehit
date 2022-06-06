@@ -28,8 +28,8 @@ import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
+import kotlin.IllegalArgumentException
 
 @HiltViewModel
 class GalleryDetailViewModel @Inject constructor(
@@ -81,11 +81,15 @@ class GalleryDetailViewModel @Inject constructor(
         if (bundle == null) throw IllegalStateException()
         //通过url打开仅有token和gid，通过点击Item打开拥有全部数据
         val info: Gallery =
-            bundle.getParcelable(DataKey.GALLERY_INFO) ?: throw IllegalStateException()
+            bundle.getParcelable(DataKey.GALLERY_INFO) ?: run {
+                val gid = bundle.getString("gid")?.toLongOrNull() ?: -1
+                val token = bundle.getString("token") ?: ""
+                Gallery(gid, token)
+            }
 
         this.gid = info.gid
         this.token = info.token
-        if (gid == -1L || token.isEmpty()) throw IllegalStateException()
+        if (gid == -1L || token.isEmpty()) throw IllegalStateException("error detail info. gid:$gid token:$token")
 
         _infoStates.setNext { it.copy(header = DetailHeader(info)) }
     }

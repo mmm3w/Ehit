@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.temp.adapter
+package com.mitsuki.ehit.ui.start.adapter
 
 import android.view.View
 import com.mitsuki.armory.adapter.SingleItemBindingAdapter

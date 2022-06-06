@@ -3,6 +3,7 @@ package com.mitsuki.ehit.ui.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -38,6 +39,7 @@ import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
@@ -73,7 +75,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        (requireActivity() as? MainActivity)?.enableDrawer()
+        (requireActivity() as? MainActivity)?.enableDrawer()
         mViewModel.initData(arguments)
 
         mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
@@ -130,11 +132,6 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 }
             }
         }
-
-        lifecycleScope.launchWhenCreated {
-            mViewModel.galleryList.collect { mEmptyValve.submitData(lifecycle, mMainAdapter, it) }
-        }
-
 
         mViewModel.searchBarText.observe(this) {
             binding?.topBar?.topSearchText?.text = it
@@ -206,6 +203,10 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 }
             }
         }
+
+        mViewModel.galleryList.observe(viewLifecycleOwner) {
+            runBlocking { mEmptyValve.submitData(lifecycle, mMainAdapter, it) }
+        }
     }
 
     private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
@@ -240,6 +241,4 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             mMainAdapter.refresh()
         }.show(childFragmentManager, "QuickSearchPanel")
     }
-
-
 }

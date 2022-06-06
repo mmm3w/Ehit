@@ -34,9 +34,10 @@ class GalleryListViewModel @Inject constructor(
     val pageSource: GalleryPageSource get() = mListPageIn.pageSource
     val maxPage get() = mListPageIn.maxPage
 
-    val galleryList: Flow<PagingData<Gallery>> by lazy {
+    val galleryList: LiveData<PagingData<Gallery>> by lazy {
         pagingData.galleryList(mListPageIn)
             .cachedIn(viewModelScope)
+            .asLiveData()
     }
 
     fun initData(bundle: Bundle?) {

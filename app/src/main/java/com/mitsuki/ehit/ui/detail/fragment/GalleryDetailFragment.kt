@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -202,23 +203,23 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
         mOperating.receiver<String>("operating")
             .isClick()
-            .observe(this, this::onOperatingEvent)
+            .observe(viewLifecycleOwner, this::onOperatingEvent)
 
         mTag.receiver<Pair<String, String>>("tag")
             .isClick()
-            .observe(this, this::onTagNavigation)
+            .observe(viewLifecycleOwner, this::onTagNavigation)
 
         mComment.receiver<String>("comment")
             .isClick()
-            .observe(this) { goComment() }
+            .observe(viewLifecycleOwner) { goComment() }
 
         mCommentHint.receiver<String>("comment")
             .isClick()
-            .observe(this) { goComment() }
+            .observe(viewLifecycleOwner) { goComment() }
 
         mMainAdapter.receiver<ImageSource>("detail")
             .isClick()
-            .observe(this, this::onPreviewClick)
+            .observe(viewLifecycleOwner, this::onPreviewClick)
 
         mViewModel.receiver<String>("toast").observe(viewLifecycleOwner) {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
