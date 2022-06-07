@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.crutch.extensions
 
 import java.io.File
-import java.lang.Exception
 
 
 /**
@@ -21,10 +20,10 @@ fun File.ensureDir() {
  * 清除文件夹以及其子文件
  * 也可用于直接删除文件
  */
-fun File.clearDir() {
+fun File.clear() {
     if (exists()) {
         if (isDirectory) {
-            listFiles()?.forEach { it.clearDir() }
+            listFiles()?.forEach { it.clear() }
         }
         delete()
     }

@@ -1,7 +1,7 @@
 package com.mitsuki.ehit.model.convert
 
 import com.mitsuki.armory.httprookie.convert.Convert
-import com.mitsuki.ehit.crutch.extensions.clearDir
+import com.mitsuki.ehit.crutch.extensions.clear
 import com.mitsuki.ehit.crutch.extensions.ensureDir
 import okhttp3.Response
 import okhttp3.internal.headersContentLength
@@ -13,7 +13,7 @@ class ImageDownloadConcert(private val saveFile: File) : Convert<File> {
         if (contentLength <= 0) throw IllegalStateException()
 
         saveFile.parentFile?.ensureDir()
-        saveFile.clearDir()
+        saveFile.clear()
 
         var readLenght: Long
         (response.body?.byteStream() ?: throw IllegalStateException()).use { inputStream ->
@@ -23,7 +23,7 @@ class ImageDownloadConcert(private val saveFile: File) : Convert<File> {
         }
 
         if (readLenght != contentLength) {
-            saveFile.clearDir()
+            saveFile.clear()
             throw IllegalStateException()
         }
 

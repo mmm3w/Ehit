@@ -1,7 +1,6 @@
 package com.mitsuki.ehit.ui.download.activity
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
@@ -14,9 +13,8 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
-import com.mitsuki.ehit.crutch.windowController
 import com.mitsuki.ehit.databinding.ActivityDownloadBinding
-import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultCallback
+import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultContract
 import com.mitsuki.ehit.model.entity.DownloadListInfo
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
 import com.mitsuki.ehit.ui.download.ControlAnimate
@@ -24,8 +22,8 @@ import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
 import com.mitsuki.ehit.ui.download.adapter.ListItemTouchCallback
 import com.mitsuki.ehit.service.download.DownloadBroadcast
 import com.mitsuki.ehit.service.download.DownloadEvent
-import com.mitsuki.ehit.service.download.DownloadService
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
+import com.mitsuki.ehit.ui.download.dialog.ExportProgressDialog
 import com.mitsuki.ehit.ui.main.MainActivity
 import com.mitsuki.ehit.viewmodel.DownloadViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,8 +41,15 @@ class DownloadActivity : BaseActivity() {
     private val mMainAdapter by lazy { DownloadAdapter() }
     private val mAdapter by lazy { ConcatAdapter(mStatesAdapter, mMainAdapter) }
 
+    private val mExportZip = registerForActivityResult(ExportZipActivityResultContract()) {
+        val uri = it.second
+        val folder = it.first
+        if (uri == null) {
+            return@registerForActivityResult
+        }
 
-    private val mExportZip = ExportZipActivityResultCallback(this, activityResultRegistry)
+        ExportProgressDialog(uri, folder).show(supportFragmentManager, "export")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +111,7 @@ class DownloadActivity : BaseActivity() {
             when (it) {
                 0 -> openRead(info)
                 1 -> openDetail(info)
-                2 -> mExportZip.pack(info.title, info.gid, info.token)
+                2 -> mExportZip.launch(arrayOf(info.title, info.gid.toString(), info.token))
                 3 -> {
                     //TODO
                 }
