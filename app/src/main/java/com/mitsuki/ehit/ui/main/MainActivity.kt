@@ -4,10 +4,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.Window
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -33,6 +35,7 @@ class MainActivity : BaseActivity() {
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     private var mExitTimestamp = 0L
+    private var lastCheckItem: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -70,6 +73,16 @@ class MainActivity : BaseActivity() {
             if (handle) binding.mainDrawer.close()
             handle
         }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            lastCheckItem = when (destination.id) {
+                R.id.favourite_fragment -> binding.mainNavigation.checkedItem
+                else -> {
+                    lastCheckItem?.apply { binding.mainNavigation.setCheckedItem(this) }
+                    null
+                }
+            }
+        }
     }
 
     override fun onUiMode(isNightMode: Boolean) {
@@ -80,11 +93,6 @@ class MainActivity : BaseActivity() {
             statusBarColor = Color.TRANSPARENT,
             barFit = false
         )
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        navController.handleDeepLink(intent)
     }
 
     override fun onBackPressed() {
