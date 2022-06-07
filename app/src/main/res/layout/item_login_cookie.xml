@@ -8,9 +8,10 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/login_ipb_member_id_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginHorizontal="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,7 +19,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_ipb_member_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:background="@color/transparent"
             android:hint="@string/hint_ipb_member_id"
             android:inputType="text" />
@@ -28,7 +29,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/login_ipb_pass_hash_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginHorizontal="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +39,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_ipb_pass_hash"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:background="@color/transparent"
 
             android:hint="@string/hint_ipb_pass_hash"
@@ -48,7 +49,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/login_igneous_layout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:layout_marginHorizontal="@dimen/dp_16"
 
         android:layout_marginTop="@dimen/dp_16"
@@ -60,7 +61,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/login_igneous"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:background="@color/transparent"
             android:hint="@string/hint_igneous"
             android:inputType="text" />
@@ -69,14 +70,13 @@
 
     <Button
         android:id="@+id/login_login_btn"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
         android:layout_weight="1"
-        android:background="@drawable/background_primary_button"
-        android:minHeight="0dp"
         android:text="@string/text_login"
-        android:textSize="@dimen/sp_16"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
