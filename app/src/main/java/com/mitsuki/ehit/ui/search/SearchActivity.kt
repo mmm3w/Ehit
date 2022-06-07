@@ -16,12 +16,14 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
+import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ActivitySearchBinding
+import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.ui.search.adapter.*
 import com.mitsuki.ehit.viewmodel.SearchViewModel
@@ -87,7 +89,7 @@ class SearchActivity : BaseActivity() {
         mHistoryAdapter.receiver<SearchWordEvent>("his").observe(this, this::onItemEvent)
         mAdvancedAdapter.receiver<Int>("rating").observe(this) { onRatingEvent() }
 
-//        mViewModel.galleryDataKey.apply { onSearchUpdate(this) }
+        mViewModel.searchKey.apply { onSearchUpdate(this) }
 
         binding.searchList.apply {
             layoutManager = GridLayoutManager(this@SearchActivity, 2).apply {
@@ -123,15 +125,15 @@ class SearchActivity : BaseActivity() {
         }
     }
 
-//    override fun onUiMode(isNightMode: Boolean) {
-//        controller.window(
-//            navigationBarLight = !isNightMode,
-//            statusBarLight = !isNightMode,
-//            navigationBarColor = color(R.color.navigation_bar_color),
-//            statusBarColor = color(R.color.status_bar_color),
-//            barFit = false
-//        )
-//    }
+    override fun onUiMode(isNightMode: Boolean) {
+        controller.window(
+            navigationBarLight = !isNightMode,
+            statusBarLight = !isNightMode,
+            navigationBarColor = color(R.color.navigation_bar_color),
+            statusBarColor = color(R.color.status_bar_color),
+            barFit = false
+        )
+    }
 
     private fun onItemEvent(event: SearchWordEvent) {
         lifecycleScope.launch {
@@ -144,7 +146,7 @@ class SearchActivity : BaseActivity() {
 
     private fun onSearchEvent(text: String) {
         lifecycleScope.launch { mViewModel.saveSearch(text) }
-        finishWithResult(text)
+        finishWithResult(text.trim())
     }
 
     private fun onRatingEvent() {
@@ -164,7 +166,7 @@ class SearchActivity : BaseActivity() {
         mAdvancedAdapter.isEnable = isAdvancedMode
     }
 
-    private fun onSearchUpdate(keyGallery: com.mitsuki.ehit.model.entity.GalleryDataKey) {
+    private fun onSearchUpdate(keyGallery: GalleryDataKey) {
         binding.searchInput.apply {
             if (keyGallery.key.isNotEmpty()) {
                 setText(keyGallery.key)
@@ -176,8 +178,8 @@ class SearchActivity : BaseActivity() {
         mAdvancedAdapter.submitData(keyGallery)
     }
 
-    private fun obtainSearchKey(text: String): com.mitsuki.ehit.model.entity.GalleryDataKey {
-        return com.mitsuki.ehit.model.entity.GalleryDataKey(text, mCategoryAdapter.categoryCode()).apply {
+    private fun obtainSearchKey(text: String): GalleryDataKey {
+        return GalleryDataKey(text, mCategoryAdapter.categoryCode()).apply {
             isAdvancedEnable = mAdvancedSwitch.isChecked
             if (isAdvancedEnable)
                 mAdvancedAdapter.getOptions(this)
@@ -186,8 +188,7 @@ class SearchActivity : BaseActivity() {
 
     private fun finishWithResult(text: String) {
         setResult(Activity.RESULT_OK, Intent().apply {
-            val searchKey = obtainSearchKey(text)
-//            putExtra(DataKey.GALLERY_PAGE_SOURCE, mViewModel.buildNewSource(searchKey))
+            putExtra(DataKey.GALLERY_SEARCH_KEY, obtainSearchKey(text))
         })
         finish()
     }

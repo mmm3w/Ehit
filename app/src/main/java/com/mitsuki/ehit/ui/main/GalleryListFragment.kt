@@ -34,6 +34,8 @@ import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
+import com.mitsuki.ehit.model.activityresult.GallerySearchActivityResultContract
+import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.ui.search.SearchActivity
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
@@ -64,27 +66,22 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     @Inject
     lateinit var shareData: ShareData
 
-    private val searchActivityLaunch: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode != Activity.RESULT_OK) return@registerForActivityResult
-//            it.data?.getParcelableExtra<GalleryPageSource>(DataKey.GALLERY_PAGE_SOURCE)?.apply {
-//                mViewModel.galleryListCondition(this)
-//                //禁用下拉刷新效果
-//                mViewModel.refreshEnable.postValue(false)
-//                //新的搜索去置空列表
-//                mEmptyValve.enable()
-//                mMainAdapter.refresh()
-//            }
+    private val searchActivityLaunch: ActivityResultLauncher<GalleryDataKey> =
+        registerForActivityResult(GallerySearchActivityResultContract()) {
+            it?.apply {
+                mViewModel.updateSearchKey(this)
+                //禁用下拉刷新效果
+                mViewModel.refreshEnable.postValue(false)
+                //新的搜索去置空列表
+                mEmptyValve.enable()
+                mMainAdapter.refresh()
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mViewModel.initData(arguments)
-
-        mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
-            .isClick()
-            .observe(this, ::onDetailNavigation)
 
         lifecycleScope.launchWhenCreated {
             mMainAdapter.loadStateFlow.collect {
@@ -137,18 +134,6 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 }
             }
         }
-
-        mViewModel.searchBarText.observe(this) {
-            binding?.topBar?.topSearchText?.text = it
-        }
-
-        mViewModel.searchBarHint.observe(this) {
-            binding?.topBar?.topSearchText?.hint = it
-        }
-
-        mViewModel.refreshEnable.observe(this) {
-            binding?.galleryListRefresh?.isEnabled = it
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -193,13 +178,13 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 }
 
                 setOnClickListener {
-                    requireActivity().apply {
+                    mViewModel.currentSearchKey?.also { key ->
                         val name = string(R.string.transition_name_gallery_list_toolbar)
                         val options =
-                            ActivityOptionsCompat.makeSceneTransitionAnimation(this, it, name)
-                        searchActivityLaunch.launch(Intent(this, SearchActivity::class.java).apply {
-//                            putExtra(DataKey.GALLERY_PAGE_SOURCE, mViewModel.pageSource)
-                        }, options)
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                requireActivity(), it, name
+                            )
+                        searchActivityLaunch.launch(key, options)
                     }
                 }
             }
@@ -219,6 +204,18 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                     mMainAdapter.refresh()
                 }
             }
+        }
+
+        mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
+            .isClick()
+            .observe(viewLifecycleOwner, ::onDetailNavigation)
+
+        mViewModel.searchBarText.observe(viewLifecycleOwner) {
+            binding?.topBar?.topSearchText?.text = it
+        }
+
+        mViewModel.refreshEnable.observe(viewLifecycleOwner) {
+            binding?.galleryListRefresh?.isEnabled = it
         }
 
         lifecycleScope.launchWhenStarted {
@@ -251,8 +248,8 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun showQuickSearchPanel() {
-        QuickSearchPanel {
-            mViewModel.galleryListCondition(it)
+        QuickSearchPanel { type, key ->
+            mViewModel.galleryListCondition(type, key)
             mMainAdapter.refresh()
         }.show(childFragmentManager, "QuickSearchPanel")
     }

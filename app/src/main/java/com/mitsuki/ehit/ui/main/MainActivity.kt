@@ -3,6 +3,7 @@ package com.mitsuki.ehit.ui.main
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
@@ -55,7 +56,7 @@ class MainActivity : BaseActivity() {
                 R.id.nav_popular ->
                     navController.navigate(
                         R.id.action_global_gallery_list_fragment,
-                        bundleOf(DataKey.GALLERY_SEARCH_KEY to "popular")
+                        bundleOf(DataKey.GALLERY_TYPE_PART to "popular")
                     )
                 R.id.nav_favourite -> navController.navigate(R.id.action_global_favourite_fragment)
                 R.id.nav_download ->
@@ -81,6 +82,10 @@ class MainActivity : BaseActivity() {
         )
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navController.handleDeepLink(intent)
+    }
 
     override fun onBackPressed() {
         //不确定这样使用是否正确

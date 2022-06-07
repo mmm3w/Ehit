@@ -30,7 +30,7 @@ object Site {
 
     val galleryListByPopular: String get() = "$currentDomain/popular"
 
-    fun galleryListByTag(key: String): String = "$currentDomain/tag/$key"
+    fun galleryListByTag(key: String): String = "$currentDomain/tag/${key.trim().replace(" ", "+")}"
 
     fun galleryListByUploader(name: String): String = "$currentDomain/uploader/$name"
 

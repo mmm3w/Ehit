@@ -99,8 +99,7 @@ class RepositoryImpl @Inject constructor(
             val data = client
                 .get<PageInfo<Gallery>>(pageIn.targetUrl) {
                     convert = mGalleryListConvert
-                    pageIn.attachPage(this, page)
-                    pageIn.attachSearchKey(this)
+                    pageIn.attachParams(this, page)
                 }
                 .execute()
 

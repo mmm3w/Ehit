@@ -4,16 +4,16 @@ import androidx.room.*
 import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
-import com.mitsuki.ehit.model.entity.GalleryDataType
+import com.mitsuki.ehit.model.entity.GalleryDataMeta
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class SearchDao {
 
     @Transaction
-    open suspend fun saveQuick(name: String, key: String, type: GalleryDataType.Type) {
+    open suspend fun saveQuick(name: String, key: String, meta: GalleryDataMeta.Type) {
         val count = quickCount()
-        insertQuick(QuickSearch(type, name, key, count + 1))
+        insertQuick(QuickSearch(meta, name, key, count + 1))
     }
 
     @Transaction
@@ -42,11 +42,11 @@ abstract class SearchDao {
     @Query("SELECT COUNT(*) FROM ${DBValue.TABLE_QUICK_SEARCH}")
     abstract suspend fun quickCount(): Int
 
-    @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:type")
-    abstract suspend fun queryQuick(key: String, type: GalleryDataType.Type): List<QuickSearch>
+    @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:meta")
+    abstract suspend fun queryQuick(key: String, meta: GalleryDataMeta.Type): List<QuickSearch>
 
-    @Query("DELETE FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:type")
-    abstract suspend fun deleteQuick(key: String, type: GalleryDataType.Type)
+    @Query("DELETE FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:meta")
+    abstract suspend fun deleteQuick(key: String, meta: GalleryDataMeta.Type)
 
     @Query("SELECT _id FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE sort=:sort")
     abstract suspend fun queryQuickIDBySort(sort: Int): Long

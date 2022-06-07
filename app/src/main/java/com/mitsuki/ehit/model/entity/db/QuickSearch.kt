@@ -5,14 +5,14 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mitsuki.ehit.const.DBValue
-import com.mitsuki.ehit.model.entity.GalleryDataType
+import com.mitsuki.ehit.model.entity.GalleryDataMeta
 
 @Entity(
     tableName = DBValue.TABLE_QUICK_SEARCH,
     indices = [Index(value = ["type", "key"], unique = true)]
 )
 data class QuickSearch(
-    @ColumnInfo(name = "type") val type: GalleryDataType.Type,
+    @ColumnInfo(name = "type") val type: GalleryDataMeta.Type,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "key") val key: String,
     @ColumnInfo(name = "sort") var sort: Int,

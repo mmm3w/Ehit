@@ -4,28 +4,25 @@ import com.mitsuki.armory.httprookie.request.UrlParams
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.model.entity.GalleryDataKey
-import com.mitsuki.ehit.model.entity.GalleryDataType
+import com.mitsuki.ehit.model.entity.GalleryDataMeta
 
 class GalleryListPageIn(
-    var type: GalleryDataType,
-    var key: GalleryDataKey
+    var meta: GalleryDataMeta
 ) : GeneralPageIn() {
 
-    val targetUrl: String get() = type.targetUrl
-    val hintContent: String get() = if (type.enableSearch && key.searchHint.isNotEmpty()) key.searchHint else type.hint
+    val targetUrl: String get() = meta.targetUrl
+    val hintContent: String get() = meta.hint
 
     var maxPage: Int = 0
 
-    fun attachPage(source: UrlParams, index: Int) {
-        if (index == START) return
-        source.urlParams(RequestKey.PAGE, index.toString())
+    fun attachParams(source: UrlParams, index: Int) {
+        if (index != START) {
+            source.urlParams(RequestKey.PAGE, index.toString())
+        }
+        meta.key?.addParams(source)
     }
 
-    fun attachSearchKey(source: UrlParams) {
-        if (type.enableSearch) {
-            key.addParams(source)
-        } else {
-            throw IllegalStateException("Source $type can not do search")
-        }
+    fun updateKey(key: GalleryDataKey) {
+        meta.key = key
     }
 }

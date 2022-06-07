@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.viewmodel
 
+import android.content.Intent
 import android.os.Bundle
 
 import androidx.lifecycle.*
@@ -8,7 +9,7 @@ import androidx.paging.cachedIn
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.Gallery
-import com.mitsuki.ehit.model.entity.GalleryDataType
+import com.mitsuki.ehit.model.entity.GalleryDataMeta
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.repository.PagingRepository
@@ -29,9 +30,7 @@ class GalleryListViewModel @Inject constructor(
 
     val refreshEnable: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
     val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
-    val searchBarHint: MutableLiveData<String> by lazy { MutableLiveData() }
 
-    //    val pageSource: GalleryPageSource get() = mListPageIn.pageSource
     val maxPage get() = mListPageIn.maxPage
 
     val galleryList: Flow<PagingData<Gallery>> by lazy {
@@ -39,60 +38,69 @@ class GalleryListViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     }
 
-    fun initData(bundle: Bundle?) {
+    val currentSearchKey: GalleryDataKey?
+        get() {
+            return when (val meta = mListPageIn.meta) {
+                is GalleryDataMeta.Normal,
+                is GalleryDataMeta.Subscription -> meta.key
+                is GalleryDataMeta.Uploader -> GalleryDataKey("uploader:${meta.name}")
+                is GalleryDataMeta.Tag -> GalleryDataKey(meta.tag)
+                else -> null
+            }
+        }
 
+    fun initData(bundle: Bundle?) {
         when (bundle?.getString(DataKey.GALLERY_TYPE_PART)) {
             "watched" -> {
-                mListPageIn =
-                    GalleryListPageIn(GalleryDataType.DEFAULT_SUBSCRIPTION, GalleryDataKey.DEFAULT)
+                val sourceIntent =
+                    bundle.get("android-support-nav:controller:deepLinkIntent") as? Intent
+                val params = sourceIntent?.data?.path ?: ""
+                initListPageIn(GalleryDataMeta.Type.SUBSCRIPTION, params)
                 return
             }
             "popular" -> {
-                mListPageIn = GalleryListPageIn(GalleryDataType.DEFAULT_POPULAR, GalleryDataKey.DEFAULT)
+                initListPageIn(GalleryDataMeta.Type.WHATS_HOT, "")
                 return
             }
         }
 
         val tag = bundle?.getString(DataKey.GALLERY_TYPE_TAG)
         if (!tag.isNullOrEmpty()) {
-            mListPageIn = GalleryListPageIn(GalleryDataType.Tag(tag), GalleryDataKey())
+            initListPageIn(GalleryDataMeta.Type.TAG, tag)
             return
         }
 
         val uploader = bundle?.getString(DataKey.GALLERY_TYPE_UPLOADER)
-        if (!uploader.isNullOrEmpty()){
-            mListPageIn = GalleryListPageIn(GalleryDataType.Uploader(uploader), GalleryDataKey.DEFAULT)
+        if (!uploader.isNullOrEmpty()) {
+            initListPageIn(GalleryDataMeta.Type.UPLOADER, uploader)
             return
         }
 
-        mListPageIn = GalleryListPageIn(GalleryDataType.DEFAULT_NORMAL, GalleryDataKey.DEFAULT)
+        val sourceIntent =
+            bundle?.get("android-support-nav:controller:deepLinkIntent") as? Intent
+        val params = sourceIntent?.data?.query ?: ""
+        initListPageIn(GalleryDataMeta.Type.NORMAL, params)
+    }
 
-
-//        val key = bundle?.getParcelable(DataKey.GALLERY_SEARCH_KEY) ?: DataKey.DEFAULT
-
-
-//        val source: GalleryPageSource = bundle?.getParcelable(DataKey.GALLERY_PAGE_SOURCE)
-//            ?: GalleryPageSource.DEFAULT_NORMAL
-//
-//        mListPageIn = GalleryListPageIn(source)
-//        searchBarText.postValue(source.showContent)
-//
-//        when (source) {
-//            is GalleryPageSource.Normal,
-//            is GalleryPageSource.Uploader,
-//            is GalleryPageSource.Tag -> searchBarHint.postValue(string(R.string.hint_search))
-//            is GalleryPageSource.Subscription -> searchBarHint.postValue(string(R.string.hint_subscription))
-//            is GalleryPageSource.Popular -> searchBarHint.postValue(string(R.string.hint_popular))
-//        }
+    private fun initListPageIn(type: GalleryDataMeta.Type, key: String) {
+        mListPageIn = GalleryListPageIn(GalleryDataMeta.create(type, key))
+        searchBarText.postValue(mListPageIn.hintContent)
     }
 
     fun galleryListPage(page: Int) {
         mListPageIn.targetPage = page
     }
 
-    fun galleryListCondition(source: GalleryDataType) {
-//        galleryListPage(1)
-//        mListPageIn.pageSource = source
-//        searchBarText.postValue(mListPageIn.showContent)
+    fun galleryListCondition(type: GalleryDataMeta.Type, key: String) {
+        galleryListPage(1)
+        mListPageIn.meta = GalleryDataMeta.create(type, key)
+        searchBarText.postValue(mListPageIn.hintContent)
     }
+
+    fun updateSearchKey(key: GalleryDataKey) {
+        galleryListPage(1)
+        mListPageIn.updateKey(key)
+        searchBarText.postValue(mListPageIn.hintContent)
+    }
+
 }

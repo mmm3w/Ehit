@@ -26,7 +26,6 @@ import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
 import com.mitsuki.ehit.model.entity.ImageSource
-import com.mitsuki.ehit.model.entity.GalleryDataType
 import com.mitsuki.ehit.service.download.DownloadEvent
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
 import com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity
