@@ -214,7 +214,7 @@
     <string name="text_zoom_original">原始尺寸</string>
     <string name="text_zoom_fix_scale">固定缩放</string>
 
-    <string name="text_sign_out_desc">确定要退出登录吗？\n在退出登录后您需要重新APP。</string>
+    <string name="text_sign_out_desc">确定要退出登录吗？</string>
     <string name="text_login_desc">请重启APP进行登录操作。</string>
 
     <string name="text_info_gid">GID</string>

@@ -82,6 +82,14 @@
         app:popUpTo="@id/gallery_list_fragment"
         app:popUpToInclusive="true" />
 
+    <action
+        android:id="@+id/action_global_gallery_detail_fragment"
+        app:destination="@id/gallery_detail_fragment"
+        app:enterAnim="@animator/nav_default_enter_anim"
+        app:exitAnim="@animator/nav_default_exit_anim"
+        app:popEnterAnim="@animator/nav_default_pop_enter_anim"
+        app:popExitAnim="@animator/nav_default_pop_exit_anim" />
+
     <navigation
         android:id="@+id/nav_first_time"
         app:startDestination="@id/disclaimer_fragment">

@@ -67,6 +67,7 @@ class CookieManager @Inject constructor(
     }
 
     fun clearCookie() {
+        mLoginMark = 0
         // 清除内存缓存
         mMemoryCache.clear()
         // 清除数据库缓存
@@ -107,6 +108,22 @@ class CookieManager @Inject constructor(
         return mMemoryCache.filterList { domain == url }
     }
 
+    fun cookieSummary(): Map<String, String> {
+        return HashMap<String, String>().apply {
+            mMemoryCache.forEach {
+                if (it.name == "ipb_member_id") {
+                    this["ipb_member_id"] = it.value
+                }
+                if (it.name == "ipb_pass_hash") {
+                    this["ipb_pass_hash"] = it.value
+                }
+                if (it.name == "igneous") {
+                    this["igneous"] = it.value
+                }
+            }
+        }
+    }
+
     private fun clearExpiredCookie() {
         val current = System.currentTimeMillis()
         val mIterator = mMemoryCache.iterator()
@@ -144,7 +161,6 @@ class CookieManager @Inject constructor(
             } else {
                 mLoginMark and 3
             }
-
         }
     }
 

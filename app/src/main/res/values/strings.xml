@@ -247,7 +247,7 @@
     <string name="text_zoom_original">Original size</string>
     <string name="text_zoom_fix_scale">Fix scale</string>
 
-    <string name="text_sign_out_desc">Do you really want to sign out?\n You need to restart the app after sign out.</string>
+    <string name="text_sign_out_desc">Do you really want to sign out?</string>
     <string name="text_login_desc">Please restart the app to login.</string>
 
     <string name="text_info_gid">GID</string>

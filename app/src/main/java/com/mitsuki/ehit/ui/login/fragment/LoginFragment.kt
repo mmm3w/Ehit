@@ -1,8 +1,10 @@
 package com.mitsuki.ehit.ui.login.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.createViewModelLazy
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,11 +27,6 @@ import com.mitsuki.ehit.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/**
- * 登录
- * cookie与账号密码登录合并
- * web登录用新activity
- */
 @AndroidEntryPoint
 class LoginFragment :
     BindingFragment<GeneralRecyclerViewBinding>(
@@ -103,7 +100,12 @@ class LoginFragment :
             is MainActivity -> Navigation.findNavController(requireView())
                 .navigate(R.id.action_global_first_time_back)
 
-            is LoginActivity -> requireActivity().finish()
+            is LoginActivity -> {
+                requireActivity().apply {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+            }
         }
     }
 }

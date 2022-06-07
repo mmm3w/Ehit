@@ -22,16 +22,16 @@
         app:defaultValue="0"
         app:useSimpleSummaryProvider="true" />
 
-    <Preference
-        android:key="setting_site"
-        app:icon="@drawable/ic_baseline_web_24"
-        app:persistent="false"
-        app:title="打开站点设置" />
+<!--    <Preference-->
+<!--        android:key="setting_site"-->
+<!--        app:icon="@drawable/ic_baseline_web_24"-->
+<!--        app:persistent="false"-->
+<!--        app:title="打开站点设置" />-->
 
 
-    <SwitchPreferenceCompat
-        app:key="SP_SHOW_JP_TITLE"
-        app:title="显示日文标题" />
+<!--    <SwitchPreferenceCompat-->
+<!--        app:key="SP_SHOW_JP_TITLE"-->
+<!--        app:title="显示日文标题" />-->
 
 
 </PreferenceScreen>

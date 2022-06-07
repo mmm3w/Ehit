@@ -39,6 +39,7 @@
 
     <SwitchPreferenceCompat
         app:key="SP_SHOW_PROGRESS"
+        app:defaultValue="true"
         app:title="@string/text_setting_show_progress" />
 
     <SwitchPreferenceCompat
@@ -50,11 +51,12 @@
         app:title="@string/text_setting_volume_button_turn_pages" />
 
     <SwitchPreferenceCompat
+        app:defaultValue="true"
         app:key="SP_FULL_SCREEN"
         app:title="@string/text_setting_full_screen" />
 
-    <SwitchPreferenceCompat
-        app:key="SP_CUSTOM_BRIGHTNESS"
-        app:title="手动亮度" />
+<!--    <SwitchPreferenceCompat-->
+<!--        app:key="SP_CUSTOM_BRIGHTNESS"-->
+<!--        app:title="手动亮度" />-->
 
 </PreferenceScreen>
