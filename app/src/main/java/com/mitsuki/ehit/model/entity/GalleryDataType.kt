@@ -30,7 +30,7 @@ sealed class GalleryDataType {
         override val targetUrl: String
             get() = Site.galleryListByUploader(name)
         override val enableSearch: Boolean = false
-        override val hint: String = string(R.string.text_uploader)
+        override val hint: String = "uploader:$name"
     }
 
     /**
@@ -40,7 +40,7 @@ sealed class GalleryDataType {
         override val targetUrl: String
             get() = Site.galleryListByTag(tag)
         override val enableSearch: Boolean = false
-        override val hint: String = string(R.string.text_tags)
+        override val hint: String = tag
     }
 
     class Subscription : GalleryDataType() {
@@ -61,7 +61,7 @@ sealed class GalleryDataType {
         override val hint: String = string(R.string.text_menu_whats_hot)
     }
 
-    enum class Type  {
+    enum class Type {
         NORMAL,
         UPLOADER,
         TAG,

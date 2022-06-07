@@ -44,11 +44,11 @@ class GalleryListViewModel @Inject constructor(
         when (bundle?.getString(DataKey.GALLERY_TYPE_PART)) {
             "watched" -> {
                 mListPageIn =
-                    GalleryListPageIn(GalleryDataType.DEFAULT_SUBSCRIPTION, GalleryDataKey())
+                    GalleryListPageIn(GalleryDataType.DEFAULT_SUBSCRIPTION, GalleryDataKey.DEFAULT)
                 return
             }
             "popular" -> {
-                mListPageIn = GalleryListPageIn(GalleryDataType.DEFAULT_POPULAR, GalleryDataKey())
+                mListPageIn = GalleryListPageIn(GalleryDataType.DEFAULT_POPULAR, GalleryDataKey.DEFAULT)
                 return
             }
         }
@@ -58,6 +58,14 @@ class GalleryListViewModel @Inject constructor(
             mListPageIn = GalleryListPageIn(GalleryDataType.Tag(tag), GalleryDataKey())
             return
         }
+
+        val uploader = bundle?.getString(DataKey.GALLERY_TYPE_UPLOADER)
+        if (!uploader.isNullOrEmpty()){
+            mListPageIn = GalleryListPageIn(GalleryDataType.Uploader(uploader), GalleryDataKey.DEFAULT)
+            return
+        }
+
+        mListPageIn = GalleryListPageIn(GalleryDataType.DEFAULT_NORMAL, GalleryDataKey.DEFAULT)
 
 
 //        val key = bundle?.getParcelable(DataKey.GALLERY_SEARCH_KEY) ?: DataKey.DEFAULT

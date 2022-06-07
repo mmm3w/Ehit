@@ -25,7 +25,7 @@ class DownloadManager @Inject constructor(
     private val downloadDao: DownloadDao,
     private val shareData: ShareData
 ) {
-    private val tag = "EDownload"
+    private val TAG = "EDownload"
 
     private val mData: MutableMap<String, BlockWork<DownloadNode>> = hashMapOf()
     private val mList: MutableList<String> = arrayListOf()
@@ -33,11 +33,12 @@ class DownloadManager @Inject constructor(
 
     private val workLock = Mutex()
     private var workMark = false
+
     private var workJob: Job? = null
 
 
     fun postTask(message: DownloadMessage) {
-        Log.d(tag, "new task:$message")
+        Log.d(TAG, "new task:$message")
         CoroutineScope(Dispatchers.Default).launch {
             mDataLock.withLock {
                 val newNodes = downloadDao.updateDownloadList(message)
@@ -49,7 +50,7 @@ class DownloadManager @Inject constructor(
     }
 
     fun startTask(gid: Long, token: String) {
-        Log.d(tag, "restart $gid:$token")
+        Log.d(TAG, "restart $gid:$token")
         CoroutineScope(Dispatchers.Default).launch {
             mDataLock.withLock {
                 val tag = key(gid, token)
@@ -64,27 +65,33 @@ class DownloadManager @Inject constructor(
     }
 
     fun startAll() {
-        Log.d(tag, "start all")
+        Log.d(TAG, "start all")
         CoroutineScope(Dispatchers.Default).launch {
             mDataLock.withLock {
                 val infoList = downloadDao.queryALlDownloadInfo()
                 infoList.forEach {
                     val tag = key(it.gid, it.token)
+                    Log.d(TAG, "query $tag")
                     if (!mList.contains(tag)) {
                         val data = downloadDao.queryDownloadNodeWithNotState(it.gid, it.token, 1)
+                        Log.d(TAG, "append $tag ${data.size}")
                         innerAppend(tag, data)
                     }
                 }
             }
+            Log.d(TAG, "$mList")
+            Log.d(TAG, "$mData")
+
             //TODO thumb
             startWork()
         }
     }
 
     fun stopTask(gid: Long, token: String) {
-        Log.d(tag, "stop $gid:$token")
+        Log.d(TAG, "stop $gid:$token")
         CoroutineScope(Dispatchers.Default).launch {
             mDataLock.withLock {
+                val tag = key(gid, token)
                 mData.remove(tag)?.stop()
                 mList.remove(tag)
             }
@@ -115,11 +122,11 @@ class DownloadManager @Inject constructor(
         workJob?.cancel()
         workJob = CoroutineScope(Dispatchers.Default).launch {
             while (workMark) {
-                Log.d(tag, "work loop step start")
+                Log.d(TAG, "work loop step start")
 
                 val result = mDataLock.withLock {
-                    Log.d(tag, "single work get")
                     val tag = mList.firstOrNull()
+                    Log.d(TAG, "single work get $tag")
                     val data = mData[tag]
                     if (tag == null || data == null) {
                         null
@@ -129,9 +136,9 @@ class DownloadManager @Inject constructor(
                 }?.let {
                     resolveKey(it.first).apply { DownloadBroadcast.sendStart(first, second) }
                     it.second.exec()
-                    Log.d(tag, "single work finish")
+                    Log.d(TAG, "single work finish")
                     mDataLock.withLock {
-                        Log.d(tag, "single work remove")
+                        Log.d(TAG, "single work remove")
                         mData.remove(it.first)
                         mList.remove(it.first)
                         mList.isNotEmpty()
@@ -139,9 +146,9 @@ class DownloadManager @Inject constructor(
                 } ?: false
 
                 if (result) {
-                    Log.d(tag, "next work")
+                    Log.d(TAG, "next work")
                 } else {
-                    Log.d(tag, "list is empty")
+                    Log.d(TAG, "list is empty")
                     workLock.withLock { workMark = false }
                     DownloadBroadcast.sendFinish()
                 }
@@ -165,6 +172,7 @@ class DownloadManager @Inject constructor(
 
     /**********************************************************************************************/
     private suspend fun downloadPage(node: DownloadNode) {
+        Log.d(TAG, "download page $node")
         when (val galleryInfo = repository.galleryPreview(node.gid, node.token, node.page)) {
             is RequestResult.Success<GalleryPreview> -> {
 
@@ -182,14 +190,17 @@ class DownloadManager @Inject constructor(
                         node.downloadState = 1
                         node.localPath = result.data.absolutePath
                         downloadDao.updateDownloadNode(node)
+                        Log.d(TAG, "$node download success")
                     }
                     is RequestResult.Fail<*> -> {
                         node.downloadState = 2
                         downloadDao.updateDownloadNode(node)
+                        Log.d(TAG, "$node download error: ${result.throwable}")
                     }
                 }
             }
             is RequestResult.Fail<*> -> {
+                Log.d(TAG, "$node get page info error: ${galleryInfo.throwable}")
                 node.downloadState = 2
                 downloadDao.updateDownloadNode(node)
             }
