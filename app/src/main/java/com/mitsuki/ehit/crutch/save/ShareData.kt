@@ -59,6 +59,8 @@ class ShareData(context: Context) {
     fun int(key: String, default: Int = 0): Int =
         mDefaultSP.getInt(key, default)
 
+    fun float(key: String, default: Float = 0F): Float =
+        mDefaultSP.getFloat(key, default)
 
     fun edit(func: SharedPreferences.Editor.() -> Unit) {
         mDefaultSP.edit().apply(func).apply()
@@ -185,6 +187,10 @@ class ShareData(context: Context) {
     var spTheme: Int
         set(value) = edit { putInt(SP_THEME, value) }
         get() = int(SP_THEME)
+
+    var spCustomBrightness: Float
+        set(value) = edit { putFloat(SP_CUSTOM_BRIGHTNESS, value) }
+        get() = float(SP_CUSTOM_BRIGHTNESS, -1f)
 
 
     /**********************************************************************************************/

@@ -229,6 +229,7 @@
     <string name="text_setting_show_page_padding">Show page padding</string>
     <string name="text_setting_volume_button_turn_pages">Volume button turn pages</string>
     <string name="text_setting_full_screen">Full screen</string>
+    <string name="text_setting_auto_brightness">Auto brightness</string>
     <string name="text_setting_disable_screenshots">Disable screenshots</string>
     <string name="text_setting_data_analytics">Data analytics</string>
     <string name="text_setting_about_analytics">About analytics</string>

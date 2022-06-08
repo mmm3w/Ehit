@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.setting.activity
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.commit
 import androidx.preference.Preference
@@ -18,7 +19,6 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setSupportActionBar(binding.appBar)
         setTitle(R.string.text_menu_setting)
         supportFragmentManager.commit { replace(R.id.settings_container, SettingRootFragment()) }
@@ -41,6 +41,7 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
             addToBackStack(pref.fragment)
             title = pref.title
         }
+        keepBarStates()
         return true
     }
 
@@ -50,6 +51,16 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
             //TODO title的切换最好加入动画
             setTitle(R.string.text_menu_setting)
         }
+        keepBarStates()
+    }
+
+    private fun keepBarStates() {
+        val isNightMode =
+            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+        onUiMode(isNightMode)
     }
 }
 

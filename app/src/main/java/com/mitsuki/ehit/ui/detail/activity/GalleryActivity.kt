@@ -16,9 +16,7 @@ import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.uils.MinuteDelay
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extensions.observe
-import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.receiver.BatteryReceiver
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
@@ -162,6 +160,12 @@ class GalleryActivity : BaseActivity() {
             window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
+        if (memoryData.customBrightness == -1f) {
+            setAutoBrightness()
+        } else {
+            setBrightness(0.1f.coerceAtLeast(memoryData.customBrightness))
         }
 
         if (memoryData.showTime) {

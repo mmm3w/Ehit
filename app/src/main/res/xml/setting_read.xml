@@ -21,8 +21,8 @@
         app:useSimpleSummaryProvider="true" />
 
     <com.mitsuki.ehit.ui.common.widget.IntListPreference
-        app:key="SP_PRELOAD_IMAGE"
         android:defaultValue="1"
+        app:key="SP_PRELOAD_IMAGE"
         app:title="@string/text_setting_preload_image" />
 
     <SwitchPreferenceCompat
@@ -38,8 +38,8 @@
         app:title="@string/text_setting_show_battery" />
 
     <SwitchPreferenceCompat
-        app:key="SP_SHOW_PROGRESS"
         app:defaultValue="true"
+        app:key="SP_SHOW_PROGRESS"
         app:title="@string/text_setting_show_progress" />
 
     <SwitchPreferenceCompat
@@ -55,8 +55,11 @@
         app:key="SP_FULL_SCREEN"
         app:title="@string/text_setting_full_screen" />
 
-<!--    <SwitchPreferenceCompat-->
-<!--        app:key="SP_CUSTOM_BRIGHTNESS"-->
-<!--        app:title="手动亮度" />-->
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="auto_brightness"
+        app:title="@string/text_setting_auto_brightness" />
+
+    <com.mitsuki.ehit.ui.setting.widget.SeekPreference app:key="custom_brightness" />
 
 </PreferenceScreen>

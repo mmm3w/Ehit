@@ -101,9 +101,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_setting_full_screen"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/read_config_auto_brightness"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_config_volume_button_turn_pages" />
+
+    <TextView
+        android:id="@+id/read_config_auto_brightness"
+        style="@style/NormalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_auto_brightness"
+        app:layout_constraintBottom_toTopOf="@id/read_config_brightness_adjust"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_full_screen" />
+
+    <SeekBar
+        android:id="@+id/read_config_brightness_adjust"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_config_auto_brightness" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/read_config_barrier"
@@ -111,8 +128,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="read_config_full_screen,read_config_volume_button_turn_pages,read_config_show_page_padding,read_config_show_progress,read_config_show_battery,read_config_show_time,read_config_keep_bright,read_config_screen_orientation,read_config_reading_direction,read_config_image_zoom" />
-
+        app:constraint_referenced_ids="read_config_auto_brightness,read_config_full_screen,read_config_volume_button_turn_pages,read_config_show_page_padding,read_config_show_progress,read_config_show_battery,read_config_show_time,read_config_keep_bright,read_config_screen_orientation,read_config_reading_direction,read_config_image_zoom" />
 
     <TextView
         android:id="@+id/read_config_screen_orientation_select"
@@ -211,7 +227,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/read_config_volume_button_turn_pages" />
 
-
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/read_config_full_screen_switch"
         android:layout_width="wrap_content"
@@ -219,6 +234,14 @@
         app:layout_constraintBottom_toBottomOf="@id/read_config_full_screen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/read_config_full_screen" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/read_config_auto_brightness_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/read_config_auto_brightness"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_config_auto_brightness" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

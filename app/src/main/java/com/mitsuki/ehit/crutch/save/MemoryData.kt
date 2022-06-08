@@ -97,6 +97,14 @@ class MemoryData(private val shareData: ShareData) {
             }
         }
 
+    var customBrightness:Float = shareData.spCustomBrightness
+        set(value) {
+            if (value != field) {
+                field = value
+                shareData.spCustomBrightness = value
+            }
+        }
+
     var disableScreenshots: Boolean = shareData.spDisableScreenshots
         set(value) {
             if (value != field) {

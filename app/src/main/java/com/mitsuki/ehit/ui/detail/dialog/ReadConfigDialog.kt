@@ -2,16 +2,18 @@ package com.mitsuki.ehit.ui.detail.dialog
 
 import android.os.Bundle
 import android.view.View
-import android.widget.PopupMenu
+import android.widget.SeekBar
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.getSystemBrightness
+import com.mitsuki.ehit.crutch.extensions.setBrightness
 import com.mitsuki.ehit.crutch.extensions.showSelectMenu
-import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.databinding.DialogReadConfigBinding
 import com.mitsuki.ehit.ui.common.dialog.BindingDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -34,10 +36,17 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
                 memoryData.volumeButtonTurnPages =
                     readConfigVolumeButtonTurnPagesSwitch.isChecked
                 memoryData.fullScreen = readConfigFullScreenSwitch.isChecked
+
+                if (readConfigAutoBrightnessSwitch.isChecked) {
+                    memoryData.customBrightness = -1f
+                } else {
+                    memoryData.customBrightness = readConfigBrightnessAdjust.progress / 100f
+                }
             }
             memoryData.screenOrientation = screenOrientation
             memoryData.readOrientation = readOrientation
             memoryData.imageZoom = imageZoom
+
             confirmAction()
             dismiss()
         }
@@ -69,7 +78,6 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
                 binding?.readConfigImageZoomSelect?.text = imageZoomText(field)
             }
         }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -109,13 +117,44 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
                 }
             }
 
-           readConfigKeepBrightSwitch.isChecked = memoryData.keepBright
-           readConfigShowTimeSwitch.isChecked = memoryData.showTime
-           readConfigShowBatterySwitch.isChecked = memoryData.showBattery
-           readConfigShowProgressSwitch.isChecked = memoryData.showProgress
-           readConfigShowPagePaddingSwitch.isChecked = memoryData.showPagePadding
-           readConfigVolumeButtonTurnPagesSwitch.isChecked = memoryData.volumeButtonTurnPages
-           readConfigFullScreenSwitch.isChecked = memoryData.fullScreen
+            readConfigKeepBrightSwitch.isChecked = memoryData.keepBright
+            readConfigShowTimeSwitch.isChecked = memoryData.showTime
+            readConfigShowBatterySwitch.isChecked = memoryData.showBattery
+            readConfigShowProgressSwitch.isChecked = memoryData.showProgress
+            readConfigShowPagePaddingSwitch.isChecked = memoryData.showPagePadding
+            readConfigVolumeButtonTurnPagesSwitch.isChecked = memoryData.volumeButtonTurnPages
+            readConfigFullScreenSwitch.isChecked = memoryData.fullScreen
+
+
+            readConfigAutoBrightnessSwitch.apply {
+                isChecked = memoryData.customBrightness == -1f
+                setOnCheckedChangeListener { _, isChecked ->
+                    readConfigBrightnessAdjust.isEnabled = !isChecked
+                }
+            }
+            readConfigBrightnessAdjust.apply {
+                isEnabled = memoryData.customBrightness != -1f
+                progress = if (memoryData.customBrightness == -1f) {
+                    (requireContext().getSystemBrightness() * 100).roundToInt()
+                } else {
+                    (memoryData.customBrightness * 100).roundToInt()
+                }
+                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean
+                    ) {
+                        if (fromUser) {
+                            requireActivity().setBrightness(progress / 100f)
+                        }
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+                })
+            }
+
         }
 
 

@@ -1,14 +1,18 @@
 package com.mitsuki.ehit.ui.setting.fragment
 
 import android.os.Bundle
-import androidx.preference.ListPreference
-import androidx.preference.PreferenceFragmentCompat
+import android.view.View
+import android.widget.SeekBar
+import androidx.preference.*
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.getSystemBrightness
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.save.MemoryData
+import com.mitsuki.ehit.ui.setting.widget.SeekPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class SettingReadFragment : PreferenceFragmentCompat() {
@@ -67,7 +71,6 @@ class SettingReadFragment : PreferenceFragmentCompat() {
             }
         }
 
-
         findPreference<ListPreference>(ShareData.SP_PRELOAD_IMAGE)?.apply {
             entries = selectablePreload
             entryValues = Array(selectablePreload.size) { it.toString() }
@@ -78,6 +81,29 @@ class SettingReadFragment : PreferenceFragmentCompat() {
                 summary = string(R.string.text_setting_preload_image_summery).format(
                     selectablePreload[index].toInt()
                 )
+                true
+            }
+        }
+
+        findPreference<SwitchPreferenceCompat>("auto_brightness")?.apply {
+            isChecked = memoryData.customBrightness == -1f
+            setOnPreferenceChangeListener { _, newValue ->
+                if (newValue as Boolean) {
+                    findPreference<Preference>("custom_brightness")?.isVisible = false
+                    memoryData.customBrightness = -1f
+                } else {
+                    findPreference<Preference>("custom_brightness")?.isVisible = true
+                    memoryData.customBrightness = requireContext().getSystemBrightness()
+                }
+                true
+            }
+        }
+
+        findPreference<SeekPreference>("custom_brightness")?.apply {
+            isVisible = memoryData.customBrightness != -1f
+            setProgress(if (memoryData.customBrightness == -1f) requireContext().getSystemBrightness() else memoryData.customBrightness)
+            setOnPreferenceChangeListener { _, newValue ->
+                memoryData.customBrightness = newValue as Float
                 true
             }
         }

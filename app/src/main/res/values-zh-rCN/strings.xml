@@ -196,6 +196,7 @@
     <string name="text_setting_show_page_padding">显示页面间隔</string>
     <string name="text_setting_volume_button_turn_pages">音量键翻页</string>
     <string name="text_setting_full_screen">全屏显示</string>
+    <string name="text_setting_auto_brightness">自动亮度</string>
     <string name="text_setting_disable_screenshots">禁用截屏</string>
     <string name="text_setting_data_analytics">数据收集</string>
     <string name="text_setting_about_analytics">关于数据收集与分析</string>
