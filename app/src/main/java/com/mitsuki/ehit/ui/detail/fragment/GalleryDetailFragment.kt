@@ -22,6 +22,7 @@ import com.mitsuki.armory.base.extend.statusBarHeight
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
+import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.FragmentGalleryDetailBinding
@@ -297,13 +298,13 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
     }
 
     private fun onNameNavigation() {
-//        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
-//            .navigate(
-//                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-//                bundleOf(DataKey.GALLERY_PAGE_SOURCE to GalleryPageSource.Normal(mViewModel.galleryName)),
-//                null,
-//                null
-//            )
+        Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
+            .navigate(
+                R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
+                bundleOf(DataKey.GALLERY_SEARCH_KEY to "${RequestKey.SEARCH_KEY_WORD}=${mViewModel.galleryName}"),
+                null,
+                null
+            )
     }
 
     private fun onUploaderNavigation() {

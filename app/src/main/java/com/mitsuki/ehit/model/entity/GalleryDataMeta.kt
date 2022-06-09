@@ -9,8 +9,11 @@ sealed class GalleryDataMeta {
     abstract val targetUrl: String
     abstract val hint: String
 
-    class Normal(keyword: String = "") : GalleryDataMeta() {
-        override var key: GalleryDataKey? = GalleryDataKey.createByQuery(keyword)
+    class Normal(key: GalleryDataKey) : GalleryDataMeta() {
+
+        constructor(keyword: String = "") : this(GalleryDataKey.createByQuery(keyword))
+
+        override var key: GalleryDataKey? = key
         override val targetUrl: String
             get() = Site.galleryList
         override val hint: String
@@ -44,8 +47,11 @@ sealed class GalleryDataMeta {
         override val hint: String = tag
     }
 
-    class Subscription(keyword: String = "") : GalleryDataMeta() {
-        override var key: GalleryDataKey? = GalleryDataKey.createByQuery(keyword)
+    class Subscription(key: GalleryDataKey) : GalleryDataMeta() {
+
+        constructor(keyword: String = "") : this(GalleryDataKey.createByQuery(keyword))
+
+        override var key: GalleryDataKey? = key
 
         override val targetUrl: String
             get() = Site.galleryListBySubscription

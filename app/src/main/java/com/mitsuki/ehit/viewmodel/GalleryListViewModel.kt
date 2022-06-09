@@ -78,7 +78,8 @@ class GalleryListViewModel @Inject constructor(
 
         val sourceIntent =
             bundle?.get("android-support-nav:controller:deepLinkIntent") as? Intent
-        val params = sourceIntent?.data?.query ?: ""
+        val params = (sourceIntent?.data?.query ?: "")
+            .ifEmpty { bundle?.getString(DataKey.GALLERY_SEARCH_KEY) ?: "" }
         initListPageIn(GalleryDataMeta.Type.NORMAL, params)
     }
 
@@ -99,7 +100,13 @@ class GalleryListViewModel @Inject constructor(
 
     fun updateSearchKey(key: GalleryDataKey) {
         galleryListPage(1)
-        mListPageIn.updateKey(key)
+        when (mListPageIn.meta) {
+            is GalleryDataMeta.Tag,
+            is GalleryDataMeta.Uploader -> mListPageIn.meta = GalleryDataMeta.Normal(key)
+            is GalleryDataMeta.Normal,
+            is GalleryDataMeta.Subscription -> mListPageIn.updateKey(key)
+            else -> {}
+        }
         searchBarText.postValue(mListPageIn.hintContent)
     }
 
