@@ -17,6 +17,7 @@
     <string name="title_add_favorites">添加收藏</string>
     <string name="title_quick_search">快速搜索</string>
     <string name="title_jump_page">跳转至…页 (1 到 %d)</string>
+    <string name="title_add_quick_search">添加快速搜索</string>
 
     <string name="hint_account">账号</string>
     <string name="hint_password">密码</string>
@@ -83,9 +84,9 @@
     <string name="text_enable">已启用</string>
     <string name="text_disable">未启用</string>
     <string name="text_seed">种子</string>
+    <string name="text_export">导出</string>
     <string name="text_h_at_h_download">H@H下载</string>
     <string name="text_search_thumb">搜索封面</string>
-
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>
@@ -152,6 +153,10 @@
     <string name="text_authenticate_event">点击前往认证</string>
     <string name="text_load_all_comment">加载全部评论</string>
     <string name="text_content_empty">未找到内容</string>
+    <string name="text_export_data">导出数据</string>
+    <string name="text_export_data_summary">将部分数据以Json的形式导出</string>
+    <string name="text_import_data">导入数据</string>
+    <string name="text_import_data_summary">导入Json数据至本地</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>
@@ -217,6 +222,7 @@
 
     <string name="text_sign_out_desc">确定要退出登录吗？</string>
     <string name="text_login_desc">请重启APP进行登录操作。</string>
+    <string name="text_export_desc">数据导出将包含以下内容：\n1、快速搜索列表\n2、Cookie\n\n数据将以json的形式保存。</string>
 
     <string name="text_info_gid">GID</string>
     <string name="text_info_token">Token</string>

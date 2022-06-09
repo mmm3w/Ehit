@@ -9,6 +9,7 @@ import com.mitsuki.ehit.crutch.uils.TimeFormat
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
+import com.mitsuki.ehit.crutch.uils.commentTime
 import com.mitsuki.ehit.databinding.ItemCommentBinding
 import com.mitsuki.ehit.model.entity.Comment
 import com.mitsuki.ehit.ui.common.adapter.BindingViewHolder
@@ -33,7 +34,7 @@ class GalleryDetailCommentAdapter(private val mData: NotifyQueueData<Comment>) :
 
     override fun onBindViewHolder(holder: DetailCommentViewHolder, position: Int) {
         with(mData.item(position)) {
-            holder.binding.commentPostTime.text = TimeFormat.commentTime(postTime)
+            holder.binding.commentPostTime.text = postTime.commentTime()
             holder.binding.commentUserName.text = user
             holder.binding.commentContent.also {
                 it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)

@@ -14,4 +14,13 @@
         app:key="SP_PROXY_MODE"
         app:title="@string/text_proxy" />
 
+    <Preference
+        app:key="export_data"
+        app:summary="@string/text_export_data_summary"
+        app:title="@string/text_export_data" />
+
+    <Preference
+        app:key="import_data"
+        app:summary="@string/text_import_data_summary"
+        app:title="@string/text_import_data" />
 </PreferenceScreen>

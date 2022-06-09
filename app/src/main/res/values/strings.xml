@@ -50,6 +50,7 @@
     <string name="title_add_favorites">Add to favorites</string>
     <string name="title_quick_search">Quick Search</string>
     <string name="title_jump_page">Jump page to (1 to %d)</string>
+    <string name="title_add_quick_search">Add quick search</string>
 
     <string name="hint_account">account</string>
     <string name="hint_password">password</string>
@@ -116,6 +117,7 @@
     <string name="text_enable">Enable</string>
     <string name="text_disable">Disable</string>
     <string name="text_seed">Seed</string>
+    <string name="text_export">Export</string>
     <string name="text_h_at_h_download">H@H Download</string>
     <string name="text_search_thumb">Search thumb</string>
 
@@ -185,6 +187,10 @@
     <string name="text_authenticate_event">Click to authenticate</string>
     <string name="text_load_all_comment">Load all comment</string>
     <string name="text_content_empty">Content is empty</string>
+    <string name="text_export_data">Export data</string>
+    <string name="text_export_data_summary">Export some data as json.</string>
+    <string name="text_import_data">Import data</string>
+    <string name="text_import_data_summary">Import json data to local.</string>
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>
@@ -250,6 +256,7 @@
 
     <string name="text_sign_out_desc">Do you really want to sign out?</string>
     <string name="text_login_desc">Please restart the app to login.</string>
+    <string name="text_export_desc">The data export will contain these:\n1.Quick search list\n2.Cookie\n\nData will be saved with Json.</string>
 
     <string name="text_info_gid">GID</string>
     <string name="text_info_token">Token</string>

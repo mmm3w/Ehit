@@ -1,16 +1,26 @@
 package com.mitsuki.ehit.ui.setting.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.ValueFinder
+import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.save.ShareData
+import com.mitsuki.ehit.crutch.uils.fileNameTime
+import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract
+import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultContract
+import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
+import com.mitsuki.ehit.ui.common.dialog.show
+import com.mitsuki.ehit.ui.download.dialog.ExportProgressDialog
 import com.mitsuki.ehit.ui.setting.dialog.ProxyInputDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,6 +31,16 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var shareData: ShareData
+
+    private val mExportData =
+        registerForActivityResult(ExportDataActivityResultContract()) {
+            it?.apply {
+
+            } ?: kotlin.run {
+                //操作取消
+            }
+        }
+
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.setting_other, rootKey)
@@ -43,6 +63,20 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
             )
             entryValues = Array(3) { it.toString() }
         }
+
+        findPreference<Preference>("export_data")?.apply {
+            setOnPreferenceClickListener {
+                showExportHintDialog()
+                true
+            }
+
+        }
+        findPreference<Preference>("import_data")?.apply {
+            setOnPreferenceClickListener {
+
+                true
+            }
+        }
     }
 
     private fun proxySummary(index: Int): String {
@@ -54,5 +88,22 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
         return string(ValueFinder.proxySummary(index)) + extendInfo
     }
 
+    private fun showExportHintDialog() {
+        TextDialogFragment().show(childFragmentManager, "logout") {
+            title(res = R.string.text_export_data)
+            message(res = R.string.text_export_desc)
+            positiveBtn(res = R.string.text_export) {
+                mExportData.launch(arrayOf())
+            }
+        }
+    }
+
+
+    private fun exportData() {
+
+
+
+
+    }
 
 }

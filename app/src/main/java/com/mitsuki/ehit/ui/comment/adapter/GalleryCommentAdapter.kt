@@ -17,6 +17,7 @@ import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
 import com.mitsuki.ehit.crutch.extensions.showPopupMenu
 import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.uils.commentTime
 import com.mitsuki.ehit.databinding.ItemCommentABinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Comment
@@ -75,7 +76,7 @@ class GalleryCommentAdapter :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(mData.item(position)) {
             holder.binding.commentUserName.text = user
-            holder.binding.commentPostTime.text = TimeFormat.commentTime(postTime)
+            holder.binding.commentPostTime.text = postTime.commentTime()
             holder.binding.commentContent.text =
                 HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
             holder.binding.commentVoteLayout.isVisible = voteEnable

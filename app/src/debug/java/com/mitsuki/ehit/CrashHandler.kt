@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Process
 import android.util.Log
 import com.mitsuki.ehit.crutch.extensions.ensureDir
+import com.mitsuki.ehit.crutch.uils.crashTime
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -17,9 +18,6 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
         Thread.getDefaultUncaughtExceptionHandler()
 
     private lateinit var mLogCacheFile: File
-
-    @SuppressLint("SimpleDateFormat")
-    private val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     fun init(context: Context) {
         /*try create*/
@@ -43,7 +41,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
                 printWriter.close()
                 //日志数据
                 val result = writer.toString()
-                File(mLogCacheFile, "${format.format(System.currentTimeMillis())}.log")
+                File(mLogCacheFile, "${System.currentTimeMillis().crashTime()}.log")
                     .writeText(result, charset = Charsets.UTF_8)
             } catch (ex: java.lang.Exception) {
                 ex.printStackTrace()

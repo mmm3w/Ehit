@@ -69,10 +69,10 @@ class QuickSearchPanel(val onQuickSearch: ((GalleryDataMeta.Type, String) -> Uni
             itemTouchHelper.startDrag(it)
         }
 
-        touchCallBack.swapEvent.observeWithCoro(viewLifecycleOwner) {
+        touchCallBack.receiver<Pair<Int, Int>>("move").observe(viewLifecycleOwner){
             mViewModel.move(it.first, it.second)
         }
-        touchCallBack.dataSwap.observeWithCoro(viewLifecycleOwner) {
+        touchCallBack.receiver<Pair<Int, Int>>("event").observe(viewLifecycleOwner){
             mViewModel.resort()
         }
 
