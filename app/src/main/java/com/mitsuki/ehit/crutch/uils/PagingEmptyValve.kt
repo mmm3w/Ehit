@@ -4,10 +4,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
+import com.mitsuki.ehit.crutch.extensions.justLock
 import com.mitsuki.ehit.crutch.extensions.tryUnlock
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 /**
  * 主要用于在刷新事件之间插入一个PagingData.empty()使列表显示为空
@@ -30,7 +30,7 @@ class PagingEmptyValve {
                     //自动释放
                     mLock.tryUnlock()
                 }
-                mLock.withLock { /* just lock */ }
+                mLock.justLock()
                 adapter.submitData(lifecycle, pagingData)
             } else {
                 adapter.submitData(lifecycle, pagingData)
