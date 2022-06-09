@@ -49,6 +49,8 @@ class GalleryListViewModel @Inject constructor(
             }
         }
 
+    val currentDataMeta: GalleryDataMeta get() = mListPageIn.meta
+
     fun initData(bundle: Bundle?) {
         when (bundle?.getString(DataKey.GALLERY_TYPE_PART)) {
             "watched" -> {

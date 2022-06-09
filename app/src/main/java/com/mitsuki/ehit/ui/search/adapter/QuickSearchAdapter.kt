@@ -17,15 +17,17 @@ import com.mitsuki.ehit.databinding.ItemSearchQuickBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.GalleryDataMeta
+import com.mitsuki.ehit.ui.common.adapter.BindingViewHolder
 import kotlin.collections.ArrayList
 
-class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>(), EventEmitter {
+class QuickSearchAdapter(private val mData: NotifyQueueData<QuickSearch>) :
+    RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>(), EventEmitter {
+
+    init {
+        mData.attachAdapter(this)
+    }
 
     override val eventEmitter: Emitter = Emitter()
-
-    private val mData: NotifyQueueData<QuickSearch> = NotifyQueueData(Diff.QUICK_SEARCH)
-
-    private var isAttached: Boolean = false
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
@@ -60,45 +62,10 @@ class QuickSearchAdapter : RecyclerView.Adapter<QuickSearchAdapter.ViewHolder>()
         holder.binding.quickSearchName.text = mData.item(position).name
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        isAttached = true
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        isAttached = false
-    }
-
-    /**********************************************************************************************/
-    //一些快捷更新方法
-    suspend fun submitData(data: List<QuickSearch>) {
-        mData.postUpdate(NotifyData.Refresh(data))
-    }
-
-    suspend fun addItem(name: String, key: String, meta: GalleryDataMeta.Type) {
-        if (name.isEmpty() || key.isEmpty()) return
-        mData.postUpdate(NotifyData.Insert(QuickSearch(meta, name, key, 0)))
-    }
-
-    suspend fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        mData.postUpdate(NotifyData.Move(fromPosition, toPosition))
-        return true
-    }
-
-    suspend fun removeItem(item: QuickSearch) {
-        mData.postUpdate(NotifyData.Remove(item))
-    }
-
-    val newSortData: List<QuickSearch>
-        get() {
-            return ArrayList<QuickSearch>().apply {
-                for (i in 0 until mData.count) {
-                    add(mData.item(i).apply { sort = i + 1 })
-                }
-            }
-        }
-
     class ViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_search_quick)) {
-        val binding by viewBinding(ItemSearchQuickBinding::bind)
-    }
+        BindingViewHolder<ItemSearchQuickBinding>(
+            parent,
+            R.layout.item_search_quick,
+            ItemSearchQuickBinding::bind
+        )
 }

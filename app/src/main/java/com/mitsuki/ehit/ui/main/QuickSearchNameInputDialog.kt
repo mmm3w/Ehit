@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.databinding.GeneralEditTextBinding
 import com.mitsuki.ehit.ui.common.dialog.BindingDialogFragment
 
-class PageDialog(
-    private val range: Int,
-    private val onConfirm: (Int) -> Unit
+class QuickSearchNameInputDialog(
+    private val initContent: String,
+    private val onConfirm: (String) -> Unit
 ) :
     BindingDialogFragment<GeneralEditTextBinding>(
         R.layout.general_edit_text,
@@ -19,24 +20,22 @@ class PageDialog(
     ) {
 
     init {
-        title(text = string(R.string.title_jump_page).format(range))
+        title(text = string(R.string.title_add_quick_search))
         positiveBtn(text(R.string.text_confirm)) {
-            val target = binding?.editTextUi?.text?.toString()?.trim()?.toIntOrNull()
-                ?.coerceIn(1, range) ?: -1
-            if (target == -1) {
-                //提示输入的内容有问题
+            val content = binding?.editTextUi?.text?.toString()?.trim()
+            if (content.isNullOrEmpty()) {
+                requireContext().showToast(string(R.string.error_content_empty))
             } else {
-                onConfirm(target)
+                onConfirm(content)
+                dismiss()
             }
-            dismiss()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.editTextUi?.apply {
-            inputType = EditorInfo.TYPE_CLASS_NUMBER
-            setText("1")
-        }
+            inputType = EditorInfo.TYPE_CLASS_TEXT
+            setText(initContent) }
     }
 }

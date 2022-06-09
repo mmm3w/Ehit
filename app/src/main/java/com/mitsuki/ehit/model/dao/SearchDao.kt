@@ -42,10 +42,10 @@ abstract class SearchDao {
     @Query("SELECT COUNT(*) FROM ${DBValue.TABLE_QUICK_SEARCH}")
     abstract suspend fun quickCount(): Int
 
-    @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:meta")
+    @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE keyword=:key AND type=:meta")
     abstract suspend fun queryQuick(key: String, meta: GalleryDataMeta.Type): List<QuickSearch>
 
-    @Query("DELETE FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE `key`=:key AND type=:meta")
+    @Query("DELETE FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE keyword=:key AND type=:meta")
     abstract suspend fun deleteQuick(key: String, meta: GalleryDataMeta.Type)
 
     @Query("SELECT _id FROM ${DBValue.TABLE_QUICK_SEARCH} WHERE sort=:sort")

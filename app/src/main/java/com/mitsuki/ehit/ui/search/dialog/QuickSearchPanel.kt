@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.event.receiver
+import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.observeWithCoro
 import com.mitsuki.ehit.databinding.DialogQuickSearchBinding
@@ -15,6 +16,7 @@ import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.GalleryDataMeta
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.ui.common.dialog.BindingBottomDialogFragment
+import com.mitsuki.ehit.ui.main.QuickSearchNameInputDialog
 import com.mitsuki.ehit.ui.search.QuickSearchItemTouchHelperCallback
 import com.mitsuki.ehit.ui.search.adapter.QuickSearchAdapter
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
@@ -36,13 +38,11 @@ class QuickSearchPanel(val onQuickSearch: ((GalleryDataMeta.Type, String) -> Uni
     private val mParentViewModel: GalleryListViewModel
             by viewModels(ownerProducer = { requireParentFragment() })
 
-    private val mAdapter by lazy { QuickSearchAdapter() }
+    private val mAdapter by lazy { QuickSearchAdapter(mViewModel.data) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            mAdapter.submitData(mViewModel.quickSearch())
-        }
+        mViewModel.initData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,50 +50,69 @@ class QuickSearchPanel(val onQuickSearch: ((GalleryDataMeta.Type, String) -> Uni
         isCancelable = true
         requireDialog().setCanceledOnTouchOutside(true)
 
-        mAdapter.receiver<QuickSearch>("delete").observe(viewLifecycleOwner) {
-            runBlocking {
-                mAdapter.removeItem(it)
-                mViewModel.delSearch(it.key, it.type)
-            }
-        }
-
-        mAdapter.receiver<QuickSearch>("click").observe(viewLifecycleOwner) {
-            onQuickSearch(it.type, it.key)
-            dismiss()
-        }
-
-
-        binding?.quickSearchAdd?.setOnClickListener {
-//            mParentViewModel.pageSource.apply {
-//                lifecycleScope.launch {
-//                    if (!mViewModel.isQuickSave(cacheKey, type)) {
-//                        mViewModel.saveSearch(cacheKey, cacheKey, type)
-//                        mAdapter.addItem(cacheKey, cacheKey, type)
-//                    }
-//                }
-//            }
-        }
+        binding?.quickSearchAdd?.setOnClickListener { showQuickNameInputDialog() }
 
         val touchCallBack = QuickSearchItemTouchHelperCallback()
         val itemTouchHelper = ItemTouchHelper(touchCallBack)
 
-        //涉及数据交换，无法直接使用封装好的队列更新数据类
-        touchCallBack.swapEvent.observeWithCoro(viewLifecycleOwner) {
-            mAdapter.onItemMove(it.first, it.second)
-        }
-        touchCallBack.dataSwap.observeWithCoro(viewLifecycleOwner) {
-            mViewModel.swapQuickItem(mAdapter.newSortData)
-        }
-        //内部View的事件带出来
+        mAdapter.receiver<QuickSearch>("delete")
+            .isClick()
+            .observe(viewLifecycleOwner) { mViewModel.remove(it) }
+
+        mAdapter.receiver<QuickSearch>("click")
+            .isClick()
+            .observe(viewLifecycleOwner) {
+                onQuickSearch(it.type, it.key)
+                dismiss()
+            }
         mAdapter.receiver<QuickSearchAdapter.ViewHolder>("sort").observe(viewLifecycleOwner) {
             itemTouchHelper.startDrag(it)
         }
-        //配置适配器以及绑定相关手势
+
+        touchCallBack.swapEvent.observeWithCoro(viewLifecycleOwner) {
+            mViewModel.move(it.first, it.second)
+        }
+        touchCallBack.dataSwap.observeWithCoro(viewLifecycleOwner) {
+            mViewModel.resort()
+        }
+
         binding?.quickSearchTarget?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
             itemTouchHelper.attachToRecyclerView(this)
             adapter
+        }
+    }
+
+    private fun showQuickNameInputDialog() {
+        mParentViewModel.currentDataMeta.apply {
+            val type: GalleryDataMeta.Type
+            val k: String
+            when (this) {
+                is GalleryDataMeta.Normal -> {
+                    type = GalleryDataMeta.Type.NORMAL
+                    k = key?.key ?: ""
+                }
+                is GalleryDataMeta.Uploader -> {
+                    type = GalleryDataMeta.Type.UPLOADER
+                    k = name
+                }
+                is GalleryDataMeta.Tag -> {
+                    type = GalleryDataMeta.Type.TAG
+                    k = tag
+                }
+                is GalleryDataMeta.Subscription -> {
+                    type = GalleryDataMeta.Type.SUBSCRIPTION
+                    k = key?.key ?: ""
+                }
+                is GalleryDataMeta.Popular -> {
+                    type = GalleryDataMeta.Type.WHATS_HOT
+                    k = ""
+                }
+            }
+
+            QuickSearchNameInputDialog(hint) { mViewModel.add(it, k, type) }
+                .show(childFragmentManager, "quick_search_name")
         }
     }
 

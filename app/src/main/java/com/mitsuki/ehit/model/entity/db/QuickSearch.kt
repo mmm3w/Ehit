@@ -9,12 +9,12 @@ import com.mitsuki.ehit.model.entity.GalleryDataMeta
 
 @Entity(
     tableName = DBValue.TABLE_QUICK_SEARCH,
-    indices = [Index(value = ["type", "key"], unique = true)]
+    indices = [Index(value = ["type", "keyword"], unique = true)]
 )
 data class QuickSearch(
     @ColumnInfo(name = "type") val type: GalleryDataMeta.Type,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "key") val key: String,
+    @ColumnInfo(name = "keyword") val key: String,
     @ColumnInfo(name = "sort") var sort: Int,
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id") val _id: Long = 0,
