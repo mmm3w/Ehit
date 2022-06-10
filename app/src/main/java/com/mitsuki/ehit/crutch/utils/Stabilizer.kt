@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.crutch.utils
 
 import java.util.concurrent.locks.Condition
 import java.util.concurrent.locks.ReentrantLock

@@ -257,11 +257,6 @@ class CircularProgressDrawable : Drawable(), Animatable {
 
         ring.startTrim = mStartMileage * interpolatedTime + mLastStart
         ring.endTrim = mEndMileage * interpolatedTime + mLastEnd
-
-        Log.d(
-            "asdf",
-            "${ring.startTrim + ring.rotation + mRotation / 360f} | ${ring.endTrim + ring.rotation + mRotation / 360f}"
-        )
     }
 
     private fun rotationStep(current: Float, target: Float): Float {

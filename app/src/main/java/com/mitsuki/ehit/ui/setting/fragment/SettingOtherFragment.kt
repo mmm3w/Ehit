@@ -1,26 +1,16 @@
 package com.mitsuki.ehit.ui.setting.fragment
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.ValueFinder
-import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.extensions.text
-import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.save.ShareData
-import com.mitsuki.ehit.crutch.uils.fileNameTime
 import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract
-import com.mitsuki.ehit.model.activityresult.ExportZipActivityResultContract
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.show
-import com.mitsuki.ehit.ui.download.dialog.ExportProgressDialog
 import com.mitsuki.ehit.ui.setting.dialog.ProxyInputDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

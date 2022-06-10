@@ -23,8 +23,8 @@ import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
-import com.mitsuki.ehit.crutch.uils.InitialGate
-import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
+import com.mitsuki.ehit.crutch.utils.InitialGate
+import com.mitsuki.ehit.crutch.utils.PagingEmptyValve
 import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
@@ -32,7 +32,6 @@ import com.mitsuki.ehit.ui.main.GalleryListAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(

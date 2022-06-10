@@ -1,14 +1,13 @@
 package com.mitsuki.ehit.base
 
 import android.content.res.Configuration
-import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
-import com.mitsuki.ehit.crutch.windowController
+import com.mitsuki.ehit.crutch.utils.windowController
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

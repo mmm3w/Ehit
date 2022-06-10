@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.uils
+package com.mitsuki.ehit.crutch.utils
 
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.string

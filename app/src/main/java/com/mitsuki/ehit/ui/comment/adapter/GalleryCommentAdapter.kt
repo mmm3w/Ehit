@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.uils.TimeFormat
 import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
@@ -17,7 +16,7 @@ import com.mitsuki.ehit.crutch.event.post
 import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
 import com.mitsuki.ehit.crutch.extensions.showPopupMenu
 import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.uils.commentTime
+import com.mitsuki.ehit.crutch.utils.commentTime
 import com.mitsuki.ehit.databinding.ItemCommentABinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Comment

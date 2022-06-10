@@ -18,8 +18,6 @@ class ShareData(context: Context) {
         const val SP_SECURITY = "SP_SECURITY"
         const val SP_INITIAL_INSTALLATION = "SP_INITIAL_INSTALLATION"
 
-        const val SP_GALLERY_PAGE_SIZE = "SP_GALLERY_PAGE_SIZE"
-
         const val SP_DOMAIN = "SP_DOMAIN"
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
         const val SP_DISABLE_SCREENSHOTS = "SP_DISABLE_SCREENSHOTS"
@@ -82,10 +80,6 @@ class ShareData(context: Context) {
     var spInitial: Boolean
         set(value) = edit { putBoolean(SP_INITIAL_INSTALLATION, value) }
         get() = boolean(SP_INITIAL_INSTALLATION, true)
-
-    var spGalleryPageSize: Int
-        set(value) = edit { putInt(SP_GALLERY_PAGE_SIZE, value) }
-        get() = int(SP_GALLERY_PAGE_SIZE)
 
     var spScreenOrientation: Int
         set(value) = edit { putInt(SP_SCREEN_ORIENTATION, value) }

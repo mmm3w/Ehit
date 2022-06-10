@@ -5,11 +5,10 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.mitsuki.armory.adapter.notify.coroutine.NotifyQueueData
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.crutch.uils.TimeFormat
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.uils.commentTime
+import com.mitsuki.ehit.crutch.utils.commentTime
 import com.mitsuki.ehit.databinding.ItemCommentBinding
 import com.mitsuki.ehit.model.entity.Comment
 import com.mitsuki.ehit.ui.common.adapter.BindingViewHolder

@@ -6,7 +6,7 @@ import com.mitsuki.ehit.const.DirManager
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.save.ShareData
-import com.mitsuki.ehit.crutch.uils.BlockWork
+import com.mitsuki.ehit.crutch.utils.BlockWork
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.entity.DownloadMessage
 import com.mitsuki.ehit.model.entity.GalleryPreview

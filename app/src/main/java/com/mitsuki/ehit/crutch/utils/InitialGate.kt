@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.uils
+package com.mitsuki.ehit.crutch.utils
 
 class InitialGate {
     companion object {

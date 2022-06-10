@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mitsuki.armory.adapter.notify.NotifyData
@@ -15,7 +14,6 @@ import com.mitsuki.ehit.base.BindingActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
-import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.databinding.ActivityGalleryCommentBinding
 import com.mitsuki.ehit.model.entity.Comment
 import com.mitsuki.ehit.ui.comment.adapter.GalleryCommentAdapter

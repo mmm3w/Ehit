@@ -1,16 +1,14 @@
 package com.mitsuki.ehit
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Process
 import android.util.Log
 import com.mitsuki.ehit.crutch.extensions.ensureDir
-import com.mitsuki.ehit.crutch.uils.crashTime
+import com.mitsuki.ehit.crutch.utils.crashTime
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.Writer
-import java.text.SimpleDateFormat
 import kotlin.system.exitProcess
 
 object CrashHandler : Thread.UncaughtExceptionHandler {

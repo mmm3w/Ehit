@@ -21,8 +21,8 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.uils.InitialGate
-import com.mitsuki.ehit.crutch.uils.PagingEmptyValve
+import com.mitsuki.ehit.crutch.utils.InitialGate
+import com.mitsuki.ehit.crutch.utils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.isClick
 import com.mitsuki.ehit.crutch.extensions.observe

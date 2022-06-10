@@ -1,8 +1,5 @@
 package com.mitsuki.ehit.model.repository.impl
 
-import android.webkit.MimeTypeMap
-import coil.Coil
-import com.mitsuki.armory.httprookie.convert.FileConvert
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.get
 import com.mitsuki.armory.httprookie.post
@@ -11,13 +8,12 @@ import com.mitsuki.armory.httprookie.request.json
 import com.mitsuki.armory.httprookie.request.params
 import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
-import com.mitsuki.ehit.const.DirManager
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.const.ParamsValue
 import com.mitsuki.ehit.const.RequestKey
-import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.model.ehparser.GalleryPageSize
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.convert.*
 import com.mitsuki.ehit.model.dao.DownloadDao
@@ -27,15 +23,12 @@ import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.GalleryPreviewCache
 import com.mitsuki.ehit.model.entity.reponse.RateBack
-import com.mitsuki.ehit.model.entity.reponse.VoteBack
 import com.mitsuki.ehit.model.entity.request.RequestRateInfo
-import com.mitsuki.ehit.model.entity.request.RequestVoteInfo
 import com.mitsuki.ehit.model.page.FavouritePageIn
 import com.mitsuki.ehit.model.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import java.io.File
 import javax.inject.Inject
 import kotlin.math.ceil
 
@@ -46,13 +39,13 @@ class RepositoryImpl @Inject constructor(
     val shareData: ShareData
 ) : Repository {
 
-    private var galleryPageSize: Int = shareData.spGalleryPageSize
-        set(value) {
-            if (value != field) {
-                shareData.spGalleryPageSize = value
-                field = value
-            }
-        }
+//    private var galleryPageSize: Int = shareData.spGalleryPageSize
+//        set(value) {
+//            if (value != field) {
+//                shareData.spGalleryPageSize = value
+//                field = value
+//            }
+//        }
 
     //convert
     private val mGalleryListConvert by lazy {
@@ -130,7 +123,6 @@ class RepositoryImpl @Inject constructor(
                         galleryDao.insertGalleryDetail(result.first)
                         galleryDao
                             .insertGalleryImageSource(gid, token, result.second)
-                        galleryPageSize = result.second.data.size
                         RequestResult.Success(result.first)
                     }
                     is Response.Fail<*> -> RequestResult.Fail(data.throwable)
@@ -162,7 +154,6 @@ class RepositoryImpl @Inject constructor(
                 when (remoteData) {
                     is Response.Success<PageInfo<ImageSource>> -> {
                         remoteData.requireBody().run {
-                            galleryPageSize = data.size
                             galleryDao.insertGalleryImageSource(gid, token, this)
                             RequestResult.Success(this)
                         }
@@ -170,7 +161,6 @@ class RepositoryImpl @Inject constructor(
                     is Response.Fail<*> -> RequestResult.Fail(remoteData.throwable)
                 }
             } else {
-                galleryPageSize = images.data.size
                 RequestResult.Success(images)
             }
         }
@@ -224,12 +214,12 @@ class RepositoryImpl @Inject constructor(
                     galleryDao.querySingleGalleryImageCache(gid, token, index)
                 val pToken = if (cache == null || cache.pToken.isEmpty()) {
                     //缓存中没有时请求网络
-                    if (galleryPageSize == 0) {
+                    if (GalleryPageSize.illegalSize) {
                         galleryImageSource(gid, token, 0, true)
                     }
                     galleryDao.querySingleGalleryImageCache(gid, token, index)?.pToken ?: let {
-                        if (galleryPageSize == 0) throw IllegalStateException("request page size error")
-                        val webIndex = index / galleryPageSize
+                        if (GalleryPageSize.illegalSize) throw IllegalStateException("request page size error")
+                        val webIndex = index / GalleryPageSize.size
 
                         val images = galleryImageSource(gid, token, webIndex, true)
                         if (images is RequestResult.Fail<*>) {

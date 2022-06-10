@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 import com.mitsuki.ehit.crutch.extensions.tryUnlock
-import com.mitsuki.ehit.crutch.uils.fileNameTime
+import com.mitsuki.ehit.crutch.utils.fileNameTime
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 

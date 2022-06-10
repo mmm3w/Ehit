@@ -97,7 +97,7 @@ class MemoryData(private val shareData: ShareData) {
             }
         }
 
-    var customBrightness:Float = shareData.spCustomBrightness
+    var customBrightness: Float = shareData.spCustomBrightness
         set(value) {
             if (value != field) {
                 field = value

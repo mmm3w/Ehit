@@ -6,10 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewAnimationUtils
 import android.view.WindowManager
 import android.widget.SeekBar
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
@@ -17,7 +15,7 @@ import com.mitsuki.armory.base.extend.dp2px
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
-import com.mitsuki.ehit.crutch.uils.MinuteDelay
+import com.mitsuki.ehit.crutch.utils.MinuteDelay
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
@@ -170,9 +168,9 @@ class GalleryActivity : BaseActivity() {
 
     fun triggerSeekBar() {
         if (isSeekBarShowed) {
-            hideSeek()
+            binding.gallerySeek.animate { translationY(dp2px(72f)) }
         } else {
-            showSeek()
+            binding.gallerySeek.animate { translationY(0f) }
         }
         isSeekBarShowed = !isSeekBarShowed
     }
@@ -296,19 +294,4 @@ class GalleryActivity : BaseActivity() {
         }
         return super.onKeyDown(keyCode, event)
     }
-
-    private fun showSeek() {
-        binding.gallerySeek.apply {
-            clearAnimation()
-            ViewCompat.animate(binding.gallerySeek).translationY(0f).start()
-        }
-    }
-
-    private fun hideSeek() {
-        binding.gallerySeek.apply {
-            clearAnimation()
-            ViewCompat.animate(binding.gallerySeek).translationY(dp2px(72f)).start()
-        }
-    }
-
 }

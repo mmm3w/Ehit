@@ -1,6 +1,7 @@
 package com.mitsuki.ehit.model.convert
 
 import com.mitsuki.armory.httprookie.convert.Convert
+import com.mitsuki.ehit.model.ehparser.GalleryPageSize
 import com.mitsuki.ehit.model.entity.GalleryDetail
 import com.mitsuki.ehit.model.entity.PageInfo
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -12,6 +13,7 @@ class GalleryDetailImageConvert : Convert<Pair<GalleryDetail, PageInfo<ImageSour
         response.close()
         val detail = GalleryDetail.parse(webStr)
         val images = ImageSource.parse(webStr)
+        GalleryPageSize.parseSize(webStr ?: "")
         return detail to images
     }
 }

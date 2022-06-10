@@ -1,13 +1,11 @@
 package com.mitsuki.ehit.viewmodel
 
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.LoadState
 import com.mitsuki.armory.adapter.notify.NotifyData
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.const.DataKey
@@ -20,7 +18,6 @@ import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.extensions.postNext
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.uils.InitialGate
 import com.mitsuki.ehit.model.repository.CommentRepository
 import com.mitsuki.ehit.model.repository.Repository
 import com.mitsuki.ehit.ui.comment.adapter.LoadAllCommentAdapter

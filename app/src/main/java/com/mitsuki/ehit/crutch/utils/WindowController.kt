@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.crutch.utils
 
 import android.app.Activity
 import android.view.View
