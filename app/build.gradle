@@ -50,9 +50,9 @@ android {
         properties.load(inputStream)
 
         debug {
-            buildConfigField "String", "ipb_member_id", properties.getProperty('ipb_member_id')
-            buildConfigField "String", "ipb_pass_hash", properties.getProperty('ipb_pass_hash')
-            buildConfigField "String", "igneous", properties.getProperty('igneous')
+            buildConfigField "String", "ipb_member_id", properties.getOrDefault('ipb_member_id', '""')
+            buildConfigField "String", "ipb_pass_hash", properties.getOrDefault('ipb_pass_hash', '""')
+            buildConfigField "String", "igneous", properties.getOrDefault('igneous', '""')
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -112,7 +112,7 @@ dependencies {
 
     //----------------------------------------------------------------------------------------------
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0' //协程
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1' //协程
 
     //noinspection GradleDynamicVersion
     testImplementation 'junit:junit:4.+'
@@ -135,9 +135,9 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.38.1")
     kapt("com.google.dagger:hilt-android-compiler:2.38.1")
     //viewmodel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     //LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
     //paging3
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
     //navigation
@@ -173,7 +173,7 @@ dependencies {
     implementation "com.mitsuki.armory:base:1.0.2"
     implementation "com.mitsuki.armory:httprookie:1.0.2"
     implementation "com.mitsuki.armory:loadprogress:1.0.0"
-    implementation "com.mitsuki.armory:adapter:1.0.3"
+    implementation "com.mitsuki.armory:adapter:1.0.4"
     implementation "com.mitsuki.armory:imagegesture:1.0.0"
     implementation "com.mitsuki.armory:systemoverlay:1.0.1"
 

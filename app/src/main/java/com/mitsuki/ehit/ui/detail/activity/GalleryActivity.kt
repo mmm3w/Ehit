@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.detail.activity
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.mitsuki.armory.base.extend.dp2px
@@ -18,6 +20,7 @@ import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.utils.MinuteDelay
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
+import com.mitsuki.ehit.crutch.utils.ImageSaver
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
 import com.mitsuki.ehit.receiver.BatteryReceiver
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
@@ -175,6 +178,13 @@ class GalleryActivity : BaseActivity() {
         isSeekBarShowed = !isSeekBarShowed
     }
 
+    fun saveImage(index: Int, bitmap: Bitmap) {
+        lifecycleScope.launchWhenCreated {
+            val result =
+                ImageSaver().save(this@GalleryActivity, bitmap, "$mId-$mToken-$index.png", "")
+            showToast(if (result) string(R.string.hint_save_success) else string(R.string.hint_save_failed))
+        }
+    }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun enableReadConfig() {

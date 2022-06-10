@@ -1,12 +1,15 @@
 package com.mitsuki.ehit.ui.detail.fragment
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import coil.dispose
+import coil.drawable.CrossfadeDrawable
 import coil.load
 import coil.request.ErrorResult
 import coil.request.ImageRequest
@@ -22,6 +25,7 @@ import com.mitsuki.ehit.base.BindingFragment
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.crutch.save.MemoryData
+import com.mitsuki.ehit.crutch.utils.ImageSaver
 import com.mitsuki.ehit.databinding.FragmentGalleryBinding
 import com.mitsuki.ehit.ui.common.dialog.BottomMenuDialogFragment
 import com.mitsuki.ehit.ui.detail.activity.GalleryActivity
@@ -38,6 +42,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
     private val mViewModel: GalleryViewModel by viewModels()
 
     private var mImageGesture: ImageGesture? = null
+
+    private var isLoadSuccess = false
 
     @Inject
     lateinit var memoryData: MemoryData
@@ -86,7 +92,10 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
                 size(Size.ORIGINAL)
                 listener(
                     onStart = { onImageLoadStart() },
-                    onSuccess = { _: ImageRequest, _: SuccessResult -> onImageLoadFinish() },
+                    onSuccess = { _: ImageRequest, sr: SuccessResult ->
+                        isLoadSuccess = true
+                        onImageLoadFinish()
+                    },
                     onError = { _: ImageRequest, error: ErrorResult -> onImageLoadError(error.throwable) },
                     onCancel = { onImageLoadFinish() }
                 )
@@ -126,6 +135,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
     }
 
     private fun showGalleryMenu() {
+        if (!isLoadSuccess) return
+
         BottomMenuDialogFragment(
             intArrayOf(
                 R.string.text_refresh,
@@ -135,13 +146,18 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
             )
         ) {
             when (it) {
-                0 -> mViewModel.retry()
+                0 -> {
+                    mViewModel.retry()
+                }
                 1 -> {
 
                 }
                 2 -> {
-
+                    ((binding?.galleryImage?.drawable as CrossfadeDrawable).end as? BitmapDrawable)?.bitmap?.apply {
+                        (requireActivity() as GalleryActivity).saveImage(mViewModel.index, this)
+                    }
                 }
+
                 3 -> {
 
                 }

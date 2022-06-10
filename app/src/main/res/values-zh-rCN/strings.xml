@@ -36,6 +36,8 @@
     <string name="hint_host">主机/IP</string>
     <string name="hint_port">端口</string>
     <string name="hint_waiting">请稍后…</string>
+    <string name="hint_save_success">保存成功</string>
+    <string name="hint_save_failed">保存失败</string>
 
     <string name="error_content_empty">内容为空</string>
     <string name="error_invalid_port">无效端口</string>

@@ -16,6 +16,7 @@ import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.entity.GalleryPreview
 import com.mitsuki.ehit.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,6 +39,8 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
     private val mState: MutableLiveData<LoadState> = MutableLiveData(LoadState())
     val state: LiveData<LoadState> = mState
 
+    private var mLoadJob: Job? = null
+
     fun initData(bundle: Bundle?) {
         if (bundle == null) throw IllegalStateException()
         index = bundle.getInt(DataKey.GALLERY_INDEX, 0)
@@ -47,7 +50,8 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
     }
 
     fun obtainData() {
-        viewModelScope.launch {
+        mLoadJob?.cancel()
+        mLoadJob = viewModelScope.launch {
             mState.postNext { it.copy(loading = true, error = null) }
             var error: String? = null
             with(repository.galleryPreview(mId, galleryToken, index)) {
@@ -64,8 +68,9 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
     }
 
     fun retry() {
+        mLoadJob?.cancel()
         mPreviewCache?.apply {
-            viewModelScope.launch {
+            mLoadJob = viewModelScope.launch {
                 mState.postNext { it.copy(loading = true, error = null) }
                 var error: String? = null
                 with(repository.galleryPreview(reloadKey, mId, galleryToken, index)) {

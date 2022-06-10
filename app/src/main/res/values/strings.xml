@@ -69,6 +69,8 @@
     <string name="hint_host">Host</string>
     <string name="hint_port">Port</string>
     <string name="hint_waiting">Waiting…</string>
+    <string name="hint_save_failed">Save failed</string>
+    <string name="hint_save_success">Successfully saved</string>
 
     <string name="error_content_empty">Content is empty</string>
     <string name="error_invalid_port">Invalid port</string>

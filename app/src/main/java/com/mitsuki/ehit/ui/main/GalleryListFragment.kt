@@ -239,6 +239,8 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         if (mViewModel.maxPage <= 1) return
         PageDialog(mViewModel.maxPage) {
             mViewModel.galleryListPage(it)
+            mViewModel.refreshEnable.postValue(false)
+            mEmptyValve.enable()
             mMainAdapter.refresh()
         }.show(childFragmentManager, "page")
     }
@@ -246,6 +248,8 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     private fun showQuickSearchPanel() {
         QuickSearchPanel { type, key ->
             mViewModel.galleryListCondition(type, key)
+            mViewModel.refreshEnable.postValue(false)
+            mEmptyValve.enable()
             mMainAdapter.refresh()
         }.show(childFragmentManager, "QuickSearchPanel")
     }

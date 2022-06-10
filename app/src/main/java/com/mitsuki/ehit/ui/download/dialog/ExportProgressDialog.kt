@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.zip.ZipPacker
 import com.mitsuki.ehit.ui.common.dialog.FixedProgressDialogFragment
@@ -47,13 +48,13 @@ class ExportProgressDialog(
                     }
                     withContext(Dispatchers.Main) {
                         dismiss()
-                        AppHolder.toast("保存成功")
+                        AppHolder.toast(string(R.string.hint_save_success))
                     }
                 } catch (inner: Exception) {
                     inner.printStackTrace()
                     withContext(Dispatchers.Main) {
                         dismiss()
-                        AppHolder.toast("保存失败")
+                        AppHolder.toast(string(R.string.hint_save_failed))
                     }
                 }
             }
