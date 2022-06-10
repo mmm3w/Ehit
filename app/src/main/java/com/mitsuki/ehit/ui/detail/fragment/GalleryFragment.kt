@@ -63,7 +63,7 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
                 }
             }
         binding?.galleryIndex?.text = (mViewModel.index + 1).toString()
-        binding?.galleryErrorRetry?.setOnClickListener { mViewModel.retry() }
+        binding?.galleryErrorRetry?.setOnClickListener { mViewModel.obtainData() }
 
         mViewModel.loadUrl.observe(viewLifecycleOwner, Observer(this::onLoadImage))
         mViewModel.state.observe(viewLifecycleOwner, Observer(this::onLoadState))
@@ -157,7 +157,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
             1 -> (requireActivity() as GalleryActivity).previousPage()
             2 -> (requireActivity() as GalleryActivity).dyNextPage()
             3 -> (requireActivity() as GalleryActivity).nextPage()
-            4, 5 -> (requireActivity() as GalleryActivity).showReadConfig()
+            4 -> (requireActivity() as GalleryActivity).showReadConfig()
+            5 -> (requireActivity() as GalleryActivity).triggerSeekBar()
         }
     }
 }

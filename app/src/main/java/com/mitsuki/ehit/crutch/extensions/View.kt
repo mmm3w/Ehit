@@ -5,7 +5,9 @@ import android.graphics.Outline
 import android.view.*
 import android.widget.PopupMenu
 import androidx.annotation.LayoutRes
+import androidx.core.view.ViewCompat
 import androidx.core.view.ViewPropertyAnimatorCompat
+import androidx.core.view.ViewPropertyAnimatorListener
 import androidx.fragment.app.DialogFragment
 
 fun ViewGroup.createItemView(@LayoutRes layout: Int): View =
@@ -39,3 +41,4 @@ fun View.corners(radius: Float) {
 fun showSelectMenu(context: Context, view: View, menu: Int, click: (Int) -> Unit) {
     view.showPopupMenu(context, menu, click)
 }
+

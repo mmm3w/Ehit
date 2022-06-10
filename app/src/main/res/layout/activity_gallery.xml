@@ -40,6 +40,27 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/gallery_seek_hint"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/background_gallery_seek_hint"
+        android:gravity="center"
+        android:lines="1"
+        android:minHeight="80dp"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+
+    <SeekBar
+        android:id="@+id/gallery_seek"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="32dp"
+        android:translationY="72dp" />
+
     <com.mitsuki.ehit.ui.detail.widget.TouchHotspotVisualization
         android:id="@+id/gallery_hotspot_visualization"
         android:layout_width="match_parent"

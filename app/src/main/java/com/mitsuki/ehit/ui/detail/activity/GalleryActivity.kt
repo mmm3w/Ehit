@@ -6,7 +6,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.WindowManager
+import android.widget.SeekBar
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
@@ -38,7 +41,8 @@ class GalleryActivity : BaseActivity() {
     private val mMinuteDelay by lazy { MinuteDelay(this) }
 
     @SuppressLint("SimpleDateFormat")
-    private val mDateFormat = SimpleDateFormat("HH:mm");
+    private val mDateFormat = SimpleDateFormat("HH:mm")
+    private var isSeekBarShowed = false
 
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
@@ -54,6 +58,37 @@ class GalleryActivity : BaseActivity() {
 
         updateIndex(mIndex)
         enableReadConfig()
+
+        binding.gallerySeekHint.fadeInit()
+        binding.gallerySeek.apply {
+            max = mPage - 1
+            progress = mIndex
+
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                @SuppressLint("SetTextI18n")
+                override fun onProgressChanged(
+                    seekBar: SeekBar,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    if (fromUser) {
+                        binding.gallerySeekHint.text = (progress + 1).toString()
+                    }
+                }
+
+                @SuppressLint("SetTextI18n")
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                    binding.gallerySeekHint.animate { fadeIn() }
+                    binding.gallerySeekHint.text = (seekBar.progress + 1).toString()
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    binding.gallerySeekHint.animate { fadeOut() }
+                    binding.gallerySeekHint.isVisible = false
+                    binding.galleryViewPager.setCurrentItem(seekBar.progress, false)
+                }
+            })
+        }
 
         mViewPagerAdapter = GalleryFragmentAdapter(this, mId, mToken, mPage)
         binding.galleryViewPager.apply {
@@ -90,6 +125,7 @@ class GalleryActivity : BaseActivity() {
     private fun updateIndex(index: Int) {
         binding.galleryShowProgress.text =
             String.format(string(R.string.page_separate), index + 1, mPage)
+        binding.gallerySeek.progress = index
     }
 
     fun dyNextPage() {
@@ -131,6 +167,16 @@ class GalleryActivity : BaseActivity() {
     fun showReadConfig() {
         ReadConfigDialog { enableReadConfig() }.show(supportFragmentManager, "config")
     }
+
+    fun triggerSeekBar() {
+        if (isSeekBarShowed) {
+            hideSeek()
+        } else {
+            showSeek()
+        }
+        isSeekBarShowed = !isSeekBarShowed
+    }
+
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun enableReadConfig() {
@@ -249,6 +295,20 @@ class GalleryActivity : BaseActivity() {
             }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun showSeek() {
+        binding.gallerySeek.apply {
+            clearAnimation()
+            ViewCompat.animate(binding.gallerySeek).translationY(0f).start()
+        }
+    }
+
+    private fun hideSeek() {
+        binding.gallerySeek.apply {
+            clearAnimation()
+            ViewCompat.animate(binding.gallerySeek).translationY(dp2px(72f)).start()
+        }
     }
 
 }
