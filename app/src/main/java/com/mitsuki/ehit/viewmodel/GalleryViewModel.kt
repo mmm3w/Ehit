@@ -32,7 +32,7 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
 
     val largeCacheTag get() = CacheKey.largeTempKey(tag)
 
-    private var mPreviewCache: GalleryPreview? = null
+    private var reloadKey: String? = null
 
     private val mLoadUrl: MutableLiveData<String> = MutableLiveData()
     val loadUrl: LiveData<String> = mLoadUrl
@@ -53,11 +53,12 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
         mLoadJob?.cancel()
         mLoadJob = viewModelScope.launch {
             mState.postNext { it.copy(loading = true, error = null) }
+            mLoadUrl.postValue("")
             var error: String? = null
-            with(repository.galleryPreview(mId, galleryToken, index)) {
+            with(repository.galleryPreview(mId, galleryToken, index, reloadKey ?: "")) {
                 when (this) {
                     is RequestResult.Success -> {
-                        mPreviewCache = data
+                        reloadKey = data.reloadKey
                         mLoadUrl.postValue(data.imageUrl.addFeature(tag))
                     }
                     is RequestResult.Fail -> error = throwable.message
@@ -66,28 +67,6 @@ class GalleryViewModel @Inject constructor(@RemoteRepository var repository: Rep
             mState.postNext { it.copy(loading = false, error = error) }
         }
     }
-
-    fun retry() {
-        mLoadJob?.cancel()
-        mPreviewCache?.apply {
-            mLoadJob = viewModelScope.launch {
-                mState.postNext { it.copy(loading = true, error = null) }
-                var error: String? = null
-                with(repository.galleryPreview(reloadKey, mId, galleryToken, index)) {
-                    when (this) {
-                        is RequestResult.Success -> {
-                            mPreviewCache = data
-                            mLoadUrl.postValue(data.imageUrl.addFeature(tag))
-                        }
-                        is RequestResult.Fail -> error = throwable.message
-                    }
-                }
-                mState.postNext { it.copy(loading = false, error = error) }
-            }
-        }
-
-    }
-
 
     fun changeLoadingState(isVisible: Boolean) {
         mState.postNext { it.copy(loading = isVisible) }

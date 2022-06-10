@@ -244,22 +244,34 @@ class RepositoryImpl @Inject constructor(
     override suspend fun galleryPreview(
         gid: Long,
         token: String,
-        index: Int
+        index: Int,
+        reloadKey: String
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
             try {
-                val pToken = galleryImagePToken(gid, token, index).let {
-                    when (it) {
-                        is RequestResult.Success<String> -> it.data
-                        is RequestResult.Fail<*> -> throw it.throwable
-                    }
-                }
-
-                val data = galleryDao.queryGalleryPreview(gid, token, index)
+                val data =
+                    if (reloadKey.isEmpty()) galleryDao.queryGalleryPreview(
+                        gid,
+                        token,
+                        index
+                    ) else null
                 if (data != null) {
                     RequestResult.Success(GalleryPreview(data))
                 } else {
-                    galleryPreview(Site.galleryPreviewDetail(gid, pToken, index), gid, token, index)
+                    val pToken = galleryImagePToken(gid, token, index).let {
+                        when (it) {
+                            is RequestResult.Success<String> -> it.data
+                            is RequestResult.Fail<*> -> throw it.throwable
+                        }
+                    }
+
+                    galleryPreview(
+                        Site.galleryPreviewDetail(gid, pToken, index),
+                        gid,
+                        token,
+                        index,
+                        reloadKey
+                    )
                 }
             } catch (inner: Throwable) {
                 RequestResult.Fail(inner)
@@ -268,16 +280,21 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun galleryPreview(
-        retryUrl: String,
+        url: String,
         gid: Long,
         token: String,
-        index: Int
+        index: Int,
+        reloadKey: String
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
             try {
                 val remoteData: Response<GalleryPreview> =
-                    client.get<GalleryPreview>(retryUrl) {
+                    client.get<GalleryPreview>(url) {
                         convert = GalleryPreviewConvert()
+                        if (reloadKey.isNotEmpty()) {
+                            urlParams(RequestKey.PREVIEW_RELOAD, reloadKey)
+                        }
+
                     }.execute()
 
                 when (remoteData) {

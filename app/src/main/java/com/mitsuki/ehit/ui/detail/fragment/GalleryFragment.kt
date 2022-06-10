@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import coil.clear
 import coil.dispose
 import coil.drawable.CrossfadeDrawable
 import coil.load
@@ -87,18 +88,25 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
     private fun onLoadImage(url: String) {
         binding?.galleryImage?.apply {
             dispose()
-            load(url) {
-                memoryCacheKey(mViewModel.largeCacheTag)
-                size(Size.ORIGINAL)
-                listener(
-                    onStart = { onImageLoadStart() },
-                    onSuccess = { _: ImageRequest, sr: SuccessResult ->
-                        isLoadSuccess = true
-                        onImageLoadFinish()
-                    },
-                    onError = { _: ImageRequest, error: ErrorResult -> onImageLoadError(error.throwable) },
-                    onCancel = { onImageLoadFinish() }
-                )
+            if (url.isNotEmpty()) {
+                load(url) {
+                    memoryCacheKey(mViewModel.largeCacheTag)
+                    size(Size.ORIGINAL)
+                    listener(
+                        onStart = {
+                            isLoadSuccess = false
+                            onImageLoadStart()
+                        },
+                        onSuccess = { _: ImageRequest, sr: SuccessResult ->
+                            isLoadSuccess = true
+                            onImageLoadFinish()
+                        },
+                        onError = { _: ImageRequest, error: ErrorResult -> onImageLoadError(error.throwable) },
+                        onCancel = { onImageLoadFinish() }
+                    )
+                }
+            } else {
+                setImageDrawable(null)
             }
         }
     }
@@ -146,9 +154,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
             )
         ) {
             when (it) {
-                0 -> {
-                    mViewModel.retry()
-                }
+                0 -> mViewModel.obtainData()
+
                 1 -> {
 
                 }

@@ -39,14 +39,16 @@ interface Repository {
     suspend fun galleryImagePToken(gid: Long, token: String, index: Int)
             : RequestResult<String>
 
-    suspend fun galleryPreview(gid: Long, token: String, index: Int)
+    suspend fun galleryPreview(gid: Long, token: String, index: Int, reloadKey: String = "")
             : RequestResult<GalleryPreview>
 
-    suspend fun galleryPreview(retryUrl: String, gid: Long, token: String, index: Int)
-            : RequestResult<GalleryPreview>
-
-
-
+    suspend fun galleryPreview(
+        url: String,
+        gid: Long,
+        token: String,
+        index: Int,
+        reloadKey: String = ""
+    ): RequestResult<GalleryPreview>
 
     suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String>
 
