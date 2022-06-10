@@ -152,14 +152,14 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
                 1 -> {
 
                 }
-                2 -> {
-                    ((binding?.galleryImage?.drawable as CrossfadeDrawable).end as? BitmapDrawable)?.bitmap?.apply {
-                        (requireActivity() as GalleryActivity).saveImage(mViewModel.index, this)
-                    }
+                2 -> ((binding?.galleryImage?.drawable as CrossfadeDrawable).end as? BitmapDrawable)?.bitmap?.apply {
+                    (requireActivity() as GalleryActivity).saveImageByDefault(
+                        mViewModel.index,
+                        this
+                    )
                 }
-
-                3 -> {
-
+                3 -> ((binding?.galleryImage?.drawable as CrossfadeDrawable).end as? BitmapDrawable)?.bitmap?.apply {
+                    (requireActivity() as GalleryActivity).saveImageByCustom(mViewModel.index, this)
                 }
             }
             true

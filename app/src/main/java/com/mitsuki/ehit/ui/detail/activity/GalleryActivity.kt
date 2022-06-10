@@ -9,6 +9,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -22,10 +23,15 @@ import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.crutch.utils.ImageSaver
 import com.mitsuki.ehit.databinding.ActivityGalleryBinding
+import com.mitsuki.ehit.model.activityresult.GallerySearchActivityResultContract
+import com.mitsuki.ehit.model.activityresult.SaveBitmapActivityResultContract
+import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.receiver.BatteryReceiver
 import com.mitsuki.ehit.ui.detail.adapter.GalleryFragmentAdapter
 import com.mitsuki.ehit.ui.detail.dialog.ReadConfigDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import kotlin.math.roundToInt
 
@@ -48,6 +54,22 @@ class GalleryActivity : BaseActivity() {
     private val binding by viewBinding(ActivityGalleryBinding::inflate)
 
     private val mBatteryReceiver by lazy { BatteryReceiver() }
+
+    private val customSaveLaunch = registerForActivityResult(SaveBitmapActivityResultContract()) {
+        lifecycleScope.launchWhenCreated {
+            val result = withContext(Dispatchers.IO) {
+                it?.run {
+                    @Suppress("BlockingMethodInNonBlockingContext")
+                    contentResolver.openOutputStream(second)?.use { outputStream ->
+                        first.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    } ?: false
+                } ?: false
+            }
+            withContext(Dispatchers.Main) {
+                showToast(if (result) string(R.string.hint_save_success) else string(R.string.hint_save_failed))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -178,12 +200,19 @@ class GalleryActivity : BaseActivity() {
         isSeekBarShowed = !isSeekBarShowed
     }
 
-    fun saveImage(index: Int, bitmap: Bitmap) {
+    fun saveImageByDefault(index: Int, bitmap: Bitmap) {
         lifecycleScope.launchWhenCreated {
-            val result =
+            val result = withContext(Dispatchers.IO) {
                 ImageSaver().save(this@GalleryActivity, bitmap, "$mId-$mToken-$index.png", "")
-            showToast(if (result) string(R.string.hint_save_success) else string(R.string.hint_save_failed))
+            }
+            withContext(Dispatchers.Main) {
+                showToast(if (result) string(R.string.hint_save_success) else string(R.string.hint_save_failed))
+            }
         }
+    }
+
+    fun saveImageByCustom(index: Int, bitmap: Bitmap) {
+        customSaveLaunch.launch("$mId-$mToken-$index.png" to bitmap)
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
