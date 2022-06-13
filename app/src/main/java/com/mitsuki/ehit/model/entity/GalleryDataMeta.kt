@@ -11,7 +11,10 @@ sealed class GalleryDataMeta {
 
     class Normal(key: GalleryDataKey) : GalleryDataMeta() {
 
-        constructor(keyword: String = "") : this(GalleryDataKey.createByQuery(keyword))
+        constructor(
+            keyword: String = "",
+            byQuery: Boolean = true
+        ) : this(if (byQuery) GalleryDataKey.createByQuery(keyword) else GalleryDataKey(keyword))
 
         override var key: GalleryDataKey? = key
         override val targetUrl: String
@@ -49,7 +52,10 @@ sealed class GalleryDataMeta {
 
     class Subscription(key: GalleryDataKey) : GalleryDataMeta() {
 
-        constructor(keyword: String = "") : this(GalleryDataKey.createByQuery(keyword))
+        constructor(
+            keyword: String = "",
+            byQuery: Boolean = true
+        ) : this(if (byQuery) GalleryDataKey.createByQuery(keyword) else GalleryDataKey(keyword))
 
         override var key: GalleryDataKey? = key
 
@@ -75,12 +81,12 @@ sealed class GalleryDataMeta {
     }
 
     companion object {
-        fun create(meta: Type, key: String): GalleryDataMeta {
+        fun create(meta: Type, key: String, byQuery: Boolean = true): GalleryDataMeta {
             return when (meta) {
-                Type.NORMAL -> Normal(key)
+                Type.NORMAL -> Normal(key, byQuery)
                 Type.UPLOADER -> Uploader(key)
                 Type.TAG -> Tag(key)
-                Type.SUBSCRIPTION -> Subscription(key)
+                Type.SUBSCRIPTION -> Subscription(key, byQuery)
                 Type.WHATS_HOT -> Popular
             }
         }

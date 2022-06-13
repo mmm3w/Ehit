@@ -57,24 +57,25 @@ class GalleryListViewModel @Inject constructor(
                 val sourceIntent =
                     bundle.get("android-support-nav:controller:deepLinkIntent") as? Intent
                 val params = sourceIntent?.data?.path ?: ""
-                initListPageIn(GalleryDataMeta.Type.SUBSCRIPTION, params)
+                val byQuery = bundle.getBoolean(DataKey.GALLERY_SEARCH_KEY_BY_QUERY, true)
+                initListPageIn(GalleryDataMeta.Type.SUBSCRIPTION, params, byQuery)
                 return
             }
             "popular" -> {
-                initListPageIn(GalleryDataMeta.Type.WHATS_HOT, "")
+                initListPageIn(GalleryDataMeta.Type.WHATS_HOT, "", false)
                 return
             }
         }
 
         val tag = bundle?.getString(DataKey.GALLERY_TYPE_TAG)
         if (!tag.isNullOrEmpty()) {
-            initListPageIn(GalleryDataMeta.Type.TAG, tag)
+            initListPageIn(GalleryDataMeta.Type.TAG, tag, false)
             return
         }
 
         val uploader = bundle?.getString(DataKey.GALLERY_TYPE_UPLOADER)
         if (!uploader.isNullOrEmpty()) {
-            initListPageIn(GalleryDataMeta.Type.UPLOADER, uploader)
+            initListPageIn(GalleryDataMeta.Type.UPLOADER, uploader, false)
             return
         }
 
@@ -82,11 +83,12 @@ class GalleryListViewModel @Inject constructor(
             bundle?.get("android-support-nav:controller:deepLinkIntent") as? Intent
         val params = (sourceIntent?.data?.query ?: "")
             .ifEmpty { bundle?.getString(DataKey.GALLERY_SEARCH_KEY) ?: "" }
-        initListPageIn(GalleryDataMeta.Type.NORMAL, params)
+        val byQuery = bundle?.getBoolean(DataKey.GALLERY_SEARCH_KEY_BY_QUERY, true) ?: true
+        initListPageIn(GalleryDataMeta.Type.NORMAL, params, byQuery)
     }
 
-    private fun initListPageIn(type: GalleryDataMeta.Type, key: String) {
-        mListPageIn = GalleryListPageIn(GalleryDataMeta.create(type, key))
+    private fun initListPageIn(type: GalleryDataMeta.Type, key: String, byQuery: Boolean) {
+        mListPageIn = GalleryListPageIn(GalleryDataMeta.create(type, key, byQuery))
         searchBarText.postValue(mListPageIn.hintContent)
     }
 
@@ -96,7 +98,7 @@ class GalleryListViewModel @Inject constructor(
 
     fun galleryListCondition(type: GalleryDataMeta.Type, key: String) {
         galleryListPage(1)
-        mListPageIn.meta = GalleryDataMeta.create(type, key)
+        mListPageIn.meta = GalleryDataMeta.create(type, key, false)
         searchBarText.postValue(mListPageIn.hintContent)
     }
 

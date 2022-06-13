@@ -301,7 +301,10 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
         Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
             .navigate(
                 R.id.action_gallery_detail_fragment_to_gallery_list_fragment,
-                bundleOf(DataKey.GALLERY_SEARCH_KEY to "${RequestKey.SEARCH_KEY_WORD}=${mViewModel.galleryName}"),
+                bundleOf(
+                    DataKey.GALLERY_SEARCH_KEY to mViewModel.galleryName,
+                    DataKey.GALLERY_SEARCH_KEY_BY_QUERY to false
+                ),
                 null,
                 null
             )
