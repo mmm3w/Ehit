@@ -59,7 +59,9 @@
         <activity android:name="com.mitsuki.ehit.ui.search.SearchActivity" />
         <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryMoreInfoActivity" />
         <activity android:name="com.mitsuki.ehit.ui.detail.activity.GalleryActivity" />
-        <activity android:name="com.mitsuki.ehit.ui.setting.activity.SettingActivity" />
+        <activity
+            android:name="com.mitsuki.ehit.ui.setting.activity.SettingActivity"
+            android:configChanges="uiMode" />
         <activity android:name="com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity" />
         <activity android:name="com.mitsuki.ehit.ui.temp.activity.HistoryActivity" />
         <activity android:name="com.mitsuki.ehit.ui.download.activity.DownloadActivity" />

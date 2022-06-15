@@ -32,7 +32,8 @@
             android:elevation="2dp"
             android:gravity="center"
             android:padding="@dimen/dp_8"
-            android:text="@string/text_download" />
+            android:text="@string/text_download"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/gallery_detail_read"
@@ -47,7 +48,8 @@
             android:elevation="2dp"
             android:gravity="center"
             android:padding="@dimen/dp_8"
-            android:text="@string/text_read" />
+            android:text="@string/text_read"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

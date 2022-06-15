@@ -104,8 +104,8 @@ class ProxyInputDialog(
                 binding?.proxyHostLayout?.isVisible = true
                 binding?.proxyPortLayout?.isVisible = true
                 binding?.proxyHost?.setText(shareData.spProxyIp)
-                binding?.proxyPort?.setText(shareData.spProxyPort.toString())
-
+                val port = shareData.spProxyPort.takeIf { it >= 0 }?.toString() ?: ""
+                binding?.proxyPort?.setText(port)
             }
         }
     }

@@ -2,12 +2,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference app:title="@string/text_language" />
+    <Preference
+
+        app:title="@string/text_language" />
 
     <com.mitsuki.ehit.ui.common.widget.IntListPreference
         app:defaultValue="0"
         app:key="SP_THEME"
-        app:title="主题"
+        app:title="@string/text_theme"
         app:useSimpleSummaryProvider="true" />
 
     <Preference

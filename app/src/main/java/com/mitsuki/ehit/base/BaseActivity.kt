@@ -3,7 +3,9 @@ package com.mitsuki.ehit.base
 import android.content.res.Configuration
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.const.ValueFinder
 import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
@@ -30,12 +32,22 @@ open class BaseActivity : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
 
-        val isNightMode =
-            when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_YES -> true
-                else -> false
+        setBarStates()
+    }
+
+    fun setBarStates() {
+        when (memoryData.theme) {
+            ValueFinder.THEME_NORMAL -> onUiMode(false)
+            ValueFinder.THEME_NIGHT -> onUiMode(true)
+            else -> {
+                val isNightMode =
+                    when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                        Configuration.UI_MODE_NIGHT_YES -> true
+                        else -> false
+                    }
+                onUiMode(isNightMode)
             }
-        onUiMode(isNightMode)
+        }
     }
 
     open fun onUiMode(isNightMode: Boolean) {

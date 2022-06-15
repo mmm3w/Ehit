@@ -13,7 +13,8 @@
     <color name="text_color_gallery_preview_index">#1e1e1e</color>
     <color name="text_color_gallery_preview_error_info">#c5c5c5</color>
     <color name="text_color_gallery_preview_tips">#c5c5c5</color>
-
+    <color name="text_color_setting_title">#fff</color>
+    <color name="text_color_setting_summary">#c5c5c5</color>
 
     <color name="background_color_general">#303030</color>
     <color name="background_color_gallery_detail_tag_title">#225189a9</color>

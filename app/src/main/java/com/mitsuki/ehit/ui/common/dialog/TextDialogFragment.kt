@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.text
 
 class TextDialogFragment : BaseDialogFragment() {
@@ -28,6 +29,7 @@ class TextDialogFragment : BaseDialogFragment() {
         view.findViewById<TextView>(R.id.dialog_base_text).apply {
             text = message
             setTextIsSelectable(isSelectable)
+            setTextColor(context.color(R.color.text_color_general))
         }
 
     }

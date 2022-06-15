@@ -1,18 +1,24 @@
 package com.mitsuki.ehit.ui.setting.fragment
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.ValueFinder
 import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.show
+import com.mitsuki.ehit.ui.setting.activity.SettingActivity
 import com.mitsuki.ehit.ui.setting.dialog.ProxyInputDialog
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.notifyAll
 import javax.inject.Inject
 import kotlin.IllegalArgumentException
 
@@ -21,6 +27,9 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var shareData: ShareData
+
+    @Inject
+    lateinit var memoryData: MemoryData
 
     private val mExportData =
         registerForActivityResult(ExportDataActivityResultContract()) {
@@ -52,6 +61,18 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
                 string(R.string.text_theme_night_yes)
             )
             entryValues = Array(3) { it.toString() }
+            setOnPreferenceChangeListener { _, newValue ->
+                val data = (newValue as? String)?.toIntOrNull() ?: ValueFinder.THEME_SYSTEM
+                memoryData.theme = data
+                when (data) {
+                    ValueFinder.THEME_NORMAL -> AppCompatDelegate
+                        .setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    ValueFinder.THEME_NIGHT -> AppCompatDelegate
+                        .setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+                true
+            }
         }
 
         findPreference<Preference>("export_data")?.apply {
@@ -67,6 +88,8 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
                 true
             }
         }
+
+        preferenceManager?.preferenceScreen?.icon
     }
 
     private fun proxySummary(index: Int): String {
@@ -90,8 +113,6 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
 
 
     private fun exportData() {
-
-
 
 
     }

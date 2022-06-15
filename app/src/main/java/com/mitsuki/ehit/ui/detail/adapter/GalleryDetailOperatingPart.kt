@@ -33,7 +33,6 @@ class GalleryDetailOperatingPart(
 
     val divider = object : RecyclerView.ItemDecoration() {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = color(R.color.text_color_general)
             style = Paint.Style.FILL
         }
 
@@ -51,6 +50,8 @@ class GalleryDetailOperatingPart(
             for (i in 1 until parent.childCount) {
                 parent.getChildAt(i)?.apply {
                     val center = (bottom + top) / 2
+                    paint.color = context.color(R.color.text_color_general)
+
                     c.drawRect(
                         Rect(
                             left,

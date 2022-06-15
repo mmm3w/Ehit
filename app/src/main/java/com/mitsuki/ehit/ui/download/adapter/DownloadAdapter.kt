@@ -121,7 +121,7 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
                 }
                 binding.downloadGalleryTitle.text = title
                 binding.downloadProgressText.text =
-                    AppHolder.string(R.string.page_separate).format(completed, total)
+                    AppHolder.getString(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
 //                binding.downloadProgress.secondaryProgress =
@@ -131,7 +131,7 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
         fun updateProgress(info: DownloadListInfo) {
             with(info) {
                 binding.downloadProgressText.text =
-                    AppHolder.string(R.string.page_separate).format(completed, total)
+                    AppHolder.getString(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
             }

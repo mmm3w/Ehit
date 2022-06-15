@@ -113,6 +113,14 @@ class MemoryData(private val shareData: ShareData) {
             }
         }
 
+    var theme:Int = shareData.spTheme
+        set(value) {
+            if (value != field) {
+                field = value
+                shareData.spTheme = value
+            }
+        }
+
 
     var proxy: Proxy? = null
         private set

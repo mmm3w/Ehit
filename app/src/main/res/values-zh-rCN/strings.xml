@@ -108,6 +108,7 @@
     <string name="text_pages">页</string>
     <string name="text_disable_default_filters">禁用排除项：</string>
     <string name="text_language">语言</string>
+    <string name="text_theme">主题</string>
     <string name="text_uploader">上传者</string>
     <string name="text_tags">标签</string>
     <string name="text_enable_advanced_options">启用更多高级选项</string>

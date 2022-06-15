@@ -14,6 +14,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.showToast
+import com.mitsuki.ehit.crutch.extensions.text
 import java.io.File
 
 object AppHolder {
@@ -40,13 +41,15 @@ object AppHolder {
 
     val contentResolver: ContentResolver get() = mApplication.contentResolver
 
-    fun string(@StringRes id: Int): String = mApplication.getString(id)
+    fun getString(@StringRes id: Int): String = mApplication.getString(id)
 
-    fun text(@StringRes id: Int): CharSequence = mApplication.getText(id)
-
-    fun drawable(@DrawableRes id: Int): Drawable? = AppCompatResources.getDrawable(mApplication, id)
-
-    fun color(@ColorRes id: Int): Int = ContextCompat.getColor(mApplication, id)
+    fun getText(@StringRes id: Int): CharSequence = mApplication.getText(id)
+//
+//    fun text(@StringRes id: Int): CharSequence = mApplication.getText(id)
+//
+//    fun drawable(@DrawableRes id: Int): Drawable? = AppCompatResources.getDrawable(mApplication, id)
+//
+//    fun color(@ColorRes id: Int): Int = ContextCompat.getColor(mApplication, id)
 
     //请少用该方法弹出toast
     fun toast(
@@ -60,7 +63,7 @@ object AppHolder {
         }
 
         if (textRes > 0) {
-            mApplication.showToast(text(textRes), duration)
+            mApplication.showToast(mApplication.text(textRes), duration)
             return
         }
     }

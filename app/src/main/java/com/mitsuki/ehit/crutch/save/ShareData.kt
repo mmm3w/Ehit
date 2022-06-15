@@ -29,6 +29,7 @@ class ShareData(context: Context) {
         const val SP_PROXY_IP = "SP_PROXY_IP"
         const val SP_PROXY_PORT = "SP_PROXY_PORT"
         const val SP_THEME = "SP_THEME"
+        const val SP_LANGUAGE = "SP_LANGUAGE"
 
 
         const val SP_GALLERY_TOUCH_HOTSPOT_TIPS = "SP_GALLERY_TOUCH_HOTSPOT_TIPS"
@@ -125,7 +126,6 @@ class ShareData(context: Context) {
         set(value) = edit { putBoolean(SP_GALLERY_TOUCH_HOTSPOT_TIPS, value) }
         get() = boolean(SP_GALLERY_TOUCH_HOTSPOT_TIPS)
 
-
     var spDisableScreenshots: Boolean
         set(value) = edit { putBoolean(SP_DISABLE_SCREENSHOTS, value) }
         get() = boolean(SP_DISABLE_SCREENSHOTS)
@@ -176,11 +176,15 @@ class ShareData(context: Context) {
 
     var spProxyPort: Int
         set(value) = edit { putInt(SP_PROXY_PORT, value) }
-        get() = int(SP_PROXY_PORT)
+        get() = int(SP_PROXY_PORT, -1)
 
     var spTheme: Int
         set(value) = edit { putInt(SP_THEME, value) }
         get() = int(SP_THEME)
+
+    var spLanguage:Int
+        set(value) = edit { putInt(SP_LANGUAGE, value) }
+        get() = int(SP_LANGUAGE)
 
     var spCustomBrightness: Float
         set(value) = edit { putFloat(SP_CUSTOM_BRIGHTNESS, value) }

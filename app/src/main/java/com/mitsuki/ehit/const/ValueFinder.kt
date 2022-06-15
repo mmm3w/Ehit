@@ -5,6 +5,14 @@ import java.lang.IllegalArgumentException
 
 object ValueFinder {
 
+    const val THEME_SYSTEM = 0
+    const val THEME_NORMAL = 1
+    const val THEME_NIGHT = 2
+
+
+
+
+
     fun proxySummary(index: Int): Int {
         return when (index) {
             0 -> R.string.text_proxy_direct
@@ -14,4 +22,8 @@ object ValueFinder {
             else -> throw  IllegalArgumentException()
         }
     }
+
+
+
+
 }
