@@ -83,7 +83,10 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             endContainerColor = color(R.color.background_color_general)
         }
 
-        mViewModel.initData(arguments)
+        if (savedInstanceState == null) {
+            mViewModel.initData(arguments)
+        }
+
 
         mViewModel.infoStates.observe(this) { infoStates ->
             mHeader.data = infoStates.header
@@ -108,7 +111,9 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
-        mViewModel.loadInfo()
+        if (savedInstanceState == null) {
+            mViewModel.loadInfo()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
