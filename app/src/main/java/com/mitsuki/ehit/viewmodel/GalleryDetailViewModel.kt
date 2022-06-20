@@ -50,7 +50,7 @@ class GalleryDetailViewModel @Inject constructor(
     val title: String get() = mCachedInfo?.title ?: throw IllegalArgumentException()
     val galleryName: String
         get() {
-            return mCachedInfo?.title?.replace(Regex("\\[.*?]|\\(.*?\\)"), "")
+            return mCachedInfo?.title?.replace(Regex("\\[.*?]|\\(.*?\\)|\\{.*?}"), "")
                 ?: throw IllegalArgumentException()
         }
     val uploader: String get() = mCachedInfo?.uploader ?: throw IllegalArgumentException()
