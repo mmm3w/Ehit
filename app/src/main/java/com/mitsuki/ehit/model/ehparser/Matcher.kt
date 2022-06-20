@@ -16,7 +16,7 @@ object Matcher {
         )
     }
     val TORRENT: Pattern by lazy {
-        Pattern.compile("<a[^<>]*onclick=\"return popUp\\('([^']+)'[^)]+\\)\">Torrent Download \\( (\\d+) \\)</a>")
+        Pattern.compile("<a.*?onclick=\"return popUp\\('(.*?)'.*?>Torrent Download \\((\\d+)\\)</a>")
     }
 
     val ARCHIVE: Pattern by lazy {
