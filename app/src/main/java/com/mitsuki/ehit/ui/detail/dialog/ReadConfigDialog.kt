@@ -26,7 +26,7 @@ class ReadConfigDialog(private val confirmAction: () -> Unit) :
     init {
         title(text(R.string.text_setting_read))
 
-        positiveBtn(text(R.string.text_confirm)) {
+        positiveButton(text(R.string.text_confirm)) {
             binding?.apply {
                 memoryData.keepBright = readConfigKeepBrightSwitch.isChecked
                 memoryData.showTime = readConfigShowTimeSwitch.isChecked

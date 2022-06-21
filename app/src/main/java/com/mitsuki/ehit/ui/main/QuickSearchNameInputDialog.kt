@@ -21,7 +21,7 @@ class QuickSearchNameInputDialog(
 
     init {
         title(text = string(R.string.title_add_quick_search))
-        positiveBtn(text(R.string.text_confirm)) {
+        positiveButton(text(R.string.text_confirm)) {
             val content = binding?.editTextUi?.text?.toString()?.trim()
             if (content.isNullOrEmpty()) {
                 requireContext().showToast(string(R.string.error_content_empty))

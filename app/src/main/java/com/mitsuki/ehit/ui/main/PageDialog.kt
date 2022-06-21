@@ -20,7 +20,7 @@ class PageDialog(
 
     init {
         title(text = string(R.string.title_jump_page).format(range))
-        positiveBtn(text(R.string.text_confirm)) {
+        positiveButton(text(R.string.text_confirm)) {
             val target = binding?.editTextUi?.text?.toString()?.trim()?.toIntOrNull()
                 ?.coerceIn(1, range) ?: -1
             if (target == -1) {

@@ -12,7 +12,7 @@ class RatingDialog(val rating: Float, val onConfirm: (Float) -> Unit) :
 
     init {
         title(text(R.string.text_rate))
-        positiveBtn(text(R.string.text_confirm)) {
+        positiveButton(text(R.string.text_confirm)) {
             binding?.ratingTarget?.rating?.apply(onConfirm)
             dismiss()
         }

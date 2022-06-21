@@ -8,7 +8,8 @@ import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.zip.ZipPacker
-import com.mitsuki.ehit.ui.common.dialog.FixedProgressDialogFragment
+import com.mitsuki.ehit.databinding.DialogFixedProgressBinding
+import com.mitsuki.ehit.ui.common.dialog.FixedDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -19,7 +20,10 @@ import kotlin.math.roundToInt
 class ExportProgressDialog(
     private val uri: Uri,
     private val folder: File
-) : FixedProgressDialogFragment() {
+) : FixedDialogFragment<DialogFixedProgressBinding>(
+    R.layout.dialog_fixed_progress,
+    DialogFixedProgressBinding::bind
+) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

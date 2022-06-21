@@ -18,7 +18,7 @@ class DownloadRangeDialog(
     init {
         title(text = text(R.string.text_download))
 
-        positiveBtn(text(R.string.text_confirm)) {
+        positiveButton(text(R.string.text_confirm)) {
             binding?.apply {
                 val start = dialogDownloadRangeStart.text.toString().trim().toIntOrNull() ?: 1
                 val end = dialogDownloadRangeEnd.text.toString().trim().toIntOrNull() ?: range

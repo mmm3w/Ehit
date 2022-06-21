@@ -86,7 +86,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         TextDialogFragment().show(childFragmentManager, "logout") {
             title(res = R.string.text_sign_out)
             message(res = R.string.text_sign_out_desc)
-            positiveBtn(res = R.string.text_confirm) {
+            positiveButton(res = R.string.text_confirm) {
                 mCookieManager.clearCookie()
                 updateLoginStates()
                 dismiss()
@@ -100,7 +100,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
             title(res = R.string.text_setting_cookie)
             message(text = cookie.map { "${it.key}:\n${it.value}\n" }.joinToString("\n"))
             selectable()
-            positiveBtn(res = R.string.text_copy) { cookie.toJson().copying2Clipboard() }
+            positiveButton(res = R.string.text_copy) { cookie.toJson().copying2Clipboard() }
         }
         return true
     }

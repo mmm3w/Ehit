@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.ui.setting.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -9,15 +10,21 @@ import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.ValueFinder
+import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.extensions.string
+import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
+import com.mitsuki.ehit.crutch.toJson
 import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract
+import com.mitsuki.ehit.ui.common.dialog.LoadingDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.show
 import com.mitsuki.ehit.ui.setting.activity.SettingActivity
+import com.mitsuki.ehit.ui.setting.dialog.DataConfirmDialog
 import com.mitsuki.ehit.ui.setting.dialog.ProxyInputDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import okhttp3.internal.notifyAll
 import javax.inject.Inject
 import kotlin.IllegalArgumentException
@@ -31,10 +38,35 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var memoryData: MemoryData
 
-    private val mExportData =
-        registerForActivityResult(ExportDataActivityResultContract()) {
-            it?.apply {
+    @Inject
+    @AsCookieManager
+    lateinit var cookieManager: CookieManager
 
+    private val mLoading by lazy { LoadingDialogFragment() }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private val mExportData =
+        registerForActivityResult(ExportDataActivityResultContract()) { result ->
+            result?.apply {
+                val scope = first
+                CoroutineScope(Dispatchers.Default).launch {
+                    withContext(Dispatchers.Main) { mLoading.show(childFragmentManager, "loading") }
+                    val exportData: MutableMap<String, Any> = hashMapOf()
+                    scope.forEach {
+                        when (it) {
+                            DataConfirmDialog.DATA_COOKIE ->
+                                exportData["cookies"] = cookieManager.cookieSummary()
+                            DataConfirmDialog.DATA_QUICK_SEARCH -> {
+
+                            }
+                        }
+                    }
+
+                    requireContext().contentResolver.openOutputStream(second)?.use { outputStream ->
+                        outputStream.write(exportData.toJson().toByteArray())
+                    }
+                    withContext(Dispatchers.Main) { mLoading.dismiss() }
+                }
             } ?: kotlin.run {
                 //操作取消
             }
@@ -77,7 +109,10 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("export_data")?.apply {
             setOnPreferenceClickListener {
-                showExportHintDialog()
+                DataConfirmDialog { mExportData.launch(it) }.show(
+                    childFragmentManager,
+                    "data_confirm"
+                )
                 true
             }
 
@@ -88,8 +123,6 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
                 true
             }
         }
-
-        preferenceManager?.preferenceScreen?.icon
     }
 
     private fun proxySummary(index: Int): String {
@@ -99,22 +132,6 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
             else -> throw  IllegalArgumentException()
         }
         return string(ValueFinder.proxySummary(index)) + extendInfo
-    }
-
-    private fun showExportHintDialog() {
-        TextDialogFragment().show(childFragmentManager, "logout") {
-            title(res = R.string.text_export_data)
-            message(res = R.string.text_export_desc)
-            positiveBtn(res = R.string.text_export) {
-                mExportData.launch(arrayOf())
-            }
-        }
-    }
-
-
-    private fun exportData() {
-
-
     }
 
 }

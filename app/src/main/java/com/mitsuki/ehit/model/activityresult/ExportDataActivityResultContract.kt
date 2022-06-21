@@ -11,12 +11,12 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 
 class ExportDataActivityResultContract :
-    ActivityResultContract<Array<Int>, Pair<Array<Int>, Uri>?>() {
+    ActivityResultContract<IntArray, Pair<IntArray, Uri>?>() {
 
     private val mLock = Mutex()
-    private var inputCache: Array<Int>? = null
+    private var inputCache: IntArray? = null
 
-    override fun createIntent(context: Context, input: Array<Int>): Intent {
+    override fun createIntent(context: Context, input: IntArray): Intent {
         runBlocking { mLock.lock() }
         inputCache = input
         return Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
@@ -29,7 +29,7 @@ class ExportDataActivityResultContract :
         }
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Pair<Array<Int>, Uri>? {
+    override fun parseResult(resultCode: Int, intent: Intent?): Pair<IntArray, Uri>? {
         try {
             if (resultCode == Activity.RESULT_OK) {
                 return (inputCache ?: return null) to (intent?.data ?: return null)

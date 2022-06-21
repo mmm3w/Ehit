@@ -26,13 +26,13 @@ class ProxyInputDialog(
 
     init {
         title(res = R.string.text_proxy)
-        positiveBtn(res = R.string.text_confirm) {
+        positiveButton(res = R.string.text_confirm) {
             binding?.apply {
                 val host = proxyHost.text.toString().trim()
                 if (host.isEmpty()) {
                     proxyHostLayout.isErrorEnabled = true
                     proxyHostLayout.error = text(R.string.error_content_empty)
-                    return@positiveBtn
+                    return@positiveButton
                 } else {
                     proxyHostLayout.isErrorEnabled = false
                 }
@@ -41,7 +41,7 @@ class ProxyInputDialog(
                 if (portStr.isEmpty()) {
                     proxyPortLayout.isErrorEnabled = true
                     proxyPortLayout.error = text(R.string.error_content_empty)
-                    return@positiveBtn
+                    return@positiveButton
                 } else {
                     proxyPortLayout.isErrorEnabled = false
                 }
@@ -50,7 +50,7 @@ class ProxyInputDialog(
                 if (port == null || port < 0 || port > 65535) {
                     proxyPortLayout.isErrorEnabled = true
                     proxyPortLayout.error = text(R.string.error_invalid_port)
-                    return@positiveBtn
+                    return@positiveButton
                 } else {
                     proxyPortLayout.isErrorEnabled = false
 

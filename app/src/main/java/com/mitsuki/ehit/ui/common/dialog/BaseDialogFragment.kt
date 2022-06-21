@@ -71,7 +71,7 @@ abstract class BaseDialogFragment : DialogFragment() {
         }
     }
 
-    fun positiveBtn(text: CharSequence? = null, res: Int = -1, action: (DialogFragment) -> Unit) {
+    fun positiveButton(text: CharSequence? = null, res: Int = -1, action: (DialogFragment) -> Unit) {
         if (text.isNullOrEmpty() && res == -1) {
             baseInfo.positiveText = ""
             baseInfo.positiveAction = null
