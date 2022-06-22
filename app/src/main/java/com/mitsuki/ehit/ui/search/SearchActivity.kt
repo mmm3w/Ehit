@@ -145,7 +145,7 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun onSearchEvent(text: String) {
-        lifecycleScope.launch { mViewModel.saveSearch(text) }
+        lifecycleScope.launch { mViewModel.saveSearch(text.trim()) }
         finishWithResult(text.trim())
     }
 
