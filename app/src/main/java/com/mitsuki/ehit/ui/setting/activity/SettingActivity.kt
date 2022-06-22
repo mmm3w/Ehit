@@ -85,8 +85,17 @@ class SettingActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSta
         binding.settingLayout.setBackgroundColor(color(R.color.background_color_general))
         binding.appBar.setTitleTextColor(color(R.color.text_color_general))
         setBarStates()
-        supportFragmentManager.fragments.forEach {
-            (it as? PreferenceFragmentCompat)?.listView?.adapter?.notifyDataSetChanged()
+        if (supportFragmentManager.findFragmentById(R.id.settings_container) is SettingRootFragment) {
+            supportFragmentManager.commit {
+                replace(
+                    R.id.settings_container,
+                    SettingRootFragment()
+                )
+            }
+        } else {
+            supportFragmentManager.fragments.forEach {
+                (it as? PreferenceFragmentCompat)?.listView?.adapter?.notifyDataSetChanged()
+            }
         }
     }
 

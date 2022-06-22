@@ -171,7 +171,7 @@
     <string name="text_setting_security_and_privacy">隐私安全</string>
     <string name="text_setting_security_and_privacy_summary">应用锁、数据分析</string>
     <string name="text_setting_other">其他设置</string>
-    <string name="text_setting_other_summary">语言设置、清除缓存</string>
+    <string name="text_setting_other_summary">语言设置、代理设置</string>
     <string name="text_setting_about">关于</string>
     <string name="text_setting_about_summary">版本信息</string>
     <string name="text_setting_download_thread">下载线程数</string>

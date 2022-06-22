@@ -2,12 +2,10 @@ package com.mitsuki.ehit.ui.setting.dialog
 
 import android.os.Bundle
 import android.view.View
-import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.const.ValueFinder
+import com.mitsuki.ehit.const.Setting
 import com.mitsuki.ehit.crutch.extensions.showSelectMenu
-import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
@@ -64,7 +62,7 @@ class ProxyInputDialog(
                 onConfirm(currentMode, "$host:$port")
             }
 
-            dismiss()
+            it.dismiss()
         }
     }
 
@@ -80,11 +78,11 @@ class ProxyInputDialog(
         super.onViewCreated(view, savedInstanceState)
         currentMode = shareData.spProxyMode
         binding?.proxyModeSelect?.apply {
-            setText(ValueFinder.proxySummary(currentMode))
+            setText(Setting.proxySummary(currentMode))
             setOnClickListener {
                 showSelectMenu(requireContext(), it, R.menu.menu_proxy) { menuIndex ->
                     val index = idTrans(menuIndex)
-                    setText(ValueFinder.proxySummary(index))
+                    setText(Setting.proxySummary(index))
                     setProxyInputVisible(index)
                     currentMode = index
                 }
@@ -96,11 +94,13 @@ class ProxyInputDialog(
 
     private fun setProxyInputVisible(mode: Int) {
         when (mode) {
-            0, 1 -> {
+            Setting.PROXY_DIRECT,
+            Setting.PROXY_SYSTEM -> {
                 binding?.proxyHostLayout?.isVisible = false
                 binding?.proxyPortLayout?.isVisible = false
             }
-            2, 3 -> {
+            Setting.PROXY_HTTP,
+            Setting.PROXY_SOCKS -> {
                 binding?.proxyHostLayout?.isVisible = true
                 binding?.proxyPortLayout?.isVisible = true
                 binding?.proxyHost?.setText(shareData.spProxyIp)

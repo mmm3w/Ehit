@@ -1,11 +1,10 @@
 package com.mitsuki.ehit.base
 
 import android.app.Application
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import coil.Coil
 import coil.ImageLoaderFactory
-import com.mitsuki.ehit.const.ValueFinder
+import com.mitsuki.ehit.const.Setting
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.save.ShareData
 import dagger.hilt.android.HiltAndroidApp
@@ -26,8 +25,8 @@ open class EhApplication : Application() {
         Coil.setImageLoader(imageLoaderFactory)
 
         when (shareData.spTheme) {
-            ValueFinder.THEME_NORMAL -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            ValueFinder.THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            Setting.THEME_NORMAL -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            Setting.THEME_NIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }

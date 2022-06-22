@@ -8,7 +8,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
-import com.mitsuki.ehit.const.ValueFinder
+import com.mitsuki.ehit.const.Setting
 import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.moshi.fromJson
@@ -155,26 +155,22 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
             summary = proxySummary(shareData.spProxyMode)
             setOnPreferenceClickListener {
                 ProxyInputDialog { index, host ->
-                    summary = "${string(ValueFinder.proxySummary(index))} $host"
+                    summary = "${string(Setting.proxySummary(index))} $host"
                 }.show(childFragmentManager, "proxy")
                 true
             }
         }
 
         findPreference<ListPreference>(ShareData.SP_THEME)?.apply {
-            entries = arrayOf(
-                string(R.string.text_theme_follow_system),
-                string(R.string.text_theme_night_no),
-                string(R.string.text_theme_night_yes)
-            )
-            entryValues = Array(3) { it.toString() }
+            entries = Setting.themeText
+            entryValues = Array(Setting.themeText.size) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
-                val data = (newValue as? String)?.toIntOrNull() ?: ValueFinder.THEME_SYSTEM
+                val data = (newValue as? String)?.toIntOrNull() ?: Setting.THEME_SYSTEM
                 memoryData.theme = data
                 when (data) {
-                    ValueFinder.THEME_NORMAL -> AppCompatDelegate
+                    Setting.THEME_NORMAL -> AppCompatDelegate
                         .setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    ValueFinder.THEME_NIGHT -> AppCompatDelegate
+                    Setting.THEME_NIGHT -> AppCompatDelegate
                         .setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 }
@@ -202,11 +198,13 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
 
     private fun proxySummary(index: Int): String {
         val extendInfo = when (index) {
-            0, 1 -> ""
-            2, 3 -> " ${shareData.spProxyIp}:${shareData.spProxyPort}"
+            Setting.PROXY_DIRECT,
+            Setting.PROXY_SYSTEM -> ""
+            Setting.PROXY_HTTP,
+            Setting.PROXY_SOCKS -> " ${shareData.spProxyIp}:${shareData.spProxyPort}"
             else -> throw  IllegalArgumentException()
         }
-        return string(ValueFinder.proxySummary(index)) + extendInfo
+        return string(Setting.proxySummary(index)) + extendInfo
     }
 
 }
