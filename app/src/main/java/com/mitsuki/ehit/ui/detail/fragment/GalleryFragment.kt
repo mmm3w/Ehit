@@ -44,7 +44,7 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
 
     private var mImageGesture: ImageGesture? = null
 
-    private var isLoadSuccess = false
+    private var isImageLoaded = false
 
     @Inject
     lateinit var memoryData: MemoryData
@@ -85,6 +85,13 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
         mImageGesture = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (binding?.galleryErrorRetry?.isVisible == true) {
+            mViewModel.obtainData()
+        }
+    }
+
     private fun onLoadImage(url: String) {
         binding?.galleryImage?.apply {
             dispose()
@@ -94,11 +101,11 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
                     size(Size.ORIGINAL)
                     listener(
                         onStart = {
-                            isLoadSuccess = false
+                            isImageLoaded = false
                             onImageLoadStart()
                         },
                         onSuccess = { _: ImageRequest, sr: SuccessResult ->
-                            isLoadSuccess = true
+                            isImageLoaded = true
                             onImageLoadFinish()
                         },
                         onError = { _: ImageRequest, error: ErrorResult -> onImageLoadError(error.throwable) },
@@ -106,6 +113,7 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
                     )
                 }
             } else {
+                isImageLoaded = false
                 setImageDrawable(null)
             }
         }
@@ -143,7 +151,7 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
     }
 
     private fun showGalleryMenu() {
-        if (!isLoadSuccess) return
+        if (!isImageLoaded) return
 
         BottomMenuDialogFragment(
             intArrayOf(
