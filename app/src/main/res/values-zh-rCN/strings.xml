@@ -160,6 +160,7 @@
     <string name="text_export_data_summary">将部分数据以Json的形式导出</string>
     <string name="text_import_data">导入数据</string>
     <string name="text_import_data_summary">导入Json数据至本地</string>
+    <string name="text_select_item">选择项目</string>
 
     <string name="text_setting_eh">EH设置</string>
     <string name="text_setting_eh_summary">Cookie、站点、标签</string>

@@ -124,6 +124,16 @@ class CookieManager @Inject constructor(
         }
     }
 
+
+    fun buildCookie(name: String, value: String, domain: String): Cookie {
+        return Cookie.Builder()
+            .name(name)
+            .value(value)
+            .expiresAt(Long.MAX_VALUE)
+            .domain(domain)
+            .build()
+    }
+
     private fun clearExpiredCookie() {
         val current = System.currentTimeMillis()
         val mIterator = mMemoryCache.iterator()

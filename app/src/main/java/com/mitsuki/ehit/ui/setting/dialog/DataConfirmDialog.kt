@@ -28,7 +28,7 @@ class DataConfirmDialog(
     }
 
     init {
-        title(res = R.string.text_export_data)
+        title(res = R.string.text_select_item)
         positiveButton(res = R.string.text_confirm) {
             (binding?.listUi?.adapter as? MyAdapter)?.obtainSelected()?.apply {
                 action(this)

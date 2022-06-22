@@ -56,7 +56,7 @@ class QuickSearchViewModel @Inject constructor(val searchDao: SearchDao) : ViewM
                     add(data.item(i).apply { sort = i + 1 })
                 }
             }
-            searchDao.insertQuick(*data.toTypedArray())
+            searchDao.updateQuick(data)
         }
     }
 }

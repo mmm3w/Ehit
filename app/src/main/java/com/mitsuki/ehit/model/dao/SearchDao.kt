@@ -18,6 +18,30 @@ abstract class SearchDao {
     }
 
     @Transaction
+    open suspend fun mergeQuick(data: List<*>) {
+        var count = quickCount()
+
+        data.forEach {
+            try {
+                val node = it as Map<*, *>
+
+                val type = GalleryDataMeta.Type.valueOf(node["type"].toString())
+                val name =
+                    node["name"]?.toString()?.ifEmpty { null } ?: throw IllegalArgumentException()
+                val key = node["keyword"]?.toString()?.ifEmpty { null }
+                    ?: throw IllegalArgumentException()
+
+                val result = insertQuick(QuickSearch(type, name, key, ++count))
+                if (result < 0) {
+                    count--
+                }
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    @Transaction
     open suspend fun quickItemSwapBySort(fromSort: Int, toSort: Int) {
         val fromItemID = queryQuickIDBySort(fromSort)
         val toItemIDN = queryQuickIDBySort(toSort)
@@ -34,8 +58,11 @@ abstract class SearchDao {
     @Delete
     abstract suspend fun deleteHistory(data: SearchHistory)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertQuick(vararg data: QuickSearch)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertQuick(data: QuickSearch): Long
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun updateQuick(data: List<QuickSearch>)
 
     @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} ORDER BY sort")
     abstract suspend fun queryQuick(): List<QuickSearch>

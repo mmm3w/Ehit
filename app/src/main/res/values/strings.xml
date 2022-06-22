@@ -194,6 +194,7 @@
     <string name="text_export_data_summary">Export some data as json.</string>
     <string name="text_import_data">Import data</string>
     <string name="text_import_data_summary">Import json data to local.</string>
+    <string name="text_select_item">Select item</string>
 
     <string name="text_setting_eh">EH Setting</string>
     <string name="text_setting_eh_summary">Cookie, Site, Tags</string>
