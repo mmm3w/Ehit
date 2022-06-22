@@ -15,8 +15,9 @@ import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
-import com.mitsuki.ehit.crutch.toJson
+import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract
+import com.mitsuki.ehit.model.dao.SearchDao
 import com.mitsuki.ehit.ui.common.dialog.LoadingDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.show
@@ -39,6 +40,9 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
     lateinit var memoryData: MemoryData
 
     @Inject
+    lateinit var searchDao: SearchDao
+
+    @Inject
     @AsCookieManager
     lateinit var cookieManager: CookieManager
 
@@ -57,11 +61,10 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
                             DataConfirmDialog.DATA_COOKIE ->
                                 exportData["cookies"] = cookieManager.cookieSummary()
                             DataConfirmDialog.DATA_QUICK_SEARCH -> {
-
+                                exportData["quick_search"] = searchDao.querySimpleQuick()
                             }
                         }
                     }
-
                     requireContext().contentResolver.openOutputStream(second)?.use { outputStream ->
                         outputStream.write(exportData.toJson().toByteArray())
                     }

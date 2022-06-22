@@ -1,7 +1,5 @@
 package com.mitsuki.ehit.viewmodel
 
-
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mitsuki.armory.adapter.notify.NotifyData

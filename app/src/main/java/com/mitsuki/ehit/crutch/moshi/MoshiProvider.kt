@@ -1,11 +1,13 @@
-package com.mitsuki.ehit.crutch
+package com.mitsuki.ehit.crutch.moshi
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 
 object MoshiProvider {
-    val moshi by lazy {
-        Moshi.Builder().build()
+    private val moshi by lazy {
+        Moshi.Builder()
+            .add(GalleryDataMetaTypeAdapter())
+            .build()
     }
 
     fun <T> adapter(type: Class<T>): JsonAdapter<T> {

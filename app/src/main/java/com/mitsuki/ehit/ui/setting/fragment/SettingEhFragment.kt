@@ -15,7 +15,7 @@ import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.save.MemoryData
-import com.mitsuki.ehit.crutch.toJson
+import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.model.activityresult.GallerySearchActivityResultContract
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment

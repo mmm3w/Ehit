@@ -5,6 +5,7 @@ import com.mitsuki.ehit.const.DBValue
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.model.entity.GalleryDataMeta
+import com.mitsuki.ehit.model.entity.SimpleQuickSearch
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -38,6 +39,9 @@ abstract class SearchDao {
 
     @Query("SELECT * FROM ${DBValue.TABLE_QUICK_SEARCH} ORDER BY sort")
     abstract suspend fun queryQuick(): List<QuickSearch>
+
+    @Query("SELECT ${DBValue.TABLE_QUICK_SEARCH}.type,${DBValue.TABLE_QUICK_SEARCH}.name,${DBValue.TABLE_QUICK_SEARCH}.keyword FROM ${DBValue.TABLE_QUICK_SEARCH}")
+    abstract suspend fun querySimpleQuick(): List<SimpleQuickSearch>
 
     @Query("SELECT COUNT(*) FROM ${DBValue.TABLE_QUICK_SEARCH}")
     abstract suspend fun quickCount(): Int
