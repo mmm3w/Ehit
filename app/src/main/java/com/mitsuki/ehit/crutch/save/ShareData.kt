@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.mitsuki.ehit.BuildConfig
+import com.mitsuki.ehit.const.Setting
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.network.Site
 import java.lang.IllegalArgumentException
@@ -29,8 +30,6 @@ class ShareData(context: Context) {
         const val SP_PROXY_IP = "SP_PROXY_IP"
         const val SP_PROXY_PORT = "SP_PROXY_PORT"
         const val SP_THEME = "SP_THEME"
-        const val SP_LANGUAGE = "SP_LANGUAGE"
-
 
         const val SP_GALLERY_TOUCH_HOTSPOT_TIPS = "SP_GALLERY_TOUCH_HOTSPOT_TIPS"
 
@@ -180,11 +179,7 @@ class ShareData(context: Context) {
 
     var spTheme: Int
         set(value) = edit { putInt(SP_THEME, value) }
-        get() = int(SP_THEME)
-
-    var spLanguage:Int
-        set(value) = edit { putInt(SP_LANGUAGE, value) }
-        get() = int(SP_LANGUAGE)
+        get() = int(SP_THEME, Setting.THEME_SYSTEM)
 
     var spCustomBrightness: Float
         set(value) = edit { putFloat(SP_CUSTOM_BRIGHTNESS, value) }

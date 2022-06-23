@@ -70,6 +70,7 @@
     <string name="text_login_by_cookie">Cookie登录</string>
     <string name="text_rate">给出你的评分</string>
     <string name="text_warning">警告</string>
+    <string name="text_default">默认</string>
 
     <string name="text_yes">是</string>
     <string name="text_no">否</string>

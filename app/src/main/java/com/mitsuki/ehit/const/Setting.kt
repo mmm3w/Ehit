@@ -17,7 +17,7 @@ object Setting {
 
     const val PROXY_DIRECT = 0
     const val PROXY_SYSTEM = 1
-    const val PROXY_HTTP= 2
+    const val PROXY_HTTP = 2
     const val PROXY_SOCKS = 3
 
     fun proxySummary(index: Int): Int {
@@ -29,5 +29,4 @@ object Setting {
             else -> throw  IllegalArgumentException()
         }
     }
-
 }

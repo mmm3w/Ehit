@@ -59,6 +59,15 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     private val mStateAdapter by lazy { ListStatesAdapter { mMainAdapter.retry() } }
     private val mAdapter by lazy { ConcatAdapter(mHeader, mStateAdapter, mMainAdapter, mFooter) }
 
+    private val mQuickSearch by lazy {
+        QuickSearchPanel { type, key ->
+            mViewModel.galleryListCondition(type, key)
+            mViewModel.refreshEnable.postValue(false)
+            mEmptyValve.enable()
+            mMainAdapter.refresh()
+        }
+    }
+
     @Inject
     lateinit var shareData: ShareData
 
@@ -248,11 +257,6 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun showQuickSearchPanel() {
-        QuickSearchPanel { type, key ->
-            mViewModel.galleryListCondition(type, key)
-            mViewModel.refreshEnable.postValue(false)
-            mEmptyValve.enable()
-            mMainAdapter.refresh()
-        }.show(childFragmentManager, "QuickSearchPanel")
+        mQuickSearch.show(childFragmentManager, "QuickSearchPanel")
     }
 }

@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 open class EhApplication : Application() {
-
     @Inject
     lateinit var imageLoaderFactory: ImageLoaderFactory
 
