@@ -31,9 +31,6 @@
     <string name="repo_url" translatable="false">https://github.com/mmm3w/Ehit</string>
     <string name="license_url" translatable="false">https://github.com/mmm3w/Ehit/blob/master/LICENSE</string>
 
-    <string name="language_zh_cn" translatable="false">中文</string>
-    <string name="language_eh" translatable="false">English</string>
-
     <string name="content_description_back_btn" translatable="false">page back btn</string>
 
     <string name="error_parse_throwable_text">Data parse error</string>
@@ -105,8 +102,7 @@
     <string name="text_login_by_account">Login by account</string>
     <string name="text_login_by_cookie">Login by cookie</string>
     <string name="text_rate">Rate</string>
-    <string name="text_warning">warning</string>
-    <string name="text_default">Default</string>
+    <string name="text_warning">Warning</string>
 
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
@@ -145,7 +141,6 @@
     <string name="text_to">to</string>
     <string name="text_pages">pages</string>
     <string name="text_disable_default_filters">Disable default filters for:</string>
-    <string name="text_language">Language</string>
     <string name="text_theme">Theme</string>
     <string name="text_uploader">Uploader</string>
     <string name="text_tags">Tags</string>
@@ -209,7 +204,7 @@
     <string name="text_setting_security_and_privacy">Security And Privacy</string>
     <string name="text_setting_security_and_privacy_summary">App lock, Analytics</string>
     <string name="text_setting_other">Other</string>
-    <string name="text_setting_other_summary">Language, Proxy</string>
+    <string name="text_setting_other_summary">Proxy</string>
     <string name="text_setting_about">About</string>
     <string name="text_setting_about_summary">Version</string>
     <string name="text_setting_download_thread">Multi-threaded download</string>
