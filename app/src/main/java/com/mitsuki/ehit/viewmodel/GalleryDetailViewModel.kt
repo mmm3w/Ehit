@@ -48,11 +48,14 @@ class GalleryDetailViewModel @Inject constructor(
     private val mDetailPageIn = GeneralPageIn()
 
     val title: String get() = mCachedInfo?.title ?: throw IllegalArgumentException()
+
+    @Suppress("RegExpRedundantEscape")
     val galleryName: String
         get() {
             return mCachedInfo?.title?.replace(Regex("\\[.*?]|\\(.*?\\)|\\{.*?\\}"), "")
                 ?: throw IllegalArgumentException()
         }
+
     val uploader: String get() = mCachedInfo?.uploader ?: throw IllegalArgumentException()
     val favoriteName: String? get() = mCachedInfo?.favoriteName
     val apiKey get() = mCachedInfo?.apiKey ?: throw IllegalArgumentException()

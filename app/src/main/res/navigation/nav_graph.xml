@@ -43,6 +43,8 @@
 
         <deepLink app:uri="e-hentai.org/g/{gid}/{token}" />
         <deepLink app:uri="exhentai.org/g/{gid}/{token}" />
+        <deepLink app:uri="e-hentai.org/g/{gid}/{token}/" />
+        <deepLink app:uri="exhentai.org/g/{gid}/{token}/" />
 
         <action
             android:id="@+id/action_gallery_detail_fragment_to_gallery_list_fragment"
