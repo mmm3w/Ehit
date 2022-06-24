@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.ui.common.widget
+package com.mitsuki.ehit.ui.setting.widget
 
 import android.content.Context
 import android.util.AttributeSet

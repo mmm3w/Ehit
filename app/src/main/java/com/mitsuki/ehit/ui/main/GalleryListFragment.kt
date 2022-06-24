@@ -64,6 +64,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             mViewModel.galleryListCondition(type, key)
             mViewModel.refreshEnable.postValue(false)
             mEmptyValve.enable()
+            resetSearchBar()
             mMainAdapter.refresh()
         }
     }
@@ -79,6 +80,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 mViewModel.refreshEnable.postValue(false)
                 //新的搜索去置空列表
                 mEmptyValve.enable()
+                resetSearchBar()
                 mMainAdapter.refresh()
             }
         }
@@ -166,15 +168,13 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = mAdapter
 
-                topBar.topSearchLayout.apply {
-                    translationY = mViewModel.searchBarTranslationY
-                    addOnScrollListener(ListFloatHeader(this) {
-                        mViewModel.searchBarTranslationY = it
-                    })
-                }
+                addOnScrollListener(ListFloatHeader(topBar.topSearchLayout) {
+                    mViewModel.searchBarTranslationY = it
+                })
             }
 
             topBar.topSearchLayout.apply {
+                translationY = mViewModel.searchBarTranslationY
                 layoutParams = (layoutParams as FrameLayout.LayoutParams).apply {
                     setMargins(
                         leftMargin,
@@ -232,6 +232,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         }
     }
 
+
     private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
         /* 同时点击两个item会导致同时进入该方法，后一个进入会导致Navigation.findNavController抛出异常 */
         /* 接收处需要防抖处理*/
@@ -252,11 +253,17 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             mViewModel.galleryListPage(it)
             mViewModel.refreshEnable.postValue(false)
             mEmptyValve.enable()
+            resetSearchBar()
             mMainAdapter.refresh()
         }.show(childFragmentManager, "page")
     }
 
     private fun showQuickSearchPanel() {
         mQuickSearch.show(childFragmentManager, "QuickSearchPanel")
+    }
+
+    private fun resetSearchBar() {
+        binding?.topBar?.topSearchLayout?.translationY = 0F
+        mViewModel.searchBarTranslationY = 0f
     }
 }

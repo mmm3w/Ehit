@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.mitsuki.ehit.ui.common.widget.IntListPreference
+    <com.mitsuki.ehit.ui.setting.widget.IntListPreference
         app:key="SP_DOWNLOAD_THREAD"
         android:defaultValue="1"
         app:title="@string/text_setting_download_thread" />

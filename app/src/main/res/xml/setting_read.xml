@@ -2,25 +2,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.mitsuki.ehit.ui.common.widget.IntListPreference
+    <com.mitsuki.ehit.ui.setting.widget.IntListPreference
         android:defaultValue="0"
         app:key="SP_SCREEN_ORIENTATION"
         app:title="@string/text_setting_screen_orientation"
         app:useSimpleSummaryProvider="true" />
 
-    <com.mitsuki.ehit.ui.common.widget.IntListPreference
+    <com.mitsuki.ehit.ui.setting.widget.IntListPreference
         android:defaultValue="0"
         app:key="SP_READING_DIRECTION"
         app:title="@string/text_setting_reading_direction"
         app:useSimpleSummaryProvider="true" />
 
-    <com.mitsuki.ehit.ui.common.widget.IntListPreference
+    <com.mitsuki.ehit.ui.setting.widget.IntListPreference
         android:defaultValue="0"
         app:key="SP_IMAGE_ZOOM"
         app:title="@string/text_setting_image_zoom"
         app:useSimpleSummaryProvider="true" />
 
-    <com.mitsuki.ehit.ui.common.widget.IntListPreference
+    <com.mitsuki.ehit.ui.setting.widget.IntListPreference
         android:defaultValue="1"
         app:key="SP_PRELOAD_IMAGE"
         app:title="@string/text_setting_preload_image" />
