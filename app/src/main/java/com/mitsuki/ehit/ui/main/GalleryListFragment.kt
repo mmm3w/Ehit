@@ -87,10 +87,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            mViewModel.initData(arguments)
-        }
+        mViewModel.initData(arguments)
 
         lifecycleScope.launchWhenCreated {
             mMainAdapter.loadStateFlow.collect {
