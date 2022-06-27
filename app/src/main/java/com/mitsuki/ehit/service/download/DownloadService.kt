@@ -61,8 +61,6 @@ class DownloadService : Service() {
             }
             DownloadEvent.ACTION_START_ALL -> {
                 downloadManager.startAll()
-                stopForeground(false)
-                stopSelf()
             }
             DownloadEvent.ACTION_RESTART -> {
                 val gid = intent.getLongExtra(DataKey.GALLERY_ID, -1)

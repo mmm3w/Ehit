@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.mitsuki.armory.adapter.notify.NotifyData
@@ -21,6 +22,7 @@ import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemDownloadBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.DownloadListInfo
+import com.mitsuki.ehit.model.entity.Gallery
 import kotlin.math.roundToInt
 
 class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), EventEmitter {
@@ -40,12 +42,12 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
 
     private val mOptionClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
-        post("option", mData.item(position))
+        post("option", view.parent to mData.item(position))
     }
 
     private val mThumbClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
-        post("detail", mData.item(position))
+        post("detail", view.parent to mData.item(position))
     }
 
     private val mItemClick = { view: View ->
@@ -86,6 +88,7 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(mData.item(position))
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
@@ -124,7 +127,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
                     AppHolder.getString(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
-//                binding.downloadProgress.secondaryProgress =
+
+                ViewCompat.setTransitionName(itemView, itemTransitionName)
             }
         }
 
@@ -150,6 +154,4 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
             else -> mData.postUpdate(NotifyData.Refresh(data))
         }
     }
-
-
 }

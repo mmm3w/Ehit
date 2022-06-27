@@ -62,7 +62,7 @@ class GalleryListAdapter :
                 binding.galleryLang.text = languageSimple
                 binding.galleryCategory.apply {
                     setCategoryColor(categoryColor)
-                    text = category.toUpperCase(Locale.getDefault())
+                    text = category.uppercase()
                 }
                 binding.galleryTime.text = time
                 binding.galleryRating.rating = rating

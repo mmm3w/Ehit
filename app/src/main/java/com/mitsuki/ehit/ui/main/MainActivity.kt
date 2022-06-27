@@ -3,14 +3,11 @@ package com.mitsuki.ehit.ui.main
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.Window
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -22,7 +19,6 @@ import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
-import com.mitsuki.ehit.ui.download.activity.DownloadActivity
 import com.mitsuki.ehit.ui.setting.activity.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,9 +59,7 @@ class MainActivity : BaseActivity() {
                         bundleOf(DataKey.GALLERY_TYPE_PART to "popular")
                     )
                 R.id.nav_favourite -> navController.navigate(R.id.action_global_favourite_fragment)
-                R.id.nav_download ->
-                    startActivity(Intent(this@MainActivity, DownloadActivity::class.java))
-
+                R.id.nav_download -> navController.navigate(R.id.action_global_download_fragment)
                 R.id.nav_setting ->
                     startActivity(Intent(this@MainActivity, SettingActivity::class.java))
 

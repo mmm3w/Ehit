@@ -1,5 +1,7 @@
 package com.mitsuki.ehit.model.entity
 
+import kotlinx.parcelize.IgnoredOnParcel
+
 
 data class DownloadListInfo(
     val gid: Long,
@@ -29,6 +31,9 @@ data class DownloadListInfo(
         result = 31 * result + completed
         return result
     }
+
+    @IgnoredOnParcel
+    val itemTransitionName get() = "gallery:$gid$token"
 
     fun toGallery(): Gallery {
         return Gallery(

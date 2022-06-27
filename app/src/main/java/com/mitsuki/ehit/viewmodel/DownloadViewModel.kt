@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class DownloadViewModel @Inject constructor(val downloadDao: DownloadDao) : ViewModel() {
+class DownloadViewModel @Inject constructor(var downloadDao: DownloadDao) : ViewModel() {
 
     suspend fun downloadList(): Flow<List<DownloadListInfo>> =
         withContext(Dispatchers.IO) {
