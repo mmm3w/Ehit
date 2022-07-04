@@ -173,6 +173,11 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
+        binding?.topControl?.topTitleLayout?.apply {
+
+
+        }
+
         binding?.galleryDetail?.apply {
             infoList {
                 setPadding(
@@ -193,6 +198,13 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             bindBarMove {
                 binding?.topBar?.topTitleLayout?.translationY =
                     it.coerceIn(-(dp2px(56f) + requireActivity().statusBarHeight()), 0f)
+            }
+            bindControlEvent {
+                binding?.topControl?.topTitleLayout?.animate {
+                    translationY(
+                        if (it) dp2px(-56f) else requireActivity().statusBarHeight().toFloat()
+                    )
+                }
             }
             restoreTranslationY(mViewModel.viewTranslationY)
             bindState {

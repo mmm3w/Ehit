@@ -12,6 +12,10 @@
         android:id="@+id/top_bar"
         layout="@layout/top_bar_gallery_detail" />
 
+    <include
+        android:id="@+id/top_control"
+        layout="@layout/top_bar_gallery_detail_control" />
+
 </FrameLayout>
 
 

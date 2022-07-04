@@ -30,10 +30,19 @@ class GalleryDetailLayout @JvmOverloads constructor(
     private var mCurrentOffset = 0f
 
     private var mExtraScrolled = 0f
+    private var mPreviewScrolled = 0f
+    private var mShowControl = false
+        set(value) {
+            if (value != field) {
+                mPreviewControlEvent?.invoke(value)
+                field = value
+            }
+        }
 
     private var mTopToPreview = 0f
 
     private var mBarMoveEvent: ((Float) -> Unit)? = null
+    private var mPreviewControlEvent: ((Boolean) -> Unit)? = null
     private var stateBack: ((Float) -> Unit)? = null
 
     init {
@@ -44,6 +53,12 @@ class GalleryDetailLayout @JvmOverloads constructor(
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 mExtraScrolled -= dy
                 moveTitle()
+            }
+        })
+        mPreviewView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                mPreviewScrolled -= dy
+                mShowControl = mPreviewScrolled >= 0
             }
         })
     }
@@ -176,6 +191,10 @@ class GalleryDetailLayout @JvmOverloads constructor(
 
     fun bindBarMove(action: ((Float) -> Unit)? = null) {
         mBarMoveEvent = action
+    }
+
+    fun bindControlEvent(action: ((Boolean) -> Unit)? = null) {
+        mPreviewControlEvent = action
     }
 
     fun bindState(action: ((Float) -> Unit)? = null) {
