@@ -51,6 +51,8 @@ class DownloadService : Service() {
         mProgressJob?.cancel()
         DownloadBroadcast.unregisterReceiver(this, mReceiver)
         downloadManager.destroy()
+
+        //TODO 这里重置
     }
 
     private fun handleEvent(intent: Intent?) {

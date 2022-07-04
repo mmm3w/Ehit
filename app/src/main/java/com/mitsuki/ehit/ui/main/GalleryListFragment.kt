@@ -24,11 +24,8 @@ import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.utils.InitialGate
 import com.mitsuki.ehit.crutch.utils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
-import com.mitsuki.ehit.crutch.extensions.isClick
-import com.mitsuki.ehit.crutch.extensions.observe
-import com.mitsuki.ehit.crutch.extensions.showToast
+import com.mitsuki.ehit.crutch.extensions.*
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
-import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
 import com.mitsuki.ehit.model.activityresult.GallerySearchActivityResultContract
@@ -260,7 +257,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun resetSearchBar() {
-        binding?.topBar?.topSearchLayout?.translationY = 0F
+        binding?.topBar?.topSearchLayout?.animate { translationY(0f) }
         mViewModel.searchBarTranslationY = 0f
     }
 }

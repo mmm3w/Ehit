@@ -127,7 +127,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
                     AppHolder.getString(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
-
+                binding.downloadProgress.secondaryProgress =
+                    ((completed + failed).toFloat() / total.toFloat() * 100).roundToInt()
                 ViewCompat.setTransitionName(itemView, itemTransitionName)
             }
         }
@@ -138,6 +139,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>(), Even
                     AppHolder.getString(R.string.page_separate).format(completed, total)
                 binding.downloadProgress.progress =
                     (completed.toFloat() / total.toFloat() * 100).roundToInt()
+                binding.downloadProgress.secondaryProgress =
+                    ((completed + failed).toFloat() / total.toFloat() * 100).roundToInt()
             }
         }
     }
