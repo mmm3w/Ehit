@@ -173,9 +173,12 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
             }
         }
 
-        binding?.topControl?.topTitleLayout?.apply {
+        binding?.topControl?.topTitleGoTop?.setOnClickListener {
+            binding?.galleryDetail?.goToPreviewTop()
+        }
 
-
+        binding?.topControl?.topTitleJump?.setOnClickListener {
+            //TODO  show page dialog
         }
 
         binding?.galleryDetail?.apply {

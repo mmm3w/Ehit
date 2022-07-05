@@ -2,6 +2,7 @@ package com.mitsuki.ehit.ui.detail.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -30,7 +31,6 @@ class GalleryDetailLayout @JvmOverloads constructor(
     private var mCurrentOffset = 0f
 
     private var mExtraScrolled = 0f
-    private var mPreviewScrolled = 0f
     private var mShowControl = false
         set(value) {
             if (value != field) {
@@ -57,8 +57,11 @@ class GalleryDetailLayout @JvmOverloads constructor(
         })
         mPreviewView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                mPreviewScrolled -= dy
-                mShowControl = mPreviewScrolled >= 0
+                mShowControl = !recyclerView.canScrollVertically(-1)
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                mShowControl = !recyclerView.canScrollVertically(-1)
             }
         })
     }
@@ -199,6 +202,10 @@ class GalleryDetailLayout @JvmOverloads constructor(
 
     fun bindState(action: ((Float) -> Unit)? = null) {
         stateBack = action
+    }
+
+    fun goToPreviewTop() {
+        mPreviewView.smoothScrollToPosition(0)
     }
 
 
