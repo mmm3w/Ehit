@@ -11,6 +11,8 @@
 基础功能已大致完成，近期将发布预览版本，剩余细节功能以及巨量Bug修复正在缓慢施工中······
 
 ### Screenshot
+|![示例图](sample/1.JPG)|![示例图](sample/2.JPG)|![示例图](sample/3.JPG)|
+|-|-|-|
 
 ### Thanks
 - [EhViewer](https://github.com/seven332/EhViewer)

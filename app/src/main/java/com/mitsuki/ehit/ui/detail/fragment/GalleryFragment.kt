@@ -67,7 +67,8 @@ class GalleryFragment : BindingFragment<FragmentGalleryBinding>(
                     }
                     onLongPress = this@GalleryFragment::showGalleryMenu
                     onAreaTap = this@GalleryFragment::onAreaTap
-                    autoScaleGradient = floatArrayOf(1.5f, 3f)
+                    autoScaleGradient = floatArrayOf(2f, 4f)
+                    maxScale = 4f
                 }
             }
         binding?.galleryIndex?.text = (mViewModel.index + 1).toString()
