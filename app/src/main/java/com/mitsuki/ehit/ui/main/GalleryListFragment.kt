@@ -207,6 +207,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             }
         }
 
+        mMainAdapter.isPageShow = shareData.spShowPage
         mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
             .isClick()
             .observe(viewLifecycleOwner, ::onDetailNavigation)

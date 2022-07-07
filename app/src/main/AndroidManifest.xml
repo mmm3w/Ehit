@@ -64,7 +64,7 @@
             android:configChanges="uiMode" />
         <activity android:name="com.mitsuki.ehit.ui.comment.activity.GalleryCommentActivity" />
         <activity android:name="com.mitsuki.ehit.ui.temp.activity.HistoryActivity" />
-        <activity android:name="com.mitsuki.ehit.ui.download.activity.DownloadActivity" />
+        <activity android:name="com.mitsuki.ehit.ui.setting.activity.SettingWebActivity" />
         <activity android:name="com.mitsuki.ehit.ui.comment.activity.CommentSendActivity" />
         <activity android:name="com.mitsuki.ehit.ui.login.activity.LoginActivity" />
 

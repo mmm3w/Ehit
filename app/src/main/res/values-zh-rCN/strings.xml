@@ -196,6 +196,9 @@
     <string name="text_setting_cookie">身份Cookie</string>
     <string name="text_setting_cookie_summary">查看Cookie</string>
     <string name="text_setting_site">站点选择</string>
+    <string name="text_setting_show_page">显示画廊页数</string>
+    <string name="text_setting_show_jp_title">显示日文标题</string>
+    <string name="text_setting_open_site_setting">打开站点设定</string>
     <string name="text_setting_screen_orientation">屏幕方向</string>
     <string name="text_setting_reading_direction">阅读方向</string>
     <string name="text_setting_image_zoom">图片缩放</string>

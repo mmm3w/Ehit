@@ -20,7 +20,7 @@ data class GalleryInfoCache(
     @ColumnInfo(name = "detail_thumb") val detailThumb: String,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "title_jp") val titleJP: String,
-    @ColumnInfo(name = "category") val category: String = "Unknow",
+    @ColumnInfo(name = "category") val category: String = "Unknown",
     @ColumnInfo(name = "uploader") val uploader: String,
     @ColumnInfo(name = "posted") val posted: String,
     @ColumnInfo(name = "parent") val parent: String,

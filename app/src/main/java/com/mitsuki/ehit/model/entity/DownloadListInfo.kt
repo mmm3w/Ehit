@@ -51,7 +51,8 @@ data class DownloadListInfo(
             "",
             local_thumb.ifEmpty { thumb },
             emptyArray(),
-            0f
+            0f,
+            0
         )
     }
 

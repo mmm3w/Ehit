@@ -19,7 +19,7 @@ object Category {
         CategoryMeta("Cosplay", R.color.color_cosplay, 0x40),
         CategoryMeta("Asian Porn", R.color.color_asian_porn, 0x80),
         CategoryMeta("Misc", R.color.color_misc, 0x1),
-        CategoryMeta("Unknow", R.color.color_unknow, UNKNOWN_CODE)
+        CategoryMeta("Unknown", R.color.color_unknow, UNKNOWN_CODE)
     )
 
     fun getColor(c: String): Int {

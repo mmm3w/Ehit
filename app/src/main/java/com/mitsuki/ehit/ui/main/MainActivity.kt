@@ -15,6 +15,7 @@ import com.mitsuki.ehit.R
 import com.mitsuki.ehit.base.BaseActivity
 import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.AppHolder
+import com.mitsuki.ehit.crutch.extensions.showSnackBar
 import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
@@ -96,7 +97,7 @@ class MainActivity : BaseActivity() {
             val current = System.currentTimeMillis()
             if (current - mExitTimestamp > 2000) {
                 mExitTimestamp = current
-                showToast(text(R.string.hint_exit_by_next_back))
+                window.decorView.showSnackBar(text(R.string.hint_exit_by_next_back))
             } else {
                 super.onBackPressed()
             }

@@ -8,24 +8,26 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import java.util.regex.Pattern
 
 @Suppress("ArrayInDataClass")
 @Parcelize
 data class Gallery(
     val gid: Long,
     val token: String,
-    val category: String = "Unknow",
+    val category: String = "Unknown",
     val time: String,
     val title: String,
     val uploader: String,
     val thumb: String,
     val tag: Array<String>,
     val rating: Float,
+    val page: Int,
     val categoryColor: Int = Category.getColor(category)
 ) : Parcelable {
 
     constructor(gid: Long, token: String) :
-            this(gid, token, "", "", "", "", "", emptyArray(), 0F)
+            this(gid, token, "", "", "", "", "", emptyArray(), 0F, 0)
 
     @IgnoredOnParcel
     val language: String
@@ -116,10 +118,10 @@ data class Gallery(
             val time = element.getElementById("posted_${tiData[0]}")?.text()
                 ?: throw ParseThrowable("upload time (posted_${tiData[0]} node text)".prefix())
 
-            val uploader = element
-                .byClassFirstIgnoreError("glhide")
-                ?.byTagFirstIgnoreError("a")
-                ?.text() ?: ""
+            val glhideNode = element.byClassFirstIgnoreError("glhide")?.text()?.split(Matcher.SPACE)
+            val uploader = glhideNode?.let { if (it.size > 2) it[0] else "" } ?: ""
+            val page = glhideNode?.let { if (it.size > 2) it[1].toIntOrNull() else 0 } ?: 0
+
 
             val thumbNode = element
                 .byClassFirst("glthumb", "thumbNode (glthumb node)".prefix())
@@ -144,7 +146,7 @@ data class Gallery(
 
             return Gallery(
                 tiData[0].toLong(), tiData[1], category, time,
-                title, uploader, thumb, tagArray, rating
+                title, uploader, thumb, tagArray, rating, page
             )
         }
 

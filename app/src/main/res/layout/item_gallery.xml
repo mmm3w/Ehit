@@ -78,11 +78,19 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/gallery_lang"
+        android:id="@+id/gallery_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_color_general"
         app:layout_constraintBottom_toTopOf="@id/gallery_time"
+        app:layout_constraintEnd_toEndOf="@id/gallery_time" />
+
+    <TextView
+        android:id="@+id/gallery_lang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color_general"
+        app:layout_constraintBottom_toTopOf="@id/gallery_page"
         app:layout_constraintEnd_toEndOf="@id/gallery_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

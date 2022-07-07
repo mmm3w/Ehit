@@ -20,9 +20,6 @@ class MyApiClientCreator @Inject constructor(
             .followRedirects(false)
             .followSslRedirects(false)
             .addNetworkInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BASIC) })
-//            .connectTimeout(1, TimeUnit.MINUTES)
-//            .readTimeout(1, TimeUnit.MINUTES)
-//            .writeTimeout(1, TimeUnit.MINUTES)
             .build()
     }
 }

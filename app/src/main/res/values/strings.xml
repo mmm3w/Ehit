@@ -103,6 +103,7 @@
     <string name="text_login_by_cookie">Login by cookie</string>
     <string name="text_rate">Rate</string>
     <string name="text_warning">Warning</string>
+    <string name="text_default">Default</string>
 
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
@@ -229,6 +230,9 @@
     <string name="text_setting_cookie">Cookie</string>
     <string name="text_setting_cookie_summary">Check cookie</string>
     <string name="text_setting_site">Site</string>
+    <string name="text_setting_show_page">Show gallery pages</string>
+    <string name="text_setting_open_site_setting">Open site setting</string>
+    <string name="text_setting_show_jp_title">Show japanese pages</string>
     <string name="text_setting_screen_orientation">Screen orientation</string>
     <string name="text_setting_reading_direction">Reading direction</string>
     <string name="text_setting_image_zoom">Image zoom</string>

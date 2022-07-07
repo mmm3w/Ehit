@@ -21,6 +21,7 @@ class ShareData(context: Context) {
 
         const val SP_DOMAIN = "SP_DOMAIN"
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
+        const val SP_SHOW_PAGE = "SP_SHOW_PAGE"
         const val SP_DISABLE_SCREENSHOTS = "SP_DISABLE_SCREENSHOTS"
         const val SP_DATA_ANALYTICS = "SP_DATA_ANALYTICS"
         const val SP_DOWNLOAD_THREAD = "SP_DOWNLOAD_THREAD"
@@ -185,6 +186,13 @@ class ShareData(context: Context) {
         set(value) = edit { putFloat(SP_CUSTOM_BRIGHTNESS, value) }
         get() = float(SP_CUSTOM_BRIGHTNESS, -1f)
 
+    var spShowPage: Boolean
+        set(value) = edit { putBoolean(SP_SHOW_PAGE, value) }
+        get() = boolean(SP_SHOW_PAGE)
+
+    var spShowJPTitle: Boolean
+        set(value) = edit { putBoolean(SP_SHOW_JP_TITLE, value) }
+        get() = boolean(SP_SHOW_JP_TITLE)
 
     /**********************************************************************************************/
     private var innerAppVersion: String

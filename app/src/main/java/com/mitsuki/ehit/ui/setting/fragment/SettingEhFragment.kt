@@ -9,6 +9,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mitsuki.ehit.R
+import com.mitsuki.ehit.const.DataKey
 import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
 import com.mitsuki.ehit.crutch.save.ShareData
@@ -16,8 +17,7 @@ import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.Site
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.moshi.toJson
-import com.mitsuki.ehit.model.activityresult.GallerySearchActivityResultContract
-import com.mitsuki.ehit.model.entity.GalleryDataKey
+import com.mitsuki.ehit.ui.setting.activity.SettingWebActivity
 import com.mitsuki.ehit.ui.common.dialog.TextDialogFragment
 import com.mitsuki.ehit.ui.common.dialog.show
 import com.mitsuki.ehit.ui.login.activity.LoginActivity
@@ -63,7 +63,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
             isVisible = mCookieManager.isLogin
             setOnPreferenceClickListener { showCookieDialog() }
         }
-//
+
         findPreference<ListPreference>(ShareData.SP_DOMAIN)?.apply {
             entries = arrayOf(Site.EH, Site.EX)
             entryValues = Array(2) { it.toString() }
@@ -106,6 +106,9 @@ class SettingEhFragment : PreferenceFragmentCompat() {
     }
 
     private fun openSiteSetting(): Boolean {
+        startActivity(Intent(requireActivity(), SettingWebActivity::class.java).apply {
+            putExtra(DataKey.WEB_URL, Site.ehSetting)
+        })
         return true
     }
 

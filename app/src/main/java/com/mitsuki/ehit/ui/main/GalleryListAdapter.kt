@@ -1,8 +1,10 @@
 package com.mitsuki.ehit.ui.main
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -18,6 +20,7 @@ import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ItemGalleryBinding
 import com.mitsuki.ehit.model.diff.Diff
 import com.mitsuki.ehit.model.entity.Gallery
+import com.mitsuki.ehit.ui.common.adapter.BindingViewHolder
 import java.util.*
 
 class GalleryListAdapter :
@@ -25,6 +28,8 @@ class GalleryListAdapter :
     EventEmitter {
 
     override val eventEmitter: Emitter = Emitter()
+
+    var isPageShow = false
 
     private val mItemClick = { view: View ->
         val position = (view.tag as ViewHolder).bindingAdapterPosition
@@ -41,39 +46,49 @@ class GalleryListAdapter :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        getItem(position)?.let {
+            with(it) {
+                holder.binding.galleryThumb.load(thumb) {
+                    memoryCacheKey(
+                        CacheKey.thumbKey(
+                            gid,
+                            token
+                        )
+                    )
+                }
+                holder.binding.galleryTitle.text = title
+                holder.binding.galleryUploader.text = uploader
+                holder.binding.galleryLang.apply {
+                    isVisible = languageSimple.isNotEmpty()
+                    text = languageSimple
+                }
+                holder.binding.galleryCategory.apply {
+                    setCategoryColor(categoryColor)
+                    text = category.uppercase()
+                }
+                holder.binding.galleryTime.text = time
+                holder.binding.galleryRating.rating = rating
+                holder.binding.galleryPage.apply {
+                    isVisible = isPageShow && page > 0
+                    text = "${page}P"
+                }
+                ViewCompat.setTransitionName(holder.itemView, itemTransitionName)
+            }
+        }
     }
 
-    class ViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.createItemView(R.layout.item_gallery)) {
-        val binding by viewBinding(ItemGalleryBinding::bind)
-
+    class ViewHolder(parent: ViewGroup) : BindingViewHolder<ItemGalleryBinding>(
+        parent,
+        R.layout.item_gallery,
+        ItemGalleryBinding::bind
+    ) {
         init {
             binding.galleryThumb.corners(dp2px(4f))
             binding.galleryRating.isEnabled = false
         }
-
-        fun bind(data: Gallery) {
-            with(data) {
-                binding.galleryThumb.load(thumb) { memoryCacheKey(CacheKey.thumbKey(gid, token)) }
-                binding.galleryTitle.text = title
-                binding.galleryUploader.text = uploader
-                binding.galleryLang.text = languageSimple
-                binding.galleryCategory.apply {
-                    setCategoryColor(categoryColor)
-                    text = category.uppercase()
-                }
-                binding.galleryTime.text = time
-                binding.galleryRating.rating = rating
-
-                ViewCompat.setTransitionName(itemView, itemTransitionName)
-            }
-        }
-
     }
 
-
     data class GalleryClick(val target: View, val data: Gallery)
-
 }

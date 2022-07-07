@@ -31,6 +31,9 @@ object DataKey {
     const val GALLERY_SEARCH_KEY = "GALLERY_SEARCH_KEY"
     const val GALLERY_SEARCH_KEY_BY_QUERY = "GALLERY_SEARCH_KEY_BY_QUERY"
 
+    const val WEB_URL = "WEB_URL"
+    const val FIXED_TITLE = "FIXED_TITLE"
+
 
     const val DOWNLOAD_TASK = "DOWNLOAD_TASK"
 

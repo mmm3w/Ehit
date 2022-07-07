@@ -35,8 +35,8 @@ object Matcher {
 
     val LARGE_PREVIEW: Pattern by lazy {
         Pattern.compile("<div class=\"gdtl\".+?<a href=\"(.+?)\"><img alt=\"([\\d,]+)\".+?src=\"(.+?)\"")
-    }
 
+    }
 
     val PAGER_INDEX: Pattern by lazy {
         Pattern.compile("<td class=\"ptds\"><a.*?>(\\d+)</a></td>") //当前页码
@@ -53,6 +53,8 @@ object Matcher {
     val LOGIN_INFO: Pattern by lazy {
         Pattern.compile("<p>You are now logged in as: (.+?)<")
     }
+
+    val SPACE :Regex by lazy { Regex("\\s+") }
 
 
     //分页的基本信息
