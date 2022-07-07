@@ -33,7 +33,6 @@ class MainActivity : BaseActivity() {
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     private var mExitTimestamp = 0L
-    private var lastCheckItem: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -70,13 +69,17 @@ class MainActivity : BaseActivity() {
             handle
         }
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            lastCheckItem = when (destination.id) {
-                R.id.favourite_fragment -> binding.mainNavigation.checkedItem
-                else -> {
-                    lastCheckItem?.apply { binding.mainNavigation.setCheckedItem(this) }
-                    null
+        navController.addOnDestinationChangedListener { _, destination, arguments ->
+            when (destination.id) {
+                R.id.gallery_list_fragment -> {
+                    when(arguments?.get(DataKey.GALLERY_TYPE_PART)){
+                        "watched" ->binding.mainNavigation.setCheckedItem(R.id.nav_subscription)
+                        "popular" ->binding.mainNavigation.setCheckedItem(R.id.nav_popular)
+                       else ->binding.mainNavigation.setCheckedItem(R.id.nav_home)
+                    }
                 }
+                R.id.download_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_download)
+                R.id.favourite_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_favourite)
             }
         }
     }

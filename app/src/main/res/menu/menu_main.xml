@@ -17,14 +17,16 @@
         <item
             android:id="@+id/nav_favourite"
             android:title="@string/text_menu_favourite" />
+
+        <!--    <item-->
+        <!--        android:id="@+id/nav_history"-->
+        <!--        android:title="@string/text_menu_history" />-->
+
+        <item
+            android:id="@+id/nav_download"
+            android:title="@string/text_menu_download" />
     </group>
 
-<!--    <item-->
-<!--        android:id="@+id/nav_history"-->
-<!--        android:title="@string/text_menu_history" />-->
-    <item
-        android:id="@+id/nav_download"
-        android:title="@string/text_menu_download" />
     <item
         android:id="@+id/nav_setting"
         android:title="@string/text_menu_setting" />
