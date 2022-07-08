@@ -59,10 +59,10 @@ class MainActivity : BaseActivity() {
                         bundleOf(DataKey.GALLERY_TYPE_PART to "popular")
                     )
                 R.id.nav_favourite -> navController.navigate(R.id.action_global_favourite_fragment)
+                R.id.nav_history -> navController.navigate(R.id.action_global_history_fragment)
                 R.id.nav_download -> navController.navigate(R.id.action_global_download_fragment)
                 R.id.nav_setting ->
                     startActivity(Intent(this@MainActivity, SettingActivity::class.java))
-
                 else -> handle = false
             }
             if (handle) binding.mainDrawer.close()
@@ -72,14 +72,15 @@ class MainActivity : BaseActivity() {
         navController.addOnDestinationChangedListener { _, destination, arguments ->
             when (destination.id) {
                 R.id.gallery_list_fragment -> {
-                    when(arguments?.get(DataKey.GALLERY_TYPE_PART)){
-                        "watched" ->binding.mainNavigation.setCheckedItem(R.id.nav_subscription)
-                        "popular" ->binding.mainNavigation.setCheckedItem(R.id.nav_popular)
-                       else ->binding.mainNavigation.setCheckedItem(R.id.nav_home)
+                    when (arguments?.get(DataKey.GALLERY_TYPE_PART)) {
+                        "watched" -> binding.mainNavigation.setCheckedItem(R.id.nav_subscription)
+                        "popular" -> binding.mainNavigation.setCheckedItem(R.id.nav_popular)
+                        else -> binding.mainNavigation.setCheckedItem(R.id.nav_home)
                     }
                 }
                 R.id.download_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_download)
                 R.id.favourite_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_favourite)
+                R.id.history_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_history)
             }
         }
     }

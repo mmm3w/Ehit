@@ -90,7 +90,6 @@ data class GalleryDetail(
                     ?.parseDetailThumb("detailThumb (gd1 node child0 style)".prefix())
                     ?: throw ParseThrowable("detailThumb (gd1 node child0 style)".prefix())
 
-
             val title = gmNode.getElementById("gn")?.text()
                 ?: throw ParseThrowable("title (gn node text)".prefix())
 

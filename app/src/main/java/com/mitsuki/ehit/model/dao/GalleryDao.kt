@@ -83,6 +83,9 @@ abstract class GalleryDao {
     @Query("SELECT * FROM ${DBValue.TABLE_GALLERY_INFO} WHERE ${DBValue.TABLE_GALLERY_INFO}.gid = :gid AND ${DBValue.TABLE_GALLERY_INFO}.token = :token LIMIT 1")
     abstract suspend fun queryGalleryInfo(gid: Long, token: String): GalleryInfoCache?
 
+    @Query("SELECT * FROM ${DBValue.TABLE_GALLERY_INFO} ORDER BY ${DBValue.TABLE_GALLERY_INFO}.timestamp DESC LIMIT :size ")
+    abstract suspend fun queryGalleryHistory(size: Int): List<GalleryInfoCache>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertGalleryTags(tags: List<GalleryTagCache>)
 

@@ -39,6 +39,17 @@ object TimeFormat {
         return fileNameTimeFormat.format(timestamp)
     }
 
+    private val recordTimeFormat by lazy {
+        SimpleDateFormat(
+            "yyyy-MM-dd HH:mm",
+            Locale.getDefault()
+        )
+    }
+
+    fun recordTime(timestamp: Long): String {
+        return recordTimeFormat.format(timestamp)
+    }
+
 }
 
 fun Long.commentTime(): String {
@@ -51,4 +62,8 @@ fun Long.crashTime(): String {
 
 fun Long.fileNameTime(): String {
     return TimeFormat.fileNameTime(this)
+}
+
+fun Long.recordTime(): String {
+    return TimeFormat.recordTime(this)
 }

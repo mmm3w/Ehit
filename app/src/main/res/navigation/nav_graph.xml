@@ -73,6 +73,25 @@
             app:destination="@id/gallery_detail_fragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/history_fragment"
+        android:name="com.mitsuki.ehit.ui.history.fragment.HistoryFragment"
+        android:label="HistoryFragment" >
+        <action
+            android:id="@+id/action_history_fragment_to_gallery_detail_fragment"
+            app:destination="@id/gallery_detail_fragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_history_fragment"
+        app:destination="@id/history_fragment"
+        app:enterAnim="@animator/nav_default_enter_anim"
+        app:exitAnim="@animator/nav_default_exit_anim"
+        app:popEnterAnim="@animator/nav_default_pop_enter_anim"
+        app:popExitAnim="@animator/nav_default_pop_exit_anim"
+        app:popUpTo="@id/history_fragment"
+        app:popUpToInclusive="true" />
+
     <action
         android:id="@+id/action_global_download_fragment"
         app:destination="@id/download_fragment"

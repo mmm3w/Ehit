@@ -28,8 +28,9 @@ import com.mitsuki.ehit.crutch.utils.PagingEmptyValve
 import com.mitsuki.ehit.databinding.FragmentFavouriteBinding
 
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
-import com.mitsuki.ehit.ui.main.GalleryListAdapter
+import com.mitsuki.ehit.ui.main.adapter.GalleryListAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
+import com.mitsuki.ehit.ui.main.adapter.GalleryClick
 import com.mitsuki.ehit.viewmodel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -66,7 +67,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
+        mMainAdapter.receiver<GalleryClick>("click")
             .isClick()
             .observe(this, ::onDetailNavigation)
 
@@ -171,7 +172,7 @@ class FavouriteFragment : BindingFragment<FragmentFavouriteBinding>(
     }
 
 
-    private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
+    private fun onDetailNavigation(galleryClick: GalleryClick) {
         with(galleryClick) {
             Navigation.findNavController(requireActivity(), R.id.main_nav_fragment)
                 .navigate(

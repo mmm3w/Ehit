@@ -3,6 +3,7 @@ package com.mitsuki.ehit.model.diff
 import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import com.mitsuki.ehit.model.entity.*
+import com.mitsuki.ehit.model.entity.db.GalleryInfoCache
 import com.mitsuki.ehit.model.entity.db.QuickSearch
 import com.mitsuki.ehit.model.entity.db.SearchHistory
 import com.mitsuki.ehit.ui.download.adapter.DownloadAdapter
@@ -139,6 +140,25 @@ object Diff {
                 oldItem: TagGroup,
                 newItem: TagGroup
             ): Boolean = oldItem == newItem
+        }
+    }
+
+    val GALLERY_CACHE by lazy {
+        object : DiffUtil.ItemCallback<GalleryInfoCache>() {
+            override fun areItemsTheSame(
+                oldItem: GalleryInfoCache,
+                newItem: GalleryInfoCache
+            ): Boolean {
+                return oldItem.gid == newItem.gid && oldItem.token == newItem.token
+            }
+
+            override fun areContentsTheSame(
+                oldItem: GalleryInfoCache,
+                newItem: GalleryInfoCache
+            ): Boolean {
+                return oldItem == newItem
+            }
+
         }
     }
 }

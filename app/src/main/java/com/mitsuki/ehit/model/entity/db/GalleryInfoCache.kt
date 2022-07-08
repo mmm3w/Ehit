@@ -3,6 +3,7 @@ package com.mitsuki.ehit.model.entity.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.mitsuki.ehit.const.DBValue
+import com.mitsuki.ehit.model.entity.Gallery
 
 
 @Entity(
@@ -36,6 +37,22 @@ data class GalleryInfoCache(
     @ColumnInfo(name = "has_more_comment") val hasMoreComment: Boolean,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 ) {
+
+    fun toGallery(): Gallery {
+        return Gallery(
+            gid,
+            token,
+            category,
+            "",
+            title,
+            uploader,
+            detailThumb,
+            emptyArray(),
+            rating,
+            pagesStr.toIntOrNull() ?: 0
+        )
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is GalleryInfoCache &&
@@ -61,7 +78,9 @@ data class GalleryInfoCache(
                 ratingCount == other.ratingCount &&
                 rating == other.rating &&
                 favoriteName == other.favoriteName &&
-                previewPages == other.previewPages
+                previewPages == other.previewPages &&
+                hasMoreComment == other.hasMoreComment &&
+                timestamp == other.timestamp
     }
 
     override fun hashCode(): Int {
@@ -88,6 +107,10 @@ data class GalleryInfoCache(
         result = 31 * result + rating.hashCode()
         result = 31 * result + (favoriteName?.hashCode() ?: 0)
         result = 31 * result + previewPages
+        result = 31 * result + hasMoreComment.hashCode()
+        result = 31 * result + timestamp.hashCode()
         return result
     }
+
+
 }

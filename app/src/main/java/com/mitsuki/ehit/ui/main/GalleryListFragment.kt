@@ -32,6 +32,8 @@ import com.mitsuki.ehit.model.activityresult.GallerySearchActivityResultContract
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.ui.common.adapter.DefaultLoadStateAdapter
 import com.mitsuki.ehit.ui.common.adapter.ListStatesAdapter
+import com.mitsuki.ehit.ui.main.adapter.GalleryClick
+import com.mitsuki.ehit.ui.main.adapter.GalleryListAdapter
 import com.mitsuki.ehit.ui.search.dialog.QuickSearchPanel
 import com.mitsuki.ehit.viewmodel.GalleryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -208,7 +210,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         }
 
         mMainAdapter.isPageShow = shareData.spShowPage
-        mMainAdapter.receiver<GalleryListAdapter.GalleryClick>("click")
+        mMainAdapter.receiver<GalleryClick>("click")
             .isClick()
             .observe(viewLifecycleOwner, ::onDetailNavigation)
 
@@ -228,7 +230,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
 
-    private fun onDetailNavigation(galleryClick: GalleryListAdapter.GalleryClick) {
+    private fun onDetailNavigation(galleryClick: GalleryClick) {
         /* 同时点击两个item会导致同时进入该方法，后一个进入会导致Navigation.findNavController抛出异常 */
         /* 接收处需要防抖处理*/
         with(galleryClick) {
