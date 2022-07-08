@@ -50,7 +50,9 @@ class GalleryCommentActivity :
             setPadding(0, 0, dp2px(16F).toInt(), 0)
         }
         binding.topBar.topBarReply.setOnClickListener {
-            startActivity(Intent(this, CommentSendActivity::class.java))
+            startActivity(Intent(this, CommentSendActivity::class.java).apply {
+
+            })
         }
 
         mViewModel.initData(intent)

@@ -23,6 +23,8 @@
     <color name="background_color_search_bar">#383838</color>
     <color name="background_color_gallery_preview">#6f6f6f</color>
     <color name="background_color_gallery_comment_vote">#6f6f6f</color>
+    <color name="background_color_comment_edit">#2a2a2a</color>
+
 
     <color name="stroke_color_gallery_detail_tag_item">#4a4a4a</color>
     <color name="stroke_color_gallery_comment_vote">#c5c5c5</color>

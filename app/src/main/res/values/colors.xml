@@ -111,6 +111,7 @@
     <color name="background_color_search_bar">#fff</color>
     <color name="background_color_gallery_preview">#6f6f6f</color>
     <color name="background_color_gallery_comment_vote">#dfdfdf</color>
+    <color name="background_color_comment_edit">#f8f8f8</color>
 
     <color name="stroke_color_gallery_detail_tag_item">#DADCE0</color>
     <color name="stroke_color_gallery_comment_vote">#dfdfdf</color>
