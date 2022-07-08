@@ -5,10 +5,6 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
-
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
-    id 'com.google.firebase.firebase-perf'
 }
 
 android {
@@ -162,12 +158,6 @@ dependencies {
 
     implementation "io.reactivex.rxjava3:rxkotlin:3.0.1"
     implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
-
-    //----------------------------------------------------------------------------------------------
-    implementation platform('com.google.firebase:firebase-bom:28.0.1')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-perf-ktx'
 
     //----------------------------------------------------------------------------------------------
     implementation "com.mitsuki.armory:base:1.0.2"

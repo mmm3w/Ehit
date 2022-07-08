@@ -8,31 +8,6 @@
         app:useSimpleSummaryProvider="true" />
 
     <Preference
-        app:key="setting_check_for_updates"
-        app:persistent="false"
-        app:summary="@string/last_version_url"
-        app:title="@string/text_check_for_updates" />
-
-    <Preference
-        app:persistent="false"
-        app:summary="@string/repo_url"
-        app:title="@string/text_source_code">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="@string/repo_url" />
-    </Preference>
-
-    <Preference
-        app:key="setting_license"
-        app:persistent="false"
-        app:summary="@string/license_url"
-        app:title="@string/text_license">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="@string/license_url" />
-    </Preference>
-
-    <Preference
         app:key="setting_ehit"
         app:persistent="false"
         app:summary="@string/text_app_illustrate"

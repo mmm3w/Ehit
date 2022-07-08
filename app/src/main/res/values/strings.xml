@@ -27,9 +27,6 @@
     <string name="text_ok" translatable="false">OK</string>
 
     <string name="page_separate" translatable="false">%d/%d</string>
-    <string name="last_version_url" translatable="false">https://github.com/mmm3w/Ehit/releases/latest</string>
-    <string name="repo_url" translatable="false">https://github.com/mmm3w/Ehit</string>
-    <string name="license_url" translatable="false">https://github.com/mmm3w/Ehit/blob/master/LICENSE</string>
 
     <string name="content_description_back_btn" translatable="false">page back btn</string>
 
@@ -177,9 +174,6 @@
 
     <string name="text_sign_out">Sign out</string>
     <string name="text_version">Version</string>
-    <string name="text_check_for_updates">Check for updates</string>
-    <string name="text_source_code">Source code</string>
-    <string name="text_license">License</string>
     <string name="text_app_lock">App lock</string>
     <string name="text_app_lock_summary">It is dependent on the system\'s authentication</string>
     <string name="text_ehit_biometric_login">Biometric login for Ehit</string>
@@ -245,9 +239,6 @@
     <string name="text_setting_full_screen">Full screen</string>
     <string name="text_setting_auto_brightness">Auto brightness</string>
     <string name="text_setting_disable_screenshots">Disable screenshots</string>
-    <string name="text_setting_data_analytics">Data analytics</string>
-    <string name="text_setting_about_analytics">About analytics</string>
-    <string name="text_setting_about_analytics_summary">This feature is powered by Google Firebase.</string>
 
     <string name="text_screen_default">Default</string>
     <string name="text_screen_horizontal">Horizontal</string>

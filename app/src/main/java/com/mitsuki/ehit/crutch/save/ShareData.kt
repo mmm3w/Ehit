@@ -23,7 +23,6 @@ class ShareData(context: Context) {
         const val SP_SHOW_JP_TITLE = "SP_SHOW_JP_TITLE"
         const val SP_SHOW_PAGE = "SP_SHOW_PAGE"
         const val SP_DISABLE_SCREENSHOTS = "SP_DISABLE_SCREENSHOTS"
-        const val SP_DATA_ANALYTICS = "SP_DATA_ANALYTICS"
         const val SP_DOWNLOAD_THREAD = "SP_DOWNLOAD_THREAD"
         const val SP_DOWNLOAD_ORIGINAL = "SP_DOWNLOAD_ORIGINAL"
         const val SP_PRELOAD_IMAGE = "SP_PRELOAD_IMAGE"
@@ -133,13 +132,6 @@ class ShareData(context: Context) {
     var spDownloadOriginal: Boolean
         set(value) = edit { putBoolean(SP_DOWNLOAD_ORIGINAL, value) }
         get() = boolean(SP_DOWNLOAD_ORIGINAL)
-
-    var spDataAnalytics: Boolean
-        set(value) {
-            AppHolder.setAnalyticsCollectionEnabled(value)
-            edit { putBoolean(SP_DATA_ANALYTICS, value) }
-        }
-        get() = boolean(SP_DATA_ANALYTICS)
 
     var spDownloadThread: Int
         set(value) = edit { putInt(SP_DOWNLOAD_THREAD, value) }

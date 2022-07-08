@@ -78,13 +78,6 @@ class SettingPrivacyFragment : PreferenceFragmentCompat() {
                 true
             }
         }
-
-        findPreference<SwitchPreference>(ShareData.SP_DATA_ANALYTICS)?.apply {
-            setOnPreferenceClickListener {
-                shareData.spDataAnalytics = isChecked
-                true
-            }
-        }
     }
 
     private fun showSnackBar(text: Int) {

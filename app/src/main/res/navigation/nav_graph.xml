@@ -119,16 +119,7 @@
             android:name="com.mitsuki.ehit.ui.start.fragment.DisclaimerFragment"
             android:label="DisclaimerFragment">
             <action
-                android:id="@+id/action_disclaimer_fragment_to_data_analytics_fragment"
-                app:destination="@id/data_analytics_fragment" />
-        </fragment>
-
-        <fragment
-            android:id="@+id/data_analytics_fragment"
-            android:name="com.mitsuki.ehit.ui.start.fragment.DataAnalyticsFragment"
-            android:label="DataAnalyticsFragment">
-            <action
-                android:id="@+id/action_data_analytics_fragment_to_login_fragment_first_time"
+                android:id="@+id/action_disclaimer_fragment_to_login_fragment_first_time"
                 app:destination="@id/login_fragment_first_time" />
         </fragment>
 

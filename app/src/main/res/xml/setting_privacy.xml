@@ -13,13 +13,4 @@
         app:icon="@drawable/ic_baseline_stop_screen_share_24"
         app:title="@string/text_setting_disable_screenshots" />
 
-    <SwitchPreference
-        app:icon="@drawable/ic_baseline_analytics_24"
-        app:key="SP_DATA_ANALYTICS"
-        app:title="@string/text_setting_data_analytics" />
-
-    <Preference
-        app:summary="@string/text_setting_about_analytics_summary"
-        app:title="@string/text_setting_about_analytics" />
-
 </PreferenceScreen>

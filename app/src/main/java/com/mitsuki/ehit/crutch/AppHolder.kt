@@ -4,15 +4,9 @@ import android.app.Application
 import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
-import android.content.res.TypedArray
-import android.graphics.drawable.Drawable
 import android.widget.Toast
 import androidx.annotation.*
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.text
 import java.io.File
@@ -78,9 +72,5 @@ object AppHolder {
 
     val clipboardManager: ClipboardManager
         get() = mApplication.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-    fun setAnalyticsCollectionEnabled(enable: Boolean) {
-        FirebaseAnalytics.getInstance(mApplication).setAnalyticsCollectionEnabled(enable)
-    }
 
 }

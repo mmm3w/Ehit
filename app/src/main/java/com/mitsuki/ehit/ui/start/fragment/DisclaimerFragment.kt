@@ -42,6 +42,6 @@ class DisclaimerFragment : BindingFragment<GeneralRecyclerViewBinding>(
 
     private fun nextNav() {
         Navigation.findNavController(requireView())
-            .navigate(R.id.action_disclaimer_fragment_to_data_analytics_fragment)
+            .navigate(R.id.action_disclaimer_fragment_to_login_fragment_first_time)
     }
 }
