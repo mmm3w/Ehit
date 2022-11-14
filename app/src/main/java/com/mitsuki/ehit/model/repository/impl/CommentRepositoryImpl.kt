@@ -9,7 +9,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.model.convert.GalleryCommentsConvert
 import com.mitsuki.ehit.model.convert.SendCommentConvert
@@ -31,7 +31,7 @@ class CommentRepositoryImpl @Inject constructor(val client: OkHttpClient) : Comm
     ): RequestResult<List<Comment>> {
         return withContext(Dispatchers.IO) {
             val data = client.get<List<com.mitsuki.ehit.model.entity.Comment>>(
-                Site.galleryDetail(
+                ApiContainer.galleryDetail(
                     gid,
                     token
                 )
@@ -58,12 +58,12 @@ class CommentRepositoryImpl @Inject constructor(val client: OkHttpClient) : Comm
         token: String,
         comment: String
     ): RequestResult<Int> {
-        val data = client.post<Int>(Site.galleryDetail(gid, token)) {
+        val data = client.post<Int>(ApiContainer.galleryDetail(gid, token)) {
             convert = SendCommentConvert()
             urlParams(RequestKey.HC, "1")
             params(RequestKey.COMMENT_TEXT, comment)
 
-            header(RequestKey.HEADER_ORIGIN, Site.currentDomain)
+            header(RequestKey.HEADER_ORIGIN, ApiContainer.url)
             header(RequestKey.HEADER_REFERER, url())
         }
             .execute()
@@ -87,7 +87,7 @@ class CommentRepositoryImpl @Inject constructor(val client: OkHttpClient) : Comm
         vote: Int
     ): RequestResult<VoteBack> {
         return withContext(Dispatchers.IO) {
-            val data = client.post<VoteBack>(Site.api) {
+            val data = client.post<VoteBack>(ApiContainer.api()) {
                 convert = VoteBackConvert()
                 json(
                     RequestVoteInfo(
@@ -99,8 +99,8 @@ class CommentRepositoryImpl @Inject constructor(val client: OkHttpClient) : Comm
                         vote = vote
                     ).toJson()
                 )
-                header(RequestKey.HEADER_ORIGIN, Site.currentDomain)
-                header(RequestKey.HEADER_REFERER, Site.galleryDetail(gid, token))
+                header(RequestKey.HEADER_ORIGIN, ApiContainer.url)
+                header(RequestKey.HEADER_REFERER, ApiContainer.galleryDetail(gid, token))
             }
                 .execute()
             try {

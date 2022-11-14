@@ -22,6 +22,8 @@ import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.site.EhSite
 import com.mitsuki.ehit.databinding.ActivitySearchBinding
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.db.SearchHistory
@@ -39,6 +41,8 @@ class SearchActivity : BaseActivity() {
     private val mHistoryAdapter by lazy { SearchHistoryAdapter() }
     private val mCategoryAdapter by lazy { SearchCategoryAdapter() }
     private val mAdvancedAdapter by lazy { SearchAdvancedAdapter() }
+//    private val mAdvancedAdapter by lazy { if (ApiContainer.site is EhSite) SearchAdvancedAdapter() else SearchAdvancedExAdapter() }
+
     private val mAdvancedSwitch by lazy { SearchAdvancedOptionsSwitch() }
 
     private val mAdapter by lazy {

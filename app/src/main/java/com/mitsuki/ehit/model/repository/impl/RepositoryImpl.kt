@@ -3,13 +3,10 @@ package com.mitsuki.ehit.model.repository.impl
 import com.mitsuki.armory.httprookie.convert.StringConvert
 import com.mitsuki.armory.httprookie.get
 import com.mitsuki.armory.httprookie.post
-import com.mitsuki.armory.httprookie.request.header
-import com.mitsuki.armory.httprookie.request.json
-import com.mitsuki.armory.httprookie.request.params
-import com.mitsuki.armory.httprookie.request.urlParams
+import com.mitsuki.armory.httprookie.request.*
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.const.ParamsValue
 import com.mitsuki.ehit.const.RequestKey
@@ -39,14 +36,6 @@ class RepositoryImpl @Inject constructor(
     val shareData: ShareData
 ) : Repository {
 
-//    private var galleryPageSize: Int = shareData.spGalleryPageSize
-//        set(value) {
-//            if (value != field) {
-//                shareData.spGalleryPageSize = value
-//                field = value
-//            }
-//        }
-
     //convert
     private val mGalleryListConvert by lazy {
         GalleryListConvert()
@@ -61,7 +50,7 @@ class RepositoryImpl @Inject constructor(
     override suspend fun login(account: String, password: String): RequestResult<String> {
         return withContext(Dispatchers.IO) {
             val data = client
-                .post<String>(Site.login) {
+                .post<String>(ApiContainer.login()) {
                     convert = LoginConvert()
                     params(RequestKey.REFERER, ParamsValue.LOGIN_REFERER)
                     params(RequestKey.B, "")
@@ -103,6 +92,25 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun exGalleryListSource(
+        pageIn: GalleryListPageIn,
+        urlParams: UrlParams?
+    ): RequestResult<PageInfo<Gallery>> {
+        return withContext(Dispatchers.IO) {
+            val data = client
+                .get<PageInfo<Gallery>>(pageIn.targetUrl) {
+                    convert = mGalleryListConvert
+                    urlParams?.also { urlParams(it) }
+                }
+                .execute()
+
+            when (data) {
+                is Response.Success<PageInfo<Gallery>> -> RequestResult.Success(data.requireBody())
+                is Response.Fail<*> -> RequestResult.Fail(data.throwable)
+            }
+        }
+    }
+
     override suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail> {
         return withContext(Dispatchers.IO) {
             //首先从数据库缓存中读取相关数据
@@ -112,7 +120,7 @@ class RepositoryImpl @Inject constructor(
             } else {
                 val data = client
                     .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
-                        Site.galleryDetail(gid, token)
+                        ApiContainer.galleryDetail(gid, token)
                     ) {
                         convert = mGalleryDetailImageConvert
                     }
@@ -146,7 +154,7 @@ class RepositoryImpl @Inject constructor(
             if (images.isEmpty) {
                 val remoteData: Response<PageInfo<ImageSource>> =
                     client
-                        .get<PageInfo<ImageSource>>(Site.galleryDetail(gid, token)) {
+                        .get<PageInfo<ImageSource>>(ApiContainer.galleryDetail(gid, token)) {
                             convert = mJustImageConvert
                             urlParams(RequestKey.PAGE_DETAIL, page.toString())
                         }
@@ -173,7 +181,7 @@ class RepositoryImpl @Inject constructor(
         apiKey: String, rating: Float
     ): RequestResult<RateBack> {
         return withContext(Dispatchers.IO) {
-            val data = client.post<RateBack>(Site.api) {
+            val data = client.post<RateBack>(ApiContainer.api()) {
                 convert = RateBackConvert()
                 json(
                     RequestRateInfo(
@@ -184,9 +192,9 @@ class RepositoryImpl @Inject constructor(
                         rating = ceil(rating * 2).toInt()
                     ).toJson()
                 )
-                header(RequestKey.HEADER_ORIGIN, Site.currentDomain)
+                header(RequestKey.HEADER_ORIGIN, ApiContainer.url)
                 header(
-                    RequestKey.HEADER_REFERER, Site.galleryDetail(gid, token)
+                    RequestKey.HEADER_REFERER, ApiContainer.galleryDetail(gid, token)
                 )
             }
                 .execute()
@@ -266,7 +274,7 @@ class RepositoryImpl @Inject constructor(
                     }
 
                     galleryPreview(
-                        Site.galleryPreviewDetail(gid, pToken, index),
+                        ApiContainer.galleryPreviewDetail(gid, pToken, index),
                         gid,
                         token,
                         index,
@@ -318,7 +326,7 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun favorites(gid: Long, token: String, cat: Int): RequestResult<String> {
         return withContext(Dispatchers.IO) {
-            val data = client.post<String>(Site.favorites) {
+            val data = client.post<String>(ApiContainer.favorites()) {
                 convert = StringConvert()
                 urlParams(RequestKey.GID, gid.toString())
                 urlParams(RequestKey.T, token)
@@ -332,7 +340,7 @@ class RepositoryImpl @Inject constructor(
                 params(RequestKey.FAVORITE_KEY_APPLY, ParamsValue.FAVORITE_VALUE_APPLY_APPLY)
                 params(RequestKey.FAVORITE_KEY_UPDATE, ParamsValue.FAVORITE_VALUE_UPDATE)
 
-                header(RequestKey.HEADER_ORIGIN, Site.currentDomain)
+                header(RequestKey.HEADER_ORIGIN, ApiContainer.url)
                 header(RequestKey.HEADER_REFERER, url())
             }
                 .execute()
@@ -358,7 +366,7 @@ class RepositoryImpl @Inject constructor(
         page: Int
     ): Response<Pair<PageInfo<Gallery>, Array<Int>>> {
         return client
-            .get<Pair<PageInfo<Gallery>, Array<Int>>>(Site.favoriteList) {
+            .get<Pair<PageInfo<Gallery>, Array<Int>>>(ApiContainer.favoriteList()) {
                 convert = mFavoritesSourceConvert
                 urlParams(RequestKey.PAGE, page.toString())
                 pageIn.setGroup(this)
@@ -372,7 +380,12 @@ class RepositoryImpl @Inject constructor(
         page: Int
     ): Response<Pair<GalleryDetail, PageInfo<ImageSource>>> {
         return client
-            .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(Site.galleryDetail(mGid, mToken)) {
+            .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
+                ApiContainer.galleryDetail(
+                    mGid,
+                    mToken
+                )
+            ) {
                 convert = mGalleryDetailImageConvert
                 urlParams(RequestKey.PAGE_DETAIL, page.toString())
             }

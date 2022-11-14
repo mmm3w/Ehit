@@ -25,6 +25,8 @@ import com.mitsuki.ehit.crutch.utils.InitialGate
 import com.mitsuki.ehit.crutch.utils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.site.EhSite
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
@@ -245,14 +247,20 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun showPageJumpDialog() {
-        if (mViewModel.maxPage <= 1) return
-        PageDialog(mViewModel.maxPage) {
-            mViewModel.galleryListPage(it)
-            mViewModel.refreshEnable.postValue(false)
-            mEmptyValve.enable()
-            resetSearchBar()
-            mMainAdapter.refresh()
-        }.show(childFragmentManager, "page")
+        if (ApiContainer.site is EhSite) {
+            if (mViewModel.maxPage <= 1) return
+            PageDialog(mViewModel.maxPage) {
+                mViewModel.galleryListPage(it)
+                mViewModel.refreshEnable.postValue(false)
+                mEmptyValve.enable()
+                resetSearchBar()
+                mMainAdapter.refresh()
+            }.show(childFragmentManager, "page")
+        } else {
+            ExPageDialog(mViewModel.maxPage) {
+
+            }.show(childFragmentManager, "page")
+        }
     }
 
     private fun showQuickSearchPanel() {

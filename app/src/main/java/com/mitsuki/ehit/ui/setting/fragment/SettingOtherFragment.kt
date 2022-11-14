@@ -1,10 +1,8 @@
 package com.mitsuki.ehit.ui.setting.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -15,7 +13,7 @@ import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.moshi.fromJson
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.crutch.network.CookieManager
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract
@@ -29,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.nio.charset.StandardCharsets
-import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -119,17 +116,7 @@ class SettingOtherFragment : PreferenceFragmentCompat() {
                                                 val igneous =
                                                     (node["igneous"] as? String) ?: return@with
 
-                                                cookieManager.newCookie(
-                                                    arrayListOf(
-                                                        buildCookie("ipb_member_id", id, Site.EH),
-                                                        buildCookie("ipb_pass_hash", hash, Site.EH),
-                                                        buildCookie("igneous", igneous, Site.EH),
-
-                                                        buildCookie("ipb_member_id", id, Site.EX),
-                                                        buildCookie("ipb_pass_hash", hash, Site.EX),
-                                                        buildCookie("igneous", igneous, Site.EX)
-                                                    )
-                                                )
+                                                cookieManager.buildNewCookie(id, hash, igneous)
                                             }
                                         }
                                         DataConfirmDialog.DATA_QUICK_SEARCH -> {

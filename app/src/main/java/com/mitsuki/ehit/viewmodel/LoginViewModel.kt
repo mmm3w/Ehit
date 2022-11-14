@@ -6,7 +6,7 @@ import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.RequestResult
@@ -57,17 +57,7 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        cookieManager.newCookie(
-            arrayListOf(
-                buildCookie("ipb_member_id", id, Site.EH),
-                buildCookie("ipb_pass_hash", hash, Site.EH),
-                buildCookie("igneous", igneous, Site.EH),
-
-                buildCookie("ipb_member_id", id, Site.EX),
-                buildCookie("ipb_pass_hash", hash, Site.EX),
-                buildCookie("igneous", igneous, Site.EX)
-            )
-        )
+        cookieManager.buildNewCookie(id, hash, igneous)
 
         post("next", 0)
     }

@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.mitsuki.ehit.BuildConfig
 import com.mitsuki.ehit.const.Setting
-import com.mitsuki.ehit.crutch.AppHolder
-import com.mitsuki.ehit.crutch.network.Site
 import java.lang.IllegalArgumentException
 
 class ShareData(context: Context) {

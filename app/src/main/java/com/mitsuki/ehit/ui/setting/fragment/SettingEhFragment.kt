@@ -14,7 +14,7 @@ import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.crutch.network.CookieManager
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.ui.setting.activity.SettingWebActivity
@@ -65,7 +65,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<ListPreference>(ShareData.SP_DOMAIN)?.apply {
-            entries = arrayOf(Site.EH, Site.EX)
+            entries = arrayOf("e-hentai.org", "exhentai.org")
             entryValues = Array(2) { it.toString() }
             setOnPreferenceChangeListener { _, newValue ->
                 memoryData.domain = newValue.toString().toInt()
@@ -107,7 +107,7 @@ class SettingEhFragment : PreferenceFragmentCompat() {
 
     private fun openSiteSetting(): Boolean {
         startActivity(Intent(requireActivity(), SettingWebActivity::class.java).apply {
-            putExtra(DataKey.WEB_URL, Site.ehSetting)
+            putExtra(DataKey.WEB_URL, ApiContainer.ehSetting())
         })
         return true
     }

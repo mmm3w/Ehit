@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.model.ehparser
 
-import com.mitsuki.ehit.crutch.network.Site
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*

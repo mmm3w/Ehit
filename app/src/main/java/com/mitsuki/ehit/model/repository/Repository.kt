@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.model.repository
 
+import com.mitsuki.armory.httprookie.request.UrlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.network.RequestResult
 import com.mitsuki.ehit.model.page.GalleryListPageIn
@@ -17,6 +18,11 @@ interface Repository {
     suspend fun galleryListSource(
         pageIn: GalleryListPageIn,
         page: Int
+    ): RequestResult<PageInfo<Gallery>>
+
+    suspend fun exGalleryListSource(
+        pageIn: GalleryListPageIn,
+        urlParams: UrlParams?
     ): RequestResult<PageInfo<Gallery>>
 
     suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail>

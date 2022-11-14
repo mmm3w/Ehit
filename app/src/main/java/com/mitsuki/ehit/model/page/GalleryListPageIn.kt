@@ -5,6 +5,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.GalleryDataMeta
+import com.mitsuki.ehit.model.entity.MyUrlParams
 
 class GalleryListPageIn(
     var meta: GalleryDataMeta
@@ -21,6 +22,8 @@ class GalleryListPageIn(
         }
         meta.key?.addParams(source)
     }
+
+    var exUrlParams: MyUrlParams? = null
 
     fun updateKey(key: GalleryDataKey) {
         meta.key = key

@@ -1,5 +1,6 @@
 package com.mitsuki.ehit.crutch.network
 
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.model.dao.CookieDao
 import com.mitsuki.ehit.model.entity.db.CookieCache
@@ -29,7 +30,7 @@ class CookieManager @Inject constructor(
     init {
         runBlocking {
             mMemoryCache.clear()
-            val site = Site.domain(memoryData.domain)
+            val site = ApiContainer.url
             cookieDao.queryCookie(site).forEach {
                 it.buildCookie(site.toHttpUrl())?.apply {
                     loginPick(this)
@@ -37,6 +38,20 @@ class CookieManager @Inject constructor(
                 }
             }
         }
+    }
+
+    fun buildNewCookie(id: String, hash: String, igneous: String) {
+        newCookie(
+            arrayListOf(
+                buildCookie("ipb_member_id", id, "e-hentai.org"),
+                buildCookie("ipb_pass_hash", hash, "e-hentai.org"),
+                buildCookie("igneous", igneous, "e-hentai.org"),
+
+                buildCookie("ipb_member_id", id, "exhentai.org"),
+                buildCookie("ipb_pass_hash", hash, "exhentai.org"),
+                buildCookie("igneous", igneous, "exhentai.org")
+            )
+        )
     }
 
     fun newCookie(cookies: List<Cookie>) {
@@ -55,7 +70,7 @@ class CookieManager @Inject constructor(
 
         CoroutineScope(Dispatchers.Default).launch {
             cookieDao.clearCookie()
-            val site = Site.domain(memoryData.domain)
+            val site = ApiContainer.url
             cookieDao.insertCookies(newCookies.map {
                 CookieCache(
                     domain = site,
@@ -91,7 +106,7 @@ class CookieManager @Inject constructor(
         }
 
         CoroutineScope(Dispatchers.Default).launch {
-            val site = Site.domain(memoryData.domain)
+            val site = ApiContainer.url
             cookieDao.insertCookies(newCookies.map {
                 CookieCache(
                     domain = site,

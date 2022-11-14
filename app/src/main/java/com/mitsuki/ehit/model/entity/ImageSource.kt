@@ -3,7 +3,7 @@ package com.mitsuki.ehit.model.entity
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.Matcher
 import com.mitsuki.ehit.crutch.extensions.htmlEscape
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.model.entity.db.GalleryImageSourceCache
 import java.util.regex.Pattern
 
@@ -90,7 +90,7 @@ data class ImageSource(
         private fun parseWithNormal(content: String?): ArrayList<ImageSource> {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
 
-            val tokenRegex = Pattern.compile("${Site.galleryList}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
+            val tokenRegex = Pattern.compile("${ApiContainer.galleryList()}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
 
             return ArrayList<ImageSource>().apply {
                 Matcher.NORMAL_PREVIEW.matcher(content).also {
@@ -122,7 +122,7 @@ data class ImageSource(
         private fun parseWithLarge(content: String?): MutableList<ImageSource> {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
 
-            val tokenRegex = Pattern.compile("${Site.galleryList}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
+            val tokenRegex = Pattern.compile("${ApiContainer.galleryList()}s/([0-9a-f]{10})/(\\d+)-(\\d+)")
             return ArrayList<ImageSource>().apply {
                 Matcher.LARGE_PREVIEW.matcher(content).also {
                     while (it.find()) {

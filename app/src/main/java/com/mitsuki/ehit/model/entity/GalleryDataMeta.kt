@@ -2,7 +2,7 @@ package com.mitsuki.ehit.model.entity
 
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 
 sealed class GalleryDataMeta {
     open var key: GalleryDataKey? = null
@@ -18,7 +18,7 @@ sealed class GalleryDataMeta {
 
         override var key: GalleryDataKey? = key
         override val targetUrl: String
-            get() = Site.galleryList
+            get() = ApiContainer.galleryList()
         override val hint: String
             get() = key?.searchHint?.ifEmpty { string(R.string.text_search) }
                 ?: string(R.string.text_search)
@@ -33,7 +33,7 @@ sealed class GalleryDataMeta {
             set(value) {}
 
         override val targetUrl: String
-            get() = Site.galleryListByUploader(name)
+            get() = ApiContainer.galleryListByUploader(name)
         override val hint: String = "uploader:$name"
     }
 
@@ -46,7 +46,7 @@ sealed class GalleryDataMeta {
             set(value) {}
 
         override val targetUrl: String
-            get() = Site.galleryListByTag(tag)
+            get() = ApiContainer.galleryListByTag(tag)
         override val hint: String = tag
     }
 
@@ -60,7 +60,7 @@ sealed class GalleryDataMeta {
         override var key: GalleryDataKey? = key
 
         override val targetUrl: String
-            get() = Site.galleryListBySubscription
+            get() = ApiContainer.galleryListBySubscription()
 
         override val hint: String
             get() = key?.searchHint?.ifEmpty { string(R.string.text_menu_subscription) }
@@ -76,7 +76,7 @@ sealed class GalleryDataMeta {
             set(value) {}
 
         override val targetUrl: String
-            get() = Site.galleryListByPopular
+            get() = ApiContainer.galleryListByPopular()
         override val hint: String = string(R.string.text_menu_whats_hot)
     }
 

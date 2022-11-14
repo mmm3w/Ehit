@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.crutch.save
 
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -13,7 +13,7 @@ class MemoryData(private val shareData: ShareData) {
             if (value != field) {
                 field = value
                 shareData.spDomain = value
-                Site.refreshDomain(field)
+                ApiContainer.refreshDomain(field)
             }
         }
 
@@ -160,7 +160,7 @@ class MemoryData(private val shareData: ShareData) {
 
 
     init {
-        Site.refreshDomain(domain)
+        ApiContainer.refreshDomain(domain)
 
         setProxy(shareData.spProxyMode)
     }

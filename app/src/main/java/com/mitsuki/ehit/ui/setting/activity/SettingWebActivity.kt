@@ -7,7 +7,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.mitsuki.ehit.base.BindingActivity
 import com.mitsuki.ehit.crutch.di.AsCookieManager
-import com.mitsuki.ehit.crutch.network.Site
+import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.databinding.ActivityWebBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -47,9 +47,9 @@ class SettingWebActivity : BindingActivity<ActivityWebBinding>(ActivityWebBindin
                 }
             }
             val cookie =
-                mCookieManager.loadCookie(Site.currentDomain)
+                mCookieManager.loadCookie(ApiContainer.url)
                     .joinToString(";") { "${it.name}=${it.value}" }
-            loadUrl(Site.ehSetting, hashMapOf("Cookie" to cookie))
+            loadUrl(ApiContainer.ehSetting(), hashMapOf("Cookie" to cookie))
         }
     }
 
