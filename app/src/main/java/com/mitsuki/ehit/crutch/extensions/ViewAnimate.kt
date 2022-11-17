@@ -19,15 +19,15 @@ fun View.fadeInit(visible: Boolean = false) {
 fun ViewPropertyAnimatorCompat.fadeIn() {
     alpha(1f)
     setListener(object : ViewPropertyAnimatorListener {
-        override fun onAnimationStart(view: View?) {
-            view?.isVisible = true
+        override fun onAnimationStart(view: View) {
+            view.isVisible = true
         }
 
-        override fun onAnimationEnd(view: View?) {
-            view?.isVisible = true
+        override fun onAnimationEnd(view: View) {
+            view.isVisible = true
         }
 
-        override fun onAnimationCancel(view: View?) {
+        override fun onAnimationCancel(view: View) {
 
         }
     })
@@ -36,15 +36,15 @@ fun ViewPropertyAnimatorCompat.fadeIn() {
 fun ViewPropertyAnimatorCompat.fadeOut() {
     alpha(0f)
     setListener(object : ViewPropertyAnimatorListener {
-        override fun onAnimationStart(view: View?) {
-            view?.isVisible = true
+        override fun onAnimationStart(view: View) {
+            view.isVisible = true
         }
 
-        override fun onAnimationEnd(view: View?) {
-            view?.isVisible = false
+        override fun onAnimationEnd(view: View) {
+            view.isVisible = false
         }
 
-        override fun onAnimationCancel(view: View?) {
+        override fun onAnimationCancel(view: View) {
 
         }
     })

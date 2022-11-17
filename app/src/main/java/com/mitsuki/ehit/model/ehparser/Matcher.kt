@@ -45,6 +45,10 @@ object Matcher {
         Pattern.compile("<p class=\"ip\">Showing (.*?) results</p>")
     }
 
+    val EX_LIST_TOTAL_COUNT: Pattern by lazy {
+        Pattern.compile("Found (about )?(.*?) results.")
+    }
+
     val PAGER_TOTAL_SIZE: Pattern by lazy {
         Pattern.compile("<tr><td.*?>Length:</td><td.*?>(\\d+) pages</td></tr>") //总数
     }
@@ -53,7 +57,7 @@ object Matcher {
         Pattern.compile("<p>You are now logged in as: (.+?)<")
     }
 
-    val SPACE :Regex by lazy { Regex("\\s+") }
+    val SPACE: Regex by lazy { Regex("\\s+") }
 
 
     //分页的基本信息
@@ -62,6 +66,14 @@ object Matcher {
     //group6:nextKey
     val PAGER_INFO: Pattern by lazy {
         Pattern.compile("(\\d+)?(</a>)?</td><td class=\"ptds\"><a.*?>(\\d+)</a></td>(<td.*?>)?(<a.*?>)?(\\d+)?")
+    }
+
+    val EX_PAGE_NEXT: Pattern by lazy {
+        Pattern.compile("next=([0-9]*)")
+    }
+
+    val EX_PAGE_PREV: Pattern by lazy {
+        Pattern.compile("prev=([0-9]*)")
     }
 
     val PREVIEW_IMG_URL: Pattern by lazy { Pattern.compile("<img[^>]*src=\"([^\"]+)\" style") }

@@ -2,7 +2,7 @@ package com.mitsuki.ehit.model.entity
 
 import com.mitsuki.ehit.R
 import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 
 sealed class GalleryDataMeta {
     open var key: GalleryDataKey? = null

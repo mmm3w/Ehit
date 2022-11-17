@@ -31,7 +31,9 @@ class GalleryListViewModel @Inject constructor(
     val refreshEnable: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
     val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
 
+    val enableJump get() = mListPageIn.enableJump
     val maxPage get() = mListPageIn.maxPage
+
 
     val galleryList: Flow<PagingData<Gallery>> by lazy {
         pagingData.galleryList(mListPageIn)
@@ -92,23 +94,30 @@ class GalleryListViewModel @Inject constructor(
         searchBarText.postValue(mListPageIn.hintContent)
     }
 
-    fun galleryListPage(page: Int) {
+    fun galleryListPage(
+        page: Int = 0,
+        value: String? = null,
+        jump: Boolean = true,
+        next: Boolean = true
+    ) {
         mListPageIn.targetPage = page
+        mListPageIn.setJumpOrSeek(value, jump, next)
     }
 
+
     fun galleryListCondition(type: GalleryDataMeta.Type, key: String) {
-        galleryListPage(1)
+        galleryListPage()
         mListPageIn.meta = GalleryDataMeta.create(type, key, false)
         searchBarText.postValue(mListPageIn.hintContent)
     }
 
     fun updateSearchKey(key: GalleryDataKey) {
-        galleryListPage(1)
+        galleryListPage()
         when (mListPageIn.meta) {
             is GalleryDataMeta.Tag,
             is GalleryDataMeta.Uploader -> mListPageIn.meta = GalleryDataMeta.Normal(key)
             is GalleryDataMeta.Normal,
-            is GalleryDataMeta.Subscription -> mListPageIn.updateKey(key)
+            is GalleryDataMeta.Subscription -> mListPageIn.key = key
             else -> {}
         }
         searchBarText.postValue(mListPageIn.hintContent)

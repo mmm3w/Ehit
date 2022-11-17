@@ -1,6 +1,6 @@
 package com.mitsuki.ehit.crutch.network
 
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.model.dao.CookieDao
 import com.mitsuki.ehit.model.entity.db.CookieCache

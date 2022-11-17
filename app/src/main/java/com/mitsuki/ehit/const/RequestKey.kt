@@ -10,6 +10,10 @@ object RequestKey {
     const val PAGE_DETAIL = "p"
 
     const val PAGE = "page"
+    const val NEXT = "next"
+    const val PREV = "prev"
+    const val JUMP = "jump"
+    const val SEEK = "seek"
 
     const val USER_NAME = "UserName"
     const val PASS_WORD = "PassWord"

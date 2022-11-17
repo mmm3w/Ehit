@@ -6,7 +6,6 @@ import com.mitsuki.ehit.crutch.di.AsCookieManager
 import com.mitsuki.ehit.crutch.event.Emitter
 import com.mitsuki.ehit.crutch.event.EventEmitter
 import com.mitsuki.ehit.crutch.event.post
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.di.RemoteRepository
 import com.mitsuki.ehit.crutch.network.CookieManager
 import com.mitsuki.ehit.crutch.network.RequestResult

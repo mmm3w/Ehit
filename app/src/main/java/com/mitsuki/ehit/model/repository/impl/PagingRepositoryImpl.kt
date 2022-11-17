@@ -4,8 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.mitsuki.ehit.crutch.di.RemoteRepository
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
-import com.mitsuki.ehit.crutch.network.site.EhSite
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.site.EhSite
 import com.mitsuki.ehit.model.entity.FavouriteCountWrap
 import com.mitsuki.ehit.model.entity.Gallery
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -31,7 +31,7 @@ class PagingRepositoryImpl @Inject constructor(
     private val mFavoritePagingConfig by lazy { PagingConfig(pageSize = 50) }
 
     override fun galleryList(pageIn: GalleryListPageIn): Flow<PagingData<Gallery>> {
-        return if (ApiContainer.site is EhSite) {
+        return if (!ApiContainer.isEx) {
             Pager(mListPagingConfig, initialKey = GeneralPageIn.START) {
                 GalleryListSource(repository, pageIn)
             }.flow

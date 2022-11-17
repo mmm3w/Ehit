@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import coil.Coil
 import coil.ImageLoaderFactory
+import com.google.android.material.color.DynamicColors
 import com.mitsuki.ehit.const.Setting
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.save.ShareData
@@ -22,6 +23,7 @@ open class EhApplication : Application() {
         super.onCreate()
         AppHolder.hold(this)
         Coil.setImageLoader(imageLoaderFactory)
+        DynamicColors.applyToActivitiesIfAvailable(this)
 
         when (shareData.spTheme) {
             Setting.THEME_NORMAL -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

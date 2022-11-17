@@ -47,6 +47,7 @@
     <string name="title_add_favorites">Add to favorites</string>
     <string name="title_quick_search">Quick Search</string>
     <string name="title_jump_page">Jump page to (1 to %d)</string>
+    <string name="title_ex_jump_page">Jump/Seek</string>
     <string name="title_add_quick_search">Add quick search</string>
 
     <string name="hint_account">account</string>
@@ -121,6 +122,14 @@
     <string name="text_h_at_h_download">H@H Download</string>
     <string name="text_search_thumb">Search thumb</string>
 
+    <string name="text_jump_one_day">1 Day</string>
+    <string name="text_jump_three_day">3 Day</string>
+    <string name="text_jump_one_week">1 Week</string>
+    <string name="text_jump_two_week">2 Week</string>
+    <string name="text_jump_one_month">1 Month</string>
+    <string name="text_jump_six_month">6 Month</string>
+    <string name="text_jump_one_year">1 Year</string>
+    <string name="text_jump_two_year">2 Year</string>
 
     <string name="text_download">Download</string>
     <string name="text_read">Read</string>

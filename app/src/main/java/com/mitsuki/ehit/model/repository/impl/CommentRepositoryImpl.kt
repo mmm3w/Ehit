@@ -9,7 +9,7 @@ import com.mitsuki.armory.httprookie.request.urlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.const.RequestKey
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.model.convert.GalleryCommentsConvert
 import com.mitsuki.ehit.model.convert.SendCommentConvert

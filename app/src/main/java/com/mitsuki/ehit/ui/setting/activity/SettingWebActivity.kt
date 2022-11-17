@@ -7,7 +7,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.mitsuki.ehit.base.BindingActivity
 import com.mitsuki.ehit.crutch.di.AsCookieManager
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.databinding.ActivityWebBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

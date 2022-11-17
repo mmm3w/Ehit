@@ -3,7 +3,7 @@ package com.mitsuki.ehit.model.entity
 import com.mitsuki.ehit.crutch.throwable.ParseThrowable
 import com.mitsuki.ehit.model.ehparser.Matcher
 import com.mitsuki.ehit.crutch.extensions.htmlEscape
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.model.entity.db.GalleryImageSourceCache
 import java.util.regex.Pattern
 

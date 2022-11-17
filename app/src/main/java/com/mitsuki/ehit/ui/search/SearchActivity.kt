@@ -22,8 +22,6 @@ import com.mitsuki.ehit.crutch.extensions.color
 import com.mitsuki.ehit.crutch.extensions.observe
 import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.extensions.viewBinding
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
-import com.mitsuki.ehit.crutch.network.site.EhSite
 import com.mitsuki.ehit.databinding.ActivitySearchBinding
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.db.SearchHistory

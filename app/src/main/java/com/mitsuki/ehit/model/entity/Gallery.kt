@@ -103,6 +103,60 @@ data class Gallery(
             )
         }
 
+        fun parseExList(content: String?): PageInfo<Gallery> {
+            if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
+
+            val doc = Jsoup.parse(content)
+
+            val listData = ArrayList<Gallery>().apply {
+                doc.getElementsByClass("itg").first()?.getElementsByTag("tr")?.let {
+                    for (element in it) {
+                        if (element.getElementsByTag("th").size > 0)
+                            continue
+                        try {
+                            add(parse(element))
+                        } catch (inner: Throwable) {
+                            inner.printStackTrace()
+                        }
+                    }
+                }
+            }
+
+            val totalNode: Element? = doc.byClassFirstIgnoreError("searchtext")
+            val totalCount =
+                totalNode?.html()?.let { Matcher.EX_LIST_TOTAL_COUNT.matcher(it) }?.run {
+                    if (find()) {
+                        group(2)
+                            ?.split(",")
+                            ?.joinToString(separator = "")
+                            ?.toIntOrNull()
+                            ?: throw ParseThrowable("total count parse error")
+                    } else 0
+                } ?: 0
+
+            val pageNode = doc.byClassFirstIgnoreError("searchnav")
+            val nextNode = pageNode?.getElementById("unext")
+            val prevNode = pageNode?.getElementById("uprev")
+
+            val prevKey: Int? =
+                prevNode?.toString()?.let { Matcher.EX_PAGE_PREV.matcher(it) }?.run {
+                    if (find()) group(1)?.toIntOrNull() else null
+                }
+            val nextKey: Int? =
+                nextNode?.toString()?.let { Matcher.EX_PAGE_NEXT.matcher(it) }?.run {
+                    if (find()) group(1)?.toIntOrNull() else null
+                }
+
+            return PageInfo(
+                listData,
+                -1,
+                totalCount,
+                0,
+                prevKey,
+                nextKey
+            )
+        }
+
         @Suppress("MemberVisibilityCanBePrivate")
         fun parse(element: Element): Gallery {
             val glnameEle = element.byClassFirst("glname", "glname node".prefix())

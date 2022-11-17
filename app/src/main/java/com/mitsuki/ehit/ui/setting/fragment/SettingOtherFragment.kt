@@ -13,7 +13,6 @@ import com.mitsuki.ehit.crutch.extensions.string
 import com.mitsuki.ehit.crutch.moshi.fromJson
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.crutch.network.CookieManager
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
 import com.mitsuki.ehit.crutch.save.MemoryData
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.activityresult.ExportDataActivityResultContract

@@ -25,7 +25,6 @@ class GalleryListSource(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gallery> {
-        val page = params.key ?: GeneralPageIn.START
         return try {
             // 如果成功加载，那么返回一个LoadResult.Page,如果失败就返回一个Error
             // Page里传进列表数据，以及上一页和下一页的页数,具体的是否最后一页或者其他逻辑就自行判断
@@ -33,7 +32,7 @@ class GalleryListSource(
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.IO) {
                 when (val data: RequestResult<PageInfo<Gallery>> =
-                    repository.galleryListSource(pageIn, page)) {
+                    repository.galleryListSource(pageIn.targetUrl, pageIn.key, params.key ?: 0)) {
                     is RequestResult.Success<PageInfo<Gallery>> -> {
                         pageIn.maxPage = data.data.totalPage
                         LoadResult.Page(

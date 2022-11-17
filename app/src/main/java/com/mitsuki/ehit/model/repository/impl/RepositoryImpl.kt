@@ -6,10 +6,11 @@ import com.mitsuki.armory.httprookie.post
 import com.mitsuki.armory.httprookie.request.*
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.network.RequestResult
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.const.ParamsValue
 import com.mitsuki.ehit.const.RequestKey
+import com.mitsuki.ehit.crutch.network.ehcore.params.ExPaging
 import com.mitsuki.ehit.model.ehparser.GalleryPageSize
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.convert.*
@@ -42,6 +43,7 @@ class RepositoryImpl @Inject constructor(
             .decoIPBanned()
             .deco302()
     }
+
     private val mGalleryDetailImageConvert by lazy { GalleryDetailImageConvert() }
     private val mJustImageConvert by lazy { ImageSourceConvert() }
 
@@ -52,15 +54,7 @@ class RepositoryImpl @Inject constructor(
             val data = client
                 .post<String>(ApiContainer.login()) {
                     convert = LoginConvert()
-                    params(RequestKey.REFERER, ParamsValue.LOGIN_REFERER)
-                    params(RequestKey.B, "")
-                    params(RequestKey.BT, "")
-
-                    params(RequestKey.USER_NAME, account)
-                    params(RequestKey.PASS_WORD, password)
-                    params(RequestKey.COOKIE_DATE, "1")
-                    //params(RequestKey.PRIVACY to "1")
-
+                    ApiContainer.ehParams.attach("login", arrayOf(account, password))(this, this)
                     header(RequestKey.HEADER_ORIGIN, ParamsValue.LOGIN_HEADER_ORIGIN)
                     header(RequestKey.HEADER_REFERER, ParamsValue.LOGIN_HEADER_REFERER)
                 }
@@ -74,14 +68,21 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun galleryListSource(
-        pageIn: GalleryListPageIn,
+        target: String,
+        key: GalleryDataKey?,
         page: Int
     ): RequestResult<PageInfo<Gallery>> {
         return withContext(Dispatchers.IO) {
             val data = client
-                .get<PageInfo<Gallery>>(pageIn.targetUrl) {
+                .get<PageInfo<Gallery>>(target) {
                     convert = mGalleryListConvert
-                    pageIn.attachParams(this, page)
+                    //分页
+                    if (page > 0) {
+                        ApiContainer.ehParams
+                            .attach("galleryList", arrayOf(page.toString()))(this, null)
+                    }
+                    //搜索key
+                    key?.addParams(this)
                 }
                 .execute()
 
@@ -93,14 +94,20 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun exGalleryListSource(
-        pageIn: GalleryListPageIn,
-        urlParams: UrlParams?
+        target: String,
+        key: GalleryDataKey?,
+        exPaging: ExPaging?
     ): RequestResult<PageInfo<Gallery>> {
         return withContext(Dispatchers.IO) {
             val data = client
-                .get<PageInfo<Gallery>>(pageIn.targetUrl) {
+                .get<PageInfo<Gallery>>(target) {
                     convert = mGalleryListConvert
-                    urlParams?.also { urlParams(it) }
+                    //分页
+                    exPaging?.also {
+                        ApiContainer.ehParams.attach("galleryList", it.pagingParams)(this, null)
+                    }
+                    //搜索key
+                    key?.addParams(this)
                 }
                 .execute()
 

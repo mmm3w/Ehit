@@ -17,6 +17,7 @@
     <string name="title_add_favorites">添加收藏</string>
     <string name="title_quick_search">快速搜索</string>
     <string name="title_jump_page">跳转至…页 (1 到 %d)</string>
+    <string name="title_ex_jump_page">跳转</string>
     <string name="title_add_quick_search">添加快速搜索</string>
 
     <string name="hint_account">账号</string>
@@ -90,6 +91,16 @@
     <string name="text_export">导出</string>
     <string name="text_h_at_h_download">H@H下载</string>
     <string name="text_search_thumb">搜索封面</string>
+
+    <string name="text_jump_one_day">1天</string>
+    <string name="text_jump_three_day">3天</string>
+    <string name="text_jump_one_week">1周</string>
+    <string name="text_jump_two_week">2周</string>
+    <string name="text_jump_one_month">1个月</string>
+    <string name="text_jump_six_month">6个月</string>
+    <string name="text_jump_one_year">1年</string>
+    <string name="text_jump_two_year">2年</string>
+
 
     <string name="text_download">下载</string>
     <string name="text_read">阅读</string>

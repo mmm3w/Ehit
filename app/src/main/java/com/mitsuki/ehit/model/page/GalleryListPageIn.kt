@@ -1,31 +1,41 @@
 package com.mitsuki.ehit.model.page
 
-import com.mitsuki.armory.httprookie.request.UrlParams
-import com.mitsuki.armory.httprookie.request.urlParams
-import com.mitsuki.ehit.const.RequestKey
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.GalleryDataMeta
-import com.mitsuki.ehit.model.entity.MyUrlParams
 
 class GalleryListPageIn(
     var meta: GalleryDataMeta
-) : GeneralPageIn() {
+) {
 
-    val targetUrl: String get() = meta.targetUrl
     val hintContent: String get() = meta.hint
 
-    var maxPage: Int = 0
-
-    fun attachParams(source: UrlParams, index: Int) {
-        if (index != START) {
-            source.urlParams(RequestKey.PAGE, index.toString())
+    val targetUrl: String get() = meta.targetUrl
+    var key: GalleryDataKey?
+        set(value) {
+            if (value != meta.key) {
+                meta.key = value
+            }
         }
-        meta.key?.addParams(source)
+        get() = meta.key
+
+
+    val enableJump: Boolean get() = if (ApiContainer.isEx) true else maxPage > 1
+
+    var maxPage: Int = 0
+    var targetPage: Int = 0
+
+    fun setJumpOrSeek(value: String?, jump: Boolean, next: Boolean) {
+        jumpOrSeek = value
+        isJump = jump
+        isNext = next
     }
 
-    var exUrlParams: MyUrlParams? = null
+    var jumpOrSeek: String? = null
+        private set
+    var isJump: Boolean = false
+        private set
+    var isNext: Boolean = false
+        private set
 
-    fun updateKey(key: GalleryDataKey) {
-        meta.key = key
-    }
 }

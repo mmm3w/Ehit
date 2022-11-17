@@ -10,7 +10,7 @@ import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.extensions.copying2Clipboard
 import com.mitsuki.ehit.crutch.extensions.createItemView
 import com.mitsuki.ehit.crutch.extensions.string
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.model.entity.GalleryDetail
 
 class MoreInfoAdapter(info: GalleryDetail) : RecyclerView.Adapter<MoreInfoAdapter.ViewHolder>() {

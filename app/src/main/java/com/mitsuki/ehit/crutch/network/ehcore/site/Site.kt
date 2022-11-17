@@ -1,4 +1,4 @@
-package com.mitsuki.ehit.crutch.network.site
+package com.mitsuki.ehit.crutch.network.ehcore.site
 
 interface Site {
     val domain: String

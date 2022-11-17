@@ -3,6 +3,7 @@ package com.mitsuki.ehit.model.repository
 import com.mitsuki.armory.httprookie.request.UrlParams
 import com.mitsuki.armory.httprookie.response.Response
 import com.mitsuki.ehit.crutch.network.RequestResult
+import com.mitsuki.ehit.crutch.network.ehcore.params.ExPaging
 import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
@@ -16,13 +17,15 @@ interface Repository {
     suspend fun login(account: String, password: String): RequestResult<String>
 
     suspend fun galleryListSource(
-        pageIn: GalleryListPageIn,
+        target: String,
+        key: GalleryDataKey?,
         page: Int
     ): RequestResult<PageInfo<Gallery>>
 
     suspend fun exGalleryListSource(
-        pageIn: GalleryListPageIn,
-        urlParams: UrlParams?
+        target: String,
+        key: GalleryDataKey?,
+        exPaging: ExPaging?
     ): RequestResult<PageInfo<Gallery>>
 
     suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail>

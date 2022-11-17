@@ -25,8 +25,8 @@ import com.mitsuki.ehit.crutch.utils.InitialGate
 import com.mitsuki.ehit.crutch.utils.PagingEmptyValve
 import com.mitsuki.ehit.crutch.event.receiver
 import com.mitsuki.ehit.crutch.extensions.*
-import com.mitsuki.ehit.crutch.network.site.ApiContainer
-import com.mitsuki.ehit.crutch.network.site.EhSite
+import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
+import com.mitsuki.ehit.crutch.network.ehcore.site.EhSite
 import com.mitsuki.ehit.ui.common.widget.ListFloatHeader
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.databinding.FragmentGalleryListBinding
@@ -205,7 +205,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
                     //下拉刷新不用置空列表
                     //并且禁用列表中的刷新效果
                     mStateAdapter.isRefreshEnable = false
-                    mViewModel.galleryListPage(1)
+                    mViewModel.galleryListPage()
                     mMainAdapter.refresh()
                 }
             }
@@ -247,17 +247,17 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun showPageJumpDialog() {
-        if (ApiContainer.site is EhSite) {
-            if (mViewModel.maxPage <= 1) return
+        if (!mViewModel.enableJump) return
+        if (!ApiContainer.isEx) {
             PageDialog(mViewModel.maxPage) {
-                mViewModel.galleryListPage(it)
+                mViewModel.galleryListPage(it - 1)
                 mViewModel.refreshEnable.postValue(false)
                 mEmptyValve.enable()
                 resetSearchBar()
                 mMainAdapter.refresh()
             }.show(childFragmentManager, "page")
         } else {
-            ExPageDialog(mViewModel.maxPage) {
+            ExPageDialog {
 
             }.show(childFragmentManager, "page")
         }
