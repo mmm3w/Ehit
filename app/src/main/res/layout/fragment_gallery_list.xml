@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/colorPrimary"
-        android:contentDescription="@string/description_quick_search"
+        android:contentDescrption="@string/description_quick_search"
         android:src="@drawable/ic_round_menu_open_24"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"

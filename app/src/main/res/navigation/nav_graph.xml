@@ -26,14 +26,6 @@
             app:exitAnim="@animator/nav_default_exit_anim"
             app:popEnterAnim="@animator/nav_default_pop_enter_anim"
             app:popExitAnim="@animator/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_gallery_list_fragment_to_nav_first_time"
-            app:destination="@id/nav_first_time"
-            app:enterAnim="@animator/nav_default_enter_anim"
-            app:exitAnim="@animator/nav_default_exit_anim"
-            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
-            app:popExitAnim="@animator/nav_default_pop_exit_anim" />
-
     </fragment>
 
     <fragment
@@ -130,27 +122,7 @@
         app:popEnterAnim="@animator/nav_default_pop_enter_anim"
         app:popExitAnim="@animator/nav_default_pop_exit_anim" />
 
-    <navigation
-        android:id="@+id/nav_first_time"
-        app:startDestination="@id/disclaimer_fragment">
-        <fragment
-            android:id="@+id/disclaimer_fragment"
-            android:name="com.mitsuki.ehit.ui.start.fragment.DisclaimerFragment"
-            android:label="DisclaimerFragment">
-            <action
-                android:id="@+id/action_disclaimer_fragment_to_login_fragment_first_time"
-                app:destination="@id/login_fragment_first_time" />
-        </fragment>
 
-        <fragment
-            android:id="@+id/login_fragment_first_time"
-            android:name="com.mitsuki.ehit.ui.login.fragment.LoginFragment"
-            android:label="LoginFragment" />
-
-        <action
-            android:id="@+id/action_global_first_time_back"
-            app:popUpTo="@id/gallery_list_fragment" />
-    </navigation>
 
     <navigation
         android:id="@+id/nav_security"

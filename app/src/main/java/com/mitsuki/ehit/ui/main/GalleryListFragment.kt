@@ -88,7 +88,7 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.initData(arguments)
+        mViewModel.buildSource(arguments)
 
         lifecycleScope.launchWhenCreated {
             mMainAdapter.loadStateFlow.collect {
@@ -147,18 +147,12 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
         postponeEnterTransition()
         (view.parent as? ViewGroup)?.doOnPreDraw { startPostponedEnterTransition() }
 
-        when {
-            shareData.spInitial -> {
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_gallery_list_fragment_to_nav_first_time)
-                return
-            }
-            shareData.spSecurity && AppHolder.isLocked -> {
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_gallery_list_fragment_to_nav_security)
-                return
-            }
+        if (shareData.spSecurity && AppHolder.isLocked) {
+            Navigation.findNavController(requireView())
+                .navigate(R.id.action_gallery_list_fragment_to_nav_security)
+            return
         }
+
         (requireActivity() as? MainActivity)?.setDrawerEnable(true)
         binding?.apply {
             galleryList.apply {
@@ -230,7 +224,6 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
             }
         }
     }
-
 
     private fun onDetailNavigation(galleryClick: GalleryClick) {
         /* 同时点击两个item会导致同时进入该方法，后一个进入会导致Navigation.findNavController抛出异常 */

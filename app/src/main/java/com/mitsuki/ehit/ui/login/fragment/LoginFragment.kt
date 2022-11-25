@@ -96,16 +96,9 @@ class LoginFragment :
 
     private fun nextNav() {
         shareData.spInitial = false
-        when (activity) {
-            is MainActivity -> Navigation.findNavController(requireView())
-                .navigate(R.id.action_global_first_time_back)
-
-            is LoginActivity -> {
-                requireActivity().apply {
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                }
-            }
+        requireActivity().apply {
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 }
