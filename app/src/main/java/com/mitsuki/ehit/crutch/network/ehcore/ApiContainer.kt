@@ -1,6 +1,5 @@
 package com.mitsuki.ehit.crutch.network.ehcore
 
-import com.mitsuki.ehit.crutch.network.ehcore.params.EhImplParams
 import com.mitsuki.ehit.crutch.network.ehcore.params.EhParams
 import com.mitsuki.ehit.crutch.network.ehcore.params.ExImplParams
 import com.mitsuki.ehit.crutch.network.ehcore.site.EhSite
@@ -13,7 +12,7 @@ object ApiContainer : Site {
 
     val isEx: Boolean get() = site !is EhSite
 
-    var ehParams: EhParams = EhImplParams()
+    var ehParams: EhParams = ExImplParams()
 
     override val domain: String
         get() = site.domain
@@ -23,15 +22,10 @@ object ApiContainer : Site {
             if (site !is ExSite) {
                 site = ExSite()
             }
-            if (ehParams !is ExImplParams) {
-                ehParams = ExImplParams()
-            }
+
         } else {
             if (site !is EhSite) {
                 site = EhSite()
-            }
-            if (ehParams !is EhImplParams) {
-                ehParams = EhImplParams()
             }
         }
     }

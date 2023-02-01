@@ -93,25 +93,25 @@ class GalleryListViewModel @Inject constructor(
 
     private fun initListPageIn(type: GalleryDataMeta.Type, key: String, byQuery: Boolean) {
         mBridgeInstance = GalleryListBridge(GalleryDataMeta.create(type, key, byQuery))
-//        mListPageIn = GalleryListPageIn(GalleryDataMeta.create(type, key, byQuery))
-//        searchBarText.postValue(mListPageIn.hintContent)
+        mListPageIn = GalleryListPageIn(GalleryDataMeta.create(type, key, byQuery))
+        searchBarText.postValue(mListPageIn.hintContent)
     }
 
 
-//    private lateinit var mListPageIn: GalleryListPageIn
+    private lateinit var mListPageIn: GalleryListPageIn
 
 
     val refreshEnable: MutableLiveData<Boolean> by lazy { MutableLiveData(false) }
     val searchBarText: MutableLiveData<String> by lazy { MutableLiveData() }
 
-    val enableJump get() = mListPageIn.enableJump
-    val maxPage get() = mListPageIn.maxPage
-
+//    val enableJump get() = mListPageIn.enableJump
+//    val maxPage get() = mListPageIn.maxPage
+//
     val galleryList: Flow<PagingData<Gallery>> by lazy {
         pagingData.galleryList(mListPageIn)
             .cachedIn(viewModelScope)
     }
-
+//
     val currentSearchKey: GalleryDataKey?
         get() {
             return when (val meta = mListPageIn.meta) {
@@ -122,20 +122,17 @@ class GalleryListViewModel @Inject constructor(
                 else -> null
             }
         }
-
-    val currentDataMeta: GalleryDataMeta get() = mListPageIn.meta
-
-
+//
+//    val currentDataMeta: GalleryDataMeta get() = mListPageIn.meta
+//
+//
     fun galleryListPage(
-        page: Int = 0,
         value: String? = null,
         jump: Boolean = true,
         next: Boolean = true
     ) {
-        mListPageIn.targetPage = page
-        mListPageIn.setJumpOrSeek(value, jump, next)
-    }
 
+    }
 
     fun galleryListCondition(type: GalleryDataMeta.Type, key: String) {
         galleryListPage()

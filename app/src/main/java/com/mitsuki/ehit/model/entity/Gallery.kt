@@ -103,7 +103,7 @@ data class Gallery(
             )
         }
 
-        fun parseExList(content: String?): PageInfo<Gallery> {
+        fun parseExList(content: String?): PageInfoNew<Gallery> {
             if (content.isNullOrEmpty()) throw ParseThrowable("未请求到数据")
 
             val doc = Jsoup.parse(content)
@@ -122,36 +122,35 @@ data class Gallery(
                 }
             }
 
-            val totalNode: Element? = doc.byClassFirstIgnoreError("searchtext")
-            val totalCount =
-                totalNode?.html()?.let { Matcher.EX_LIST_TOTAL_COUNT.matcher(it) }?.run {
-                    if (find()) {
-                        group(2)
-                            ?.split(",")
-                            ?.joinToString(separator = "")
-                            ?.toIntOrNull()
-                            ?: throw ParseThrowable("total count parse error")
-                    } else 0
-                } ?: 0
+//            val totalNode: Element? = doc.byClassFirstIgnoreError("searchtext")
+//            val totalCount =
+//                totalNode?.html()?.let { Matcher.EX_LIST_TOTAL_COUNT.matcher(it) }?.run {
+//                    if (find()) {
+//                        group(2)
+//                            ?.split(",")
+//                            ?.joinToString(separator = "")
+//                            ?.toIntOrNull()
+//                            ?: throw ParseThrowable("total count parse error")
+//                    } else 0
+//                } ?: 0
 
             val pageNode = doc.byClassFirstIgnoreError("searchnav")
             val nextNode = pageNode?.getElementById("unext")
             val prevNode = pageNode?.getElementById("uprev")
 
-            val prevKey: Int? =
+            val prevKey: Long? =
                 prevNode?.toString()?.let { Matcher.EX_PAGE_PREV.matcher(it) }?.run {
-                    if (find()) group(1)?.toIntOrNull() else null
+                    if (find()) group(1)?.toLongOrNull() else null
                 }
-            val nextKey: Int? =
+            val nextKey: Long? =
                 nextNode?.toString()?.let { Matcher.EX_PAGE_NEXT.matcher(it) }?.run {
-                    if (find()) group(1)?.toIntOrNull() else null
+                    if (find()) group(1)?.toLongOrNull() else null
                 }
 
-            return PageInfo(
+            return PageInfoNew(
                 listData,
-                -1,
-                totalCount,
                 0,
+                "",
                 prevKey,
                 nextKey
             )

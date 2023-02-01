@@ -10,13 +10,11 @@ import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.crutch.moshi.toJson
 import com.mitsuki.ehit.const.ParamsValue
 import com.mitsuki.ehit.const.RequestKey
-import com.mitsuki.ehit.crutch.network.ehcore.params.ExPaging
 import com.mitsuki.ehit.model.ehparser.GalleryPageSize
 import com.mitsuki.ehit.crutch.save.ShareData
 import com.mitsuki.ehit.model.convert.*
 import com.mitsuki.ehit.model.dao.DownloadDao
 import com.mitsuki.ehit.model.dao.GalleryDao
-import com.mitsuki.ehit.model.page.GalleryListPageIn
 import com.mitsuki.ehit.model.entity.*
 import com.mitsuki.ehit.model.entity.ImageSource
 import com.mitsuki.ehit.model.entity.db.GalleryPreviewCache
@@ -39,9 +37,7 @@ class RepositoryImpl @Inject constructor(
 
     //convert
     private val mGalleryListConvert by lazy {
-        GalleryListConvert()
-            .decoIPBanned()
-            .deco302()
+        GalleryListConvert().decoIPBanned().deco302()
     }
 
     private val mGalleryDetailImageConvert by lazy { GalleryDetailImageConvert() }
@@ -51,14 +47,12 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun login(account: String, password: String): RequestResult<String> {
         return withContext(Dispatchers.IO) {
-            val data = client
-                .post<String>(ApiContainer.login()) {
-                    convert = LoginConvert()
-                    ApiContainer.ehParams.attach("login", arrayOf(account, password))(this, this)
-                    header(RequestKey.HEADER_ORIGIN, ParamsValue.LOGIN_HEADER_ORIGIN)
-                    header(RequestKey.HEADER_REFERER, ParamsValue.LOGIN_HEADER_REFERER)
-                }
-                .execute()
+            val data = client.post<String>(ApiContainer.login()) {
+                convert = LoginConvert()
+                ApiContainer.ehParams.attach("login", arrayOf(account, password))(this, this)
+                header(RequestKey.HEADER_ORIGIN, ParamsValue.LOGIN_HEADER_ORIGIN)
+                header(RequestKey.HEADER_REFERER, ParamsValue.LOGIN_HEADER_REFERER)
+            }.execute()
 
             when (data) {
                 is Response.Success<String> -> RequestResult.Success(data.requireBody())
@@ -67,52 +61,60 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun galleryListSource(
-        target: String,
-        key: GalleryDataKey?,
-        page: Int
-    ): RequestResult<PageInfo<Gallery>> {
-        return withContext(Dispatchers.IO) {
-            val data = client
-                .get<PageInfo<Gallery>>(target) {
-                    convert = mGalleryListConvert
-                    //分页
-                    if (page > 0) {
-                        ApiContainer.ehParams
-                            .attach("galleryList", arrayOf(page.toString()))(this, null)
-                    }
-                    //搜索key
-                    key?.addParams(this)
-                }
-                .execute()
-
-            when (data) {
-                is Response.Success<PageInfo<Gallery>> -> RequestResult.Success(data.requireBody())
-                is Response.Fail<*> -> RequestResult.Fail(data.throwable)
-            }
-        }
-    }
+//    override suspend fun galleryListSource(
+//        target: String,
+//        key: GalleryDataKey?,
+//        page: Int
+//    ): RequestResult<PageInfo<Gallery>> {
+//        return withContext(Dispatchers.IO) {
+//            val data = client
+//                .get<PageInfo<Gallery>>(target) {
+//                    convert = mGalleryListConvert
+//                    //分页
+//                    if (page > 0) {
+//                        ApiContainer.ehParams
+//                            .attach("galleryList", arrayOf(page.toString()))(this, null)
+//                    }
+//                    //搜索key
+//                    key?.addParams(this)
+//                }
+//                .execute()
+//
+//            when (data) {
+//                is Response.Success<PageInfo<Gallery>> -> RequestResult.Success(data.requireBody())
+//                is Response.Fail<*> -> RequestResult.Fail(data.throwable)
+//            }
+//        }
+//    }
 
     override suspend fun exGalleryListSource(
         target: String,
         key: GalleryDataKey?,
-        exPaging: ExPaging?
-    ): RequestResult<PageInfo<Gallery>> {
+        pageKey: ListPageKey?
+    ): RequestResult<PageInfoNew<Gallery>> {
         return withContext(Dispatchers.IO) {
-            val data = client
-                .get<PageInfo<Gallery>>(target) {
-                    convert = mGalleryListConvert
-                    //分页
-                    exPaging?.also {
-                        ApiContainer.ehParams.attach("galleryList", it.pagingParams)(this, null)
-                    }
-                    //搜索key
-                    key?.addParams(this)
+            val data = client.get<PageInfoNew<Gallery>>(target) {
+                convert = mGalleryListConvert
+
+                //搜索key
+                key?.addParams(this)
+
+                pageKey?.also { pk ->
+                    //前一页后一页
+                    urlParams(
+                        if (pk.isNext) RequestKey.NEXT else RequestKey.PREV,
+                        pk.key.toString()
+                    )
+                    //jump
+                    pk.jump?.also { urlParams(RequestKey.JUMP, it) }
+                    //seek
+                    pk.seek?.also { urlParams(RequestKey.SEEK, it) }
                 }
-                .execute()
+
+            }.execute()
 
             when (data) {
-                is Response.Success<PageInfo<Gallery>> -> RequestResult.Success(data.requireBody())
+                is Response.Success<PageInfoNew<Gallery>> -> RequestResult.Success(data.requireBody())
                 is Response.Fail<*> -> RequestResult.Fail(data.throwable)
             }
         }
@@ -125,19 +127,16 @@ class RepositoryImpl @Inject constructor(
             if (cacheData != null) {
                 RequestResult.Success(cacheData)
             } else {
-                val data = client
-                    .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
-                        ApiContainer.galleryDetail(gid, token)
-                    ) {
-                        convert = mGalleryDetailImageConvert
-                    }
-                    .execute()
+                val data = client.get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
+                    ApiContainer.galleryDetail(gid, token)
+                ) {
+                    convert = mGalleryDetailImageConvert
+                }.execute()
                 when (data) {
                     is Response.Success<Pair<GalleryDetail, PageInfo<ImageSource>>> -> {
                         val result = data.requireBody()
                         galleryDao.insertGalleryDetail(result.first)
-                        galleryDao
-                            .insertGalleryImageSource(gid, token, result.second)
+                        galleryDao.insertGalleryImageSource(gid, token, result.second)
                         RequestResult.Success(result.first)
                     }
                     is Response.Fail<*> -> RequestResult.Fail(data.throwable)
@@ -147,25 +146,18 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun galleryImageSource(
-        gid: Long,
-        token: String,
-        page: Int,
-        ignoreCache: Boolean
+        gid: Long, token: String, page: Int, ignoreCache: Boolean
     ): RequestResult<PageInfo<ImageSource>> {
         return withContext(Dispatchers.IO) {
-            val images = if (ignoreCache)
-                PageInfo.empty()
-            else
-                galleryDao.queryGalleryImageSource(gid, token, page)
+            val images = if (ignoreCache) PageInfo.empty()
+            else galleryDao.queryGalleryImageSource(gid, token, page)
 
             if (images.isEmpty) {
                 val remoteData: Response<PageInfo<ImageSource>> =
-                    client
-                        .get<PageInfo<ImageSource>>(ApiContainer.galleryDetail(gid, token)) {
-                            convert = mJustImageConvert
-                            urlParams(RequestKey.PAGE_DETAIL, page.toString())
-                        }
-                        .execute()
+                    client.get<PageInfo<ImageSource>>(ApiContainer.galleryDetail(gid, token)) {
+                        convert = mJustImageConvert
+                        urlParams(RequestKey.PAGE_DETAIL, page.toString())
+                    }.execute()
                 when (remoteData) {
                     is Response.Success<PageInfo<ImageSource>> -> {
                         remoteData.requireBody().run {
@@ -182,10 +174,7 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun rating(
-        gid: Long,
-        token: String,
-        apiUid: Long,
-        apiKey: String, rating: Float
+        gid: Long, token: String, apiUid: Long, apiKey: String, rating: Float
     ): RequestResult<RateBack> {
         return withContext(Dispatchers.IO) {
             val data = client.post<RateBack>(ApiContainer.api()) {
@@ -203,8 +192,7 @@ class RepositoryImpl @Inject constructor(
                 header(
                     RequestKey.HEADER_REFERER, ApiContainer.galleryDetail(gid, token)
                 )
-            }
-                .execute()
+            }.execute()
             try {
                 when (data) {
                     is Response.Success<RateBack> -> RequestResult.Success(data.requireBody())
@@ -218,15 +206,12 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun galleryImagePToken(
-        gid: Long,
-        token: String,
-        index: Int
+        gid: Long, token: String, index: Int
     ): RequestResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 //先尝试从缓存中读取
-                val cache =
-                    galleryDao.querySingleGalleryImageCache(gid, token, index)
+                val cache = galleryDao.querySingleGalleryImageCache(gid, token, index)
                 val pToken = if (cache == null || cache.pToken.isEmpty()) {
                     //缓存中没有时请求网络
                     if (GalleryPageSize.illegalSize) {
@@ -257,19 +242,13 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun galleryPreview(
-        gid: Long,
-        token: String,
-        index: Int,
-        reloadKey: String
+        gid: Long, token: String, index: Int, reloadKey: String
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
             try {
-                val data =
-                    if (reloadKey.isEmpty()) galleryDao.queryGalleryPreview(
-                        gid,
-                        token,
-                        index
-                    ) else null
+                val data = if (reloadKey.isEmpty()) galleryDao.queryGalleryPreview(
+                    gid, token, index
+                ) else null
                 if (data != null) {
                     RequestResult.Success(GalleryPreview(data))
                 } else {
@@ -295,32 +274,25 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun galleryPreview(
-        url: String,
-        gid: Long,
-        token: String,
-        index: Int,
-        reloadKey: String
+        url: String, gid: Long, token: String, index: Int, reloadKey: String
     ): RequestResult<GalleryPreview> {
         return withContext(Dispatchers.IO) {
             try {
-                val remoteData: Response<GalleryPreview> =
-                    client.get<GalleryPreview>(url) {
-                        convert = GalleryPreviewConvert()
-                        if (reloadKey.isNotEmpty()) {
-                            urlParams(RequestKey.PREVIEW_RELOAD, reloadKey)
-                        }
+                val remoteData: Response<GalleryPreview> = client.get<GalleryPreview>(url) {
+                    convert = GalleryPreviewConvert()
+                    if (reloadKey.isNotEmpty()) {
+                        urlParams(RequestKey.PREVIEW_RELOAD, reloadKey)
+                    }
 
-                    }.execute()
+                }.execute()
 
                 when (remoteData) {
-                    is Response.Success<GalleryPreview> -> RequestResult.Success(
-                        remoteData.requireBody()
-                            .apply {
-                                galleryDao.insertGalleryPreview(
-                                    GalleryPreviewCache(gid, token, index, this)
-                                )
-                            }
-                    )
+                    is Response.Success<GalleryPreview> -> RequestResult.Success(remoteData.requireBody()
+                        .apply {
+                            galleryDao.insertGalleryPreview(
+                                GalleryPreviewCache(gid, token, index, this)
+                            )
+                        })
                     is Response.Fail<*> -> throw remoteData.throwable
                 }
 
@@ -349,8 +321,7 @@ class RepositoryImpl @Inject constructor(
 
                 header(RequestKey.HEADER_ORIGIN, ApiContainer.url)
                 header(RequestKey.HEADER_REFERER, url())
-            }
-                .execute()
+            }.execute()
 
             try {
                 when (data) {
@@ -369,34 +340,26 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun favoritesSource(
-        pageIn: FavouritePageIn,
-        page: Int
+        pageIn: FavouritePageIn, page: Int
     ): Response<Pair<PageInfo<Gallery>, Array<Int>>> {
-        return client
-            .get<Pair<PageInfo<Gallery>, Array<Int>>>(ApiContainer.favoriteList()) {
-                convert = mFavoritesSourceConvert
-                urlParams(RequestKey.PAGE, page.toString())
-                pageIn.setGroup(this)
-            }
-            .execute()
+        return client.get<Pair<PageInfo<Gallery>, Array<Int>>>(ApiContainer.favoriteList()) {
+            convert = mFavoritesSourceConvert
+            urlParams(RequestKey.PAGE, page.toString())
+            pageIn.setGroup(this)
+        }.execute()
     }
 
     override suspend fun galleryDetailSource(
-        mGid: Long,
-        mToken: String,
-        page: Int
+        mGid: Long, mToken: String, page: Int
     ): Response<Pair<GalleryDetail, PageInfo<ImageSource>>> {
-        return client
-            .get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
-                ApiContainer.galleryDetail(
-                    mGid,
-                    mToken
-                )
-            ) {
-                convert = mGalleryDetailImageConvert
-                urlParams(RequestKey.PAGE_DETAIL, page.toString())
-            }
-            .execute()
+        return client.get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
+            ApiContainer.galleryDetail(
+                mGid, mToken
+            )
+        ) {
+            convert = mGalleryDetailImageConvert
+            urlParams(RequestKey.PAGE_DETAIL, page.toString())
+        }.execute()
     }
 
 

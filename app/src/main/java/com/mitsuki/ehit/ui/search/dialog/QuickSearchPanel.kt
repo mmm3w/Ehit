@@ -85,35 +85,35 @@ class QuickSearchPanel(val onQuickSearch: ((GalleryDataMeta.Type, String) -> Uni
     }
 
     private fun showQuickNameInputDialog() {
-        mParentViewModel.currentDataMeta.apply {
-            val type: GalleryDataMeta.Type
-            val k: String
-            when (this) {
-                is GalleryDataMeta.Normal -> {
-                    type = GalleryDataMeta.Type.NORMAL
-                    k = key?.key ?: ""
-                }
-                is GalleryDataMeta.Uploader -> {
-                    type = GalleryDataMeta.Type.UPLOADER
-                    k = name
-                }
-                is GalleryDataMeta.Tag -> {
-                    type = GalleryDataMeta.Type.TAG
-                    k = tag
-                }
-                is GalleryDataMeta.Subscription -> {
-                    type = GalleryDataMeta.Type.SUBSCRIPTION
-                    k = key?.key ?: ""
-                }
-                is GalleryDataMeta.Popular -> {
-                    type = GalleryDataMeta.Type.WHATS_HOT
-                    k = ""
-                }
-            }
-
-            QuickSearchNameInputDialog(hint) { mViewModel.add(it, k, type) }
-                .show(childFragmentManager, "quick_search_name")
-        }
+//        mParentViewModel.currentDataMeta.apply {
+//            val type: GalleryDataMeta.Type
+//            val k: String
+//            when (this) {
+//                is GalleryDataMeta.Normal -> {
+//                    type = GalleryDataMeta.Type.NORMAL
+//                    k = key?.key ?: ""
+//                }
+//                is GalleryDataMeta.Uploader -> {
+//                    type = GalleryDataMeta.Type.UPLOADER
+//                    k = name
+//                }
+//                is GalleryDataMeta.Tag -> {
+//                    type = GalleryDataMeta.Type.TAG
+//                    k = tag
+//                }
+//                is GalleryDataMeta.Subscription -> {
+//                    type = GalleryDataMeta.Type.SUBSCRIPTION
+//                    k = key?.key ?: ""
+//                }
+//                is GalleryDataMeta.Popular -> {
+//                    type = GalleryDataMeta.Type.WHATS_HOT
+//                    k = ""
+//                }
+//            }
+//
+//            QuickSearchNameInputDialog(hint) { mViewModel.add(it, k, type) }
+//                .show(childFragmentManager, "quick_search_name")
+//        }
     }
 
 }

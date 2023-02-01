@@ -3,6 +3,7 @@ package com.mitsuki.ehit.model.page
 import com.mitsuki.ehit.crutch.network.ehcore.ApiContainer
 import com.mitsuki.ehit.model.entity.GalleryDataKey
 import com.mitsuki.ehit.model.entity.GalleryDataMeta
+import com.mitsuki.ehit.model.entity.ListPageKey
 
 class GalleryListPageIn(
     var meta: GalleryDataMeta
@@ -20,22 +21,19 @@ class GalleryListPageIn(
         get() = meta.key
 
 
-    val enableJump: Boolean get() = if (ApiContainer.isEx) true else maxPage > 1
+    var prepKey: ListPageKey? = null
 
-    var maxPage: Int = 0
-    var targetPage: Int = 0
-
-    fun setJumpOrSeek(value: String?, jump: Boolean, next: Boolean) {
-        jumpOrSeek = value
-        isJump = jump
-        isNext = next
+    fun mergePageKey(nextKey: ListPageKey?, prevKey: ListPageKey?): ListPageKey? {
+        val newKey = prepKey?.let {
+            if (it.isNext) {
+                nextKey?.copy(jump = it.jump, seek = it.seek)
+            } else {
+                prevKey?.copy(jump = it.jump, seek = it.seek)
+            }
+        }
+        prepKey = null
+        return newKey
     }
 
-    var jumpOrSeek: String? = null
-        private set
-    var isJump: Boolean = false
-        private set
-    var isNext: Boolean = false
-        private set
 
 }

@@ -240,20 +240,10 @@ class GalleryListFragment : BindingFragment<FragmentGalleryListBinding>(
     }
 
     private fun showPageJumpDialog() {
-        if (!mViewModel.enableJump) return
-        if (!ApiContainer.isEx) {
-            PageDialog(mViewModel.maxPage) {
-                mViewModel.galleryListPage(it - 1)
-                mViewModel.refreshEnable.postValue(false)
-                mEmptyValve.enable()
-                resetSearchBar()
-                mMainAdapter.refresh()
-            }.show(childFragmentManager, "page")
-        } else {
-            ExPageDialog {
-
-            }.show(childFragmentManager, "page")
-        }
+//        if (!mViewModel.enableJump) return
+//        ExPageDialog {
+//
+//        }.show(childFragmentManager, "page")
     }
 
     private fun showQuickSearchPanel() {
