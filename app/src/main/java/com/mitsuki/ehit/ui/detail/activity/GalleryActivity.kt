@@ -132,8 +132,6 @@ class GalleryActivity : BaseActivity() {
 
         mBatteryReceiver.receiver<Int>("battery").observe(this, this::onBattery)
 
-        showTips()
-
         registerReceiver(
             mBatteryReceiver,
             BatteryReceiver.intentFilter()
@@ -269,14 +267,6 @@ class GalleryActivity : BaseActivity() {
         }
 
         onUiMode(false)
-    }
-
-    private fun showTips() {
-        if (!shareData.spGalleryTouchHotspotTips) {
-            binding.galleryHotspotVisualization.visible {
-                shareData.spGalleryTouchHotspotTips = true
-            }
-        }
     }
 
     override fun onUiMode(isNightMode: Boolean) {

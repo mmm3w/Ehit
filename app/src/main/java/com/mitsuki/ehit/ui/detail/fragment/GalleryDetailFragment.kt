@@ -282,7 +282,7 @@ class GalleryDetailFragment : BindingFragment<FragmentGalleryDetailBinding>(
 
     private fun goPreview(index: Int) {
         startActivity(Intent(requireActivity(), GalleryActivity::class.java).apply {
-            putExtra(DataKey.GALLERY_INDEX, index)
+            putExtra(DataKey.GALLERY_INDEX, index + 1)
             putExtra(DataKey.GALLERY_PAGE, mViewModel.page)
             putExtra(DataKey.GALLERY_TOKEN, mViewModel.token)
             putExtra(DataKey.GALLERY_ID, mViewModel.gid)

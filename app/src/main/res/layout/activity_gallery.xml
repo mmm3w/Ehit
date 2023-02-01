@@ -61,10 +61,4 @@
         android:layout_marginBottom="32dp"
         android:translationY="72dp" />
 
-    <com.mitsuki.ehit.ui.detail.widget.TouchHotspotVisualization
-        android:id="@+id/gallery_hotspot_visualization"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
 </FrameLayout>

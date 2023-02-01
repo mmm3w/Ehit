@@ -86,6 +86,9 @@ abstract class GalleryDao {
     @Query("SELECT * FROM ${DBValue.TABLE_GALLERY_INFO} ORDER BY ${DBValue.TABLE_GALLERY_INFO}.timestamp DESC LIMIT :size ")
     abstract suspend fun queryGalleryHistory(size: Int): List<GalleryInfoCache>
 
+    @Query("DELETE FROM ${DBValue.TABLE_GALLERY_INFO} WHERE ${DBValue.TABLE_GALLERY_INFO}.gid IN (SELECT ${DBValue.TABLE_GALLERY_INFO}.gid FROM ${DBValue.TABLE_GALLERY_INFO} ORDER BY ${DBValue.TABLE_GALLERY_INFO}.timestamp DESC LIMIT :size,-1)")
+    abstract suspend fun deleteGalleryCache(size: Int)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertGalleryTags(tags: List<GalleryTagCache>)
 

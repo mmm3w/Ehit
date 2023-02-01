@@ -8,7 +8,9 @@ import com.google.android.material.color.DynamicColors
 import com.mitsuki.ehit.const.Setting
 import com.mitsuki.ehit.crutch.AppHolder
 import com.mitsuki.ehit.crutch.save.ShareData
+import com.mitsuki.ehit.model.dao.GalleryDao
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -18,6 +20,7 @@ open class EhApplication : Application() {
 
     @Inject
     lateinit var shareData: ShareData
+
 
     override fun onCreate() {
         super.onCreate()

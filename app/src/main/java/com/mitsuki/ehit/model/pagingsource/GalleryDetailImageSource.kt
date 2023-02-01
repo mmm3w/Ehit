@@ -27,7 +27,7 @@ class GalleryDetailImageSource(
             // 需要注意的是，如果是第一页，prevKey就传null，如果是最后一页那么nextKey也传null
             // 其他情况prevKey就是page-1，nextKey就是page+1
             withContext(Dispatchers.IO) {
-                var data = repository.galleryImageSource(mGid, mToken, page)
+                var data = repository.getGalleryDetailImageSource(mGid, mToken, page)
                 when (data) {
                     is RequestResult.Success<PageInfo<ImageSource>> -> {
                         LoadResult.Page(

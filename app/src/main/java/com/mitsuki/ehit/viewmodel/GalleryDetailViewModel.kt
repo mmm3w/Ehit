@@ -107,7 +107,7 @@ class GalleryDetailViewModel @Inject constructor(
                 }
             }
             post("loading", true)
-            when (val result = repository.galleryDetailInfo(gid, token)) {
+            when (val result = repository.getGalleryDetailInfo(gid, token)) {
                 is RequestResult.Success<GalleryDetail> -> {
 
                     _infoStates.postNext {

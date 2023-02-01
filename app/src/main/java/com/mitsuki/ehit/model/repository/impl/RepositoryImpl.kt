@@ -120,13 +120,14 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun galleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail> {
+    override suspend fun getGalleryDetailInfo(gid: Long, token: String): RequestResult<GalleryDetail> {
         return withContext(Dispatchers.IO) {
             //首先从数据库缓存中读取相关数据
             val cacheData = galleryDao.queryGalleryDetail(gid, token)
             if (cacheData != null) {
                 RequestResult.Success(cacheData)
             } else {
+                //请求并分两部分解析数据，一部分用于详情的缓存，一部分用于预览图和pToken的查询
                 val data = client.get<Pair<GalleryDetail, PageInfo<ImageSource>>>(
                     ApiContainer.galleryDetail(gid, token)
                 ) {
@@ -145,7 +146,7 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun galleryImageSource(
+    override suspend fun getGalleryDetailImageSource(
         gid: Long, token: String, page: Int, ignoreCache: Boolean
     ): RequestResult<PageInfo<ImageSource>> {
         return withContext(Dispatchers.IO) {
@@ -215,13 +216,13 @@ class RepositoryImpl @Inject constructor(
                 val pToken = if (cache == null || cache.pToken.isEmpty()) {
                     //缓存中没有时请求网络
                     if (GalleryPageSize.illegalSize) {
-                        galleryImageSource(gid, token, 0, true)
+                        getGalleryDetailImageSource(gid, token, 0, true)
                     }
                     galleryDao.querySingleGalleryImageCache(gid, token, index)?.pToken ?: let {
                         if (GalleryPageSize.illegalSize) throw IllegalStateException("request page size error")
                         val webIndex = index / GalleryPageSize.size
 
-                        val images = galleryImageSource(gid, token, webIndex, true)
+                        val images = getGalleryDetailImageSource(gid, token, webIndex, true)
                         if (images is RequestResult.Fail<*>) {
                             throw images.throwable
                         }
@@ -235,6 +236,40 @@ class RepositoryImpl @Inject constructor(
                     cache.pToken
                 }
                 RequestResult.Success(pToken)
+            } catch (inner: Throwable) {
+                RequestResult.Fail(inner)
+            }
+        }
+    }
+
+    //获取图片浏览信息
+    override suspend fun getGalleryPreviewInfo(
+        gid: Long, token: String, index: Int, reloadKey: String
+    ): RequestResult<GalleryPreview> {
+        return withContext(Dispatchers.IO) {
+            try {
+                //先从数据库查询，但是这波数据处理还要再调整一下
+                val data = if (reloadKey.isEmpty()) galleryDao.queryGalleryPreview(
+                    gid, token, index
+                ) else null
+                if (data != null) {
+                    RequestResult.Success(GalleryPreview(data))
+                } else {
+                    val pToken = galleryImagePToken(gid, token, index).let {
+                        when (it) {
+                            is RequestResult.Success<String> -> it.data
+                            is RequestResult.Fail<*> -> throw it.throwable
+                        }
+                    }
+
+                    galleryPreview(
+                        ApiContainer.galleryPreviewDetail(gid, pToken, index),
+                        gid,
+                        token,
+                        index,
+                        reloadKey
+                    )
+                }
             } catch (inner: Throwable) {
                 RequestResult.Fail(inner)
             }

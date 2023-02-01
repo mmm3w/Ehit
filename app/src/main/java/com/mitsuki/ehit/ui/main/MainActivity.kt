@@ -7,6 +7,8 @@ import android.view.MenuItem
 import android.view.Window
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.transition.platform.MaterialContainerTransform
@@ -20,8 +22,11 @@ import com.mitsuki.ehit.crutch.extensions.showToast
 import com.mitsuki.ehit.crutch.extensions.text
 import com.mitsuki.ehit.crutch.extensions.viewBinding
 import com.mitsuki.ehit.databinding.ActivityMainBinding
+import com.mitsuki.ehit.model.dao.GalleryDao
 import com.mitsuki.ehit.ui.setting.activity.SettingActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -33,6 +38,9 @@ class MainActivity : BaseActivity() {
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     private var mExitTimestamp = 0L
+
+    @Inject
+    lateinit var galleryDao: GalleryDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
@@ -81,6 +89,11 @@ class MainActivity : BaseActivity() {
                 R.id.download_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_download)
                 R.id.favourite_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_favourite)
                 R.id.history_fragment -> binding.mainNavigation.setCheckedItem(R.id.nav_history)
+            }
+        }
+        lifecycleScope.launchWhenCreated {
+            withContext(Dispatchers.IO) {
+                galleryDao.deleteGalleryCache(50)
             }
         }
     }
