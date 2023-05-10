@@ -22,7 +22,7 @@ interface Site {
         "$url/g/$gid/$token"
 
     fun galleryPreviewDetail(gid: Long, token: String, index: Int): String =
-        "$url/s/$token/$gid-$index"
+        "$url/s/$token/$gid-${index + 1}"
 
     fun ehSetting(): String = "$url/uconfig.php"
 
